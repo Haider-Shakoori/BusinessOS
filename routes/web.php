@@ -5,6 +5,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CurrencySettingsController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\ExpenseController;
+use App\Http\Controllers\ExportController;
 use App\Http\Controllers\ImportController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\PaymentController;
@@ -106,6 +107,10 @@ Route::middleware(['auth', 'auth.session', 'business-selected', 'module:settings
 Route::middleware(['auth', 'auth.session', 'business-selected', 'module:customers'])->group(function () {
     Route::get('/customers', [CustomerController::class, 'index'])
         ->name('customers.index')
+        ->middleware('permission:customers.view');
+
+    Route::get('/customers/export', [ExportController::class, 'customers'])
+        ->name('customers.export')
         ->middleware('permission:customers.view');
 
     // Batch 20 — create-only CSV import. Registered BEFORE the implicit
@@ -294,6 +299,10 @@ Route::middleware(['auth', 'auth.session', 'business-selected', 'module:products
         ->name('products.index')
         ->middleware('permission:products.view');
 
+    Route::get('/products/export', [ExportController::class, 'products'])
+        ->name('products.export')
+        ->middleware('permission:products.view');
+
     // Batch 20 — create-only CSV import (see customers.import above for the
     // identical security layout; this group enforces products.manage).
     Route::get('/products/import', [ImportController::class, 'show'])
@@ -428,6 +437,10 @@ Route::middleware(['auth', 'auth.session', 'business-selected', 'module:sales'])
         ->name('invoices.index')
         ->middleware('permission:invoices.view');
 
+    Route::get('/invoices/export', [ExportController::class, 'invoices'])
+        ->name('invoices.export')
+        ->middleware('permission:invoices.view');
+
     Route::get('/invoices/create', [InvoiceController::class, 'create'])
         ->name('invoices.create')
         ->middleware('permission:invoices.manage');
@@ -524,6 +537,10 @@ Route::middleware(['auth', 'auth.session', 'business-selected', 'module:expenses
         ->name('expenses.index')
         ->middleware('permission:expenses.view');
 
+    Route::get('/expenses/export', [ExportController::class, 'expenses'])
+        ->name('expenses.export')
+        ->middleware('permission:expenses.view');
+
     Route::get('/expenses/create', [ExpenseController::class, 'create'])
         ->name('expenses.create')
         ->middleware('permission:expenses.manage');
@@ -534,6 +551,10 @@ Route::middleware(['auth', 'auth.session', 'business-selected', 'module:expenses
 
     Route::get('/expenses/report', [ExpenseController::class, 'report'])
         ->name('expenses.report')
+        ->middleware('permission:expenses.view');
+
+    Route::get('/expenses/report/export', [ExportController::class, 'expenseReport'])
+        ->name('expenses.report.export')
         ->middleware('permission:expenses.view');
 
     Route::get('/expenses/{expense}', [ExpenseController::class, 'show'])
