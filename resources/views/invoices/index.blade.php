@@ -10,6 +10,9 @@
         ]"
     >
         <x-slot:actions>
+            <x-ui.button href="{{ route('invoices.export', request()->only('search', 'status')) }}" variant="secondary">
+                {{ __('exports.export_csv') }}
+            </x-ui.button>
             @can('invoices.manage')
                 <x-ui.button href="{{ route('invoices.create') }}" icon="plus">{{ __('invoices.add') }}</x-ui.button>
             @endcan
