@@ -11,6 +11,9 @@
         ]"
     >
         <x-slot:actions>
+            <x-ui.button href="{{ route('expenses.report.export', request()->only('category_id', 'date_from', 'date_to')) }}" variant="secondary">
+                {{ __('exports.export_csv') }}
+            </x-ui.button>
             <x-ui.button variant="secondary" href="{{ route('expenses.index') }}" icon="chevron-right">
                 {{ __('expenses.title') }}
             </x-ui.button>
