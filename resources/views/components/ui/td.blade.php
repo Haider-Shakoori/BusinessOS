@@ -2,8 +2,8 @@
 
 <td
     {{ $attributes->merge(['class' =>
-        'px-4 py-3 text-sm text-gray-700 dark:text-gray-200'
-        .($numeric ? ' text-end tabular-nums text-gray-900 dark:text-gray-100' : '')
+        'border-e border-slate-100 px-3.5 py-3 text-[12.5px] text-slate-700 last:border-e-0 dark:border-slate-800 dark:text-slate-200'
+        .($numeric ? ' text-end tabular-nums text-slate-900 dark:text-slate-100' : '')
     ]) }}
 >
     {{ $slot }}

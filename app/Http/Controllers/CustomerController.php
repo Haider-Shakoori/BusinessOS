@@ -2,13 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\InvoiceStatus;
 use App\Http\Requests\Customer\StoreCustomerRequest;
 use App\Http\Requests\Customer\UpdateCustomerRequest;
 use App\Models\Customer;
+use App\Models\Invoice;
+use App\Models\Payment;
 use App\Services\BusinessContext;
 use App\Services\BusinessSettings;
 use App\Services\CurrencyService;
 use App\Services\CustomerLedgerService;
+use App\Support\Decimal;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -40,7 +44,17 @@ class CustomerController extends Controller
 
     public function index(Request $request): View
     {
-        $searchTerm = trim((string) $request->string('search'));
+        $data = $request->validate([
+            'search' => ['nullable', 'string', 'max:100'],
+            'status' => ['nullable', 'string', 'in:active'],
+            'date_from' => ['nullable', 'date'],
+            'date_to' => ['nullable', 'date', 'after_or_equal:date_from'],
+        ]);
+
+        $searchTerm = trim((string) ($data['search'] ?? ''));
+        $statusFilter = $data['status'] ?? null;
+        $dateFrom = $data['date_from'] ?? null;
+        $dateTo = $data['date_to'] ?? null;
 
         $customers = Customer::query()
             ->when($searchTerm !== '', function ($query) use ($searchTerm) {
@@ -51,12 +65,51 @@ class CustomerController extends Controller
                         ->orWhere('phone', 'like', "%{$searchTerm}%");
                 });
             })
+            ->when($dateFrom !== null, fn ($query) => $query->whereDate('created_at', '>=', $dateFrom))
+            ->when($dateTo !== null, fn ($query) => $query->whereDate('created_at', '<=', $dateTo))
             ->orderBy('name')
             ->orderBy('id')
             ->paginate(15)
             ->withQueryString();
 
-        return view('customers.index', compact('customers', 'searchTerm'));
+        $totalCustomers = Customer::query()->count();
+        $newThisMonth = Customer::query()
+            ->whereBetween('created_at', [now()->startOfMonth(), now()->endOfMonth()])
+            ->count();
+
+        $openingBalances = Decimal::normalize((string) Customer::query()->sum('opening_balance'));
+        $invoiced = Decimal::normalize((string) Invoice::query()
+            ->where('status', '!=', InvoiceStatus::Draft->value)
+            ->sum('base_amount'));
+        $paid = Decimal::normalize((string) Payment::query()
+            ->where('party_type', 'customer')
+            ->whereNull('reversed_at')
+            ->sum('base_amount'));
+        $totalReceivables = Decimal::min(Decimal::sub(Decimal::add($openingBalances, $invoiced), $paid), '0.0000');
+
+        $outstandingInvoices = Invoice::query()
+            ->whereIn('status', [InvoiceStatus::Sent->value, InvoiceStatus::PartiallyPaid->value])
+            ->get(['amount_due', 'exchange_rate'])
+            ->reduce(
+                fn (string $carry, Invoice $invoice): string => Decimal::add(
+                    $carry,
+                    Decimal::round(Decimal::mul((string) $invoice->amount_due, (string) ($invoice->exchange_rate ?? '1'))),
+                ),
+                '0.0000',
+            );
+
+        return view('customers.index', [
+            'customers' => $customers,
+            'searchTerm' => $searchTerm,
+            'statusFilter' => $statusFilter,
+            'dateFrom' => $dateFrom,
+            'dateTo' => $dateTo,
+            'totalCustomers' => $totalCustomers,
+            'newThisMonth' => $newThisMonth,
+            'totalReceivables' => $totalReceivables,
+            'outstandingInvoices' => $outstandingInvoices,
+            'baseCurrency' => $this->currencies->baseCurrency(),
+        ]);
     }
 
     public function create(): View

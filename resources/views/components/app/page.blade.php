@@ -2,20 +2,23 @@
     'title' => null,
     'subtitle' => null,
     'breadcrumbs' => [],
+    'icon' => null,
 ])
 
-<div class="space-y-6">
-    @if (count($breadcrumbs))
-        <div class="app-page-breadcrumbs mb-4">
-            <x-ui.breadcrumb :items="$breadcrumbs" />
-        </div>
-    @endif
+<div class="space-y-5">
+    <div class="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+        <x-ui.page-header class="app-page-header flex-1" :title="$title" :description="$subtitle" :icon="$icon">
+            @if (! empty($actions))
+                <x-slot:actions>{{ $actions }}</x-slot:actions>
+            @endif
+        </x-ui.page-header>
 
-    <x-ui.page-header class="app-page-header" :title="$title" :description="$subtitle">
-        @if (! empty($actions))
-            <x-slot:actions>{{ $actions }}</x-slot:actions>
+        @if (count($breadcrumbs))
+            <div class="app-page-breadcrumbs pt-1 lg:pt-2">
+                <x-ui.breadcrumb :items="$breadcrumbs" />
+            </div>
         @endif
-    </x-ui.page-header>
+    </div>
 
-    <div class="mt-6">{{ $slot }}</div>
+    <div>{{ $slot }}</div>
 </div>

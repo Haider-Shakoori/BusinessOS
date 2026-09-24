@@ -12,14 +12,11 @@
     align="end"
     width="w-48"
     label="{{ __('common.language') }}"
-    class="rounded-lg p-1 hover:bg-gray-100 dark:hover:bg-gray-700"
+    class="rounded-lg px-2 py-1.5 text-[12px] hover:bg-slate-100 dark:hover:bg-slate-800"
 >
     <x-slot:trigger>
-        <span class="flex items-center gap-1.5">
-            <x-ui.icon name="globe" class="size-5" aria-hidden="true" />
-            @if ($currentLocale)
-                <span class="hidden sm:inline text-xs font-medium">{{ $currentLocale['native'] }}</span>
-            @endif
+        <span class="flex items-center gap-1.5 font-medium text-slate-700 dark:text-slate-200">
+            <span>{{ $currentLocale['native'] ?? strtoupper($current) }}</span>
         </span>
     </x-slot:trigger>
     <x-slot:items>
@@ -28,7 +25,7 @@
                 href="{{ route('locale.switch', $code) }}"
                 :disabled="$code === $current"
             >
-                <span class="flex items-center gap-2">
+                <span class="flex w-full items-center justify-between gap-2">
                     {{ $locale['native'] }}
                     @if ($code === $current)
                         <x-ui.icon name="check" class="size-4 text-brand-600 dark:text-brand-400" aria-hidden="true" />

@@ -1,116 +1,85 @@
-<header class="app-header sticky top-0 z-20 flex h-16 items-center gap-2 border-b border-gray-200 bg-white/80 px-4 backdrop-blur-md sm:px-6 dark:border-gray-700 dark:bg-gray-800/80">
-    {{-- Mobile menu trigger --}}
+<header class="app-header sticky top-0 z-20 flex h-14 items-center border-b border-slate-200 bg-white px-3 shadow-[0_1px_0_rgba(15,23,42,0.02)] sm:px-5 dark:border-slate-800 dark:bg-slate-900">
     <button
         type="button"
         x-on:click="$dispatch('bos:open-drawer', { id: 'app-mobile-nav' })"
-        class="lg:hidden inline-flex size-9 shrink-0 items-center justify-center rounded-lg text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600"
+        class="lg:hidden inline-flex size-9 shrink-0 items-center justify-center rounded-lg text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-800 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white"
         aria-controls="app-mobile-nav"
         aria-label="{{ __('common.open_navigation') }}"
         aria-haspopup="dialog"
     >
-        <x-ui.icon name="menu" class="size-5" aria-hidden="true" />
+        <x-ui.icon name="menu" class="size-[18px]" aria-hidden="true" />
     </button>
 
-    {{-- Search placeholder (desktop/tablet) --}}
-    <div class="ms-1 hidden md:block flex-1 max-w-md">
+    <button
+        type="button"
+        x-on:click="toggleSidebar"
+        x-bind:aria-label="collapsed ? '{{ __('common.expand_sidebar') }}' : '{{ __('common.collapse_sidebar') }}'"
+        class="hidden lg:inline-flex size-9 shrink-0 items-center justify-center rounded-lg text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-800 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white"
+    >
+        <x-ui.icon name="menu" class="size-[18px]" aria-hidden="true" />
+    </button>
+
+    <div class="ms-auto hidden w-full max-w-[310px] md:block lg:ms-[auto]">
         <button
             type="button"
-            class="group flex w-full items-center gap-2.5 rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-500 transition-colors hover:border-gray-300 hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600 dark:border-gray-700 dark:bg-gray-800/60 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:bg-gray-800"
+            class="group flex h-9 w-full items-center gap-2 rounded-[7px] border border-slate-300 bg-white px-3 text-[13px] text-slate-400 shadow-sm transition-colors hover:border-slate-400 focus-visible:outline-2 focus-visible:outline-brand-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-500"
             aria-label="{{ __('common.search_coming_soon') }}"
             title="{{ __('common.search_coming_soon') }}"
         >
-            <x-ui.icon name="search" class="size-4" aria-hidden="true" />
+            <x-ui.icon name="search" class="size-4 text-slate-500" aria-hidden="true" />
             <span class="truncate">{{ __('common.search') }}</span>
-            <kbd class="ms-auto hidden rounded bg-gray-100 px-1.5 py-0.5 text-[11px] font-medium text-gray-400 sm:inline dark:bg-gray-700 dark:text-gray-500">⌘K</kbd>
         </button>
     </div>
 
-    {{-- Search icon-only for small screens --}}
-    <div class="md:hidden ms-auto inline-flex">
-        <button
-            type="button"
-            class="inline-flex size-9 items-center justify-center rounded-lg text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600"
-            aria-label="{{ __('common.search_coming_soon') }}"
-            title="{{ __('common.search_coming_soon') }}"
-        >
-            <x-ui.icon name="search" class="size-5" aria-hidden="true" />
-        </button>
-    </div>
+    <div class="ms-auto flex items-center gap-1 md:ms-4">
+        <div class="hidden xl:block">
+            <x-app.business-switcher />
+        </div>
 
-    <div class="ms-auto flex items-center gap-1.5 sm:gap-2">
-        {{-- Quick action placeholder --}}
-        <button
-            type="button"
-            class="hidden md:inline-flex size-9 items-center justify-center rounded-lg text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600"
-            aria-label="{{ __('common.quick_actions_coming_soon') }}"
-            title="{{ __('common.quick_actions_coming_soon') }}"
-        >
-            <x-ui.icon name="plus" class="size-5" aria-hidden="true" />
-        </button>
+        <span class="mx-1 hidden h-6 w-px bg-slate-200 sm:block dark:bg-slate-700" aria-hidden="true"></span>
 
-        {{-- Notifications placeholder --}}
-        <span class="hidden relative md:inline-flex">
-            <button
-                type="button"
-                class="inline-flex size-9 items-center justify-center rounded-lg text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600"
-                aria-label="{{ __('common.notifications_coming_soon') }}"
-                title="{{ __('common.notifications_coming_soon') }}"
-            >
-                <x-ui.icon name="bell" class="size-5" aria-hidden="true" />
-                <span class="absolute -end-0.5 -top-0.5 size-2 rounded-full bg-red-500 ring-2 ring-white dark:ring-gray-800" aria-hidden="true"></span>
-            </button>
-        </span>
-
-        {{-- Business switcher --}}
-        <x-app.business-switcher />
-
-        {{-- Locale switcher --}}
-        <x-app.locale-switcher />
-
-        {{-- Theme toggle --}}
         <button
             type="button"
             x-data="themeSwitcher"
             x-on:click="toggle"
-            class="inline-flex size-9 items-center justify-center rounded-lg text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600"
+            class="inline-flex size-9 items-center justify-center rounded-lg text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white"
             aria-label="{{ __('common.toggle_dark_mode') }}"
         >
-            <template x-if="dark">
-                <x-ui.icon name="sun" class="size-5" aria-hidden="true" />
-            </template>
-            <template x-if="!dark">
-                <x-ui.icon name="moon" class="size-5" aria-hidden="true" />
-            </template>
+            <template x-if="dark"><x-ui.icon name="sun" class="size-[18px]" aria-hidden="true" /></template>
+            <template x-if="!dark"><x-ui.icon name="moon" class="size-[18px]" aria-hidden="true" /></template>
         </button>
 
-        {{-- User dropdown --}}
+        <span class="mx-1 hidden h-6 w-px bg-slate-200 sm:block dark:bg-slate-700" aria-hidden="true"></span>
+
+        <x-app.locale-switcher />
+
+        <span class="mx-1 hidden h-6 w-px bg-slate-200 sm:block dark:bg-slate-700" aria-hidden="true"></span>
+
         <x-ui.dropdown
             align="end"
-            width="w-56" label="{{ __('auth.account_menu') }}"
-            class="rounded-full p-1 hover:bg-gray-100 dark:hover:bg-gray-700"
+            width="w-60"
+            label="{{ __('auth.account_menu') }}"
+            class="rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800"
         >
             <x-slot:trigger>
-                <span class="flex items-center gap-2 rounded-lg p-1.5">
-                    <span class="grid size-8 place-items-center rounded-full bg-brand-600 text-xs font-semibold text-white" aria-hidden="true">{{ mb_strtoupper(mb_substr(auth()->user()?->name ?? __('auth.guest'), 0, 1)) }}</span>
-                    <span class="hidden md:block text-start leading-tight">
-                        <span class="block text-sm font-medium text-gray-700 dark:text-gray-200">{{ auth()->user()?->name ?? __('auth.guest') }}</span>
-                        <span class="block text-xs text-gray-500 dark:text-gray-400">{{ auth()->user()?->email ?? __('auth.preview') }}</span>
+                <span class="flex items-center gap-2.5 px-1.5 py-1">
+                    <span class="grid size-9 place-items-center rounded-full bg-brand-600 text-xs font-semibold text-white shadow-sm" aria-hidden="true">{{ mb_strtoupper(mb_substr(auth()->user()?->name ?? __('auth.guest'), 0, 1)) }}</span>
+                    <span class="hidden max-w-[160px] text-start leading-[1.15] md:block">
+                        <span class="block truncate text-[13px] font-medium text-slate-800 dark:text-slate-100">{{ auth()->user()?->name ?? __('auth.guest') }}</span>
+                        <span class="mt-0.5 block truncate text-[11px] text-slate-500 dark:text-slate-400">{{ auth()->user()?->email ?? __('auth.preview') }}</span>
                     </span>
+                    <x-ui.icon name="chevron-down" class="hidden size-3.5 text-slate-400 md:block" aria-hidden="true" />
                 </span>
             </x-slot:trigger>
             <x-slot:items>
-                <div class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-200">
-                    <span class="grid size-8 place-items-center rounded-full bg-brand-600 text-xs font-semibold text-white" aria-hidden="true">{{ mb_strtoupper(mb_substr(auth()->user()?->name ?? __('auth.guest'), 0, 1)) }}</span>
-                    <div class="min-w-0 leading-tight">
-                        <span class="block truncate text-sm font-medium text-gray-700 dark:text-gray-200">{{ auth()->user()?->name ?? __('auth.guest') }}</span>
-                        <span class="block truncate text-xs text-gray-500 dark:text-gray-400">{{ auth()->user()?->email ?? __('auth.preview') }}</span>
-                    </div>
+                <div class="px-3 py-2.5">
+                    <p class="truncate text-sm font-medium text-slate-800 dark:text-slate-100">{{ auth()->user()?->name ?? __('auth.guest') }}</p>
+                    <p class="truncate text-xs text-slate-500 dark:text-slate-400">{{ auth()->user()?->email ?? __('auth.preview') }}</p>
                 </div>
-                <x-ui.dropdown-item href="#" icon="user">{{ __('common.profile') }}</x-ui.dropdown-item>
                 @can('settings.view')
                     <x-ui.dropdown-item :href="route('settings.index')" icon="cog">{{ __('common.settings') }}</x-ui.dropdown-item>
                 @endcan
-                <div class="my-1 border-t border-gray-200 dark:border-gray-700"></div>
+                <div class="my-1 border-t border-slate-200 dark:border-slate-700"></div>
                 @auth
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf

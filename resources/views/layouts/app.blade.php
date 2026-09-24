@@ -10,7 +10,6 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ config('app.name') }}</title>
 
-    {{-- Pre-paint theme (dark mode) --}}
     <script>
         (function () {
             var stored = localStorage.getItem('bos-theme');
@@ -21,7 +20,6 @@
         })();
     </script>
 
-    {{-- Pre-paint sidebar collapse state --}}
     <script>
         (function () {
             try {
@@ -36,8 +34,7 @@
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="h-full min-h-screen bg-gray-50 font-sans text-gray-900 antialiased dark:bg-gray-900 dark:text-gray-100">
-    {{-- Skip link for accessibility --}}
+<body class="h-full min-h-screen bg-[#f5f7fb] font-sans text-slate-900 antialiased dark:bg-slate-950 dark:text-slate-100">
     <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:start-4 focus:top-4 focus:z-[70] focus:rounded-lg focus:bg-brand-600 focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:text-white">
         {{ __('common.skip_to_content') }}
     </a>
@@ -48,16 +45,15 @@
         <x-app.sidebar :items="$navItems" />
         <x-app.mobile-nav :items="$navItems" />
 
-        <div id="app-content" class="flex min-h-screen flex-col transition-[padding-inline-start] duration-200 ease-out lg:ps-64 sidebar-collapsed:lg:ps-16">
+        <div id="app-content" class="flex min-h-screen flex-col transition-[padding-inline-start] duration-200 ease-out lg:ps-[208px] sidebar-collapsed:lg:ps-[68px]">
             <x-app.header />
 
-            <main id="main-content" tabindex="-1" class="flex-1">
-                {{-- Optional flash section --}}
+            <main id="main-content" tabindex="-1" class="flex-1 bg-[#f5f7fb] dark:bg-slate-950">
                 @hasSection('flash')
-                    <div class="mx-auto w-full max-w-7xl px-4 pt-6 sm:px-6 lg:px-8">@yield('flash')</div>
+                    <div class="mx-auto w-full max-w-[1600px] px-4 pt-5 sm:px-5 lg:px-6">@yield('flash')</div>
                 @endif
 
-                <div class="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+                <div class="mx-auto w-full max-w-[1600px] px-4 py-5 sm:px-5 lg:px-6 lg:py-6">
                     @yield('content')
                 </div>
             </main>
