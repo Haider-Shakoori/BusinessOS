@@ -26,6 +26,9 @@ class ExportController extends Controller
     {
         $filters = $request->validate([
             'search' => ['nullable', 'string', 'max:100'],
+            'status' => ['nullable', 'string', 'in:active'],
+            'date_from' => ['nullable', 'date'],
+            'date_to' => ['nullable', 'date', 'after_or_equal:date_from'],
         ]);
 
         return $this->exports->customers($filters);

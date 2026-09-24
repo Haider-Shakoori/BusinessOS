@@ -2,6 +2,7 @@
     'align' => 'end',
     'width' => 'w-48',
     'label' => null,
+    'chevron' => true,
 ])
 
 <div
@@ -21,7 +22,9 @@
         @if (empty($trigger))
             {{ $label ?? 'Menu' }}
         @endif
-        <x-ui.icon name="chevron-down" class="size-4" aria-hidden="true" />
+        @if ($chevron)
+            <x-ui.icon name="chevron-down" class="size-4" aria-hidden="true" />
+        @endif
     </button>
 
     <div

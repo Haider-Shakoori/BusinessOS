@@ -16,6 +16,8 @@ class ExportService
     public function customers(array $filters): StreamedResponse
     {
         $search = trim((string) ($filters['search'] ?? ''));
+        $dateFrom = $filters['date_from'] ?? null;
+        $dateTo = $filters['date_to'] ?? null;
 
         $rows = Customer::query()
             ->when($search !== '', function ($query) use ($search) {
@@ -26,6 +28,8 @@ class ExportService
                         ->orWhere('phone', 'like', "%{$search}%");
                 });
             })
+            ->when($dateFrom !== null, fn ($query) => $query->whereDate('created_at', '>=', $dateFrom))
+            ->when($dateTo !== null, fn ($query) => $query->whereDate('created_at', '<=', $dateTo))
             ->orderBy('name')
             ->orderBy('id')
             ->lazy(500);

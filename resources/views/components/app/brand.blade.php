@@ -1,19 +1,14 @@
 @props(['appName' => null])
 
-<div class="flex h-16 shrink-0 items-center gap-3 border-b border-gray-200 px-4 dark:border-gray-700" x-bind:class="collapsed ? 'justify-center px-2' : 'justify-between'">
-    <div class="flex min-w-0 items-center gap-3">
-        <div class="grid size-8 shrink-0 place-items-center rounded-lg bg-brand-600 text-white shadow-sm" aria-hidden="true">
-            <x-ui.icon name="sparkles" class="size-4" />
-        </div>
-        <div class="min-w-0 leading-tight">
-            <p class="truncate text-sm font-semibold text-gray-900 dark:text-white" x-bind:class="collapsed ? 'sr-only' : ''">{{ $appName ?? __('common.app_name') }}</p>
-            <p class="truncate text-xs text-gray-500 dark:text-gray-400" x-bind:class="collapsed ? 'sr-only' : ''">{{ __('common.brand_tagline') }}</p>
-        </div>
+<div class="flex h-14 shrink-0 items-center border-b border-white/10 px-4" x-bind:class="collapsed ? 'justify-center px-2' : ''">
+    <div class="flex min-w-0 items-center gap-2.5">
+        <span class="relative block size-7 shrink-0" aria-hidden="true">
+            <span class="absolute start-0 top-0 h-[18px] w-[15px] rounded-[3px] bg-brand-500"></span>
+            <span class="absolute bottom-0 end-0 h-[18px] w-[15px] rounded-[3px] bg-brand-400/90"></span>
+            <span class="absolute start-[7px] top-[7px] size-[11px] rounded-[2px] bg-brand-600 shadow-sm"></span>
+        </span>
+        <span class="truncate text-[17px] font-semibold tracking-[-0.02em] text-white" x-bind:class="collapsed ? 'sr-only' : ''">
+            Business<span class="text-brand-400">OS</span>
+        </span>
     </div>
-
-    @if ($slot->isNotEmpty())
-        <div class="flex items-center gap-1">
-            {{ $slot }}
-        </div>
-    @endif
 </div>

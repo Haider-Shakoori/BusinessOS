@@ -10,38 +10,28 @@
     $first = $paginator->firstItem();
     $last = $paginator->lastItem();
     $total = method_exists($paginator, 'total') ? $paginator->total() : null;
-
     $current = $paginator->currentPage();
     $windowStart = max(1, $current - $onEachSide);
     $windowEnd = $paginator->lastPage() !== null ? min($paginator->lastPage(), $current + $onEachSide) : $current;
     $urlRange = $paginator->getUrlRange($windowStart, $windowEnd);
 
-    $pageLinkClasses = 'inline-flex min-w-9 items-center justify-center rounded-lg px-2.5 py-2 text-sm font-medium
-        transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600';
-    $inactiveLink = 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700';
-    $activeLink = 'bg-brand-600 text-white shadow-sm dark:bg-brand-500';
-    $disabled = 'pointer-events-none opacity-40';
+    $pageLinkClasses = 'inline-flex size-9 items-center justify-center rounded-[6px] border text-[12px] font-medium transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-brand-600';
+    $inactiveLink = 'border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800';
+    $activeLink = 'border-brand-600 bg-brand-600 text-white shadow-sm';
+    $disabled = 'pointer-events-none border-slate-200 bg-slate-50 text-slate-300 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-700';
 @endphp
 
 @if ($paginator->hasPages())
-    <nav
-        role="navigation"
-        aria-label="Pagination"
-        class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"
-    >
+    <nav role="navigation" aria-label="Pagination" class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         @if ($first !== null && $total !== null)
-            <p class="text-sm text-gray-500 dark:text-gray-400">
-                Showing
-                <span class="font-medium text-gray-900 dark:text-white">{{ $first }}</span>
-                to
-                <span class="font-medium text-gray-900 dark:text-white">{{ $last }}</span>
-                of
-                <span class="font-medium text-gray-900 dark:text-white">{{ $total }}</span>
-                results
+            <p class="text-[12px] text-slate-600 dark:text-slate-400">
+                Showing <span class="font-medium text-slate-900 dark:text-white">{{ $first }}</span>
+                to <span class="font-medium text-slate-900 dark:text-white">{{ $last }}</span>
+                of <span class="font-medium text-slate-900 dark:text-white">{{ $total }}</span> results
             </p>
         @endif
 
-        <div class="flex flex-wrap items-center gap-1">
+        <div class="flex flex-wrap items-center gap-1.5">
             @if ($paginator->onFirstPage())
                 <span class="{{ $pageLinkClasses }} {{ $disabled }}" aria-hidden="true">
                     <x-ui.icon name="chevron-left" class="rtl-flip size-4" />

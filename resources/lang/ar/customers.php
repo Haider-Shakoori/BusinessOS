@@ -2,7 +2,7 @@
 
 return [
     'title' => 'العملاء',
-    'subtitle' => 'إدارة الأشخاص والشركات التي تتعامل معها.',
+    'subtitle' => 'إدارة العملاء وعرض التفاصيل ومتابعة حساباتهم.',
     'view_only' => 'يمكنك عرض العملاء. إدارتهم تتطلب إذن «إدارة العملاء».',
 
     'add' => 'إضافة عميل',
@@ -11,7 +11,26 @@ return [
     'details_title' => 'تفاصيل العميل',
 
     'search' => 'بحث عن العملاء',
-    'search_placeholder' => 'بحث عن العملاء…',
+    'search_placeholder' => 'الاسم أو البريد أو الهاتف…',
+    'filters' => 'الفلاتر',
+    'status' => 'الحالة',
+    'all_statuses' => 'الكل',
+    'active' => 'نشط',
+    'date_from' => 'التاريخ من',
+    'date_to' => 'التاريخ إلى',
+    'apply_filters' => 'بحث',
+    'export_current_list' => 'تصدير القائمة الحالية',
+    'export_current_help' => 'تنزيل العملاء المطابقين للفلاتر الحالية',
+    'download_template' => 'تنزيل القالب',
+    'download_template_help' => 'قالب CSV للاستيراد',
+    'stats' => [
+        'total_customers' => 'إجمالي العملاء',
+        'total_receivables' => 'إجمالي المستحقات',
+        'outstanding_invoices' => 'الفواتير غير المسددة',
+        'active_customers' => 'العملاء النشطون',
+        'new_this_month' => ':count هذا الشهر',
+        'all_current' => 'كل السجلات الحالية',
+    ],
 
     'no_customers' => 'لا يوجد عملاء',
     'no_customers_description' => 'لا يوجد عملاء في هذا العمل بعد. أضف أول عميل للبدء.',

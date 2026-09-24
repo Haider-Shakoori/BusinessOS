@@ -2,7 +2,7 @@
 
 return [
     'title' => 'Customers',
-    'subtitle' => 'Manage the people and companies you do business with.',
+    'subtitle' => 'Manage your customers, view details and track their accounts.',
     'view_only' => 'You can view customers. Managing them requires the “Manage customers” permission.',
 
     'add' => 'Add customer',
@@ -11,7 +11,26 @@ return [
     'details_title' => 'Customer details',
 
     'search' => 'Search customers',
-    'search_placeholder' => 'Search customers…',
+    'search_placeholder' => 'Name, email or phone…',
+    'filters' => 'Filters',
+    'status' => 'Status',
+    'all_statuses' => 'All',
+    'active' => 'Active',
+    'date_from' => 'Date From',
+    'date_to' => 'Date To',
+    'apply_filters' => 'Search',
+    'export_current_list' => 'Export Current List',
+    'export_current_help' => 'Downloads customers matching current filters',
+    'download_template' => 'Download Template',
+    'download_template_help' => 'CSV template for import',
+    'stats' => [
+        'total_customers' => 'Total Customers',
+        'total_receivables' => 'Total Receivables',
+        'outstanding_invoices' => 'Outstanding Invoices',
+        'active_customers' => 'Active Customers',
+        'new_this_month' => ':count this month',
+        'all_current' => 'All current records',
+    ],
 
     'no_customers' => 'No customers',
     'no_customers_description' => 'There are no customers in this business yet. Add your first customer to get started.',
