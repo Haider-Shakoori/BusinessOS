@@ -1,0 +1,169 @@
+- generic [ref=f83e1]:
+  - link "Skip to content" [ref=f83e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=f83e3]:
+    - complementary "Skip to content" [ref=f83e4]:
+      - generic [ref=f83e10]:
+        - paragraph [ref=f83e11]: BusinessOS
+        - paragraph [ref=f83e12]: Business management
+      - navigation [ref=f83e13]:
+        - list [ref=f83e14]:
+          - listitem [ref=f83e15]:
+            - paragraph [ref=f83e16]: Overview
+            - list [ref=f83e17]:
+              - listitem [ref=f83e18]:
+                - link "Dashboard" [ref=f83e19] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/app
+          - listitem [ref=f83e23]:
+            - paragraph [ref=f83e24]: Business
+            - list [ref=f83e25]:
+              - listitem [ref=f83e26]:
+                - link "Customers" [ref=f83e27] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/customers
+              - listitem [ref=f83e31]:
+                - link "Quotations" [ref=f83e32] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/quotations
+              - listitem [ref=f83e36]:
+                - link "Invoices" [ref=f83e37] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/invoices
+              - listitem [ref=f83e41]:
+                - link "Payments" [ref=f83e42] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/payments
+              - listitem [ref=f83e46]:
+                - link "Products" [ref=f83e47] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/products
+              - listitem [ref=f83e51]:
+                - link "Categories" [ref=f83e52] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/categories
+              - listitem [ref=f83e56]:
+                - link "Units" [ref=f83e57] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/units
+              - listitem [ref=f83e61]:
+                - link "Expenses" [ref=f83e62] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/expenses
+          - listitem [ref=f83e66]:
+            - paragraph [ref=f83e67]: System
+            - list [ref=f83e68]:
+              - listitem [ref=f83e69]:
+                - link "Settings" [ref=f83e70] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/settings
+      - generic [ref=f83e75]:
+        - generic [ref=f83e76]:
+          - generic [aria-hidden] [ref=f83e77]: A
+          - generic [ref=f83e78]:
+            - generic [ref=f83e79]: Admin
+            - generic [ref=f83e80]: admin@businessos.test
+        - button "Collapse sidebar" [ref=f83e81]
+    - generic [ref=f83e84]:
+      - banner [ref=f83e85]:
+        - button "Global search (coming soon)" [ref=f83e87]:
+          - generic [ref=f83e90]: Search…
+          - generic [ref=f83e91]: ⌘K
+        - generic [ref=f83e92]:
+          - button "Quick actions (coming soon)" [ref=f83e93]
+          - button "Notifications (coming soon)" [ref=f83e97]
+          - button "Switch business" [ref=f83e102]:
+            - generic [ref=f83e107]:
+              - generic [ref=f83e108]: Switch business
+              - generic "TestCo" [ref=f83e109]
+          - button "English" [ref=f83e113]
+          - button "Toggle dark mode" [ref=f83e120]
+          - button "Admin admin@businessos.test" [ref=f83e124]:
+            - generic [ref=f83e125]:
+              - generic [aria-hidden] [ref=f83e126]: A
+              - generic [ref=f83e127]:
+                - generic [ref=f83e128]: Admin
+                - generic [ref=f83e129]: admin@businessos.test
+      - main [ref=f83e132]:
+        - generic [ref=f83e134]:
+          - navigation "Breadcrumb" [ref=f83e136]:
+            - list [ref=f83e137]:
+              - listitem [ref=f83e138]:
+                - link "Dashboard" [ref=f83e139] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/app
+              - listitem [ref=f83e142]:
+                - link "Customers" [ref=f83e143] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/customers
+              - listitem [ref=f83e146]:
+                - link "Acme Traders" [ref=f83e147] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/customers/1
+              - listitem [ref=f83e150]:
+                - generic [ref=f83e151]: Customer ledger
+          - generic [ref=f83e152]:
+            - generic [ref=f83e153]:
+              - heading "Customer ledger" [level=1] [ref=f83e154]
+              - paragraph [ref=f83e155]: Financial history and balance for Acme Traders.
+            - generic [ref=f83e156]:
+              - link "View customer" [ref=f83e157] [cursor=pointer]:
+                - /url: http://127.0.0.1:8000/customers/1
+              - link "Customer statement" [ref=f83e160] [cursor=pointer]:
+                - /url: http://127.0.0.1:8000/customers/1/statement
+          - generic [ref=f83e163]:
+            - generic [ref=f83e166]:
+              - generic [ref=f83e168]:
+                - generic [ref=f83e169]: Date from
+                - textbox "Date from" [ref=f83e171]
+              - generic [ref=f83e173]:
+                - generic [ref=f83e174]: Date to
+                - textbox "Date to" [ref=f83e176]
+              - generic [ref=f83e177]:
+                - generic [ref=f83e178]: Transaction type
+                - combobox "Transaction type" [ref=f83e180]:
+                  - option "All transactions" [disabled] [selected]
+                  - option "Invoices"
+                  - option "Payments"
+              - generic [ref=f83e182]:
+                - generic [ref=f83e183]: Search reference
+                - textbox "Search reference" [ref=f83e185]:
+                  - /placeholder: Search by invoice or payment number…
+                  - text: INV
+              - generic [ref=f83e186]:
+                - button "Apply filters" [ref=f83e187]
+                - link "Clear" [ref=f83e190] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/customers/1/ledger
+            - generic [ref=f83e191]:
+              - generic [ref=f83e194]:
+                - paragraph [ref=f83e195]: Outstanding balance
+                - paragraph [ref=f83e196]: "950.0000"
+              - generic [ref=f83e202]:
+                - paragraph [ref=f83e203]: Total invoiced
+                - paragraph [ref=f83e204]: "1200.0000"
+              - generic [ref=f83e210]:
+                - paragraph [ref=f83e211]: Total paid
+                - paragraph [ref=f83e212]: "500.0000"
+              - generic [ref=f83e218]:
+                - paragraph [ref=f83e219]: Opening balance
+                - paragraph [ref=f83e220]: "250.0000"
+            - generic [ref=f83e224]:
+              - table [ref=f83e226]:
+                - caption [ref=f83e227]: Customer ledger
+                - rowgroup [ref=f83e228]:
+                  - row [ref=f83e229]:
+                    - columnheader "Date" [ref=f83e230]
+                    - columnheader "Type" [ref=f83e231]
+                    - columnheader "Reference" [ref=f83e232]
+                    - columnheader "Description" [ref=f83e233]
+                    - columnheader "Debit" [ref=f83e234]
+                    - columnheader "Credit" [ref=f83e235]
+                - rowgroup [ref=f83e236]:
+                  - row [ref=f83e237]:
+                    - cell "2026-09-10" [ref=f83e238]
+                    - cell "Invoice" [ref=f83e239]
+                    - cell [ref=f83e240]:
+                      - link "INV-000001" [ref=f83e241] [cursor=pointer]:
+                        - /url: http://127.0.0.1:8000/invoices/1
+                    - cell "QA invoice" [ref=f83e242]
+                    - cell "1200.0000" [ref=f83e243]
+                    - cell "—" [ref=f83e244]
+              - generic [ref=f83e245]:
+                - generic [ref=f83e246]:
+                  - generic [ref=f83e247]:
+                    - term [ref=f83e248]: Total debits
+                    - definition [ref=f83e249]: "1200.0000"
+                  - generic [ref=f83e250]:
+                    - term [ref=f83e251]: Total credits
+                    - definition [ref=f83e252]: "0.0000"
+                - generic [ref=f83e254]:
+                  - term [ref=f83e255]: Closing balance
+                  - definition [ref=f83e256]: "1200.0000"
+            - paragraph [ref=f83e257]: Running balance is hidden while a reference or type filter is active.

@@ -1,0 +1,24 @@
+- main [ref=f90e2]:
+  - generic [ref=f90e3]:
+    - generic [ref=f90e4]:
+      - generic [ref=f90e5]: BusinessOS
+      - generic [ref=f90e6]:
+        - button "English" [ref=f90e8]
+        - button "Toggle dark mode" [ref=f90e15]
+    - generic [ref=f90e20]:
+      - generic [ref=f90e21]:
+        - heading "Sign in" [level=1] [ref=f90e22]
+        - paragraph [ref=f90e23]: Sign in to your BusinessOS account.
+      - generic [ref=f90e24]:
+        - generic [ref=f90e25]:
+          - generic [ref=f90e26]: Email *
+          - textbox "Email" [active] [ref=f90e28]
+        - generic [ref=f90e29]:
+          - generic [ref=f90e30]: Password *
+          - textbox "Password" [ref=f90e32]
+        - generic [ref=f90e34]:
+          - checkbox "Remember me" [ref=f90e35]
+          - generic [ref=f90e36]: Remember me
+        - button "Sign in" [ref=f90e37]
+        - link "Forgot password?" [ref=f90e38] [cursor=pointer]:
+          - /url: http://127.0.0.1:8000/forgot-password

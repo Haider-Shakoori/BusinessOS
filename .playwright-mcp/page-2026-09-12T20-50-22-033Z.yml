@@ -1,0 +1,59 @@
+- generic [active] [ref=f3e1]:
+  - link "Skip to content" [ref=f3e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=f3e3]:
+    - complementary "Skip to content" [ref=f3e4]:
+      - generic [ref=f3e10]:
+        - paragraph [ref=f3e11]: BusinessOS
+        - paragraph [ref=f3e12]: Business management
+      - navigation [ref=f3e13]:
+        - list [ref=f3e14]:
+          - listitem [ref=f3e15]:
+            - paragraph [ref=f3e16]: Overview
+            - list [ref=f3e17]:
+              - listitem [ref=f3e18]:
+                - link "Dashboard" [ref=f3e19] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8015/app
+      - generic [ref=f3e25]:
+        - generic [ref=f3e26]:
+          - generic [aria-hidden] [ref=f3e27]: Q
+          - generic [ref=f3e28]:
+            - generic [ref=f3e29]: QA User
+            - generic [ref=f3e30]: qa@test.dev
+        - button "Collapse sidebar" [ref=f3e31]
+    - generic [ref=f3e34]:
+      - banner [ref=f3e35]:
+        - button "Global search (coming soon)" [ref=f3e37]:
+          - generic [ref=f3e40]: Search…
+          - generic [ref=f3e41]: ⌘K
+        - generic [ref=f3e42]:
+          - button "Quick actions (coming soon)" [ref=f3e43]
+          - button "Notifications (coming soon)" [ref=f3e47]
+          - button "Switch business" [ref=f3e52]:
+            - generic [ref=f3e57]:
+              - generic [ref=f3e58]: Switch business
+              - generic "QA Test Business" [ref=f3e59]
+          - button "English" [ref=f3e63]
+          - button "Toggle dark mode" [ref=f3e70]
+          - button "QA User qa@test.dev" [ref=f3e74]:
+            - generic [ref=f3e75]:
+              - generic [aria-hidden] [ref=f3e76]: Q
+              - generic [ref=f3e77]:
+                - generic [ref=f3e78]: QA User
+                - generic [ref=f3e79]: qa@test.dev
+      - main [ref=f3e82]:
+        - generic [ref=f3e84]:
+          - heading "Account home" [level=1] [ref=f3e87]
+          - generic [ref=f3e88]:
+            - status [ref=f3e89]:
+              - generic [ref=f3e92]: Your business has been created and is now active.
+            - generic [ref=f3e95]:
+              - paragraph [ref=f3e96]: Welcome, QA User.
+              - paragraph [ref=f3e97]: You are signed in to BusinessOS.
+              - generic [ref=f3e98]: "Current business: QA Test Business"
+              - generic [ref=f3e101]:
+                - heading "Your roles in QA Test Business" [level=3] [ref=f3e102]
+                - generic [ref=f3e105]: Owner
+                - heading "Your permissions in QA Test Business" [level=3] [ref=f3e109]
+                - list [ref=f3e110]:
+                  - listitem [ref=f3e111]: No permissions have been granted yet.

@@ -1,0 +1,120 @@
+- generic [active] [ref=f40e1]:
+  - link "Skip to content" [ref=f40e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=f40e3]:
+    - complementary "Skip to content" [ref=f40e4]:
+      - generic [ref=f40e10]:
+        - paragraph [ref=f40e11]: BusinessOS
+        - paragraph [ref=f40e12]: Business management
+      - navigation [ref=f40e13]:
+        - list [ref=f40e14]:
+          - listitem [ref=f40e15]:
+            - paragraph [ref=f40e16]: Overview
+            - list [ref=f40e17]:
+              - listitem [ref=f40e18]:
+                - link "Dashboard" [ref=f40e19] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/app
+          - listitem [ref=f40e23]:
+            - paragraph [ref=f40e24]: Business
+            - list [ref=f40e25]:
+              - listitem [ref=f40e26]:
+                - link "Expenses" [ref=f40e27] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/expenses
+          - listitem [ref=f40e32]:
+            - paragraph [ref=f40e33]: System
+            - list [ref=f40e34]:
+              - listitem [ref=f40e35]:
+                - link "Settings" [ref=f40e36] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/settings
+      - generic [ref=f40e41]:
+        - generic [ref=f40e42]:
+          - generic [aria-hidden] [ref=f40e43]: A
+          - generic [ref=f40e44]:
+            - generic [ref=f40e45]: Admin
+            - generic [ref=f40e46]: admin@businessos.test
+        - button "Collapse sidebar" [ref=f40e47]
+    - generic [ref=f40e50]:
+      - banner [ref=f40e51]:
+        - button "Global search (coming soon)" [ref=f40e53]:
+          - generic [ref=f40e56]: Search…
+          - generic [ref=f40e57]: ⌘K
+        - generic [ref=f40e58]:
+          - button "Quick actions (coming soon)" [ref=f40e59]
+          - button "Notifications (coming soon)" [ref=f40e63]
+          - button "Switch business" [ref=f40e68]:
+            - generic [ref=f40e73]:
+              - generic [ref=f40e74]: Switch business
+              - generic "TestCo" [ref=f40e75]
+          - button "English" [ref=f40e79]
+          - button "Toggle dark mode" [ref=f40e86]
+          - button "Admin admin@businessos.test" [ref=f40e90]:
+            - generic [ref=f40e91]:
+              - generic [aria-hidden] [ref=f40e92]: A
+              - generic [ref=f40e93]:
+                - generic [ref=f40e94]: Admin
+                - generic [ref=f40e95]: admin@businessos.test
+      - main [ref=f40e98]:
+        - generic [ref=f40e100]:
+          - navigation "Breadcrumb" [ref=f40e102]:
+            - list [ref=f40e103]:
+              - listitem [ref=f40e104]:
+                - link "Dashboard" [ref=f40e105] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/app
+              - listitem [ref=f40e108]:
+                - generic [ref=f40e109]: Expenses
+          - generic [ref=f40e110]:
+            - generic [ref=f40e111]:
+              - heading "Expenses" [level=1] [ref=f40e112]
+              - paragraph [ref=f40e113]: Record, categorize and track your business expenses.
+            - generic [ref=f40e114]:
+              - link "Expense report" [ref=f40e115] [cursor=pointer]:
+                - /url: http://127.0.0.1:8000/expenses/report
+              - link "Add expense" [ref=f40e118] [cursor=pointer]:
+                - /url: http://127.0.0.1:8000/expenses/create
+          - generic [ref=f40e121]:
+            - search [ref=f40e124]:
+              - generic [ref=f40e125]:
+                - generic [ref=f40e126]: Search expenses
+                - searchbox "Search expenses" [ref=f40e128]: Wire
+              - generic [ref=f40e129]:
+                - generic [ref=f40e130]: Category
+                - combobox "Category" [ref=f40e132]:
+                  - option "All categories" [disabled] [selected]
+              - generic [ref=f40e134]:
+                - generic [ref=f40e135]: From date
+                - textbox "From date" [ref=f40e137]
+              - generic [ref=f40e139]:
+                - generic [ref=f40e140]: To date
+                - textbox "To date" [ref=f40e142]
+              - generic [ref=f40e143]:
+                - button "Search" [ref=f40e144]
+                - link "Clear" [ref=f40e147] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/expenses
+            - table [ref=f40e150]:
+              - caption [ref=f40e151]: Expenses
+              - rowgroup [ref=f40e152]:
+                - row [ref=f40e153]:
+                  - columnheader "Number" [ref=f40e154]
+                  - columnheader "Date" [ref=f40e155]
+                  - columnheader "Category" [ref=f40e156]
+                  - columnheader "Vendor" [ref=f40e157]
+                  - columnheader "Amount" [ref=f40e158]
+                  - columnheader "Receipt" [ref=f40e159]
+                  - columnheader "Actions" [ref=f40e160]
+              - rowgroup [ref=f40e162]:
+                - row [ref=f40e163]:
+                  - cell [ref=f40e164]:
+                    - link "EXP-000002" [ref=f40e165] [cursor=pointer]:
+                      - /url: http://127.0.0.1:8000/expenses/2
+                  - cell "2026-09-14" [ref=f40e166]
+                  - cell "No category" [ref=f40e167]
+                  - cell "Wire Co." [ref=f40e168]
+                  - cell "199.0000" [ref=f40e169]
+                  - cell "—" [ref=f40e170]
+                  - cell [ref=f40e171]:
+                    - generic [ref=f40e172]:
+                      - link "View" [ref=f40e173] [cursor=pointer]:
+                        - /url: http://127.0.0.1:8000/expenses/2
+                      - link "Edit" [ref=f40e176] [cursor=pointer]:
+                        - /url: http://127.0.0.1:8000/expenses/2/edit
+                      - button "Delete" [ref=f40e179]

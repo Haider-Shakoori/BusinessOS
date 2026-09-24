@@ -1,0 +1,110 @@
+- generic [active] [ref=f10e1]:
+  - link "Skip to content" [ref=f10e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=f10e3]:
+    - complementary "Skip to content" [ref=f10e4]:
+      - generic [ref=f10e10]:
+        - paragraph [ref=f10e11]: BusinessOS
+        - paragraph [ref=f10e12]: Business management
+      - navigation [ref=f10e13]:
+        - list [ref=f10e14]:
+          - listitem [ref=f10e15]:
+            - paragraph [ref=f10e16]: Overview
+            - list [ref=f10e17]:
+              - listitem [ref=f10e18]:
+                - link "Dashboard" [ref=f10e19] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/app
+          - listitem [ref=f10e23]:
+            - paragraph [ref=f10e24]: Business
+            - list [ref=f10e25]:
+              - listitem [ref=f10e26]:
+                - link "Expenses" [ref=f10e27] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/expenses
+          - listitem [ref=f10e31]:
+            - paragraph [ref=f10e32]: System
+            - list [ref=f10e33]:
+              - listitem [ref=f10e34]:
+                - link "Settings" [ref=f10e35] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/settings
+      - generic [ref=f10e40]:
+        - generic [ref=f10e41]:
+          - generic [aria-hidden] [ref=f10e42]: V
+          - generic [ref=f10e43]:
+            - generic [ref=f10e44]: Viewer
+            - generic [ref=f10e45]: viewer@businessos.test
+        - button "Collapse sidebar" [ref=f10e46]
+    - generic [ref=f10e49]:
+      - banner [ref=f10e50]:
+        - button "Global search (coming soon)" [ref=f10e52]:
+          - generic [ref=f10e55]: Search…
+          - generic [ref=f10e56]: ⌘K
+        - generic [ref=f10e57]:
+          - button "Quick actions (coming soon)" [ref=f10e58]
+          - button "Notifications (coming soon)" [ref=f10e62]
+          - button "Switch business" [ref=f10e67]:
+            - generic [ref=f10e72]:
+              - generic [ref=f10e73]: Switch business
+              - generic "TestCo" [ref=f10e74]
+          - button "English" [ref=f10e78]
+          - button "Toggle dark mode" [ref=f10e85]
+          - button "Viewer viewer@businessos.test" [ref=f10e89]:
+            - generic [ref=f10e90]:
+              - generic [aria-hidden] [ref=f10e91]: V
+              - generic [ref=f10e92]:
+                - generic [ref=f10e93]: Viewer
+                - generic [ref=f10e94]: viewer@businessos.test
+      - main [ref=f10e97]:
+        - generic [ref=f10e99]:
+          - navigation "Breadcrumb" [ref=f10e101]:
+            - list [ref=f10e102]:
+              - listitem [ref=f10e103]:
+                - link "Dashboard" [ref=f10e104] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/app
+              - listitem [ref=f10e107]:
+                - link "Expenses" [ref=f10e108] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/expenses
+              - listitem [ref=f10e111]:
+                - generic [ref=f10e112]: Expense report
+          - generic [ref=f10e113]:
+            - generic [ref=f10e114]:
+              - heading "Expense report" [level=1] [ref=f10e115]
+              - paragraph [ref=f10e116]: Operational summary of expenses across a date range.
+            - link "Expenses" [ref=f10e118] [cursor=pointer]:
+              - /url: http://127.0.0.1:8000/expenses
+          - generic [ref=f10e121]:
+            - generic [ref=f10e124]:
+              - generic [ref=f10e125]:
+                - generic [ref=f10e126]: Category
+                - combobox "Category" [ref=f10e128]:
+                  - option "All categories" [disabled] [selected]
+              - generic [ref=f10e130]:
+                - generic [ref=f10e131]: From date
+                - textbox "From date" [ref=f10e133]
+              - generic [ref=f10e135]:
+                - generic [ref=f10e136]: To date
+                - textbox "To date" [ref=f10e138]
+              - button "Generate report" [ref=f10e140]
+            - generic [ref=f10e147]:
+              - paragraph [ref=f10e148]: Total expenses
+              - paragraph [ref=f10e149]: "199.0000"
+              - paragraph [ref=f10e150]: 1 expense
+            - table [ref=f10e156]:
+              - caption [ref=f10e157]: Expense report
+              - rowgroup [ref=f10e158]:
+                - row [ref=f10e159]:
+                  - columnheader "Number" [ref=f10e160]
+                  - columnheader "Date" [ref=f10e161]
+                  - columnheader "Category" [ref=f10e162]
+                  - columnheader "Vendor" [ref=f10e163]
+                  - columnheader "Amount" [ref=f10e164]
+                  - columnheader "Receipt" [ref=f10e165]
+              - rowgroup [ref=f10e166]:
+                - row [ref=f10e167]:
+                  - cell [ref=f10e168]:
+                    - link "EXP-000002" [ref=f10e169] [cursor=pointer]:
+                      - /url: http://127.0.0.1:8000/expenses/2
+                  - cell "2026-09-14" [ref=f10e170]
+                  - cell "No category" [ref=f10e171]
+                  - cell "Wire Co." [ref=f10e172]
+                  - cell "199.0000" [ref=f10e173]
+                  - cell "—" [ref=f10e174]

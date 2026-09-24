@@ -1,0 +1,17 @@
+<?php
+
+return [
+    'dashboard' => 'لوحة التحكم',
+    'customers' => 'العملاء',
+    'sales' => 'المبيعات',
+    'products' => 'المنتجات',
+    'expenses' => 'المصروفات',
+    'reports' => 'التقارير',
+    'settings' => 'الإعدادات',
+    'categories' => 'التصنيفات',
+    'units' => 'الوحدات',
+    'taxes' => 'الضرائب',
+    'quotations' => 'عروض الأسعار',
+    'invoices' => 'الفواتير',
+    'payments' => 'المدفوعات',
+];

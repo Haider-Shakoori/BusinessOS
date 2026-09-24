@@ -1,0 +1,157 @@
+- generic [active] [ref=f14e1]:
+  - link "Skip to content" [ref=f14e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=f14e3]:
+    - complementary "Skip to content" [ref=f14e4]:
+      - generic [ref=f14e10]:
+        - paragraph [ref=f14e11]: BusinessOS
+        - paragraph [ref=f14e12]: Business management
+      - navigation [ref=f14e13]:
+        - list [ref=f14e14]:
+          - listitem [ref=f14e15]:
+            - paragraph [ref=f14e16]: Overview
+            - list [ref=f14e17]:
+              - listitem [ref=f14e18]:
+                - link "Dashboard" [ref=f14e19] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8015/app
+          - listitem [ref=f14e23]:
+            - paragraph [ref=f14e24]: Business
+            - list [ref=f14e25]:
+              - listitem [ref=f14e26]:
+                - link "Customers" [ref=f14e27] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8015/customers
+              - listitem [ref=f14e31]:
+                - link "Quotations" [ref=f14e32] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8015/quotations
+              - listitem [ref=f14e36]:
+                - link "Invoices" [ref=f14e37] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8015/invoices
+              - listitem [ref=f14e41]:
+                - link "Payments" [ref=f14e42] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8015/payments
+          - listitem [ref=f14e47]:
+            - paragraph [ref=f14e48]: System
+            - list [ref=f14e49]:
+              - listitem [ref=f14e50]:
+                - link "Settings" [ref=f14e51] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8015/settings
+      - generic [ref=f14e56]:
+        - generic [ref=f14e57]:
+          - generic [aria-hidden] [ref=f14e58]: Q
+          - generic [ref=f14e59]:
+            - generic [ref=f14e60]: QA User
+            - generic [ref=f14e61]: qa@test.dev
+        - button "Collapse sidebar" [ref=f14e62]
+    - generic [ref=f14e65]:
+      - banner [ref=f14e66]:
+        - button "Global search (coming soon)" [ref=f14e68]:
+          - generic [ref=f14e71]: Search…
+          - generic [ref=f14e72]: ⌘K
+        - generic [ref=f14e73]:
+          - button "Quick actions (coming soon)" [ref=f14e74]
+          - button "Notifications (coming soon)" [ref=f14e78]
+          - button "Switch business" [ref=f14e83]:
+            - generic [ref=f14e88]:
+              - generic [ref=f14e89]: Switch business
+              - generic "QA Test Business" [ref=f14e90]
+          - button "English" [ref=f14e94]
+          - button "Toggle dark mode" [ref=f14e101]
+          - button "QA User qa@test.dev" [ref=f14e105]:
+            - generic [ref=f14e106]:
+              - generic [aria-hidden] [ref=f14e107]: Q
+              - generic [ref=f14e108]:
+                - generic [ref=f14e109]: QA User
+                - generic [ref=f14e110]: qa@test.dev
+      - main [ref=f14e113]:
+        - generic [ref=f14e115]:
+          - navigation "Breadcrumb" [ref=f14e117]:
+            - list [ref=f14e118]:
+              - listitem [ref=f14e119]:
+                - link "Dashboard" [ref=f14e120] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8015/app
+              - listitem [ref=f14e123]:
+                - generic [ref=f14e124]: Payments
+          - generic [ref=f14e125]:
+            - generic [ref=f14e126]:
+              - heading "Payments" [level=1] [ref=f14e127]
+              - paragraph [ref=f14e128]: Record and reverse payments against your sales invoices.
+            - link "All invoices" [ref=f14e130] [cursor=pointer]:
+              - /url: http://127.0.0.1:8015/invoices
+          - generic [ref=f14e133]:
+            - search [ref=f14e135]:
+              - generic [ref=f14e136]: Search payments
+              - searchbox "Search payments" [ref=f14e138]
+              - button "Search" [ref=f14e139]
+            - table [ref=f14e142]:
+              - caption [ref=f14e143]: Payment list
+              - rowgroup [ref=f14e144]:
+                - row [ref=f14e145]:
+                  - columnheader "Number" [ref=f14e146]
+                  - columnheader "Invoice" [ref=f14e147]
+                  - columnheader "Customer" [ref=f14e148]
+                  - columnheader "Date" [ref=f14e149]
+                  - columnheader "Method" [ref=f14e150]
+                  - columnheader "Status" [ref=f14e151]
+                  - columnheader "Amount" [ref=f14e152]
+                  - columnheader "Actions" [ref=f14e153]
+              - rowgroup [ref=f14e155]:
+                - row [ref=f14e156]:
+                  - cell [ref=f14e157]:
+                    - link "PAY-000004" [ref=f14e158] [cursor=pointer]:
+                      - /url: http://127.0.0.1:8015/payments/4
+                  - cell [ref=f14e159]:
+                    - link "INV-000002" [ref=f14e160] [cursor=pointer]:
+                      - /url: http://127.0.0.1:8015/invoices/2
+                  - cell "QA Customer" [ref=f14e161]
+                  - cell "2026-09-13" [ref=f14e162]
+                  - cell "Bank transfer" [ref=f14e163]
+                  - cell "Active" [ref=f14e164]
+                  - cell "60.0000" [ref=f14e167]
+                  - cell [ref=f14e168]:
+                    - link "View" [ref=f14e170] [cursor=pointer]:
+                      - /url: http://127.0.0.1:8015/payments/4
+                - row [ref=f14e173]:
+                  - cell [ref=f14e174]:
+                    - link "PAY-000003" [ref=f14e175] [cursor=pointer]:
+                      - /url: http://127.0.0.1:8015/payments/3
+                  - cell [ref=f14e176]:
+                    - link "INV-000002" [ref=f14e177] [cursor=pointer]:
+                      - /url: http://127.0.0.1:8015/invoices/2
+                  - cell "QA Customer" [ref=f14e178]
+                  - cell "2026-09-13" [ref=f14e179]
+                  - cell "Cash" [ref=f14e180]
+                  - cell "Active" [ref=f14e181]
+                  - cell "40.0000" [ref=f14e184]
+                  - cell [ref=f14e185]:
+                    - link "View" [ref=f14e187] [cursor=pointer]:
+                      - /url: http://127.0.0.1:8015/payments/3
+                - row [ref=f14e190]:
+                  - cell [ref=f14e191]:
+                    - link "PAY-000002" [ref=f14e192] [cursor=pointer]:
+                      - /url: http://127.0.0.1:8015/payments/2
+                  - cell [ref=f14e193]:
+                    - link "INV-000001" [ref=f14e194] [cursor=pointer]:
+                      - /url: http://127.0.0.1:8015/invoices/1
+                  - cell "QA Customer" [ref=f14e195]
+                  - cell "2026-09-12" [ref=f14e196]
+                  - cell "Cash" [ref=f14e197]
+                  - cell "Active" [ref=f14e198]
+                  - cell "60.0000" [ref=f14e201]
+                  - cell [ref=f14e202]:
+                    - link "View" [ref=f14e204] [cursor=pointer]:
+                      - /url: http://127.0.0.1:8015/payments/2
+                - row [ref=f14e207]:
+                  - cell [ref=f14e208]:
+                    - link "PAY-000001" [ref=f14e209] [cursor=pointer]:
+                      - /url: http://127.0.0.1:8015/payments/1
+                  - cell [ref=f14e210]:
+                    - link "INV-000001" [ref=f14e211] [cursor=pointer]:
+                      - /url: http://127.0.0.1:8015/invoices/1
+                  - cell "QA Customer" [ref=f14e212]
+                  - cell "2026-09-12" [ref=f14e213]
+                  - cell "Bank transfer" [ref=f14e214]
+                  - cell "Reversed" [ref=f14e215]
+                  - cell "40.0000" [ref=f14e218]
+                  - cell [ref=f14e219]:
+                    - link "View" [ref=f14e221] [cursor=pointer]:
+                      - /url: http://127.0.0.1:8015/payments/1

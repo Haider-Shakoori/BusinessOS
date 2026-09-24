@@ -1,0 +1,93 @@
+- generic [active] [ref=e1]:
+  - link "Skip to content" [ref=e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e3]:
+    - complementary "Skip to content" [ref=e4]:
+      - generic [ref=e10]:
+        - paragraph [ref=e11]: BusinessOS
+        - paragraph [ref=e12]: Business management
+      - navigation [ref=e13]:
+        - list [ref=e14]:
+          - listitem [ref=e15]:
+            - paragraph [ref=e16]: Overview
+            - list [ref=e17]:
+              - listitem [ref=e18]:
+                - link "Dashboard" [ref=e19] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/app
+          - listitem [ref=e24]:
+            - paragraph [ref=e25]: Business
+            - list [ref=e26]:
+              - listitem [ref=e27]:
+                - link "Customers" [ref=e28] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/customers
+              - listitem [ref=e32]:
+                - link "Quotations" [ref=e33] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/quotations
+              - listitem [ref=e37]:
+                - link "Invoices" [ref=e38] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/invoices
+              - listitem [ref=e42]:
+                - link "Payments" [ref=e43] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/payments
+              - listitem [ref=e47]:
+                - link "Products" [ref=e48] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/products
+              - listitem [ref=e52]:
+                - link "Categories" [ref=e53] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/categories
+              - listitem [ref=e57]:
+                - link "Units" [ref=e58] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/units
+              - listitem [ref=e62]:
+                - link "Expenses" [ref=e63] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/expenses
+          - listitem [ref=e67]:
+            - paragraph [ref=e68]: System
+            - list [ref=e69]:
+              - listitem [ref=e70]:
+                - link "Settings" [ref=e71] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/settings
+      - generic [ref=e76]:
+        - generic [ref=e77]:
+          - generic [aria-hidden] [ref=e78]: A
+          - generic [ref=e79]:
+            - generic [ref=e80]: Admin
+            - generic [ref=e81]: admin@businessos.test
+        - button "Collapse sidebar" [ref=e82]
+    - generic [ref=e85]:
+      - banner [ref=e86]:
+        - button "Global search (coming soon)" [ref=e88]:
+          - generic [ref=e91]: Search…
+          - generic [ref=e92]: ⌘K
+        - generic [ref=e93]:
+          - button "Quick actions (coming soon)" [ref=e94]
+          - button "Notifications (coming soon)" [ref=e98]
+          - button "Switch business" [ref=e103]:
+            - generic [ref=e108]:
+              - generic [ref=e109]: Switch business
+              - generic "TestCo" [ref=e110]
+          - button "English" [ref=e114]
+          - button "Toggle dark mode" [ref=e121]
+          - button "Admin admin@businessos.test" [ref=e125]:
+            - generic [ref=e126]:
+              - generic [aria-hidden] [ref=e127]: A
+              - generic [ref=e128]:
+                - generic [ref=e129]: Admin
+                - generic [ref=e130]: admin@businessos.test
+      - main [ref=e133]:
+        - generic [ref=e135]:
+          - heading "Account home" [level=1] [ref=e138]
+          - generic [ref=e141]:
+            - paragraph [ref=e142]: Welcome, Admin.
+            - paragraph [ref=e143]: You are signed in to BusinessOS.
+            - generic [ref=e144]: "Current business: TestCo"
+            - generic [ref=e147]:
+              - heading "Your roles in TestCo" [level=3] [ref=e148]
+              - generic [ref=e151]: Owner
+              - heading "Your permissions in TestCo" [level=3] [ref=e155]
+              - list [ref=e156]:
+                - listitem [ref=e157]: View users
+                - listitem [ref=e160]: Manage users
+                - listitem [ref=e163]: View settings
+                - listitem [ref=e166]: Manage settings
+                - listitem [ref=e169]: View customers

@@ -1,0 +1,32 @@
+[     174ms] [WARNING] Alpine Expression Error: deleteInvoiceDialog is not defined
+
+Expression: "deleteInvoiceDialog"
+
+ JSHandle@node @ http://127.0.0.1:8015/build/assets/app-bzgTiYPE.js:0
+[     174ms] [WARNING] Alpine Expression Error: invoiceId is not defined
+
+Expression: "invoiceId"
+
+ JSHandle@node @ http://127.0.0.1:8015/build/assets/app-bzgTiYPE.js:0
+[     186ms] ReferenceError: deleteInvoiceDialog is not defined
+    at [Alpine] deleteInvoiceDialog (eval at <anonymous> (http://127.0.0.1:8015/build/assets/app-bzgTiYPE.js:5:743), <anonymous>:3:32)
+    at http://127.0.0.1:8015/build/assets/app-bzgTiYPE.js:5:1158
+    at Rr (http://127.0.0.1:8015/build/assets/app-bzgTiYPE.js:1:6226)
+    at B (http://127.0.0.1:8015/build/assets/app-bzgTiYPE.js:5:143)
+    at Function.<anonymous> (http://127.0.0.1:8015/build/assets/app-bzgTiYPE.js:5:42994)
+    at n (http://127.0.0.1:8015/build/assets/app-bzgTiYPE.js:5:3079)
+    at r (http://127.0.0.1:8015/build/assets/app-bzgTiYPE.js:5:3109)
+    at Kr (http://127.0.0.1:8015/build/assets/app-bzgTiYPE.js:5:3119)
+    at M (http://127.0.0.1:8015/build/assets/app-bzgTiYPE.js:5:7703)
+    at http://127.0.0.1:8015/build/assets/app-bzgTiYPE.js:5:7055
+[     186ms] ReferenceError: invoiceId is not defined
+    at [Alpine] invoiceId (eval at <anonymous> (http://127.0.0.1:8015/build/assets/app-bzgTiYPE.js:5:743), <anonymous>:3:32)
+    at http://127.0.0.1:8015/build/assets/app-bzgTiYPE.js:5:1158
+    at Rr (http://127.0.0.1:8015/build/assets/app-bzgTiYPE.js:1:6226)
+    at n.priority [as fn] (http://127.0.0.1:8015/build/assets/app-bzgTiYPE.js:5:47536)
+    at Nt.run (http://127.0.0.1:8015/build/assets/app-bzgTiYPE.js:5:20566)
+    at zi (http://127.0.0.1:8015/build/assets/app-bzgTiYPE.js:5:22720)
+    at Object.effect (http://127.0.0.1:8015/build/assets/app-bzgTiYPE.js:5:48435)
+    at Y (http://127.0.0.1:8015/build/assets/app-bzgTiYPE.js:1:1101)
+    at http://127.0.0.1:8015/build/assets/app-bzgTiYPE.js:1:1275
+    at http://127.0.0.1:8015/build/assets/app-bzgTiYPE.js:5:47530

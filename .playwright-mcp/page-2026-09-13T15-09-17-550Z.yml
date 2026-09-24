@@ -1,0 +1,98 @@
+- generic [active] [ref=f2e1]:
+  - link "Skip to content" [ref=f2e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=f2e3]:
+    - complementary "Skip to content" [ref=f2e4]:
+      - generic [ref=f2e10]:
+        - paragraph [ref=f2e11]: BusinessOS
+        - paragraph [ref=f2e12]: Business management
+      - navigation [ref=f2e13]:
+        - list [ref=f2e14]:
+          - listitem [ref=f2e15]:
+            - paragraph [ref=f2e16]: Overview
+            - list [ref=f2e17]:
+              - listitem [ref=f2e18]:
+                - link "Dashboard" [ref=f2e19] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/app
+          - listitem [ref=f2e23]:
+            - paragraph [ref=f2e24]: Business
+            - list [ref=f2e25]:
+              - listitem [ref=f2e26]:
+                - link "Quotations" [ref=f2e27] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/quotations
+              - listitem [ref=f2e31]:
+                - link "Invoices" [ref=f2e32] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/invoices
+              - listitem [ref=f2e37]:
+                - link "Payments" [ref=f2e38] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/payments
+          - listitem [ref=f2e42]:
+            - paragraph [ref=f2e43]: System
+            - list [ref=f2e44]:
+              - listitem [ref=f2e45]:
+                - link "Settings" [ref=f2e46] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/settings
+      - generic [ref=f2e51]:
+        - generic [ref=f2e52]:
+          - generic [aria-hidden] [ref=f2e53]: A
+          - generic [ref=f2e54]:
+            - generic [ref=f2e55]: Admin User
+            - generic [ref=f2e56]: admin@businessos.test
+        - button "Collapse sidebar" [ref=f2e57]
+    - generic [ref=f2e60]:
+      - banner [ref=f2e61]:
+        - button "Global search (coming soon)" [ref=f2e63]:
+          - generic [ref=f2e66]: Search…
+          - generic [ref=f2e67]: ⌘K
+        - generic [ref=f2e68]:
+          - button "Quick actions (coming soon)" [ref=f2e69]
+          - button "Notifications (coming soon)" [ref=f2e73]
+          - button "Switch business" [ref=f2e78]:
+            - generic [ref=f2e83]:
+              - generic [ref=f2e84]: Switch business
+              - generic "TestCo" [ref=f2e85]
+          - button "English" [ref=f2e89]
+          - button "Toggle dark mode" [ref=f2e96]
+          - button "Admin User admin@businessos.test" [ref=f2e100]:
+            - generic [ref=f2e101]:
+              - generic [aria-hidden] [ref=f2e102]: A
+              - generic [ref=f2e103]:
+                - generic [ref=f2e104]: Admin User
+                - generic [ref=f2e105]: admin@businessos.test
+      - main [ref=f2e108]:
+        - generic [ref=f2e110]:
+          - navigation "Breadcrumb" [ref=f2e112]:
+            - list [ref=f2e113]:
+              - listitem [ref=f2e114]:
+                - link "Dashboard" [ref=f2e115] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/app
+              - listitem [ref=f2e118]:
+                - generic [ref=f2e119]: Invoices
+          - generic [ref=f2e120]:
+            - generic [ref=f2e121]:
+              - heading "Invoices" [level=1] [ref=f2e122]
+              - paragraph [ref=f2e123]: Issue and track invoices for your customers.
+            - link "New invoice" [ref=f2e125] [cursor=pointer]:
+              - /url: http://127.0.0.1:8000/invoices/create
+          - generic [ref=f2e128]:
+            - generic [ref=f2e129]:
+              - search [ref=f2e130]:
+                - generic [ref=f2e131]: Search invoices
+                - searchbox "Search invoices" [ref=f2e133]
+                - button "Search" [ref=f2e134]
+              - group "Filter by status" [ref=f2e135]:
+                - link "All" [ref=f2e136] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/invoices
+                - link "Draft" [ref=f2e137] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/invoices?status=draft
+                - link "Sent" [ref=f2e138] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/invoices?status=sent
+                - link "Partially paid" [ref=f2e139] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/invoices?status=partially_paid
+                - link "Paid" [ref=f2e140] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/invoices?status=paid
+            - generic [ref=f2e143]:
+              - heading "No invoices" [level=3] [ref=f2e147]
+              - paragraph [ref=f2e148]: There are no invoices in this business yet. Create your first invoice to get started.
+              - link "New invoice" [ref=f2e150] [cursor=pointer]:
+                - /url: http://127.0.0.1:8000/invoices/create

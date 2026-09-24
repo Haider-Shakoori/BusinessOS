@@ -1,0 +1,101 @@
+- generic [ref=f63e1]:
+  - link "Skip to content" [ref=f63e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=f63e3]:
+    - complementary "Skip to content" [ref=f63e4]:
+      - generic [ref=f63e10]:
+        - paragraph [ref=f63e11]: BusinessOS
+        - paragraph [ref=f63e12]: Business management
+      - navigation [ref=f63e13]:
+        - list [ref=f63e14]:
+          - listitem [ref=f63e15]:
+            - paragraph [ref=f63e16]: Overview
+            - list [ref=f63e17]:
+              - listitem [ref=f63e18]:
+                - link "Dashboard" [ref=f63e19] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/app
+          - listitem [ref=f63e23]:
+            - paragraph [ref=f63e24]: Business
+            - list [ref=f63e25]:
+              - listitem [ref=f63e26]:
+                - link "Customers" [ref=f63e27] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/customers
+              - listitem [ref=f63e32]:
+                - link "Quotations" [ref=f63e33] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/quotations
+              - listitem [ref=f63e37]:
+                - link "Invoices" [ref=f63e38] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/invoices
+              - listitem [ref=f63e42]:
+                - link "Payments" [ref=f63e43] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/payments
+              - listitem [ref=f63e47]:
+                - link "Products" [ref=f63e48] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/products
+              - listitem [ref=f63e52]:
+                - link "Categories" [ref=f63e53] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/categories
+              - listitem [ref=f63e57]:
+                - link "Units" [ref=f63e58] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/units
+              - listitem [ref=f63e62]:
+                - link "Expenses" [ref=f63e63] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/expenses
+          - listitem [ref=f63e67]:
+            - paragraph [ref=f63e68]: System
+            - list [ref=f63e69]:
+              - listitem [ref=f63e70]:
+                - link "Settings" [ref=f63e71] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/settings
+      - generic [ref=f63e76]:
+        - generic [ref=f63e77]:
+          - generic [aria-hidden] [ref=f63e78]: A
+          - generic [ref=f63e79]:
+            - generic [ref=f63e80]: Admin
+            - generic [ref=f63e81]: admin@businessos.test
+        - button "Collapse sidebar" [ref=f63e82]
+    - generic [ref=f63e85]:
+      - banner [ref=f63e86]:
+        - button "Global search (coming soon)" [ref=f63e88]:
+          - generic [ref=f63e91]: Search…
+          - generic [ref=f63e92]: ⌘K
+        - generic [ref=f63e93]:
+          - button "Quick actions (coming soon)" [ref=f63e94]
+          - button "Notifications (coming soon)" [ref=f63e98]
+          - button "Switch business" [ref=f63e103]:
+            - generic [ref=f63e108]:
+              - generic [ref=f63e109]: Switch business
+              - generic "TestCo" [ref=f63e110]
+          - button "English" [ref=f63e114]
+          - button "Toggle dark mode" [ref=f63e121]
+          - button "Admin admin@businessos.test" [ref=f63e125]:
+            - generic [ref=f63e126]:
+              - generic [aria-hidden] [ref=f63e127]: A
+              - generic [ref=f63e128]:
+                - generic [ref=f63e129]: Admin
+                - generic [ref=f63e130]: admin@businessos.test
+      - main [ref=f63e133]:
+        - generic [ref=f63e135]:
+          - navigation "Breadcrumb" [ref=f63e137]:
+            - list [ref=f63e138]:
+              - listitem [ref=f63e139]:
+                - link "Dashboard" [ref=f63e140] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/app
+              - listitem [ref=f63e143]:
+                - generic [ref=f63e144]: Customers
+          - generic [ref=f63e145]:
+            - generic [ref=f63e146]:
+              - heading "Customers" [level=1] [ref=f63e147]
+              - paragraph [ref=f63e148]: Manage the people and companies you do business with.
+            - link "Add customer" [ref=f63e150] [cursor=pointer]:
+              - /url: http://127.0.0.1:8000/customers/create
+          - generic [ref=f63e153]:
+            - search [ref=f63e154]:
+              - generic [ref=f63e155]: Search customers
+              - searchbox "Search customers" [ref=f63e157]
+              - button "Search" [ref=f63e158]
+            - generic [ref=f63e161]:
+              - heading "No customers" [level=3] [ref=f63e165]
+              - paragraph [ref=f63e166]: There are no customers in this business yet. Add your first customer to get started.
+              - link "Add customer" [ref=f63e168] [cursor=pointer]:
+                - /url: http://127.0.0.1:8000/customers/create

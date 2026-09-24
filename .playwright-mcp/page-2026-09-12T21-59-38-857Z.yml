@@ -1,0 +1,89 @@
+- generic [active] [ref=f35e1]:
+  - link "Skip to content" [ref=f35e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=f35e3]:
+    - complementary "Skip to content" [ref=f35e4]:
+      - generic [ref=f35e10]:
+        - paragraph [ref=f35e11]: BusinessOS
+        - paragraph [ref=f35e12]: Business management
+      - navigation [ref=f35e13]:
+        - list [ref=f35e14]:
+          - listitem [ref=f35e15]:
+            - paragraph [ref=f35e16]: Overview
+            - list [ref=f35e17]:
+              - listitem [ref=f35e18]:
+                - link "Dashboard" [ref=f35e19] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8015/app
+          - listitem [ref=f35e23]:
+            - paragraph [ref=f35e24]: Business
+            - list [ref=f35e25]:
+              - listitem [ref=f35e26]:
+                - link "Customers" [ref=f35e27] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8015/customers
+              - listitem [ref=f35e32]:
+                - link "Quotations" [ref=f35e33] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8015/quotations
+              - listitem [ref=f35e37]:
+                - link "Invoices" [ref=f35e38] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8015/invoices
+              - listitem [ref=f35e42]:
+                - link "Payments" [ref=f35e43] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8015/payments
+          - listitem [ref=f35e47]:
+            - paragraph [ref=f35e48]: System
+            - list [ref=f35e49]:
+              - listitem [ref=f35e50]:
+                - link "Settings" [ref=f35e51] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8015/settings
+      - generic [ref=f35e56]:
+        - generic [ref=f35e57]:
+          - generic [aria-hidden] [ref=f35e58]: Q
+          - generic [ref=f35e59]:
+            - generic [ref=f35e60]: QA User
+            - generic [ref=f35e61]: qa@test.dev
+        - button "Collapse sidebar" [ref=f35e62]
+    - generic [ref=f35e65]:
+      - banner [ref=f35e66]:
+        - button "Global search (coming soon)" [ref=f35e68]:
+          - generic [ref=f35e71]: Search…
+          - generic [ref=f35e72]: ⌘K
+        - generic [ref=f35e73]:
+          - button "Quick actions (coming soon)" [ref=f35e74]
+          - button "Notifications (coming soon)" [ref=f35e78]
+          - button "Switch business" [ref=f35e83]:
+            - generic [ref=f35e88]:
+              - generic [ref=f35e89]: Switch business
+              - generic "QA Test Business" [ref=f35e90]
+          - button "English" [ref=f35e94]
+          - button "Toggle dark mode" [ref=f35e101]
+          - button "QA User qa@test.dev" [ref=f35e105]:
+            - generic [ref=f35e106]:
+              - generic [aria-hidden] [ref=f35e107]: Q
+              - generic [ref=f35e108]:
+                - generic [ref=f35e109]: QA User
+                - generic [ref=f35e110]: qa@test.dev
+      - main [ref=f35e113]:
+        - generic [ref=f35e115]:
+          - navigation "Breadcrumb" [ref=f35e117]:
+            - list [ref=f35e118]:
+              - listitem [ref=f35e119]:
+                - link "Dashboard" [ref=f35e120] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8015/app
+              - listitem [ref=f35e123]:
+                - generic [ref=f35e124]: Customers
+          - generic [ref=f35e125]:
+            - generic [ref=f35e126]:
+              - heading "Customers" [level=1] [ref=f35e127]
+              - paragraph [ref=f35e128]: Manage the people and companies you do business with.
+            - link "Add customer" [ref=f35e130] [cursor=pointer]:
+              - /url: http://127.0.0.1:8015/customers/create
+          - generic [ref=f35e133]:
+            - search [ref=f35e134]:
+              - generic [ref=f35e135]: Search customers
+              - searchbox "Search customers" [ref=f35e137]
+              - button "Search" [ref=f35e138]
+            - generic [ref=f35e141]:
+              - heading "No customers" [level=3] [ref=f35e145]
+              - paragraph [ref=f35e146]: There are no customers in this business yet. Add your first customer to get started.
+              - link "Add customer" [ref=f35e148] [cursor=pointer]:
+                - /url: http://127.0.0.1:8015/customers/create

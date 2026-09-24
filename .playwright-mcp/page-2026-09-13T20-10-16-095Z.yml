@@ -1,0 +1,164 @@
+- generic [active] [ref=f75e1]:
+  - link "Skip to content" [ref=f75e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=f75e3]:
+    - complementary "Skip to content" [ref=f75e4]:
+      - generic [ref=f75e10]:
+        - paragraph [ref=f75e11]: BusinessOS
+        - paragraph [ref=f75e12]: Business management
+      - navigation [ref=f75e13]:
+        - list [ref=f75e14]:
+          - listitem [ref=f75e15]:
+            - paragraph [ref=f75e16]: Overview
+            - list [ref=f75e17]:
+              - listitem [ref=f75e18]:
+                - link "Dashboard" [ref=f75e19] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/app
+          - listitem [ref=f75e23]:
+            - paragraph [ref=f75e24]: Business
+            - list [ref=f75e25]:
+              - listitem [ref=f75e26]:
+                - link "Customers" [ref=f75e27] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/customers
+              - listitem [ref=f75e31]:
+                - link "Quotations" [ref=f75e32] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/quotations
+              - listitem [ref=f75e36]:
+                - link "Invoices" [ref=f75e37] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/invoices
+              - listitem [ref=f75e41]:
+                - link "Payments" [ref=f75e42] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/payments
+              - listitem [ref=f75e46]:
+                - link "Products" [ref=f75e47] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/products
+              - listitem [ref=f75e51]:
+                - link "Categories" [ref=f75e52] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/categories
+              - listitem [ref=f75e56]:
+                - link "Units" [ref=f75e57] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/units
+              - listitem [ref=f75e61]:
+                - link "Expenses" [ref=f75e62] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/expenses
+          - listitem [ref=f75e66]:
+            - paragraph [ref=f75e67]: System
+            - list [ref=f75e68]:
+              - listitem [ref=f75e69]:
+                - link "Settings" [ref=f75e70] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/settings
+      - generic [ref=f75e75]:
+        - generic [ref=f75e76]:
+          - generic [aria-hidden] [ref=f75e77]: A
+          - generic [ref=f75e78]:
+            - generic [ref=f75e79]: Admin
+            - generic [ref=f75e80]: admin@businessos.test
+        - button "Collapse sidebar" [ref=f75e81]
+    - generic [ref=f75e84]:
+      - banner [ref=f75e85]:
+        - button "Global search (coming soon)" [ref=f75e87]:
+          - generic [ref=f75e90]: Search…
+          - generic [ref=f75e91]: ⌘K
+        - generic [ref=f75e92]:
+          - button "Quick actions (coming soon)" [ref=f75e93]
+          - button "Notifications (coming soon)" [ref=f75e97]
+          - button "Switch business" [ref=f75e102]:
+            - generic [ref=f75e107]:
+              - generic [ref=f75e108]: Switch business
+              - generic "TestCo" [ref=f75e109]
+          - button "English" [ref=f75e113]
+          - button "Toggle dark mode" [ref=f75e120]
+          - button "Admin admin@businessos.test" [ref=f75e124]:
+            - generic [ref=f75e125]:
+              - generic [aria-hidden] [ref=f75e126]: A
+              - generic [ref=f75e127]:
+                - generic [ref=f75e128]: Admin
+                - generic [ref=f75e129]: admin@businessos.test
+      - main [ref=f75e132]:
+        - generic [ref=f75e134]:
+          - navigation "Breadcrumb" [ref=f75e136]:
+            - list [ref=f75e137]:
+              - listitem [ref=f75e138]:
+                - link "Dashboard" [ref=f75e139] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/app
+              - listitem [ref=f75e142]:
+                - link "Customers" [ref=f75e143] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/customers
+              - listitem [ref=f75e146]:
+                - link "Acme Traders" [ref=f75e147] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/customers/1
+              - listitem [ref=f75e150]:
+                - generic [ref=f75e151]: Customer ledger
+          - generic [ref=f75e152]:
+            - generic [ref=f75e153]:
+              - heading "Customer ledger" [level=1] [ref=f75e154]
+              - paragraph [ref=f75e155]: Financial history and balance for Acme Traders.
+            - generic [ref=f75e156]:
+              - link "View customer" [ref=f75e157] [cursor=pointer]:
+                - /url: http://127.0.0.1:8000/customers/1
+              - link "Customer statement" [ref=f75e160] [cursor=pointer]:
+                - /url: http://127.0.0.1:8000/customers/1/statement
+          - generic [ref=f75e163]:
+            - generic [ref=f75e166]:
+              - generic [ref=f75e168]:
+                - generic [ref=f75e169]: Date from
+                - textbox "Date from" [ref=f75e171]
+              - generic [ref=f75e173]:
+                - generic [ref=f75e174]: Date to
+                - textbox "Date to" [ref=f75e176]
+              - generic [ref=f75e177]:
+                - generic [ref=f75e178]: Transaction type
+                - combobox "Transaction type" [ref=f75e180]:
+                  - option "All transactions" [disabled] [selected]
+                  - option "Invoices"
+                  - option "Payments"
+              - generic [ref=f75e182]:
+                - generic [ref=f75e183]: Search reference
+                - textbox "Search reference" [ref=f75e185]:
+                  - /placeholder: Search by invoice or payment number…
+              - button "Apply filters" [ref=f75e187]
+            - generic [ref=f75e190]:
+              - generic [ref=f75e193]:
+                - paragraph [ref=f75e194]: Outstanding balance
+                - paragraph [ref=f75e195]: "250.0000"
+              - generic [ref=f75e201]:
+                - paragraph [ref=f75e202]: Total invoiced
+                - paragraph [ref=f75e203]: "0.0000"
+              - generic [ref=f75e209]:
+                - paragraph [ref=f75e210]: Total paid
+                - paragraph [ref=f75e211]: "0.0000"
+              - generic [ref=f75e217]:
+                - paragraph [ref=f75e218]: Opening balance
+                - paragraph [ref=f75e219]: "250.0000"
+            - generic [ref=f75e223]:
+              - table [ref=f75e225]:
+                - caption [ref=f75e226]: Customer ledger
+                - rowgroup [ref=f75e227]:
+                  - row [ref=f75e228]:
+                    - columnheader "Date" [ref=f75e229]
+                    - columnheader "Type" [ref=f75e230]
+                    - columnheader "Reference" [ref=f75e231]
+                    - columnheader "Description" [ref=f75e232]
+                    - columnheader "Debit" [ref=f75e233]
+                    - columnheader "Credit" [ref=f75e234]
+                    - columnheader "Balance" [ref=f75e235]
+                - rowgroup [ref=f75e236]:
+                  - row [ref=f75e237]:
+                    - cell "2026-01-01" [ref=f75e238]
+                    - cell "Opening balance" [ref=f75e239]
+                    - cell "—" [ref=f75e240]
+                    - cell "—" [ref=f75e241]
+                    - cell "250.0000" [ref=f75e242]
+                    - cell "—" [ref=f75e243]
+                    - cell "250.0000" [ref=f75e244]
+              - generic [ref=f75e245]:
+                - generic [ref=f75e246]:
+                  - generic [ref=f75e247]:
+                    - term [ref=f75e248]: Total debits
+                    - definition [ref=f75e249]: "250.0000"
+                  - generic [ref=f75e250]:
+                    - term [ref=f75e251]: Total credits
+                    - definition [ref=f75e252]: "0.0000"
+                - generic [ref=f75e254]:
+                  - term [ref=f75e255]: Closing balance
+                  - definition [ref=f75e256]: "250.0000"

@@ -1,0 +1,191 @@
+- generic [active] [ref=f15e1]:
+  - link "Skip to content" [ref=f15e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=f15e3]:
+    - complementary "Skip to content" [ref=f15e4]:
+      - generic [ref=f15e10]:
+        - paragraph [ref=f15e11]: BusinessOS
+        - paragraph [ref=f15e12]: Business management
+      - navigation [ref=f15e13]:
+        - list [ref=f15e14]:
+          - listitem [ref=f15e15]:
+            - paragraph [ref=f15e16]: Overview
+            - list [ref=f15e17]:
+              - listitem [ref=f15e18]:
+                - link "Dashboard" [ref=f15e19] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/app
+          - listitem [ref=f15e23]:
+            - paragraph [ref=f15e24]: Business
+            - list [ref=f15e25]:
+              - listitem [ref=f15e26]:
+                - link "Customers" [ref=f15e27] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/customers
+              - listitem [ref=f15e31]:
+                - link "Quotations" [ref=f15e32] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/quotations
+              - listitem [ref=f15e36]:
+                - link "Invoices" [ref=f15e37] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/invoices
+              - listitem [ref=f15e41]:
+                - link "Payments" [ref=f15e42] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/payments
+          - listitem [ref=f15e46]:
+            - paragraph [ref=f15e47]: System
+            - list [ref=f15e48]:
+              - listitem [ref=f15e49]:
+                - link "Settings" [ref=f15e50] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/settings
+      - generic [ref=f15e55]:
+        - generic [ref=f15e56]:
+          - generic [aria-hidden] [ref=f15e57]: A
+          - generic [ref=f15e58]:
+            - generic [ref=f15e59]: Admin User
+            - generic [ref=f15e60]: admin@businessos.test
+        - button "Collapse sidebar" [ref=f15e61]
+    - generic [ref=f15e64]:
+      - banner [ref=f15e65]:
+        - button "Global search (coming soon)" [ref=f15e67]:
+          - generic [ref=f15e70]: Search…
+          - generic [ref=f15e71]: ⌘K
+        - generic [ref=f15e72]:
+          - button "Quick actions (coming soon)" [ref=f15e73]
+          - button "Notifications (coming soon)" [ref=f15e77]
+          - button "Switch business" [ref=f15e82]:
+            - generic [ref=f15e87]:
+              - generic [ref=f15e88]: Switch business
+              - generic "TestCo" [ref=f15e89]
+          - button "English" [ref=f15e93]
+          - button "Toggle dark mode" [ref=f15e100]
+          - button "Admin User admin@businessos.test" [ref=f15e104]:
+            - generic [ref=f15e105]:
+              - generic [aria-hidden] [ref=f15e106]: A
+              - generic [ref=f15e107]:
+                - generic [ref=f15e108]: Admin User
+                - generic [ref=f15e109]: admin@businessos.test
+      - main [ref=f15e112]:
+        - generic [ref=f15e114]:
+          - navigation "Breadcrumb" [ref=f15e116]:
+            - list [ref=f15e117]:
+              - listitem [ref=f15e118]:
+                - link "Dashboard" [ref=f15e119] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/app
+              - listitem [ref=f15e122]:
+                - link "Invoices" [ref=f15e123] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/invoices
+              - listitem [ref=f15e126]:
+                - generic [ref=f15e127]: INV-000001
+          - generic [ref=f15e128]:
+            - generic [ref=f15e129]:
+              - heading "INV-000001" [level=1] [ref=f15e130]
+              - paragraph [ref=f15e131]: Invoice
+            - generic [ref=f15e132]:
+              - link "All invoices" [ref=f15e133] [cursor=pointer]:
+                - /url: http://127.0.0.1:8000/invoices
+              - button "Print" [ref=f15e136]
+          - generic [ref=f15e139]:
+            - status [ref=f15e141]:
+              - generic [ref=f15e144]: Payment recorded.
+            - status [ref=f15e147]:
+              - generic [ref=f15e150]: This invoice is no longer a draft and can no longer be edited or deleted.
+            - generic [ref=f15e152]:
+              - generic [ref=f15e153]:
+                - generic [ref=f15e154]:
+                  - generic [ref=f15e157]:
+                    - heading "Line items" [level=2] [ref=f15e158]
+                    - generic [ref=f15e159]: Paid
+                  - generic [ref=f15e161]:
+                    - table [ref=f15e163]:
+                      - rowgroup [ref=f15e164]:
+                        - row [ref=f15e165]:
+                          - columnheader "Product / service" [ref=f15e166]
+                          - columnheader "invoices.description" [ref=f15e167]
+                          - columnheader "Qty" [ref=f15e168]
+                          - columnheader "Unit price" [ref=f15e169]
+                          - columnheader "Amount" [ref=f15e170]
+                      - rowgroup [ref=f15e171]:
+                        - row [ref=f15e172]:
+                          - cell "—" [ref=f15e173]
+                          - cell "Web development services" [ref=f15e174]
+                          - cell "10.0000" [ref=f15e175]
+                          - cell "10.0000" [ref=f15e176]
+                          - cell "100.0000" [ref=f15e177]
+                    - generic [ref=f15e179]:
+                      - generic [ref=f15e180]:
+                        - term [ref=f15e181]: Subtotal
+                        - definition [ref=f15e182]: "100.0000"
+                      - generic [ref=f15e183]:
+                        - term [ref=f15e184]: Total
+                        - definition [ref=f15e185]: "100.0000"
+                      - generic [ref=f15e186]:
+                        - term [ref=f15e187]: Paid
+                        - definition [ref=f15e188]: "100.0000"
+                - generic [ref=f15e190]:
+                  - generic [ref=f15e193]:
+                    - heading "Payment history" [level=2] [ref=f15e194]
+                    - generic [ref=f15e195]: 2 payments
+                  - table [ref=f15e198]:
+                    - rowgroup [ref=f15e199]:
+                      - row [ref=f15e200]:
+                        - columnheader "Number" [ref=f15e201]
+                        - columnheader "Date" [ref=f15e202]
+                        - columnheader "Method" [ref=f15e203]
+                        - columnheader "Status" [ref=f15e204]
+                        - columnheader "Amount" [ref=f15e205]
+                        - columnheader "Actions" [ref=f15e206]
+                    - rowgroup [ref=f15e208]:
+                      - row [ref=f15e209]:
+                        - cell [ref=f15e210]:
+                          - link "PAY-000002" [ref=f15e211] [cursor=pointer]:
+                            - /url: http://127.0.0.1:8000/payments/2
+                        - cell "2026-09-13" [ref=f15e212]
+                        - cell "Cash" [ref=f15e213]
+                        - cell "Active" [ref=f15e214]
+                        - cell "60.0000" [ref=f15e217]
+                        - cell [ref=f15e218]:
+                          - generic [ref=f15e219]:
+                            - link "View" [ref=f15e220] [cursor=pointer]:
+                              - /url: http://127.0.0.1:8000/payments/2
+                            - button "Reverse payment" [ref=f15e223]
+                      - row [ref=f15e226]:
+                        - cell [ref=f15e227]:
+                          - link "PAY-000001" [ref=f15e228] [cursor=pointer]:
+                            - /url: http://127.0.0.1:8000/payments/1
+                        - cell "2026-09-13" [ref=f15e229]
+                        - cell "Cash" [ref=f15e230]
+                        - cell "Active" [ref=f15e231]
+                        - cell "40.0000" [ref=f15e234]
+                        - cell [ref=f15e235]:
+                          - generic [ref=f15e236]:
+                            - link "View" [ref=f15e237] [cursor=pointer]:
+                              - /url: http://127.0.0.1:8000/payments/1
+                            - button "Reverse payment" [ref=f15e240]
+              - generic [ref=f15e244]:
+                - heading "Information" [level=2] [ref=f15e247]
+                - generic [ref=f15e249]:
+                  - generic [ref=f15e250]:
+                    - term [ref=f15e251]: Number
+                    - definition [ref=f15e252]: INV-000001
+                  - generic [ref=f15e253]:
+                    - term [ref=f15e254]: Customer
+                    - definition [ref=f15e255]:
+                      - link "Batch16 Buyer" [ref=f15e256] [cursor=pointer]:
+                        - /url: http://127.0.0.1:8000/customers/1
+                  - generic [ref=f15e257]:
+                    - term [ref=f15e258]: Date
+                    - definition [ref=f15e259]: 2026-09-13
+                  - generic [ref=f15e260]:
+                    - term [ref=f15e261]: Status
+                    - definition [ref=f15e262]:
+                      - generic [ref=f15e263]: Paid
+                  - generic [ref=f15e265]:
+                    - term [ref=f15e266]: Source
+                    - definition [ref=f15e267]: —
+                  - generic [ref=f15e268]:
+                    - term [ref=f15e269]: Created by
+                    - definition [ref=f15e270]: Admin User
+                  - generic [ref=f15e271]:
+                    - term [ref=f15e272]: Created
+                    - definition [ref=f15e273]: 2026-09-13 15:26
+                  - generic [ref=f15e274]:
+                    - term [ref=f15e275]: Updated
+                    - definition [ref=f15e276]: 2026-09-13 15:28

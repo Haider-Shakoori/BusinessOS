@@ -1,0 +1,25 @@
+- main [ref=f32e2]:
+  - generic [ref=f32e3]:
+    - generic [ref=f32e4]:
+      - generic [ref=f32e5]: BusinessOS
+      - generic [ref=f32e6]:
+        - button "English" [ref=f32e8]
+        - button "Toggle dark mode" [ref=f32e15]
+    - generic [ref=f32e20]:
+      - generic [ref=f32e21]:
+        - heading "Sign in" [level=1] [ref=f32e22]
+        - paragraph [ref=f32e23]: Sign in to your BusinessOS account.
+      - generic [ref=f32e24]:
+        - generic [ref=f32e25]:
+          - generic [ref=f32e26]: Email *
+          - textbox "Email" [active] [invalid] [ref=f32e28]: qa@test.dev
+          - paragraph [ref=f32e29]: These credentials do not match our records.
+        - generic [ref=f32e30]:
+          - generic [ref=f32e31]: Password *
+          - textbox "Password" [ref=f32e33]
+        - generic [ref=f32e35]:
+          - checkbox "Remember me" [ref=f32e36]
+          - generic [ref=f32e37]: Remember me
+        - button "Sign in" [ref=f32e38]
+        - link "Forgot password?" [ref=f32e39] [cursor=pointer]:
+          - /url: http://127.0.0.1:8015/forgot-password

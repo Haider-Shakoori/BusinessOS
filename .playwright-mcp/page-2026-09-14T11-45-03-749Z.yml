@@ -1,0 +1,144 @@
+- generic [ref=f117e1]:
+  - link "Skip to content" [ref=f117e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=f117e3]:
+    - complementary "Skip to content" [ref=f117e4]:
+      - generic [ref=f117e10]:
+        - paragraph [ref=f117e11]: BusinessOS
+        - paragraph [ref=f117e12]: Business management
+      - navigation [ref=f117e13]:
+        - list [ref=f117e14]:
+          - listitem [ref=f117e15]:
+            - paragraph [ref=f117e16]: Overview
+            - list [ref=f117e17]:
+              - listitem [ref=f117e18]:
+                - link "Dashboard" [ref=f117e19] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/app
+          - listitem [ref=f117e23]:
+            - paragraph [ref=f117e24]: Business
+            - list [ref=f117e25]:
+              - listitem [ref=f117e26]:
+                - link "Customers" [ref=f117e27] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/customers
+              - listitem [ref=f117e31]:
+                - link "Quotations" [ref=f117e32] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/quotations
+              - listitem [ref=f117e36]:
+                - link "Invoices" [ref=f117e37] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/invoices
+              - listitem [ref=f117e41]:
+                - link "Payments" [ref=f117e42] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/payments
+              - listitem [ref=f117e46]:
+                - link "Products" [ref=f117e47] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/products
+              - listitem [ref=f117e51]:
+                - link "Categories" [ref=f117e52] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/categories
+              - listitem [ref=f117e56]:
+                - link "Units" [ref=f117e57] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/units
+              - listitem [ref=f117e61]:
+                - link "Expenses" [ref=f117e62] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/expenses
+          - listitem [ref=f117e66]:
+            - paragraph [ref=f117e67]: System
+            - list [ref=f117e68]:
+              - listitem [ref=f117e69]:
+                - link "Settings" [ref=f117e70] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/settings
+      - generic [ref=f117e75]:
+        - generic [ref=f117e76]:
+          - generic [aria-hidden] [ref=f117e77]: A
+          - generic [ref=f117e78]:
+            - generic [ref=f117e79]: Admin
+            - generic [ref=f117e80]: admin@businessos.test
+        - button "Collapse sidebar" [ref=f117e81]
+    - generic [ref=f117e84]:
+      - banner [ref=f117e85]:
+        - button "Global search (coming soon)" [ref=f117e87]:
+          - generic [ref=f117e90]: Search…
+          - generic [ref=f117e91]: ⌘K
+        - generic [ref=f117e92]:
+          - button "Quick actions (coming soon)" [ref=f117e93]
+          - button "Notifications (coming soon)" [ref=f117e97]
+          - button "Switch business" [ref=f117e102]:
+            - generic [ref=f117e107]:
+              - generic [ref=f117e108]: Switch business
+              - generic "TestCo" [ref=f117e109]
+          - button "English" [ref=f117e113]
+          - button "Toggle dark mode" [ref=f117e120]
+          - button "Admin admin@businessos.test" [ref=f117e124]:
+            - generic [ref=f117e125]:
+              - generic [aria-hidden] [ref=f117e126]: A
+              - generic [ref=f117e127]:
+                - generic [ref=f117e128]: Admin
+                - generic [ref=f117e129]: admin@businessos.test
+      - main [ref=f117e132]:
+        - generic [ref=f117e134]:
+          - navigation "Breadcrumb" [ref=f117e136]:
+            - list [ref=f117e137]:
+              - listitem [ref=f117e138]:
+                - link "Dashboard" [ref=f117e139] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/app
+              - listitem [ref=f117e142]:
+                - link "Expenses" [ref=f117e143] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/expenses
+              - listitem [ref=f117e146]:
+                - generic [ref=f117e147]: EXP-000001
+          - generic [ref=f117e148]:
+            - generic [ref=f117e149]:
+              - heading "EXP-000001" [level=1] [ref=f117e150]
+              - paragraph [ref=f117e151]: Information
+            - generic [ref=f117e152]:
+              - link "Expenses" [ref=f117e153] [cursor=pointer]:
+                - /url: http://127.0.0.1:8000/expenses
+              - link "Edit" [ref=f117e156] [cursor=pointer]:
+                - /url: http://127.0.0.1:8000/expenses/1/edit
+          - generic [ref=f117e159]:
+            - status [ref=f117e161]:
+              - generic [ref=f117e164]: Expense created.
+            - generic [ref=f117e166]:
+              - generic [ref=f117e168]:
+                - heading "Information" [level=2] [ref=f117e171]
+                - generic [ref=f117e173]:
+                  - generic [ref=f117e174]:
+                    - term [ref=f117e175]: Number
+                    - definition [ref=f117e176]: EXP-000001
+                  - generic [ref=f117e177]:
+                    - term [ref=f117e178]: Date
+                    - definition [ref=f117e179]: 2026-09-14
+                  - generic [ref=f117e180]:
+                    - term [ref=f117e181]: Category
+                    - definition [ref=f117e182]: No category
+                  - generic [ref=f117e183]:
+                    - term [ref=f117e184]: Amount
+                    - definition [ref=f117e185]: 100.0000 USD
+                  - generic [ref=f117e186]:
+                    - term [ref=f117e187]: Amount (AFN)
+                    - definition [ref=f117e188]: "7050.0000"
+                  - generic [ref=f117e189]:
+                    - term [ref=f117e190]: Payment method
+                    - definition [ref=f117e191]: Not specified
+                  - generic [ref=f117e192]:
+                    - term [ref=f117e193]: Reference
+                    - definition [ref=f117e194]: QA-USD-001
+                  - generic [ref=f117e195]:
+                    - term [ref=f117e196]: Vendor / payee
+                    - definition [ref=f117e197]: QA Managed Services
+                  - generic [ref=f117e198]:
+                    - term [ref=f117e199]: Notes
+                    - definition [ref=f117e200]: USD expense QA
+              - generic [ref=f117e201]:
+                - generic [ref=f117e202]:
+                  - heading "Receipt" [level=2] [ref=f117e205]
+                  - paragraph [ref=f117e207]: No receipt
+                - generic [ref=f117e208]:
+                  - heading "Recorded by" [level=2] [ref=f117e211]
+                  - generic [ref=f117e213]:
+                    - generic [ref=f117e214]:
+                      - term [ref=f117e215]: Recorded by
+                      - definition [ref=f117e216]: Admin
+                    - generic [ref=f117e217]:
+                      - term [ref=f117e218]: Recorded on
+                      - definition [ref=f117e219]: 2026-09-14 11:45

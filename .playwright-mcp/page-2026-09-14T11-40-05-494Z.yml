@@ -1,0 +1,205 @@
+- generic [ref=f113e1]:
+  - link "Skip to content" [ref=f113e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=f113e3]:
+    - complementary "Skip to content" [ref=f113e4]:
+      - generic [ref=f113e10]:
+        - paragraph [ref=f113e11]: BusinessOS
+        - paragraph [ref=f113e12]: Business management
+      - navigation [ref=f113e13]:
+        - list [ref=f113e14]:
+          - listitem [ref=f113e15]:
+            - paragraph [ref=f113e16]: Overview
+            - list [ref=f113e17]:
+              - listitem [ref=f113e18]:
+                - link "Dashboard" [ref=f113e19] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/app
+          - listitem [ref=f113e23]:
+            - paragraph [ref=f113e24]: Business
+            - list [ref=f113e25]:
+              - listitem [ref=f113e26]:
+                - link "Customers" [ref=f113e27] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/customers
+              - listitem [ref=f113e31]:
+                - link "Quotations" [ref=f113e32] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/quotations
+              - listitem [ref=f113e36]:
+                - link "Invoices" [ref=f113e37] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/invoices
+              - listitem [ref=f113e41]:
+                - link "Payments" [ref=f113e42] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/payments
+              - listitem [ref=f113e46]:
+                - link "Products" [ref=f113e47] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/products
+              - listitem [ref=f113e51]:
+                - link "Categories" [ref=f113e52] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/categories
+              - listitem [ref=f113e56]:
+                - link "Units" [ref=f113e57] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/units
+              - listitem [ref=f113e61]:
+                - link "Expenses" [ref=f113e62] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/expenses
+          - listitem [ref=f113e66]:
+            - paragraph [ref=f113e67]: System
+            - list [ref=f113e68]:
+              - listitem [ref=f113e69]:
+                - link "Settings" [ref=f113e70] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/settings
+      - generic [ref=f113e75]:
+        - generic [ref=f113e76]:
+          - generic [aria-hidden] [ref=f113e77]: A
+          - generic [ref=f113e78]:
+            - generic [ref=f113e79]: Admin
+            - generic [ref=f113e80]: admin@businessos.test
+        - button "Collapse sidebar" [ref=f113e81]
+    - generic [ref=f113e84]:
+      - banner [ref=f113e85]:
+        - button "Global search (coming soon)" [ref=f113e87]:
+          - generic [ref=f113e90]: Search…
+          - generic [ref=f113e91]: ⌘K
+        - generic [ref=f113e92]:
+          - button "Quick actions (coming soon)" [ref=f113e93]
+          - button "Notifications (coming soon)" [ref=f113e97]
+          - button "Switch business" [ref=f113e102]:
+            - generic [ref=f113e107]:
+              - generic [ref=f113e108]: Switch business
+              - generic "TestCo" [ref=f113e109]
+          - button "English" [ref=f113e113]
+          - button "Toggle dark mode" [ref=f113e120]
+          - button "Admin admin@businessos.test" [ref=f113e124]:
+            - generic [ref=f113e125]:
+              - generic [aria-hidden] [ref=f113e126]: A
+              - generic [ref=f113e127]:
+                - generic [ref=f113e128]: Admin
+                - generic [ref=f113e129]: admin@businessos.test
+      - main [ref=f113e132]:
+        - generic [ref=f113e134]:
+          - navigation "Breadcrumb" [ref=f113e136]:
+            - list [ref=f113e137]:
+              - listitem [ref=f113e138]:
+                - link "Dashboard" [ref=f113e139] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/app
+              - listitem [ref=f113e142]:
+                - link "Customers" [ref=f113e143] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/customers
+              - listitem [ref=f113e146]:
+                - link "Acme Traders" [ref=f113e147] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/customers/1
+              - listitem [ref=f113e150]:
+                - generic [ref=f113e151]: Customer ledger
+          - generic [ref=f113e152]:
+            - generic [ref=f113e153]:
+              - heading "Customer ledger" [level=1] [ref=f113e154]
+              - paragraph [ref=f113e155]: Financial history and balance for Acme Traders.
+            - generic [ref=f113e156]:
+              - link "View customer" [ref=f113e157] [cursor=pointer]:
+                - /url: http://127.0.0.1:8000/customers/1
+              - link "Customer statement" [ref=f113e160] [cursor=pointer]:
+                - /url: http://127.0.0.1:8000/customers/1/statement
+          - generic [ref=f113e163]:
+            - generic [ref=f113e166]:
+              - generic [ref=f113e168]:
+                - generic [ref=f113e169]: Date from
+                - textbox "Date from" [ref=f113e171]
+              - generic [ref=f113e173]:
+                - generic [ref=f113e174]: Date to
+                - textbox "Date to" [ref=f113e176]
+              - generic [ref=f113e177]:
+                - generic [ref=f113e178]: Transaction type
+                - combobox "Transaction type" [ref=f113e180]:
+                  - option "All transactions" [disabled] [selected]
+                  - option "Invoices"
+                  - option "Payments"
+              - generic [ref=f113e182]:
+                - generic [ref=f113e183]: Search reference
+                - textbox "Search reference" [ref=f113e185]:
+                  - /placeholder: Search by invoice or payment number…
+              - button "Apply filters" [ref=f113e187]
+            - paragraph [ref=f113e190]: All balances, totals and the running balance are shown in the base currency (AFN).
+            - generic [ref=f113e193]:
+              - generic [ref=f113e196]:
+                - paragraph [ref=f113e197]: Outstanding balance
+                - paragraph [ref=f113e198]: "36250.0000"
+              - generic [ref=f113e204]:
+                - paragraph [ref=f113e205]: Total invoiced
+                - paragraph [ref=f113e206]: "57600.0000"
+              - generic [ref=f113e212]:
+                - paragraph [ref=f113e213]: Total paid
+                - paragraph [ref=f113e214]: "21650.0000"
+              - generic [ref=f113e220]:
+                - paragraph [ref=f113e221]: Opening balance
+                - paragraph [ref=f113e222]: "300.0000"
+            - generic [ref=f113e226]:
+              - table [ref=f113e228]:
+                - caption [ref=f113e229]: Customer ledger
+                - rowgroup [ref=f113e230]:
+                  - row [ref=f113e231]:
+                    - columnheader "Date" [ref=f113e232]
+                    - columnheader "Type" [ref=f113e233]
+                    - columnheader "Reference" [ref=f113e234]
+                    - columnheader "Description" [ref=f113e235]
+                    - columnheader "Debit" [ref=f113e236]
+                    - columnheader "Credit" [ref=f113e237]
+                    - columnheader "Balance" [ref=f113e238]
+                - rowgroup [ref=f113e239]:
+                  - row [ref=f113e240]:
+                    - cell "2026-01-01" [ref=f113e241]
+                    - cell "Opening balance" [ref=f113e242]
+                    - cell "—" [ref=f113e243]
+                    - cell "—" [ref=f113e244]
+                    - cell "300.0000 AFN" [ref=f113e245]
+                    - cell "— AFN" [ref=f113e247]
+                    - cell "300.0000" [ref=f113e249]
+                  - row [ref=f113e250]:
+                    - cell "2026-09-10" [ref=f113e251]
+                    - cell "Invoice" [ref=f113e252]
+                    - cell [ref=f113e253]:
+                      - link "INV-000001" [ref=f113e254] [cursor=pointer]:
+                        - /url: http://127.0.0.1:8000/invoices/1
+                    - cell "QA invoice" [ref=f113e255]
+                    - cell "1200.0000 AFN" [ref=f113e256]
+                    - cell "— AFN" [ref=f113e258]
+                    - cell "1500.0000" [ref=f113e260]
+                  - row [ref=f113e261]:
+                    - cell "2026-09-12" [ref=f113e262]
+                    - cell "Payment" [ref=f113e263]
+                    - cell [ref=f113e264]:
+                      - link "PAY-000001" [ref=f113e265] [cursor=pointer]:
+                        - /url: http://127.0.0.1:8000/payments/1
+                    - cell "—" [ref=f113e266]
+                    - cell "— AFN" [ref=f113e267]
+                    - cell "500.0000 AFN" [ref=f113e269]
+                    - cell "1000.0000" [ref=f113e271]
+                  - row [ref=f113e272]:
+                    - cell "2026-09-14" [ref=f113e273]
+                    - cell "Invoice" [ref=f113e274]
+                    - cell [ref=f113e275]:
+                      - link "INV-000002" [ref=f113e276] [cursor=pointer]:
+                        - /url: http://127.0.0.1:8000/invoices/2
+                    - cell "—" [ref=f113e277]
+                    - cell "800.0000 USD" [ref=f113e278]
+                    - cell "— USD" [ref=f113e280]
+                    - cell "57400.0000" [ref=f113e282]
+                  - row [ref=f113e283]:
+                    - cell "2026-09-14" [ref=f113e284]
+                    - cell "Payment" [ref=f113e285]
+                    - cell [ref=f113e286]:
+                      - link "PAY-000002" [ref=f113e287] [cursor=pointer]:
+                        - /url: http://127.0.0.1:8000/payments/2
+                    - cell "QA partial USD" [ref=f113e288]
+                    - cell "— USD" [ref=f113e289]
+                    - cell "300.0000 USD" [ref=f113e291]
+                    - cell "36250.0000" [ref=f113e293]
+              - generic [ref=f113e294]:
+                - generic [ref=f113e295]:
+                  - generic [ref=f113e296]:
+                    - term [ref=f113e297]: Total debits
+                    - definition [ref=f113e298]: "57900.0000"
+                  - generic [ref=f113e299]:
+                    - term [ref=f113e300]: Total credits
+                    - definition [ref=f113e301]: "21650.0000"
+                - generic [ref=f113e303]:
+                  - term [ref=f113e304]: Closing balance
+                  - definition [ref=f113e305]: "36250.0000"

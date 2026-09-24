@@ -1,0 +1,144 @@
+- generic [active] [ref=f68e1]:
+  - link "رفتن به محتوا" [ref=f68e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=f68e3]:
+    - complementary "رفتن به محتوا" [ref=f68e4]:
+      - generic [ref=f68e10]:
+        - paragraph [ref=f68e11]: BusinessOS
+        - paragraph [ref=f68e12]: مدیریت کسب و کار
+      - navigation [ref=f68e13]:
+        - list [ref=f68e14]:
+          - listitem [ref=f68e15]:
+            - paragraph [ref=f68e16]: نمای کلی
+            - list [ref=f68e17]:
+              - listitem [ref=f68e18]:
+                - link "داشبورد" [ref=f68e19] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/app
+          - listitem [ref=f68e23]:
+            - paragraph [ref=f68e24]: کسب و کار
+            - list [ref=f68e25]:
+              - listitem [ref=f68e26]:
+                - link "مشتریان" [ref=f68e27] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/customers
+              - listitem [ref=f68e31]:
+                - link "پیش‌فاکتورها" [ref=f68e32] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/quotations
+              - listitem [ref=f68e36]:
+                - link "فاکتورها" [ref=f68e37] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/invoices
+              - listitem [ref=f68e41]:
+                - link "پرداخت‌ها" [ref=f68e42] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/payments
+              - listitem [ref=f68e46]:
+                - link "محصولات" [ref=f68e47] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/products
+              - listitem [ref=f68e51]:
+                - link "دسته‌بندی‌ها" [ref=f68e52] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/categories
+              - listitem [ref=f68e56]:
+                - link "واحدها" [ref=f68e57] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/units
+              - listitem [ref=f68e61]:
+                - link "هزینه‌ها" [ref=f68e62] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/expenses
+          - listitem [ref=f68e66]:
+            - paragraph [ref=f68e67]: سیستم
+            - list [ref=f68e68]:
+              - listitem [ref=f68e69]:
+                - link "تنظیمات" [ref=f68e70] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/settings
+      - generic [ref=f68e75]:
+        - generic [ref=f68e76]:
+          - generic [aria-hidden] [ref=f68e77]: A
+          - generic [ref=f68e78]:
+            - generic [ref=f68e79]: Admin
+            - generic [ref=f68e80]: admin@businessos.test
+        - button "بستن نوار کناری" [ref=f68e81]
+    - generic [ref=f68e84]:
+      - banner [ref=f68e85]:
+        - button "جستجوی سراسری (به زودی)" [ref=f68e87]:
+          - generic [ref=f68e90]: جستجو…
+          - generic [ref=f68e91]: ⌘K
+        - generic [ref=f68e92]:
+          - button "عملیات سریع (به زودی)" [ref=f68e93]
+          - button "اعلان‌ها (به زودی)" [ref=f68e97]
+          - button "تغییر کسب و کار" [ref=f68e102]:
+            - generic [ref=f68e107]:
+              - generic [ref=f68e108]: تغییر کسب و کار
+              - generic "TestCo" [ref=f68e109]
+          - button "فارسی" [ref=f68e113]
+          - button "تغییر حالت تاریک" [ref=f68e120]
+          - button "Admin admin@businessos.test" [ref=f68e124]:
+            - generic [ref=f68e125]:
+              - generic [aria-hidden] [ref=f68e126]: A
+              - generic [ref=f68e127]:
+                - generic [ref=f68e128]: Admin
+                - generic [ref=f68e129]: admin@businessos.test
+      - main [ref=f68e132]:
+        - generic [ref=f68e134]:
+          - navigation "Breadcrumb" [ref=f68e136]:
+            - list [ref=f68e137]:
+              - listitem [ref=f68e138]:
+                - link "مشتریان" [ref=f68e139] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/customers
+              - listitem [ref=f68e142]:
+                - generic [ref=f68e143]: Acme Traders
+          - generic [ref=f68e144]:
+            - generic [ref=f68e145]:
+              - heading "Acme Traders" [level=1] [ref=f68e146]
+              - paragraph [ref=f68e147]: جزئیات مشتری
+            - generic [ref=f68e148]:
+              - link "مشاهده همه" [ref=f68e149] [cursor=pointer]:
+                - /url: http://127.0.0.1:8000/customers
+              - link "صورت‌حساب مشتری" [ref=f68e150] [cursor=pointer]:
+                - /url: http://127.0.0.1:8000/customers/1/statement
+              - link "دفتر حساب مشتری" [ref=f68e153] [cursor=pointer]:
+                - /url: http://127.0.0.1:8000/customers/1/ledger
+              - link "ویرایش" [ref=f68e156] [cursor=pointer]:
+                - /url: http://127.0.0.1:8000/customers/1/edit
+              - button "حذف" [ref=f68e159]
+          - generic [ref=f68e162]:
+            - generic [ref=f68e163]:
+              - generic [ref=f68e166]:
+                - paragraph [ref=f68e167]: موجودی پرداخت‌ناشده
+                - paragraph [ref=f68e168]: "250.0000"
+              - generic [ref=f68e174]:
+                - paragraph [ref=f68e175]: مجموع فاکتورها
+                - paragraph [ref=f68e176]: "0.0000"
+              - generic [ref=f68e182]:
+                - paragraph [ref=f68e183]: مجموع پرداخت‌ها
+                - paragraph [ref=f68e184]: "0.0000"
+              - generic [ref=f68e190]:
+                - paragraph [ref=f68e191]: موجودی افتتاحیه
+                - paragraph [ref=f68e192]: "250.0000"
+            - generic [ref=f68e196]:
+              - generic [ref=f68e198]:
+                - heading "درباره این مشتری" [level=2] [ref=f68e201]
+                - generic [ref=f68e203]:
+                  - generic [ref=f68e204]:
+                    - term [ref=f68e205]: نام
+                    - definition [ref=f68e206]: Acme Traders
+                  - generic [ref=f68e207]:
+                    - term [ref=f68e208]: نام شرکت
+                    - definition [ref=f68e209]: Acme Trading LLC
+                  - generic [ref=f68e210]:
+                    - term [ref=f68e211]: ایمیل
+                    - definition [ref=f68e212]: —
+                  - generic [ref=f68e213]:
+                    - term [ref=f68e214]: تلفن
+                    - definition [ref=f68e215]: —
+                  - generic [ref=f68e216]:
+                    - term [ref=f68e217]: آدرس
+                    - definition [ref=f68e218]: —
+                  - generic [ref=f68e219]:
+                    - term [ref=f68e220]: یادداشت‌ها
+                    - definition [ref=f68e221]: —
+              - generic [ref=f68e223]:
+                - heading "اطلاعات" [level=2] [ref=f68e226]
+                - generic [ref=f68e228]:
+                  - generic [ref=f68e229]:
+                    - term [ref=f68e230]: زمان افزوده‌شدن
+                    - definition [ref=f68e231]: 2026-09-13 20:08
+                  - generic [ref=f68e232]:
+                    - term [ref=f68e233]: آخرین بروزرسانی
+                    - definition [ref=f68e234]: 2026-09-13 20:08

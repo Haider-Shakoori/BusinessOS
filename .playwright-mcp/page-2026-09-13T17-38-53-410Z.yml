@@ -1,0 +1,128 @@
+- generic [ref=f36e1]:
+  - link "Skip to content" [ref=f36e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=f36e3]:
+    - complementary "Skip to content" [ref=f36e4]:
+      - generic [ref=f36e10]:
+        - paragraph [ref=f36e11]: BusinessOS
+        - paragraph [ref=f36e12]: Business management
+      - navigation [ref=f36e13]:
+        - list [ref=f36e14]:
+          - listitem [ref=f36e15]:
+            - paragraph [ref=f36e16]: Overview
+            - list [ref=f36e17]:
+              - listitem [ref=f36e18]:
+                - link "Dashboard" [ref=f36e19] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/app
+          - listitem [ref=f36e23]:
+            - paragraph [ref=f36e24]: Business
+            - list [ref=f36e25]:
+              - listitem [ref=f36e26]:
+                - link "Expenses" [ref=f36e27] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/expenses
+          - listitem [ref=f36e32]:
+            - paragraph [ref=f36e33]: System
+            - list [ref=f36e34]:
+              - listitem [ref=f36e35]:
+                - link "Settings" [ref=f36e36] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/settings
+      - generic [ref=f36e41]:
+        - generic [ref=f36e42]:
+          - generic [aria-hidden] [ref=f36e43]: A
+          - generic [ref=f36e44]:
+            - generic [ref=f36e45]: Admin
+            - generic [ref=f36e46]: admin@businessos.test
+        - button "Collapse sidebar" [ref=f36e47]
+    - generic [ref=f36e50]:
+      - banner [ref=f36e51]:
+        - button "Global search (coming soon)" [ref=f36e53]:
+          - generic [ref=f36e56]: Search…
+          - generic [ref=f36e57]: ⌘K
+        - generic [ref=f36e58]:
+          - button "Quick actions (coming soon)" [ref=f36e59]
+          - button "Notifications (coming soon)" [ref=f36e63]
+          - button "Switch business" [ref=f36e68]:
+            - generic [ref=f36e73]:
+              - generic [ref=f36e74]: Switch business
+              - generic "TestCo" [ref=f36e75]
+          - button "English" [ref=f36e79]
+          - button "Toggle dark mode" [ref=f36e86]
+          - button "Admin admin@businessos.test" [ref=f36e90]:
+            - generic [ref=f36e91]:
+              - generic [aria-hidden] [ref=f36e92]: A
+              - generic [ref=f36e93]:
+                - generic [ref=f36e94]: Admin
+                - generic [ref=f36e95]: admin@businessos.test
+      - main [ref=f36e98]:
+        - generic [ref=f36e99]:
+          - generic [ref=f36e100]:
+            - navigation "Breadcrumb" [ref=f36e102]:
+              - list [ref=f36e103]:
+                - listitem [ref=f36e104]:
+                  - link "Dashboard" [ref=f36e105] [cursor=pointer]:
+                    - /url: http://127.0.0.1:8000/app
+                - listitem [ref=f36e108]:
+                  - generic [ref=f36e109]: Expenses
+            - generic [ref=f36e110]:
+              - generic [ref=f36e111]:
+                - heading "Expenses" [level=1] [ref=f36e112]
+                - paragraph [ref=f36e113]: Record, categorize and track your business expenses.
+              - generic [ref=f36e114]:
+                - link "Expense report" [ref=f36e115] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/expenses/report
+                - link "Add expense" [ref=f36e118] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/expenses/create
+            - generic [ref=f36e121]:
+              - search [ref=f36e124]:
+                - generic [ref=f36e125]:
+                  - generic [ref=f36e126]: Search expenses
+                  - searchbox "Search expenses" [ref=f36e128]
+                - generic [ref=f36e129]:
+                  - generic [ref=f36e130]: Category
+                  - combobox "Category" [ref=f36e132]:
+                    - option "All categories" [disabled] [selected]
+                - generic [ref=f36e134]:
+                  - generic [ref=f36e135]: From date
+                  - textbox "From date" [ref=f36e137]
+                - generic [ref=f36e139]:
+                  - generic [ref=f36e140]: To date
+                  - textbox "To date" [ref=f36e142]
+                - button "Search" [ref=f36e144]
+              - table [ref=f36e149]:
+                - caption [ref=f36e150]: Expenses
+                - rowgroup [ref=f36e151]:
+                  - row [ref=f36e152]:
+                    - columnheader "Number" [ref=f36e153]
+                    - columnheader "Date" [ref=f36e154]
+                    - columnheader "Category" [ref=f36e155]
+                    - columnheader "Vendor" [ref=f36e156]
+                    - columnheader "Amount" [ref=f36e157]
+                    - columnheader "Receipt" [ref=f36e158]
+                    - columnheader "Actions" [ref=f36e159]
+                - rowgroup [ref=f36e161]:
+                  - row [ref=f36e162]:
+                    - cell [ref=f36e163]:
+                      - link "EXP-000001" [ref=f36e164] [cursor=pointer]:
+                        - /url: http://127.0.0.1:8000/expenses/1
+                    - cell "2026-09-15" [ref=f36e165]
+                    - cell "No category" [ref=f36e166]
+                    - cell "Office Supplies Co. (updated)" [ref=f36e167]
+                    - cell "250.7500" [ref=f36e168]
+                    - cell [ref=f36e169]
+                    - cell [ref=f36e172]:
+                      - generic [ref=f36e173]:
+                        - link "View" [ref=f36e174] [cursor=pointer]:
+                          - /url: http://127.0.0.1:8000/expenses/1
+                        - link "Edit" [ref=f36e177] [cursor=pointer]:
+                          - /url: http://127.0.0.1:8000/expenses/1/edit
+                        - button "Delete" [active] [ref=f36e180]
+          - dialog [ref=f36e184]:
+            - generic [ref=f36e187]:
+              - generic [ref=f36e188]:
+                - heading "Delete Expenses?" [level=2] [ref=f36e190]
+                - button "Close" [ref=f36e191]
+              - generic [ref=f36e196]:
+                - paragraph [ref=f36e197]: The expense will be removed from the list. The record, its number and any receipt are kept for financial history.
+                - generic [ref=f36e198]:
+                  - button "Cancel" [ref=f36e199]
+                  - button "Delete expense" [ref=f36e200]

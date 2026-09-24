@@ -1,0 +1,124 @@
+- generic [active] [ref=f32e1]:
+  - link "Skip to content" [ref=f32e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=f32e3]:
+    - complementary "Skip to content" [ref=f32e4]:
+      - generic [ref=f32e10]:
+        - paragraph [ref=f32e11]: BusinessOS
+        - paragraph [ref=f32e12]: Business management
+      - navigation [ref=f32e13]:
+        - list [ref=f32e14]:
+          - listitem [ref=f32e15]:
+            - paragraph [ref=f32e16]: Overview
+            - list [ref=f32e17]:
+              - listitem [ref=f32e18]:
+                - link "Dashboard" [ref=f32e19] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/app
+          - listitem [ref=f32e23]:
+            - paragraph [ref=f32e24]: Business
+            - list [ref=f32e25]:
+              - listitem [ref=f32e26]:
+                - link "Expenses" [ref=f32e27] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/expenses
+          - listitem [ref=f32e31]:
+            - paragraph [ref=f32e32]: System
+            - list [ref=f32e33]:
+              - listitem [ref=f32e34]:
+                - link "Settings" [ref=f32e35] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/settings
+      - generic [ref=f32e40]:
+        - generic [ref=f32e41]:
+          - generic [aria-hidden] [ref=f32e42]: A
+          - generic [ref=f32e43]:
+            - generic [ref=f32e44]: Admin
+            - generic [ref=f32e45]: admin@businessos.test
+        - button "Collapse sidebar" [ref=f32e46]
+    - generic [ref=f32e49]:
+      - banner [ref=f32e50]:
+        - button "Global search (coming soon)" [ref=f32e52]:
+          - generic [ref=f32e55]: Search…
+          - generic [ref=f32e56]: ⌘K
+        - generic [ref=f32e57]:
+          - button "Quick actions (coming soon)" [ref=f32e58]
+          - button "Notifications (coming soon)" [ref=f32e62]
+          - button "Switch business" [ref=f32e67]:
+            - generic [ref=f32e72]:
+              - generic [ref=f32e73]: Switch business
+              - generic "TestCo" [ref=f32e74]
+          - button "English" [ref=f32e78]
+          - button "Toggle dark mode" [ref=f32e85]
+          - button "Admin admin@businessos.test" [ref=f32e89]:
+            - generic [ref=f32e90]:
+              - generic [aria-hidden] [ref=f32e91]: A
+              - generic [ref=f32e92]:
+                - generic [ref=f32e93]: Admin
+                - generic [ref=f32e94]: admin@businessos.test
+      - main [ref=f32e97]:
+        - generic [ref=f32e99]:
+          - navigation "Breadcrumb" [ref=f32e101]:
+            - list [ref=f32e102]:
+              - listitem [ref=f32e103]:
+                - link "Dashboard" [ref=f32e104] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/app
+              - listitem [ref=f32e107]:
+                - link "Expenses" [ref=f32e108] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/expenses
+              - listitem [ref=f32e111]:
+                - generic [ref=f32e112]: EXP-000001
+          - generic [ref=f32e113]:
+            - generic [ref=f32e114]:
+              - heading "EXP-000001" [level=1] [ref=f32e115]
+              - paragraph [ref=f32e116]: Information
+            - generic [ref=f32e117]:
+              - link "Expenses" [ref=f32e118] [cursor=pointer]:
+                - /url: http://127.0.0.1:8000/expenses
+              - link "Edit" [ref=f32e121] [cursor=pointer]:
+                - /url: http://127.0.0.1:8000/expenses/1/edit
+          - generic [ref=f32e124]:
+            - status [ref=f32e126]:
+              - generic [ref=f32e129]: Expense updated.
+            - generic [ref=f32e131]:
+              - generic [ref=f32e133]:
+                - heading "Information" [level=2] [ref=f32e136]
+                - generic [ref=f32e138]:
+                  - generic [ref=f32e139]:
+                    - term [ref=f32e140]: Number
+                    - definition [ref=f32e141]: EXP-000001
+                  - generic [ref=f32e142]:
+                    - term [ref=f32e143]: Date
+                    - definition [ref=f32e144]: 2026-09-15
+                  - generic [ref=f32e145]:
+                    - term [ref=f32e146]: Category
+                    - definition [ref=f32e147]: No category
+                  - generic [ref=f32e148]:
+                    - term [ref=f32e149]: Amount
+                    - definition [ref=f32e150]: "250.7500"
+                  - generic [ref=f32e151]:
+                    - term [ref=f32e152]: Payment method
+                    - definition [ref=f32e153]: Bank transfer
+                  - generic [ref=f32e154]:
+                    - term [ref=f32e155]: Reference
+                    - definition [ref=f32e156]: INV-2026-002
+                  - generic [ref=f32e157]:
+                    - term [ref=f32e158]: Vendor / payee
+                    - definition [ref=f32e159]: Office Supplies Co. (updated)
+                  - generic [ref=f32e160]:
+                    - term [ref=f32e161]: Notes
+                    - definition [ref=f32e162]: —
+              - generic [ref=f32e163]:
+                - generic [ref=f32e164]:
+                  - heading "Receipt" [level=2] [ref=f32e167]
+                  - link "7Ze3phQ4HuzkJUbBzgwtiz20GTcnOoqtdD4PtNUR.png Open receipt" [ref=f32e169] [cursor=pointer]:
+                    - /url: http://127.0.0.1:8000/expenses/1/receipt
+                    - generic [ref=f32e172]:
+                      - generic [ref=f32e173]: 7Ze3phQ4HuzkJUbBzgwtiz20GTcnOoqtdD4PtNUR.png
+                      - generic [ref=f32e174]: Open receipt
+                - generic [ref=f32e177]:
+                  - heading "Recorded by" [level=2] [ref=f32e180]
+                  - generic [ref=f32e182]:
+                    - generic [ref=f32e183]:
+                      - term [ref=f32e184]: Recorded by
+                      - definition [ref=f32e185]: Admin
+                    - generic [ref=f32e186]:
+                      - term [ref=f32e187]: Recorded on
+                      - definition [ref=f32e188]: 2026-09-13 17:21

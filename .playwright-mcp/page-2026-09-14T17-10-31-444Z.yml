@@ -1,0 +1,117 @@
+- generic [active] [ref=f2e1]:
+  - link "Skip to content" [ref=f2e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=f2e3]:
+    - complementary "Skip to content" [ref=f2e4]:
+      - generic [ref=f2e10]:
+        - paragraph [ref=f2e11]: BusinessOS
+        - paragraph [ref=f2e12]: Business management
+      - navigation [ref=f2e13]:
+        - list [ref=f2e14]:
+          - listitem [ref=f2e15]:
+            - paragraph [ref=f2e16]: Overview
+            - list [ref=f2e17]:
+              - listitem [ref=f2e18]:
+                - link "Dashboard" [ref=f2e19] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/app
+          - listitem [ref=f2e23]:
+            - paragraph [ref=f2e24]: Business
+            - list [ref=f2e25]:
+              - listitem [ref=f2e26]:
+                - link "Customers" [ref=f2e27] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/customers
+              - listitem [ref=f2e31]:
+                - link "Quotations" [ref=f2e32] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/quotations
+              - listitem [ref=f2e36]:
+                - link "Invoices" [ref=f2e37] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/invoices
+              - listitem [ref=f2e41]:
+                - link "Payments" [ref=f2e42] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/payments
+              - listitem [ref=f2e46]:
+                - link "Products" [ref=f2e47] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/products
+              - listitem [ref=f2e51]:
+                - link "Categories" [ref=f2e52] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/categories
+              - listitem [ref=f2e56]:
+                - link "Units" [ref=f2e57] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/units
+              - listitem [ref=f2e61]:
+                - link "Expenses" [ref=f2e62] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/expenses
+          - listitem [ref=f2e66]:
+            - paragraph [ref=f2e67]: System
+            - list [ref=f2e68]:
+              - listitem [ref=f2e69]:
+                - link "Settings" [ref=f2e70] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/settings
+      - generic [ref=f2e75]:
+        - generic [ref=f2e76]:
+          - generic [aria-hidden] [ref=f2e77]: A
+          - generic [ref=f2e78]:
+            - generic [ref=f2e79]: Admin
+            - generic [ref=f2e80]: admin@businessos.test
+        - button "Collapse sidebar" [ref=f2e81]
+    - generic [ref=f2e84]:
+      - banner [ref=f2e85]:
+        - button "Global search (coming soon)" [ref=f2e87]:
+          - generic [ref=f2e90]: Search…
+          - generic [ref=f2e91]: ⌘K
+        - generic [ref=f2e92]:
+          - button "Quick actions (coming soon)" [ref=f2e93]
+          - button "Notifications (coming soon)" [ref=f2e97]
+          - button "Switch business" [ref=f2e102]:
+            - generic [ref=f2e107]:
+              - generic [ref=f2e108]: Switch business
+              - generic "TestCo" [ref=f2e109]
+          - button "English" [ref=f2e113]
+          - button "Toggle dark mode" [ref=f2e120]
+          - button "Admin admin@businessos.test" [ref=f2e124]:
+            - generic [ref=f2e125]:
+              - generic [aria-hidden] [ref=f2e126]: A
+              - generic [ref=f2e127]:
+                - generic [ref=f2e128]: Admin
+                - generic [ref=f2e129]: admin@businessos.test
+      - main [ref=f2e132]:
+        - generic [ref=f2e134]:
+          - navigation "Breadcrumb" [ref=f2e136]:
+            - list [ref=f2e137]:
+              - listitem [ref=f2e138]:
+                - link "Dashboard" [ref=f2e139] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/app
+              - listitem [ref=f2e142]:
+                - link "Customers" [ref=f2e143] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/customers
+              - listitem [ref=f2e146]:
+                - generic [ref=f2e147]: Import customers
+          - generic [ref=f2e149]:
+            - heading "Import customers" [level=1] [ref=f2e150]
+            - paragraph [ref=f2e151]: Create customers in bulk from a CSV file. Each row becomes a new customer — nothing is updated.
+          - generic [ref=f2e153]:
+            - generic [ref=f2e155]:
+              - heading "Upload a CSV file" [level=2] [ref=f2e158]
+              - generic [ref=f2e160]:
+                - generic [ref=f2e161]:
+                  - generic [ref=f2e162]: CSV file *
+                  - generic [ref=f2e163] [cursor=pointer]:
+                    - generic [ref=f2e164]: Upload
+                    - generic [ref=f2e168]: .csv,text/csv
+                    - button "CSV file Upload .csv,text/csv" [ref=f2e169]
+                  - paragraph [ref=f2e170]: UTF-8 CSV with a header row, matching the template. Files are limited to 2048 KB and 2000 rows.
+                - generic [ref=f2e171]:
+                  - button "Upload CSV" [ref=f2e172]
+                  - link "Download template" [ref=f2e175] [cursor=pointer]:
+                    - /url: http://127.0.0.1:8000/customers/import/template
+            - generic [ref=f2e179]:
+              - heading "Before you upload" [level=2] [ref=f2e182]
+              - list [ref=f2e184]:
+                - listitem [ref=f2e185]:
+                  - generic [ref=f2e188]: "Start from the template: it contains the exact columns this import accepts, nothing more."
+                - listitem [ref=f2e189]:
+                  - generic [ref=f2e192]: Save the file as UTF-8 CSV. A header row is required; unicode text and leading zeros are preserved.
+                - listitem [ref=f2e193]:
+                  - generic [ref=f2e196]: You will always see a preview and a full validation report before anything is created.
+                - listitem [ref=f2e197]:
+                  - generic [ref=f2e200]: If any row is invalid, no rows are created at all — correct the errors and upload again.

@@ -1,0 +1,154 @@
+- generic [ref=f76e1]:
+  - link "Skip to content" [ref=f76e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=f76e3]:
+    - complementary "Skip to content" [ref=f76e4]:
+      - generic [ref=f76e10]:
+        - paragraph [ref=f76e11]: BusinessOS
+        - paragraph [ref=f76e12]: Business management
+      - navigation [ref=f76e13]:
+        - list [ref=f76e14]:
+          - listitem [ref=f76e15]:
+            - paragraph [ref=f76e16]: Overview
+            - list [ref=f76e17]:
+              - listitem [ref=f76e18]:
+                - link "Dashboard" [ref=f76e19] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/app
+          - listitem [ref=f76e23]:
+            - paragraph [ref=f76e24]: Business
+            - list [ref=f76e25]:
+              - listitem [ref=f76e26]:
+                - link "Customers" [ref=f76e27] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/customers
+              - listitem [ref=f76e31]:
+                - link "Quotations" [ref=f76e32] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/quotations
+              - listitem [ref=f76e36]:
+                - link "Invoices" [ref=f76e37] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/invoices
+              - listitem [ref=f76e41]:
+                - link "Payments" [ref=f76e42] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/payments
+              - listitem [ref=f76e46]:
+                - link "Products" [ref=f76e47] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/products
+              - listitem [ref=f76e51]:
+                - link "Categories" [ref=f76e52] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/categories
+              - listitem [ref=f76e56]:
+                - link "Units" [ref=f76e57] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/units
+              - listitem [ref=f76e61]:
+                - link "Expenses" [ref=f76e62] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/expenses
+          - listitem [ref=f76e66]:
+            - paragraph [ref=f76e67]: System
+            - list [ref=f76e68]:
+              - listitem [ref=f76e69]:
+                - link "Settings" [ref=f76e70] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/settings
+      - generic [ref=f76e75]:
+        - generic [ref=f76e76]:
+          - generic [aria-hidden] [ref=f76e77]: A
+          - generic [ref=f76e78]:
+            - generic [ref=f76e79]: Admin
+            - generic [ref=f76e80]: admin@businessos.test
+        - button "Collapse sidebar" [ref=f76e81]
+    - generic [ref=f76e84]:
+      - banner [ref=f76e85]:
+        - button "Global search (coming soon)" [ref=f76e87]:
+          - generic [ref=f76e90]: Search…
+          - generic [ref=f76e91]: ⌘K
+        - generic [ref=f76e92]:
+          - button "Quick actions (coming soon)" [ref=f76e93]
+          - button "Notifications (coming soon)" [ref=f76e97]
+          - button "Switch business" [ref=f76e102]:
+            - generic [ref=f76e107]:
+              - generic [ref=f76e108]: Switch business
+              - generic "TestCo" [ref=f76e109]
+          - button "English" [ref=f76e113]
+          - button "Toggle dark mode" [ref=f76e120]
+          - button "Admin admin@businessos.test" [ref=f76e124]:
+            - generic [ref=f76e125]:
+              - generic [aria-hidden] [ref=f76e126]: A
+              - generic [ref=f76e127]:
+                - generic [ref=f76e128]: Admin
+                - generic [ref=f76e129]: admin@businessos.test
+      - main [ref=f76e132]:
+        - generic [ref=f76e134]:
+          - navigation "Breadcrumb" [ref=f76e136]:
+            - list [ref=f76e137]:
+              - listitem [ref=f76e138]:
+                - link "Dashboard" [ref=f76e139] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/app
+              - listitem [ref=f76e142]:
+                - link "Invoices" [ref=f76e143] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/invoices
+              - listitem [ref=f76e146]:
+                - generic [ref=f76e147]: New invoice
+          - generic [ref=f76e149]:
+            - heading "New invoice" [level=1] [ref=f76e150]
+            - paragraph [ref=f76e151]: Issue and track invoices for your customers.
+          - generic [ref=f76e153]:
+            - generic [ref=f76e154]:
+              - heading "Information" [level=2] [ref=f76e157]
+              - generic [ref=f76e159]:
+                - generic [ref=f76e161]:
+                  - generic [ref=f76e162]: Customer *
+                  - combobox "Customer" [ref=f76e164]:
+                    - option "No customer" [disabled] [selected]
+                    - option "Acme Traders (Acme Trading LLC)"
+                - generic [ref=f76e166]:
+                  - generic [ref=f76e167]: Status *
+                  - combobox "Status" [ref=f76e169]:
+                    - option "Draft" [selected]
+                    - option "Sent"
+                - generic [ref=f76e171]:
+                  - generic [ref=f76e172]: Date *
+                  - textbox "Date" [ref=f76e174]: 2026-09-13
+            - generic [ref=f76e175]:
+              - generic [ref=f76e178]:
+                - heading "Line items" [level=2] [ref=f76e179]
+                - button "Add line" [ref=f76e180]
+              - generic [ref=f76e183]:
+                - table [ref=f76e185]:
+                  - rowgroup [ref=f76e186]:
+                    - row [ref=f76e187]:
+                      - columnheader "Product / service" [ref=f76e188]
+                      - columnheader "invoices.description" [ref=f76e189]
+                      - columnheader "Qty" [ref=f76e190]
+                      - columnheader "Unit price" [ref=f76e191]
+                      - columnheader "Remove line" [ref=f76e192]
+                  - rowgroup [ref=f76e194]:
+                    - row [ref=f76e195]:
+                      - cell "—" [ref=f76e196]:
+                        - combobox [ref=f76e197]:
+                          - option "—" [selected]
+                      - cell [ref=f76e198]:
+                        - textbox "Describe the item or service…" [ref=f76e199]
+                      - cell [ref=f76e200]:
+                        - spinbutton [ref=f76e201]: "1"
+                      - cell [ref=f76e202]:
+                        - spinbutton [ref=f76e203]
+                      - cell "Remove line" [ref=f76e204]:
+                        - button "Remove line" [disabled]
+                - paragraph [ref=f76e205]: invoices.items_min
+            - generic [ref=f76e206]:
+              - heading "Total" [level=2] [ref=f76e209]
+              - generic [ref=f76e211]:
+                - generic [ref=f76e213]:
+                  - generic [ref=f76e214]: Discount (exclusive)
+                  - combobox "Discount (exclusive)" [ref=f76e216]:
+                    - option "No discount" [disabled] [selected]
+                    - option "Percentage"
+                    - option "Fixed amount"
+                - generic [ref=f76e218]:
+                  - generic [ref=f76e219]: Discount amount
+                  - spinbutton "Discount amount" [ref=f76e221]
+                - generic [ref=f76e223]:
+                  - generic [ref=f76e224]: Notes
+                  - textbox "Notes" [ref=f76e225]
+            - generic [ref=f76e226]:
+              - button "Create" [ref=f76e227]
+              - link "Cancel" [ref=f76e230] [cursor=pointer]:
+                - /url: http://127.0.0.1:8000/invoices

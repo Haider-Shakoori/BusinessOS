@@ -1,0 +1,96 @@
+- generic [active] [ref=f25e1]:
+  - link "Skip to content" [ref=f25e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=f25e3]:
+    - complementary "Skip to content" [ref=f25e4]:
+      - generic [ref=f25e10]:
+        - paragraph [ref=f25e11]: BusinessOS
+        - paragraph [ref=f25e12]: Business management
+      - navigation [ref=f25e13]:
+        - list [ref=f25e14]:
+          - listitem [ref=f25e15]:
+            - paragraph [ref=f25e16]: Overview
+            - list [ref=f25e17]:
+              - listitem [ref=f25e18]:
+                - link "Dashboard" [ref=f25e19] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/app
+          - listitem [ref=f25e23]:
+            - paragraph [ref=f25e24]: Business
+            - list [ref=f25e25]:
+              - listitem [ref=f25e26]:
+                - link "Expenses" [ref=f25e27] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/expenses
+          - listitem [ref=f25e31]:
+            - paragraph [ref=f25e32]: System
+            - list [ref=f25e33]:
+              - listitem [ref=f25e34]:
+                - link "Settings" [ref=f25e35] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/settings
+      - generic [ref=f25e40]:
+        - generic [ref=f25e41]:
+          - generic [aria-hidden] [ref=f25e42]: A
+          - generic [ref=f25e43]:
+            - generic [ref=f25e44]: Admin
+            - generic [ref=f25e45]: admin@businessos.test
+        - button "Collapse sidebar" [ref=f25e46]
+    - generic [ref=f25e49]:
+      - banner [ref=f25e50]:
+        - button "Global search (coming soon)" [ref=f25e52]:
+          - generic [ref=f25e55]: Search…
+          - generic [ref=f25e56]: ⌘K
+        - generic [ref=f25e57]:
+          - button "Quick actions (coming soon)" [ref=f25e58]
+          - button "Notifications (coming soon)" [ref=f25e62]
+          - button "Switch business" [ref=f25e67]:
+            - generic [ref=f25e72]:
+              - generic [ref=f25e73]: Switch business
+              - generic "TestCo" [ref=f25e74]
+          - button "English" [ref=f25e78]
+          - button "Toggle dark mode" [ref=f25e85]
+          - button "Admin admin@businessos.test" [ref=f25e89]:
+            - generic [ref=f25e90]:
+              - generic [aria-hidden] [ref=f25e91]: A
+              - generic [ref=f25e92]:
+                - generic [ref=f25e93]: Admin
+                - generic [ref=f25e94]: admin@businessos.test
+      - main [ref=f25e97]:
+        - generic [ref=f25e99]:
+          - navigation "Breadcrumb" [ref=f25e101]:
+            - list [ref=f25e102]:
+              - listitem [ref=f25e103]:
+                - link "Dashboard" [ref=f25e104] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/app
+              - listitem [ref=f25e107]:
+                - link "Expenses" [ref=f25e108] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/expenses
+              - listitem [ref=f25e111]:
+                - generic [ref=f25e112]: Expense report
+          - generic [ref=f25e113]:
+            - generic [ref=f25e114]:
+              - heading "Expense report" [level=1] [ref=f25e115]
+              - paragraph [ref=f25e116]: Operational summary of expenses across a date range.
+            - generic [ref=f25e117]:
+              - link "Expenses" [ref=f25e118] [cursor=pointer]:
+                - /url: http://127.0.0.1:8000/expenses
+              - link "Add expense" [ref=f25e121] [cursor=pointer]:
+                - /url: http://127.0.0.1:8000/expenses/create
+          - generic [ref=f25e124]:
+            - generic [ref=f25e127]:
+              - generic [ref=f25e128]:
+                - generic [ref=f25e129]: Category
+                - combobox "Category" [ref=f25e131]:
+                  - option "All categories" [disabled] [selected]
+              - generic [ref=f25e133]:
+                - generic [ref=f25e134]: From date
+                - textbox "From date" [ref=f25e136]
+              - generic [ref=f25e138]:
+                - generic [ref=f25e139]: To date
+                - textbox "To date" [ref=f25e141]
+              - button "Generate report" [ref=f25e143]
+            - generic [ref=f25e150]:
+              - paragraph [ref=f25e151]: Total expenses
+              - paragraph [ref=f25e152]: "0"
+              - paragraph [ref=f25e153]: 0 expenses
+            - generic [ref=f25e159]:
+              - heading "No expenses in the selected range." [level=3] [ref=f25e163]
+              - paragraph [ref=f25e164]: Adjust the filters to see expenses and the report total.

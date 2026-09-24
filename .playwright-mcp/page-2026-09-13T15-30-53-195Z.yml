@@ -1,0 +1,191 @@
+- generic [active] [ref=f18e1]:
+  - link "Skip to content" [ref=f18e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=f18e3]:
+    - complementary "Skip to content" [ref=f18e4]:
+      - generic [ref=f18e10]:
+        - paragraph [ref=f18e11]: BusinessOS
+        - paragraph [ref=f18e12]: Business management
+      - navigation [ref=f18e13]:
+        - list [ref=f18e14]:
+          - listitem [ref=f18e15]:
+            - paragraph [ref=f18e16]: Overview
+            - list [ref=f18e17]:
+              - listitem [ref=f18e18]:
+                - link "Dashboard" [ref=f18e19] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/app
+          - listitem [ref=f18e23]:
+            - paragraph [ref=f18e24]: Business
+            - list [ref=f18e25]:
+              - listitem [ref=f18e26]:
+                - link "Customers" [ref=f18e27] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/customers
+              - listitem [ref=f18e31]:
+                - link "Quotations" [ref=f18e32] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/quotations
+              - listitem [ref=f18e36]:
+                - link "Invoices" [ref=f18e37] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/invoices
+              - listitem [ref=f18e41]:
+                - link "Payments" [ref=f18e42] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/payments
+          - listitem [ref=f18e46]:
+            - paragraph [ref=f18e47]: System
+            - list [ref=f18e48]:
+              - listitem [ref=f18e49]:
+                - link "Settings" [ref=f18e50] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/settings
+      - generic [ref=f18e55]:
+        - generic [ref=f18e56]:
+          - generic [aria-hidden] [ref=f18e57]: A
+          - generic [ref=f18e58]:
+            - generic [ref=f18e59]: Admin User
+            - generic [ref=f18e60]: admin@businessos.test
+        - button "Collapse sidebar" [ref=f18e61]
+    - generic [ref=f18e64]:
+      - banner [ref=f18e65]:
+        - button "Global search (coming soon)" [ref=f18e67]:
+          - generic [ref=f18e70]: Search…
+          - generic [ref=f18e71]: ⌘K
+        - generic [ref=f18e72]:
+          - button "Quick actions (coming soon)" [ref=f18e73]
+          - button "Notifications (coming soon)" [ref=f18e77]
+          - button "Switch business" [ref=f18e82]:
+            - generic [ref=f18e87]:
+              - generic [ref=f18e88]: Switch business
+              - generic "TestCo" [ref=f18e89]
+          - button "English" [ref=f18e93]
+          - button "Toggle dark mode" [ref=f18e100]
+          - button "Admin User admin@businessos.test" [ref=f18e104]:
+            - generic [ref=f18e105]:
+              - generic [aria-hidden] [ref=f18e106]: A
+              - generic [ref=f18e107]:
+                - generic [ref=f18e108]: Admin User
+                - generic [ref=f18e109]: admin@businessos.test
+      - main [ref=f18e112]:
+        - generic [ref=f18e114]:
+          - navigation "Breadcrumb" [ref=f18e116]:
+            - list [ref=f18e117]:
+              - listitem [ref=f18e118]:
+                - link "Dashboard" [ref=f18e119] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/app
+              - listitem [ref=f18e122]:
+                - link "Invoices" [ref=f18e123] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/invoices
+              - listitem [ref=f18e126]:
+                - generic [ref=f18e127]: INV-000001
+          - generic [ref=f18e128]:
+            - generic [ref=f18e129]:
+              - heading "INV-000001" [level=1] [ref=f18e130]
+              - paragraph [ref=f18e131]: Invoice
+            - generic [ref=f18e132]:
+              - link "All invoices" [ref=f18e133] [cursor=pointer]:
+                - /url: http://127.0.0.1:8000/invoices
+              - button "Print" [ref=f18e136]
+              - button "Record payment" [ref=f18e139]
+          - generic [ref=f18e142]:
+            - status [ref=f18e144]:
+              - generic [ref=f18e147]: This invoice is no longer a draft and can no longer be edited or deleted.
+            - generic [ref=f18e149]:
+              - generic [ref=f18e150]:
+                - generic [ref=f18e151]:
+                  - generic [ref=f18e154]:
+                    - heading "Line items" [level=2] [ref=f18e155]
+                    - generic [ref=f18e156]: Partially paid
+                  - generic [ref=f18e158]:
+                    - table [ref=f18e160]:
+                      - rowgroup [ref=f18e161]:
+                        - row [ref=f18e162]:
+                          - columnheader "Product / service" [ref=f18e163]
+                          - columnheader "invoices.description" [ref=f18e164]
+                          - columnheader "Qty" [ref=f18e165]
+                          - columnheader "Unit price" [ref=f18e166]
+                          - columnheader "Amount" [ref=f18e167]
+                      - rowgroup [ref=f18e168]:
+                        - row [ref=f18e169]:
+                          - cell "—" [ref=f18e170]
+                          - cell "Web development services" [ref=f18e171]
+                          - cell "10.0000" [ref=f18e172]
+                          - cell "10.0000" [ref=f18e173]
+                          - cell "100.0000" [ref=f18e174]
+                    - generic [ref=f18e176]:
+                      - generic [ref=f18e177]:
+                        - term [ref=f18e178]: Subtotal
+                        - definition [ref=f18e179]: "100.0000"
+                      - generic [ref=f18e180]:
+                        - term [ref=f18e181]: Total
+                        - definition [ref=f18e182]: "100.0000"
+                      - generic [ref=f18e183]:
+                        - term [ref=f18e184]: Paid
+                        - definition [ref=f18e185]: "60.0000"
+                      - generic [ref=f18e186]:
+                        - term [ref=f18e187]: Due
+                        - definition [ref=f18e188]: "40.0000"
+                - generic [ref=f18e190]:
+                  - generic [ref=f18e193]:
+                    - heading "Payment history" [level=2] [ref=f18e194]
+                    - generic [ref=f18e195]: 2 payments
+                  - table [ref=f18e198]:
+                    - rowgroup [ref=f18e199]:
+                      - row [ref=f18e200]:
+                        - columnheader "Number" [ref=f18e201]
+                        - columnheader "Date" [ref=f18e202]
+                        - columnheader "Method" [ref=f18e203]
+                        - columnheader "Status" [ref=f18e204]
+                        - columnheader "Amount" [ref=f18e205]
+                        - columnheader "Actions" [ref=f18e206]
+                    - rowgroup [ref=f18e208]:
+                      - row [ref=f18e209]:
+                        - cell [ref=f18e210]:
+                          - link "PAY-000002" [ref=f18e211] [cursor=pointer]:
+                            - /url: http://127.0.0.1:8000/payments/2
+                        - cell "2026-09-13" [ref=f18e212]
+                        - cell "Cash" [ref=f18e213]
+                        - cell "Active" [ref=f18e214]
+                        - cell "60.0000" [ref=f18e217]
+                        - cell [ref=f18e218]:
+                          - generic [ref=f18e219]:
+                            - link "View" [ref=f18e220] [cursor=pointer]:
+                              - /url: http://127.0.0.1:8000/payments/2
+                            - button "Reverse payment" [ref=f18e223]
+                      - row [ref=f18e226]:
+                        - cell [ref=f18e227]:
+                          - link "PAY-000001" [ref=f18e228] [cursor=pointer]:
+                            - /url: http://127.0.0.1:8000/payments/1
+                        - cell "2026-09-13" [ref=f18e229]
+                        - cell "Cash" [ref=f18e230]
+                        - cell "Reversed" [ref=f18e231]
+                        - cell "40.0000" [ref=f18e234]
+                        - cell [ref=f18e235]:
+                          - link "View" [ref=f18e237] [cursor=pointer]:
+                            - /url: http://127.0.0.1:8000/payments/1
+              - generic [ref=f18e241]:
+                - heading "Information" [level=2] [ref=f18e244]
+                - generic [ref=f18e246]:
+                  - generic [ref=f18e247]:
+                    - term [ref=f18e248]: Number
+                    - definition [ref=f18e249]: INV-000001
+                  - generic [ref=f18e250]:
+                    - term [ref=f18e251]: Customer
+                    - definition [ref=f18e252]:
+                      - link "Batch16 Buyer" [ref=f18e253] [cursor=pointer]:
+                        - /url: http://127.0.0.1:8000/customers/1
+                  - generic [ref=f18e254]:
+                    - term [ref=f18e255]: Date
+                    - definition [ref=f18e256]: 2026-09-13
+                  - generic [ref=f18e257]:
+                    - term [ref=f18e258]: Status
+                    - definition [ref=f18e259]:
+                      - generic [ref=f18e260]: Partially paid
+                  - generic [ref=f18e262]:
+                    - term [ref=f18e263]: Source
+                    - definition [ref=f18e264]: —
+                  - generic [ref=f18e265]:
+                    - term [ref=f18e266]: Created by
+                    - definition [ref=f18e267]: Admin User
+                  - generic [ref=f18e268]:
+                    - term [ref=f18e269]: Created
+                    - definition [ref=f18e270]: 2026-09-13 15:26
+                  - generic [ref=f18e271]:
+                    - term [ref=f18e272]: Updated
+                    - definition [ref=f18e273]: 2026-09-13 15:30

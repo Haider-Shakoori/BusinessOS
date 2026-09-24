@@ -1,0 +1,146 @@
+- generic [active] [ref=f65e1]:
+  - link "Skip to content" [ref=f65e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=f65e3]:
+    - complementary "Skip to content" [ref=f65e4]:
+      - generic [ref=f65e10]:
+        - paragraph [ref=f65e11]: BusinessOS
+        - paragraph [ref=f65e12]: Business management
+      - navigation [ref=f65e13]:
+        - list [ref=f65e14]:
+          - listitem [ref=f65e15]:
+            - paragraph [ref=f65e16]: Overview
+            - list [ref=f65e17]:
+              - listitem [ref=f65e18]:
+                - link "Dashboard" [ref=f65e19] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/app
+          - listitem [ref=f65e23]:
+            - paragraph [ref=f65e24]: Business
+            - list [ref=f65e25]:
+              - listitem [ref=f65e26]:
+                - link "Customers" [ref=f65e27] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/customers
+              - listitem [ref=f65e31]:
+                - link "Quotations" [ref=f65e32] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/quotations
+              - listitem [ref=f65e36]:
+                - link "Invoices" [ref=f65e37] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/invoices
+              - listitem [ref=f65e41]:
+                - link "Payments" [ref=f65e42] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/payments
+              - listitem [ref=f65e46]:
+                - link "Products" [ref=f65e47] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/products
+              - listitem [ref=f65e51]:
+                - link "Categories" [ref=f65e52] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/categories
+              - listitem [ref=f65e56]:
+                - link "Units" [ref=f65e57] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/units
+              - listitem [ref=f65e61]:
+                - link "Expenses" [ref=f65e62] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/expenses
+          - listitem [ref=f65e66]:
+            - paragraph [ref=f65e67]: System
+            - list [ref=f65e68]:
+              - listitem [ref=f65e69]:
+                - link "Settings" [ref=f65e70] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/settings
+      - generic [ref=f65e75]:
+        - generic [ref=f65e76]:
+          - generic [aria-hidden] [ref=f65e77]: A
+          - generic [ref=f65e78]:
+            - generic [ref=f65e79]: Admin
+            - generic [ref=f65e80]: admin@businessos.test
+        - button "Collapse sidebar" [ref=f65e81]
+    - generic [ref=f65e84]:
+      - banner [ref=f65e85]:
+        - button "Global search (coming soon)" [ref=f65e87]:
+          - generic [ref=f65e90]: Search…
+          - generic [ref=f65e91]: ⌘K
+        - generic [ref=f65e92]:
+          - button "Quick actions (coming soon)" [ref=f65e93]
+          - button "Notifications (coming soon)" [ref=f65e97]
+          - button "Switch business" [ref=f65e102]:
+            - generic [ref=f65e107]:
+              - generic [ref=f65e108]: Switch business
+              - generic "TestCo" [ref=f65e109]
+          - button "English" [ref=f65e113]
+          - button "Toggle dark mode" [ref=f65e120]
+          - button "Admin admin@businessos.test" [ref=f65e124]:
+            - generic [ref=f65e125]:
+              - generic [aria-hidden] [ref=f65e126]: A
+              - generic [ref=f65e127]:
+                - generic [ref=f65e128]: Admin
+                - generic [ref=f65e129]: admin@businessos.test
+      - main [ref=f65e132]:
+        - generic [ref=f65e134]:
+          - navigation "Breadcrumb" [ref=f65e136]:
+            - list [ref=f65e137]:
+              - listitem [ref=f65e138]:
+                - link "Customers" [ref=f65e139] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/customers
+              - listitem [ref=f65e142]:
+                - generic [ref=f65e143]: Acme Traders
+          - generic [ref=f65e144]:
+            - generic [ref=f65e145]:
+              - heading "Acme Traders" [level=1] [ref=f65e146]
+              - paragraph [ref=f65e147]: Customer details
+            - generic [ref=f65e148]:
+              - link "View all" [ref=f65e149] [cursor=pointer]:
+                - /url: http://127.0.0.1:8000/customers
+              - link "Customer statement" [ref=f65e150] [cursor=pointer]:
+                - /url: http://127.0.0.1:8000/customers/1/statement
+              - link "Customer ledger" [ref=f65e153] [cursor=pointer]:
+                - /url: http://127.0.0.1:8000/customers/1/ledger
+              - link "Edit" [ref=f65e156] [cursor=pointer]:
+                - /url: http://127.0.0.1:8000/customers/1/edit
+              - button "Delete" [ref=f65e159]
+          - generic [ref=f65e162]:
+            - status [ref=f65e164]:
+              - generic [ref=f65e167]: Added
+            - generic [ref=f65e169]:
+              - generic [ref=f65e172]:
+                - paragraph [ref=f65e173]: Outstanding balance
+                - paragraph [ref=f65e174]: "250.0000"
+              - generic [ref=f65e180]:
+                - paragraph [ref=f65e181]: Total invoiced
+                - paragraph [ref=f65e182]: "0.0000"
+              - generic [ref=f65e188]:
+                - paragraph [ref=f65e189]: Total paid
+                - paragraph [ref=f65e190]: "0.0000"
+              - generic [ref=f65e196]:
+                - paragraph [ref=f65e197]: Opening balance
+                - paragraph [ref=f65e198]: "250.0000"
+            - generic [ref=f65e202]:
+              - generic [ref=f65e204]:
+                - heading "About this customer" [level=2] [ref=f65e207]
+                - generic [ref=f65e209]:
+                  - generic [ref=f65e210]:
+                    - term [ref=f65e211]: Name
+                    - definition [ref=f65e212]: Acme Traders
+                  - generic [ref=f65e213]:
+                    - term [ref=f65e214]: Company name
+                    - definition [ref=f65e215]: Acme Trading LLC
+                  - generic [ref=f65e216]:
+                    - term [ref=f65e217]: Email
+                    - definition [ref=f65e218]: —
+                  - generic [ref=f65e219]:
+                    - term [ref=f65e220]: Phone
+                    - definition [ref=f65e221]: —
+                  - generic [ref=f65e222]:
+                    - term [ref=f65e223]: Address
+                    - definition [ref=f65e224]: —
+                  - generic [ref=f65e225]:
+                    - term [ref=f65e226]: Notes
+                    - definition [ref=f65e227]: —
+              - generic [ref=f65e229]:
+                - heading "Information" [level=2] [ref=f65e232]
+                - generic [ref=f65e234]:
+                  - generic [ref=f65e235]:
+                    - term [ref=f65e236]: Added at
+                    - definition [ref=f65e237]: 2026-09-13 20:08
+                  - generic [ref=f65e238]:
+                    - term [ref=f65e239]: Last updated
+                    - definition [ref=f65e240]: 2026-09-13 20:08

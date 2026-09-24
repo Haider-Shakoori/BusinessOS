@@ -1,0 +1,113 @@
+- generic [active] [ref=f33e1]:
+  - link "Skip to content" [ref=f33e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=f33e3]:
+    - complementary "Skip to content" [ref=f33e4]:
+      - generic [ref=f33e10]:
+        - paragraph [ref=f33e11]: BusinessOS
+        - paragraph [ref=f33e12]: Business management
+      - navigation [ref=f33e13]:
+        - list [ref=f33e14]:
+          - listitem [ref=f33e15]:
+            - paragraph [ref=f33e16]: Overview
+            - list [ref=f33e17]:
+              - listitem [ref=f33e18]:
+                - link "Dashboard" [ref=f33e19] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/app
+          - listitem [ref=f33e23]:
+            - paragraph [ref=f33e24]: Business
+            - list [ref=f33e25]:
+              - listitem [ref=f33e26]:
+                - link "Expenses" [ref=f33e27] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/expenses
+          - listitem [ref=f33e31]:
+            - paragraph [ref=f33e32]: System
+            - list [ref=f33e33]:
+              - listitem [ref=f33e34]:
+                - link "Settings" [ref=f33e35] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/settings
+      - generic [ref=f33e40]:
+        - generic [ref=f33e41]:
+          - generic [aria-hidden] [ref=f33e42]: A
+          - generic [ref=f33e43]:
+            - generic [ref=f33e44]: Admin
+            - generic [ref=f33e45]: admin@businessos.test
+        - button "Collapse sidebar" [ref=f33e46]
+    - generic [ref=f33e49]:
+      - banner [ref=f33e50]:
+        - button "Global search (coming soon)" [ref=f33e52]:
+          - generic [ref=f33e55]: Search…
+          - generic [ref=f33e56]: ⌘K
+        - generic [ref=f33e57]:
+          - button "Quick actions (coming soon)" [ref=f33e58]
+          - button "Notifications (coming soon)" [ref=f33e62]
+          - button "Switch business" [ref=f33e67]:
+            - generic [ref=f33e72]:
+              - generic [ref=f33e73]: Switch business
+              - generic "TestCo" [ref=f33e74]
+          - button "English" [ref=f33e78]
+          - button "Toggle dark mode" [ref=f33e85]
+          - button "Admin admin@businessos.test" [ref=f33e89]:
+            - generic [ref=f33e90]:
+              - generic [aria-hidden] [ref=f33e91]: A
+              - generic [ref=f33e92]:
+                - generic [ref=f33e93]: Admin
+                - generic [ref=f33e94]: admin@businessos.test
+      - main [ref=f33e97]:
+        - generic [ref=f33e99]:
+          - navigation "Breadcrumb" [ref=f33e101]:
+            - list [ref=f33e102]:
+              - listitem [ref=f33e103]:
+                - link "Dashboard" [ref=f33e104] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/app
+              - listitem [ref=f33e107]:
+                - link "Expenses" [ref=f33e108] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/expenses
+              - listitem [ref=f33e111]:
+                - generic [ref=f33e112]: Expense report
+          - generic [ref=f33e113]:
+            - generic [ref=f33e114]:
+              - heading "Expense report" [level=1] [ref=f33e115]
+              - paragraph [ref=f33e116]: Operational summary of expenses across a date range.
+            - generic [ref=f33e117]:
+              - link "Expenses" [ref=f33e118] [cursor=pointer]:
+                - /url: http://127.0.0.1:8000/expenses
+              - link "Add expense" [ref=f33e121] [cursor=pointer]:
+                - /url: http://127.0.0.1:8000/expenses
+          - generic [ref=f33e124]:
+            - generic [ref=f33e127]:
+              - generic [ref=f33e128]:
+                - generic [ref=f33e129]: Category
+                - combobox "Category" [ref=f33e131]:
+                  - option "All categories" [disabled] [selected]
+              - generic [ref=f33e133]:
+                - generic [ref=f33e134]: From date
+                - textbox "From date" [ref=f33e136]
+              - generic [ref=f33e138]:
+                - generic [ref=f33e139]: To date
+                - textbox "To date" [ref=f33e141]
+              - button "Generate report" [ref=f33e143]
+            - generic [ref=f33e150]:
+              - paragraph [ref=f33e151]: Total expenses
+              - paragraph [ref=f33e152]: "250.7500"
+              - paragraph [ref=f33e153]: 1 expense
+            - table [ref=f33e159]:
+              - caption [ref=f33e160]: Expense report
+              - rowgroup [ref=f33e161]:
+                - row [ref=f33e162]:
+                  - columnheader "Number" [ref=f33e163]
+                  - columnheader "Date" [ref=f33e164]
+                  - columnheader "Category" [ref=f33e165]
+                  - columnheader "Vendor" [ref=f33e166]
+                  - columnheader "Amount" [ref=f33e167]
+                  - columnheader "Receipt" [ref=f33e168]
+              - rowgroup [ref=f33e169]:
+                - row [ref=f33e170]:
+                  - cell [ref=f33e171]:
+                    - link "EXP-000001" [ref=f33e172] [cursor=pointer]:
+                      - /url: http://127.0.0.1:8000/expenses/1
+                  - cell "2026-09-15" [ref=f33e173]
+                  - cell "No category" [ref=f33e174]
+                  - cell "Office Supplies Co. (updated)" [ref=f33e175]
+                  - cell "250.7500" [ref=f33e176]
+                  - cell [ref=f33e177]

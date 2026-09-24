@@ -1,0 +1,96 @@
+- generic [active] [ref=f37e1]:
+  - link "Skip to content" [ref=f37e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=f37e3]:
+    - complementary "Skip to content" [ref=f37e4]:
+      - generic [ref=f37e10]:
+        - paragraph [ref=f37e11]: BusinessOS
+        - paragraph [ref=f37e12]: Business management
+      - navigation [ref=f37e13]:
+        - list [ref=f37e14]:
+          - listitem [ref=f37e15]:
+            - paragraph [ref=f37e16]: Overview
+            - list [ref=f37e17]:
+              - listitem [ref=f37e18]:
+                - link "Dashboard" [ref=f37e19] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/app
+          - listitem [ref=f37e23]:
+            - paragraph [ref=f37e24]: Business
+            - list [ref=f37e25]:
+              - listitem [ref=f37e26]:
+                - link "Expenses" [ref=f37e27] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/expenses
+          - listitem [ref=f37e32]:
+            - paragraph [ref=f37e33]: System
+            - list [ref=f37e34]:
+              - listitem [ref=f37e35]:
+                - link "Settings" [ref=f37e36] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/settings
+      - generic [ref=f37e41]:
+        - generic [ref=f37e42]:
+          - generic [aria-hidden] [ref=f37e43]: A
+          - generic [ref=f37e44]:
+            - generic [ref=f37e45]: Admin
+            - generic [ref=f37e46]: admin@businessos.test
+        - button "Collapse sidebar" [ref=f37e47]
+    - generic [ref=f37e50]:
+      - banner [ref=f37e51]:
+        - button "Global search (coming soon)" [ref=f37e53]:
+          - generic [ref=f37e56]: Search…
+          - generic [ref=f37e57]: ⌘K
+        - generic [ref=f37e58]:
+          - button "Quick actions (coming soon)" [ref=f37e59]
+          - button "Notifications (coming soon)" [ref=f37e63]
+          - button "Switch business" [ref=f37e68]:
+            - generic [ref=f37e73]:
+              - generic [ref=f37e74]: Switch business
+              - generic "TestCo" [ref=f37e75]
+          - button "English" [ref=f37e79]
+          - button "Toggle dark mode" [ref=f37e86]
+          - button "Admin admin@businessos.test" [ref=f37e90]:
+            - generic [ref=f37e91]:
+              - generic [aria-hidden] [ref=f37e92]: A
+              - generic [ref=f37e93]:
+                - generic [ref=f37e94]: Admin
+                - generic [ref=f37e95]: admin@businessos.test
+      - main [ref=f37e98]:
+        - generic [ref=f37e100]:
+          - navigation "Breadcrumb" [ref=f37e102]:
+            - list [ref=f37e103]:
+              - listitem [ref=f37e104]:
+                - link "Dashboard" [ref=f37e105] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/app
+              - listitem [ref=f37e108]:
+                - generic [ref=f37e109]: Expenses
+          - generic [ref=f37e110]:
+            - generic [ref=f37e111]:
+              - heading "Expenses" [level=1] [ref=f37e112]
+              - paragraph [ref=f37e113]: Record, categorize and track your business expenses.
+            - generic [ref=f37e114]:
+              - link "Expense report" [ref=f37e115] [cursor=pointer]:
+                - /url: http://127.0.0.1:8000/expenses/report
+              - link "Add expense" [ref=f37e118] [cursor=pointer]:
+                - /url: http://127.0.0.1:8000/expenses/create
+          - generic [ref=f37e121]:
+            - status [ref=f37e123]:
+              - generic [ref=f37e126]: Expense deleted.
+            - search [ref=f37e130]:
+              - generic [ref=f37e131]:
+                - generic [ref=f37e132]: Search expenses
+                - searchbox "Search expenses" [ref=f37e134]
+              - generic [ref=f37e135]:
+                - generic [ref=f37e136]: Category
+                - combobox "Category" [ref=f37e138]:
+                  - option "All categories" [disabled] [selected]
+              - generic [ref=f37e140]:
+                - generic [ref=f37e141]: From date
+                - textbox "From date" [ref=f37e143]
+              - generic [ref=f37e145]:
+                - generic [ref=f37e146]: To date
+                - textbox "To date" [ref=f37e148]
+              - button "Search" [ref=f37e150]
+            - generic [ref=f37e155]:
+              - heading "No expenses" [level=3] [ref=f37e159]
+              - paragraph [ref=f37e160]: There are no expenses in this business yet. Add your first expense to get started.
+              - link "Add expense" [ref=f37e162] [cursor=pointer]:
+                - /url: http://127.0.0.1:8000/expenses/create

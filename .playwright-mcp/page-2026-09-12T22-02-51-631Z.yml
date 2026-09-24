@@ -1,0 +1,101 @@
+- generic [active] [ref=f38e1]:
+  - link "Skip to content" [ref=f38e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=f38e3]:
+    - complementary "Skip to content" [ref=f38e4]:
+      - generic [ref=f38e10]:
+        - paragraph [ref=f38e11]: BusinessOS
+        - paragraph [ref=f38e12]: Business management
+      - navigation [ref=f38e13]:
+        - list [ref=f38e14]:
+          - listitem [ref=f38e15]:
+            - paragraph [ref=f38e16]: Overview
+            - list [ref=f38e17]:
+              - listitem [ref=f38e18]:
+                - link "Dashboard" [ref=f38e19] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8015/app
+          - listitem [ref=f38e23]:
+            - paragraph [ref=f38e24]: Business
+            - list [ref=f38e25]:
+              - listitem [ref=f38e26]:
+                - link "Customers" [ref=f38e27] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8015/customers
+              - listitem [ref=f38e31]:
+                - link "Quotations" [ref=f38e32] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8015/quotations
+              - listitem [ref=f38e36]:
+                - link "Invoices" [ref=f38e37] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8015/invoices
+              - listitem [ref=f38e42]:
+                - link "Payments" [ref=f38e43] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8015/payments
+          - listitem [ref=f38e47]:
+            - paragraph [ref=f38e48]: System
+            - list [ref=f38e49]:
+              - listitem [ref=f38e50]:
+                - link "Settings" [ref=f38e51] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8015/settings
+      - generic [ref=f38e56]:
+        - generic [ref=f38e57]:
+          - generic [aria-hidden] [ref=f38e58]: Q
+          - generic [ref=f38e59]:
+            - generic [ref=f38e60]: QA User
+            - generic [ref=f38e61]: qa@test.dev
+        - button "Collapse sidebar" [ref=f38e62]
+    - generic [ref=f38e65]:
+      - banner [ref=f38e66]:
+        - button "Global search (coming soon)" [ref=f38e68]:
+          - generic [ref=f38e71]: Search…
+          - generic [ref=f38e72]: ⌘K
+        - generic [ref=f38e73]:
+          - button "Quick actions (coming soon)" [ref=f38e74]
+          - button "Notifications (coming soon)" [ref=f38e78]
+          - button "Switch business" [ref=f38e83]:
+            - generic [ref=f38e88]:
+              - generic [ref=f38e89]: Switch business
+              - generic "QA Test Business" [ref=f38e90]
+          - button "English" [ref=f38e94]
+          - button "Toggle dark mode" [ref=f38e101]
+          - button "QA User qa@test.dev" [ref=f38e105]:
+            - generic [ref=f38e106]:
+              - generic [aria-hidden] [ref=f38e107]: Q
+              - generic [ref=f38e108]:
+                - generic [ref=f38e109]: QA User
+                - generic [ref=f38e110]: qa@test.dev
+      - main [ref=f38e113]:
+        - generic [ref=f38e115]:
+          - navigation "Breadcrumb" [ref=f38e117]:
+            - list [ref=f38e118]:
+              - listitem [ref=f38e119]:
+                - link "Dashboard" [ref=f38e120] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8015/app
+              - listitem [ref=f38e123]:
+                - generic [ref=f38e124]: Invoices
+          - generic [ref=f38e125]:
+            - generic [ref=f38e126]:
+              - heading "Invoices" [level=1] [ref=f38e127]
+              - paragraph [ref=f38e128]: Issue and track invoices for your customers.
+            - link "New invoice" [ref=f38e130] [cursor=pointer]:
+              - /url: http://127.0.0.1:8015/invoices/create
+          - generic [ref=f38e133]:
+            - generic [ref=f38e134]:
+              - search [ref=f38e135]:
+                - generic [ref=f38e136]: Search invoices
+                - searchbox "Search invoices" [ref=f38e138]
+                - button "Search" [ref=f38e139]
+              - group "Filter by status" [ref=f38e140]:
+                - link "All" [ref=f38e141] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8015/invoices
+                - link "Draft" [ref=f38e142] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8015/invoices?status=draft
+                - link "Sent" [ref=f38e143] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8015/invoices?status=sent
+                - link "Partially paid" [ref=f38e144] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8015/invoices?status=partially_paid
+                - link "Paid" [ref=f38e145] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8015/invoices?status=paid
+            - generic [ref=f38e148]:
+              - heading "No invoices" [level=3] [ref=f38e152]
+              - paragraph [ref=f38e153]: There are no invoices in this business yet. Create your first invoice to get started.
+              - link "New invoice" [ref=f38e155] [cursor=pointer]:
+                - /url: http://127.0.0.1:8015/invoices/create

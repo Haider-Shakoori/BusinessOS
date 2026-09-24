@@ -1,0 +1,182 @@
+- generic [active] [ref=f14e1]:
+  - link "Skip to content" [ref=f14e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=f14e3]:
+    - complementary "Skip to content" [ref=f14e4]:
+      - generic [ref=f14e10]:
+        - paragraph [ref=f14e11]: BusinessOS
+        - paragraph [ref=f14e12]: Business management
+      - navigation [ref=f14e13]:
+        - list [ref=f14e14]:
+          - listitem [ref=f14e15]:
+            - paragraph [ref=f14e16]: Overview
+            - list [ref=f14e17]:
+              - listitem [ref=f14e18]:
+                - link "Dashboard" [ref=f14e19] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/app
+          - listitem [ref=f14e23]:
+            - paragraph [ref=f14e24]: Business
+            - list [ref=f14e25]:
+              - listitem [ref=f14e26]:
+                - link "Customers" [ref=f14e27] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/customers
+              - listitem [ref=f14e31]:
+                - link "Quotations" [ref=f14e32] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/quotations
+              - listitem [ref=f14e36]:
+                - link "Invoices" [ref=f14e37] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/invoices
+              - listitem [ref=f14e41]:
+                - link "Payments" [ref=f14e42] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/payments
+          - listitem [ref=f14e46]:
+            - paragraph [ref=f14e47]: System
+            - list [ref=f14e48]:
+              - listitem [ref=f14e49]:
+                - link "Settings" [ref=f14e50] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/settings
+      - generic [ref=f14e55]:
+        - generic [ref=f14e56]:
+          - generic [aria-hidden] [ref=f14e57]: A
+          - generic [ref=f14e58]:
+            - generic [ref=f14e59]: Admin User
+            - generic [ref=f14e60]: admin@businessos.test
+        - button "Collapse sidebar" [ref=f14e61]
+    - generic [ref=f14e64]:
+      - banner [ref=f14e65]:
+        - button "Global search (coming soon)" [ref=f14e67]:
+          - generic [ref=f14e70]: Search…
+          - generic [ref=f14e71]: ⌘K
+        - generic [ref=f14e72]:
+          - button "Quick actions (coming soon)" [ref=f14e73]
+          - button "Notifications (coming soon)" [ref=f14e77]
+          - button "Switch business" [ref=f14e82]:
+            - generic [ref=f14e87]:
+              - generic [ref=f14e88]: Switch business
+              - generic "TestCo" [ref=f14e89]
+          - button "English" [ref=f14e93]
+          - button "Toggle dark mode" [ref=f14e100]
+          - button "Admin User admin@businessos.test" [ref=f14e104]:
+            - generic [ref=f14e105]:
+              - generic [aria-hidden] [ref=f14e106]: A
+              - generic [ref=f14e107]:
+                - generic [ref=f14e108]: Admin User
+                - generic [ref=f14e109]: admin@businessos.test
+      - main [ref=f14e112]:
+        - generic [ref=f14e114]:
+          - navigation "Breadcrumb" [ref=f14e116]:
+            - list [ref=f14e117]:
+              - listitem [ref=f14e118]:
+                - link "Dashboard" [ref=f14e119] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/app
+              - listitem [ref=f14e122]:
+                - link "Invoices" [ref=f14e123] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/invoices
+              - listitem [ref=f14e126]:
+                - generic [ref=f14e127]: INV-000001
+          - generic [ref=f14e128]:
+            - generic [ref=f14e129]:
+              - heading "INV-000001" [level=1] [ref=f14e130]
+              - paragraph [ref=f14e131]: Invoice
+            - generic [ref=f14e132]:
+              - link "All invoices" [ref=f14e133] [cursor=pointer]:
+                - /url: http://127.0.0.1:8000/invoices
+              - button "Print" [ref=f14e136]
+              - button "Record payment" [ref=f14e139]
+          - generic [ref=f14e142]:
+            - status [ref=f14e144]:
+              - generic [ref=f14e147]: Payment recorded.
+            - status [ref=f14e150]:
+              - generic [ref=f14e153]: This invoice is no longer a draft and can no longer be edited or deleted.
+            - generic [ref=f14e155]:
+              - generic [ref=f14e156]:
+                - generic [ref=f14e157]:
+                  - generic [ref=f14e160]:
+                    - heading "Line items" [level=2] [ref=f14e161]
+                    - generic [ref=f14e162]: Partially paid
+                  - generic [ref=f14e164]:
+                    - table [ref=f14e166]:
+                      - rowgroup [ref=f14e167]:
+                        - row [ref=f14e168]:
+                          - columnheader "Product / service" [ref=f14e169]
+                          - columnheader "invoices.description" [ref=f14e170]
+                          - columnheader "Qty" [ref=f14e171]
+                          - columnheader "Unit price" [ref=f14e172]
+                          - columnheader "Amount" [ref=f14e173]
+                      - rowgroup [ref=f14e174]:
+                        - row [ref=f14e175]:
+                          - cell "—" [ref=f14e176]
+                          - cell "Web development services" [ref=f14e177]
+                          - cell "10.0000" [ref=f14e178]
+                          - cell "10.0000" [ref=f14e179]
+                          - cell "100.0000" [ref=f14e180]
+                    - generic [ref=f14e182]:
+                      - generic [ref=f14e183]:
+                        - term [ref=f14e184]: Subtotal
+                        - definition [ref=f14e185]: "100.0000"
+                      - generic [ref=f14e186]:
+                        - term [ref=f14e187]: Total
+                        - definition [ref=f14e188]: "100.0000"
+                      - generic [ref=f14e189]:
+                        - term [ref=f14e190]: Paid
+                        - definition [ref=f14e191]: "40.0000"
+                      - generic [ref=f14e192]:
+                        - term [ref=f14e193]: Due
+                        - definition [ref=f14e194]: "60.0000"
+                - generic [ref=f14e196]:
+                  - generic [ref=f14e199]:
+                    - heading "Payment history" [level=2] [ref=f14e200]
+                    - generic [ref=f14e201]: 1 payment
+                  - table [ref=f14e204]:
+                    - rowgroup [ref=f14e205]:
+                      - row [ref=f14e206]:
+                        - columnheader "Number" [ref=f14e207]
+                        - columnheader "Date" [ref=f14e208]
+                        - columnheader "Method" [ref=f14e209]
+                        - columnheader "Status" [ref=f14e210]
+                        - columnheader "Amount" [ref=f14e211]
+                        - columnheader "Actions" [ref=f14e212]
+                    - rowgroup [ref=f14e214]:
+                      - row [ref=f14e215]:
+                        - cell [ref=f14e216]:
+                          - link "PAY-000001" [ref=f14e217] [cursor=pointer]:
+                            - /url: http://127.0.0.1:8000/payments/1
+                        - cell "2026-09-13" [ref=f14e218]
+                        - cell "Cash" [ref=f14e219]
+                        - cell "Active" [ref=f14e220]
+                        - cell "40.0000" [ref=f14e223]
+                        - cell [ref=f14e224]:
+                          - generic [ref=f14e225]:
+                            - link "View" [ref=f14e226] [cursor=pointer]:
+                              - /url: http://127.0.0.1:8000/payments/1
+                            - button "Reverse payment" [ref=f14e229]
+              - generic [ref=f14e233]:
+                - heading "Information" [level=2] [ref=f14e236]
+                - generic [ref=f14e238]:
+                  - generic [ref=f14e239]:
+                    - term [ref=f14e240]: Number
+                    - definition [ref=f14e241]: INV-000001
+                  - generic [ref=f14e242]:
+                    - term [ref=f14e243]: Customer
+                    - definition [ref=f14e244]:
+                      - link "Batch16 Buyer" [ref=f14e245] [cursor=pointer]:
+                        - /url: http://127.0.0.1:8000/customers/1
+                  - generic [ref=f14e246]:
+                    - term [ref=f14e247]: Date
+                    - definition [ref=f14e248]: 2026-09-13
+                  - generic [ref=f14e249]:
+                    - term [ref=f14e250]: Status
+                    - definition [ref=f14e251]:
+                      - generic [ref=f14e252]: Partially paid
+                  - generic [ref=f14e254]:
+                    - term [ref=f14e255]: Source
+                    - definition [ref=f14e256]: —
+                  - generic [ref=f14e257]:
+                    - term [ref=f14e258]: Created by
+                    - definition [ref=f14e259]: Admin User
+                  - generic [ref=f14e260]:
+                    - term [ref=f14e261]: Created
+                    - definition [ref=f14e262]: 2026-09-13 15:26
+                  - generic [ref=f14e263]:
+                    - term [ref=f14e264]: Updated
+                    - definition [ref=f14e265]: 2026-09-13 15:27

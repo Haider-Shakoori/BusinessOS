@@ -1,0 +1,4 @@
+[ 3402027ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_TIMED_OUT @ https://www.gstatic.com/_/translate_http/_/ss/k=translate_http.tr.zZZZhVqDDCw.L.W.O/am=BECAAQ/d=0/rs=AN8SPfreld5KM52lJgLi44qeAC03eRorPQ/m=el_main_css:0
+[ 3403472ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_TIMED_OUT @ http://translate.google.com/gen204?nca=te_li&client=te_lib&logld=vTE_20260909:0
+[ 3403532ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_TIMED_OUT @ http://translate.google.com/gen204?sl=ar&tl=en&textlen=31&ttt=1383&ttl=12&ttf=815&sr=1&ef=sda%2Ceopa&nca=te_time&client=te_lib&logld=vTE_20260909:0
+[ 3404855ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_TIMED_OUT @ http://translate.google.com/gen204?sl=ar&tl=en&textlen=31&ttt=251&ttl=12&ttf=815&sr=1&ef=sda%2Ceopa&nca=te_time&client=te_lib&logld=vTE_20260909:0

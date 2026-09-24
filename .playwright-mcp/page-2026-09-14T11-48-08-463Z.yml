@@ -1,0 +1,4 @@
+- generic [ref=f120e2]:
+  - heading "Oops! An Error Occurred" [level=1] [ref=f120e3]
+  - heading "The server returned a \"405 Method Not Allowed\"." [level=2] [ref=f120e4]
+  - paragraph [ref=f120e5]: Something is broken. Please let us know what you were doing when this error occurred. We will fix it as soon as possible. Sorry for any inconvenience caused.

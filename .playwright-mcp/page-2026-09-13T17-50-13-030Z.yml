@@ -1,0 +1,117 @@
+- generic [active] [ref=f42e1]:
+  - link "Skip to content" [ref=f42e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=f42e3]:
+    - complementary "Skip to content" [ref=f42e4]:
+      - generic [ref=f42e10]:
+        - paragraph [ref=f42e11]: BusinessOS
+        - paragraph [ref=f42e12]: Business management
+      - navigation [ref=f42e13]:
+        - list [ref=f42e14]:
+          - listitem [ref=f42e15]:
+            - paragraph [ref=f42e16]: Overview
+            - list [ref=f42e17]:
+              - listitem [ref=f42e18]:
+                - link "Dashboard" [ref=f42e19] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/app
+          - listitem [ref=f42e23]:
+            - paragraph [ref=f42e24]: Business
+            - list [ref=f42e25]:
+              - listitem [ref=f42e26]:
+                - link "Expenses" [ref=f42e27] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/expenses
+          - listitem [ref=f42e31]:
+            - paragraph [ref=f42e32]: System
+            - list [ref=f42e33]:
+              - listitem [ref=f42e34]:
+                - link "Settings" [ref=f42e35] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/settings
+      - generic [ref=f42e40]:
+        - generic [ref=f42e41]:
+          - generic [aria-hidden] [ref=f42e42]: A
+          - generic [ref=f42e43]:
+            - generic [ref=f42e44]: Admin
+            - generic [ref=f42e45]: admin@businessos.test
+        - button "Collapse sidebar" [ref=f42e46]
+    - generic [ref=f42e49]:
+      - banner [ref=f42e50]:
+        - button "Global search (coming soon)" [ref=f42e52]:
+          - generic [ref=f42e55]: Search…
+          - generic [ref=f42e56]: ⌘K
+        - generic [ref=f42e57]:
+          - button "Quick actions (coming soon)" [ref=f42e58]
+          - button "Notifications (coming soon)" [ref=f42e62]
+          - button "Switch business" [ref=f42e67]:
+            - generic [ref=f42e72]:
+              - generic [ref=f42e73]: Switch business
+              - generic "TestCo" [ref=f42e74]
+          - button "English" [ref=f42e78]
+          - button "Toggle dark mode" [ref=f42e85]
+          - button "Admin admin@businessos.test" [ref=f42e89]:
+            - generic [ref=f42e90]:
+              - generic [aria-hidden] [ref=f42e91]: A
+              - generic [ref=f42e92]:
+                - generic [ref=f42e93]: Admin
+                - generic [ref=f42e94]: admin@businessos.test
+      - main [ref=f42e97]:
+        - generic [ref=f42e99]:
+          - navigation "Breadcrumb" [ref=f42e101]:
+            - list [ref=f42e102]:
+              - listitem [ref=f42e103]:
+                - link "Dashboard" [ref=f42e104] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/app
+              - listitem [ref=f42e107]:
+                - link "Expenses" [ref=f42e108] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/expenses
+              - listitem [ref=f42e111]:
+                - generic [ref=f42e112]: New expense
+          - heading "New expense" [level=1] [ref=f42e115]
+          - generic [ref=f42e117]:
+            - generic [ref=f42e118]:
+              - heading "Information" [level=2] [ref=f42e121]
+              - generic [ref=f42e123]:
+                - generic [ref=f42e125]:
+                  - generic [ref=f42e126]: Date *
+                  - textbox "Date" [ref=f42e128]: 2026-09-16
+                - generic [ref=f42e130]:
+                  - generic [ref=f42e131]: Category
+                  - combobox "Category" [ref=f42e133]:
+                    - option "No category" [disabled] [selected]
+                - generic [ref=f42e135]:
+                  - generic [ref=f42e136]: Amount *
+                  - spinbutton "Amount" [ref=f42e138]: "50.00"
+                - generic [ref=f42e140]:
+                  - generic [ref=f42e141]: Payment method
+                  - combobox "Payment method" [ref=f42e143]:
+                    - option "Not specified" [disabled] [selected]
+                    - option "Cash"
+                    - option "Bank transfer"
+                    - option "Card"
+                    - option "Cheque"
+                    - option "Mobile money"
+                    - option "Other"
+            - generic [ref=f42e144]:
+              - heading "Details" [level=2] [ref=f42e147]
+              - generic [ref=f42e149]:
+                - generic [ref=f42e151]:
+                  - generic [ref=f42e152]: Vendor / payee
+                  - textbox "Vendor / payee" [ref=f42e154]
+                - generic [ref=f42e156]:
+                  - generic [ref=f42e157]: Reference
+                  - textbox "Reference" [ref=f42e159]
+                - generic [ref=f42e161]:
+                  - generic [ref=f42e162]: Notes
+                  - textbox "Notes" [ref=f42e163]
+            - generic [ref=f42e164]:
+              - heading "Receipt" [level=2] [ref=f42e167]
+              - generic [ref=f42e169]:
+                - generic [ref=f42e170]: Upload receipt
+                - generic [ref=f42e171] [cursor=pointer]:
+                  - generic [ref=f42e172]: Upload
+                  - generic [ref=f42e176]: .jpg,.jpeg,.png,.webp,.pdf
+                  - button "Upload receipt Upload .jpg,.jpeg,.png,.webp,.pdf" [ref=f42e177]
+                - paragraph [ref=f42e178]: The receipt must be a JPG, PNG, WEBP or PDF file.
+            - generic [ref=f42e179]:
+              - button "Create" [ref=f42e180]
+              - link "Cancel" [ref=f42e183] [cursor=pointer]:
+                - /url: http://127.0.0.1:8000/expenses

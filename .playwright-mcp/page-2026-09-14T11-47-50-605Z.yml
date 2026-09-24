@@ -1,0 +1,134 @@
+- generic [ref=f119e1]:
+  - link "Skip to content" [ref=f119e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=f119e3]:
+    - complementary "Skip to content" [ref=f119e4]:
+      - generic [ref=f119e10]:
+        - paragraph [ref=f119e11]: BusinessOS
+        - paragraph [ref=f119e12]: Business management
+      - navigation [ref=f119e13]:
+        - list [ref=f119e14]:
+          - listitem [ref=f119e15]:
+            - paragraph [ref=f119e16]: Overview
+            - list [ref=f119e17]:
+              - listitem [ref=f119e18]:
+                - link "Dashboard" [ref=f119e19] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/app
+          - listitem [ref=f119e23]:
+            - paragraph [ref=f119e24]: Business
+            - list [ref=f119e25]:
+              - listitem [ref=f119e26]:
+                - link "Customers" [ref=f119e27] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/customers
+              - listitem [ref=f119e31]:
+                - link "Quotations" [ref=f119e32] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/quotations
+              - listitem [ref=f119e36]:
+                - link "Invoices" [ref=f119e37] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/invoices
+              - listitem [ref=f119e41]:
+                - link "Payments" [ref=f119e42] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/payments
+              - listitem [ref=f119e46]:
+                - link "Products" [ref=f119e47] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/products
+              - listitem [ref=f119e51]:
+                - link "Categories" [ref=f119e52] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/categories
+              - listitem [ref=f119e56]:
+                - link "Units" [ref=f119e57] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/units
+              - listitem [ref=f119e61]:
+                - link "Expenses" [ref=f119e62] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/expenses
+          - listitem [ref=f119e66]:
+            - paragraph [ref=f119e67]: System
+            - list [ref=f119e68]:
+              - listitem [ref=f119e69]:
+                - link "Settings" [ref=f119e70] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/settings
+      - generic [ref=f119e75]:
+        - generic [ref=f119e76]:
+          - generic [aria-hidden] [ref=f119e77]: A
+          - generic [ref=f119e78]:
+            - generic [ref=f119e79]: Admin
+            - generic [ref=f119e80]: admin@businessos.test
+        - button "Collapse sidebar" [ref=f119e81]
+    - generic [ref=f119e84]:
+      - banner [ref=f119e85]:
+        - button "Global search (coming soon)" [ref=f119e87]:
+          - generic [ref=f119e90]: Search…
+          - generic [ref=f119e91]: ⌘K
+        - generic [ref=f119e92]:
+          - button "Quick actions (coming soon)" [ref=f119e93]
+          - button "Notifications (coming soon)" [ref=f119e97]
+          - button "Switch business" [ref=f119e102]:
+            - generic [ref=f119e107]:
+              - generic [ref=f119e108]: Switch business
+              - generic "TestCo" [ref=f119e109]
+          - button "English" [ref=f119e113]
+          - button "Toggle dark mode" [ref=f119e120]
+          - button "Admin admin@businessos.test" [ref=f119e124]:
+            - generic [ref=f119e125]:
+              - generic [aria-hidden] [ref=f119e126]: A
+              - generic [ref=f119e127]:
+                - generic [ref=f119e128]: Admin
+                - generic [ref=f119e129]: admin@businessos.test
+      - main [ref=f119e132]:
+        - generic [ref=f119e134]:
+          - navigation "Breadcrumb" [ref=f119e136]:
+            - list [ref=f119e137]:
+              - listitem [ref=f119e138]:
+                - link "Dashboard" [ref=f119e139] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/app
+              - listitem [ref=f119e142]:
+                - link "Expenses" [ref=f119e143] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/expenses
+              - listitem [ref=f119e146]:
+                - generic [ref=f119e147]: Expense report
+          - generic [ref=f119e148]:
+            - generic [ref=f119e149]:
+              - heading "Expense report" [level=1] [ref=f119e150]
+              - paragraph [ref=f119e151]: Operational summary of expenses across a date range.
+            - generic [ref=f119e152]:
+              - link "Expenses" [ref=f119e153] [cursor=pointer]:
+                - /url: http://127.0.0.1:8000/expenses
+              - link "Add expense" [ref=f119e156] [cursor=pointer]:
+                - /url: http://127.0.0.1:8000/expenses/create
+          - generic [ref=f119e159]:
+            - generic [ref=f119e162]:
+              - generic [ref=f119e163]:
+                - generic [ref=f119e164]: Category
+                - combobox "Category" [ref=f119e166]:
+                  - option "All categories" [disabled] [selected]
+              - generic [ref=f119e168]:
+                - generic [ref=f119e169]: From date
+                - textbox "From date" [ref=f119e171]
+              - generic [ref=f119e173]:
+                - generic [ref=f119e174]: To date
+                - textbox "To date" [ref=f119e176]
+              - button "Generate report" [ref=f119e178]
+            - generic [ref=f119e185]:
+              - paragraph [ref=f119e186]: Total expenses
+              - paragraph [ref=f119e187]: "7050.0000"
+              - paragraph [ref=f119e188]: 1 expense · AFN
+            - table [ref=f119e194]:
+              - caption [ref=f119e195]: Expense report
+              - rowgroup [ref=f119e196]:
+                - row [ref=f119e197]:
+                  - columnheader "Number" [ref=f119e198]
+                  - columnheader "Date" [ref=f119e199]
+                  - columnheader "Category" [ref=f119e200]
+                  - columnheader "Vendor" [ref=f119e201]
+                  - columnheader "Amount" [ref=f119e202]
+                  - columnheader "Receipt" [ref=f119e203]
+              - rowgroup [ref=f119e204]:
+                - row [ref=f119e205]:
+                  - cell [ref=f119e206]:
+                    - link "EXP-000001" [ref=f119e207] [cursor=pointer]:
+                      - /url: http://127.0.0.1:8000/expenses/1
+                  - cell "2026-09-14" [ref=f119e208]
+                  - cell "No category" [ref=f119e209]
+                  - cell "QA Managed Services" [ref=f119e210]
+                  - cell "100.0000 USD" [ref=f119e211]
+                  - cell "—" [ref=f119e213]

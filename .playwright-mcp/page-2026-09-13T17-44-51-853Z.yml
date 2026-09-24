@@ -1,0 +1,120 @@
+- generic [active] [ref=f39e1]:
+  - link "Skip to content" [ref=f39e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=f39e3]:
+    - complementary "Skip to content" [ref=f39e4]:
+      - generic [ref=f39e10]:
+        - paragraph [ref=f39e11]: BusinessOS
+        - paragraph [ref=f39e12]: Business management
+      - navigation [ref=f39e13]:
+        - list [ref=f39e14]:
+          - listitem [ref=f39e15]:
+            - paragraph [ref=f39e16]: Overview
+            - list [ref=f39e17]:
+              - listitem [ref=f39e18]:
+                - link "Dashboard" [ref=f39e19] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/app
+          - listitem [ref=f39e23]:
+            - paragraph [ref=f39e24]: Business
+            - list [ref=f39e25]:
+              - listitem [ref=f39e26]:
+                - link "Expenses" [ref=f39e27] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/expenses
+          - listitem [ref=f39e31]:
+            - paragraph [ref=f39e32]: System
+            - list [ref=f39e33]:
+              - listitem [ref=f39e34]:
+                - link "Settings" [ref=f39e35] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/settings
+      - generic [ref=f39e40]:
+        - generic [ref=f39e41]:
+          - generic [aria-hidden] [ref=f39e42]: A
+          - generic [ref=f39e43]:
+            - generic [ref=f39e44]: Admin
+            - generic [ref=f39e45]: admin@businessos.test
+        - button "Collapse sidebar" [ref=f39e46]
+    - generic [ref=f39e49]:
+      - banner [ref=f39e50]:
+        - button "Global search (coming soon)" [ref=f39e52]:
+          - generic [ref=f39e55]: Search…
+          - generic [ref=f39e56]: ⌘K
+        - generic [ref=f39e57]:
+          - button "Quick actions (coming soon)" [ref=f39e58]
+          - button "Notifications (coming soon)" [ref=f39e62]
+          - button "Switch business" [ref=f39e67]:
+            - generic [ref=f39e72]:
+              - generic [ref=f39e73]: Switch business
+              - generic "TestCo" [ref=f39e74]
+          - button "English" [ref=f39e78]
+          - button "Toggle dark mode" [ref=f39e85]
+          - button "Admin admin@businessos.test" [ref=f39e89]:
+            - generic [ref=f39e90]:
+              - generic [aria-hidden] [ref=f39e91]: A
+              - generic [ref=f39e92]:
+                - generic [ref=f39e93]: Admin
+                - generic [ref=f39e94]: admin@businessos.test
+      - main [ref=f39e97]:
+        - generic [ref=f39e99]:
+          - navigation "Breadcrumb" [ref=f39e101]:
+            - list [ref=f39e102]:
+              - listitem [ref=f39e103]:
+                - link "Dashboard" [ref=f39e104] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/app
+              - listitem [ref=f39e107]:
+                - link "Expenses" [ref=f39e108] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/expenses
+              - listitem [ref=f39e111]:
+                - generic [ref=f39e112]: EXP-000002
+          - generic [ref=f39e113]:
+            - generic [ref=f39e114]:
+              - heading "EXP-000002" [level=1] [ref=f39e115]
+              - paragraph [ref=f39e116]: Information
+            - generic [ref=f39e117]:
+              - link "Expenses" [ref=f39e118] [cursor=pointer]:
+                - /url: http://127.0.0.1:8000/expenses
+              - link "Edit" [ref=f39e121] [cursor=pointer]:
+                - /url: http://127.0.0.1:8000/expenses/2/edit
+          - generic [ref=f39e124]:
+            - status [ref=f39e126]:
+              - generic [ref=f39e129]: Expense created.
+            - generic [ref=f39e131]:
+              - generic [ref=f39e133]:
+                - heading "Information" [level=2] [ref=f39e136]
+                - generic [ref=f39e138]:
+                  - generic [ref=f39e139]:
+                    - term [ref=f39e140]: Number
+                    - definition [ref=f39e141]: EXP-000002
+                  - generic [ref=f39e142]:
+                    - term [ref=f39e143]: Date
+                    - definition [ref=f39e144]: 2026-09-14
+                  - generic [ref=f39e145]:
+                    - term [ref=f39e146]: Category
+                    - definition [ref=f39e147]: No category
+                  - generic [ref=f39e148]:
+                    - term [ref=f39e149]: Amount
+                    - definition [ref=f39e150]: "199.0000"
+                  - generic [ref=f39e151]:
+                    - term [ref=f39e152]: Payment method
+                    - definition [ref=f39e153]: Not specified
+                  - generic [ref=f39e154]:
+                    - term [ref=f39e155]: Reference
+                    - definition [ref=f39e156]: —
+                  - generic [ref=f39e157]:
+                    - term [ref=f39e158]: Vendor / payee
+                    - definition [ref=f39e159]: Wire Co.
+                  - generic [ref=f39e160]:
+                    - term [ref=f39e161]: Notes
+                    - definition [ref=f39e162]: —
+              - generic [ref=f39e163]:
+                - generic [ref=f39e164]:
+                  - heading "Receipt" [level=2] [ref=f39e167]
+                  - paragraph [ref=f39e169]: No receipt
+                - generic [ref=f39e170]:
+                  - heading "Recorded by" [level=2] [ref=f39e173]
+                  - generic [ref=f39e175]:
+                    - generic [ref=f39e176]:
+                      - term [ref=f39e177]: Recorded by
+                      - definition [ref=f39e178]: Admin
+                    - generic [ref=f39e179]:
+                      - term [ref=f39e180]: Recorded on
+                      - definition [ref=f39e181]: 2026-09-13 17:44

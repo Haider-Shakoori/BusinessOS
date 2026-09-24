@@ -1,0 +1,79 @@
+- generic [ref=f127e1]:
+  - link "رفتن به محتوا" [ref=f127e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=f127e3]:
+    - complementary "رفتن به محتوا" [ref=f127e4]:
+      - generic [ref=f127e10]:
+        - paragraph [ref=f127e11]: BusinessOS
+        - paragraph [ref=f127e12]: مدیریت کسب و کار
+      - navigation [ref=f127e13]:
+        - list [ref=f127e14]:
+          - listitem [ref=f127e15]:
+            - paragraph [ref=f127e16]: نمای کلی
+            - list [ref=f127e17]:
+              - listitem [ref=f127e18]:
+                - link "داشبورد" [ref=f127e19] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/app
+          - listitem [ref=f127e24]:
+            - paragraph [ref=f127e25]: کسب و کار
+            - list [ref=f127e26]:
+              - listitem [ref=f127e27]:
+                - link "مشتریان" [ref=f127e28] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/customers
+              - listitem [ref=f127e32]:
+                - link "فاکتورها" [ref=f127e33] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/invoices
+              - listitem [ref=f127e37]:
+                - link "پرداخت‌ها" [ref=f127e38] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/payments
+              - listitem [ref=f127e42]:
+                - link "هزینه‌ها" [ref=f127e43] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/expenses
+          - listitem [ref=f127e47]:
+            - paragraph [ref=f127e48]: سیستم
+            - list [ref=f127e49]:
+              - listitem [ref=f127e50]:
+                - link "تنظیمات" [ref=f127e51] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/settings
+      - generic [ref=f127e56]:
+        - generic [ref=f127e57]:
+          - generic [aria-hidden] [ref=f127e58]: V
+          - generic [ref=f127e59]:
+            - generic [ref=f127e60]: Viewer
+            - generic [ref=f127e61]: viewer@businessos.test
+        - button "بستن نوار کناری" [ref=f127e62]
+    - generic [ref=f127e65]:
+      - banner [ref=f127e66]:
+        - button "جستجوی سراسری (به زودی)" [ref=f127e68]:
+          - generic [ref=f127e71]: جستجو…
+          - generic [ref=f127e72]: ⌘K
+        - generic [ref=f127e73]:
+          - button "عملیات سریع (به زودی)" [ref=f127e74]
+          - button "اعلان‌ها (به زودی)" [ref=f127e78]
+          - button "تغییر کسب و کار" [ref=f127e83]:
+            - generic [ref=f127e88]:
+              - generic [ref=f127e89]: تغییر کسب و کار
+              - generic "TestCo" [ref=f127e90]
+          - button "فارسی" [ref=f127e94]
+          - button "تغییر حالت تاریک" [ref=f127e101]
+          - button "Viewer viewer@businessos.test" [ref=f127e105]:
+            - generic [ref=f127e106]:
+              - generic [aria-hidden] [ref=f127e107]: V
+              - generic [ref=f127e108]:
+                - generic [ref=f127e109]: Viewer
+                - generic [ref=f127e110]: viewer@businessos.test
+      - main [ref=f127e113]:
+        - generic [ref=f127e115]:
+          - heading "صفحه حساب" [level=1] [ref=f127e118]
+          - generic [ref=f127e121]:
+            - paragraph [ref=f127e122]: خوش آمدید، Viewer.
+            - paragraph [ref=f127e123]: شما وارد BusinessOS شده‌اید.
+            - generic [ref=f127e124]: "کسب و کار فعلی: TestCo"
+            - generic [ref=f127e127]:
+              - heading "نقش‌های شما در TestCo" [level=3] [ref=f127e128]
+              - generic [ref=f127e131]: بیننده
+              - heading "دسترسی‌های شما در TestCo" [level=3] [ref=f127e135]
+              - list [ref=f127e136]:
+                - listitem [ref=f127e137]: مشاهده کاربران
+                - listitem [ref=f127e140]: مشاهده تنظیمات
+                - listitem [ref=f127e143]: مشاهده مشتریان

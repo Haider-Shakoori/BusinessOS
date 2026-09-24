@@ -1,0 +1,127 @@
+- generic [ref=f86e1]:
+  - link "Skip to content" [ref=f86e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=f86e3]:
+    - complementary "Skip to content" [ref=f86e4]:
+      - generic [ref=f86e10]:
+        - paragraph [ref=f86e11]: BusinessOS
+        - paragraph [ref=f86e12]: Business management
+      - navigation [ref=f86e13]:
+        - list [ref=f86e14]:
+          - listitem [ref=f86e15]:
+            - paragraph [ref=f86e16]: Overview
+            - list [ref=f86e17]:
+              - listitem [ref=f86e18]:
+                - link "Dashboard" [ref=f86e19] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/app
+          - listitem [ref=f86e23]:
+            - paragraph [ref=f86e24]: Business
+            - list [ref=f86e25]:
+              - listitem [ref=f86e26]:
+                - link "Customers" [ref=f86e27] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/customers
+              - listitem [ref=f86e31]:
+                - link "Quotations" [ref=f86e32] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/quotations
+              - listitem [ref=f86e36]:
+                - link "Invoices" [ref=f86e37] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/invoices
+              - listitem [ref=f86e41]:
+                - link "Payments" [ref=f86e42] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/payments
+              - listitem [ref=f86e46]:
+                - link "Products" [ref=f86e47] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/products
+              - listitem [ref=f86e51]:
+                - link "Categories" [ref=f86e52] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/categories
+              - listitem [ref=f86e56]:
+                - link "Units" [ref=f86e57] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/units
+              - listitem [ref=f86e61]:
+                - link "Expenses" [ref=f86e62] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/expenses
+          - listitem [ref=f86e66]:
+            - paragraph [ref=f86e67]: System
+            - list [ref=f86e68]:
+              - listitem [ref=f86e69]:
+                - link "Settings" [ref=f86e70] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/settings
+      - generic [ref=f86e75]:
+        - generic [ref=f86e76]:
+          - generic [aria-hidden] [ref=f86e77]: A
+          - generic [ref=f86e78]:
+            - generic [ref=f86e79]: Admin
+            - generic [ref=f86e80]: admin@businessos.test
+        - button "Collapse sidebar" [ref=f86e81]
+    - generic [ref=f86e84]:
+      - banner [ref=f86e85]:
+        - button "Global search (coming soon)" [ref=f86e87]:
+          - generic [ref=f86e90]: Search…
+          - generic [ref=f86e91]: ⌘K
+        - generic [ref=f86e92]:
+          - button "Quick actions (coming soon)" [ref=f86e93]
+          - button "Notifications (coming soon)" [ref=f86e97]
+          - button "Switch business" [ref=f86e102]:
+            - generic [ref=f86e107]:
+              - generic [ref=f86e108]: Switch business
+              - generic "TestCo" [ref=f86e109]
+          - button "English" [ref=f86e113]
+          - button "Toggle dark mode" [ref=f86e120]
+          - button "Admin admin@businessos.test" [ref=f86e124]:
+            - generic [ref=f86e125]:
+              - generic [aria-hidden] [ref=f86e126]: A
+              - generic [ref=f86e127]:
+                - generic [ref=f86e128]: Admin
+                - generic [ref=f86e129]: admin@businessos.test
+      - main [ref=f86e132]:
+        - generic [ref=f86e134]:
+          - navigation "Breadcrumb" [ref=f86e136]:
+            - list [ref=f86e137]:
+              - listitem [ref=f86e138]:
+                - link "Customers" [ref=f86e139] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/customers
+              - listitem [ref=f86e142]:
+                - link "Acme Traders" [ref=f86e143] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/customers/1
+              - listitem [ref=f86e146]:
+                - generic [ref=f86e147]: Edit customer
+          - generic [ref=f86e149]:
+            - heading "Edit customer" [level=1] [ref=f86e150]
+            - paragraph [ref=f86e151]: Manage the people and companies you do business with.
+          - generic [ref=f86e153]:
+            - generic [ref=f86e154]:
+              - heading "Information" [level=2] [ref=f86e157]
+              - generic [ref=f86e159]:
+                - generic [ref=f86e161]:
+                  - generic [ref=f86e162]: Name *
+                  - textbox "Name" [ref=f86e164]: Acme Traders
+                - generic [ref=f86e166]:
+                  - generic [ref=f86e167]: Company name
+                  - textbox "Company name" [ref=f86e169]: Acme Trading LLC
+                  - paragraph [ref=f86e170]: Company the customer represents, when applicable.
+                - generic [ref=f86e171]:
+                  - generic [ref=f86e172]: Email
+                  - textbox "Email" [ref=f86e174]
+                - generic [ref=f86e175]:
+                  - generic [ref=f86e176]: Phone
+                  - textbox "Phone" [ref=f86e178]
+                - generic [ref=f86e180]:
+                  - generic [ref=f86e181]: Address
+                  - textbox "Address" [ref=f86e182]
+                - generic [ref=f86e184]:
+                  - generic [ref=f86e185]: Opening balance
+                  - spinbutton "Opening balance" [ref=f86e187]: "250.0000"
+                  - paragraph [ref=f86e188]: Amount the customer owes from before you tracked invoices and payments here (non-negative).
+                - generic [ref=f86e190]:
+                  - generic [ref=f86e191]: Opening balance date
+                  - textbox "Opening balance date" [ref=f86e193]
+                  - paragraph [ref=f86e194]: Optional date used to place the opening balance in chronological order on the ledger.
+                - generic [ref=f86e196]:
+                  - generic [ref=f86e197]: Notes
+                  - textbox "Notes" [ref=f86e198]
+                  - paragraph [ref=f86e199]: Private notes visible only to users of this business.
+            - generic [ref=f86e200]:
+              - button "Update" [ref=f86e201]
+              - link "Cancel" [ref=f86e204] [cursor=pointer]:
+                - /url: http://127.0.0.1:8000/customers

@@ -1,0 +1,191 @@
+- generic [active] [ref=f45e1]:
+  - link "Skip to content" [ref=f45e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=f45e3]:
+    - complementary "Skip to content" [ref=f45e4]:
+      - generic [ref=f45e10]:
+        - paragraph [ref=f45e11]: BusinessOS
+        - paragraph [ref=f45e12]: Business management
+      - navigation [ref=f45e13]:
+        - list [ref=f45e14]:
+          - listitem [ref=f45e15]:
+            - paragraph [ref=f45e16]: Overview
+            - list [ref=f45e17]:
+              - listitem [ref=f45e18]:
+                - link "Dashboard" [ref=f45e19] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8015/app
+          - listitem [ref=f45e23]:
+            - paragraph [ref=f45e24]: Business
+            - list [ref=f45e25]:
+              - listitem [ref=f45e26]:
+                - link "Customers" [ref=f45e27] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8015/customers
+              - listitem [ref=f45e31]:
+                - link "Quotations" [ref=f45e32] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8015/quotations
+              - listitem [ref=f45e36]:
+                - link "Invoices" [ref=f45e37] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8015/invoices
+              - listitem [ref=f45e41]:
+                - link "Payments" [ref=f45e42] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8015/payments
+          - listitem [ref=f45e46]:
+            - paragraph [ref=f45e47]: System
+            - list [ref=f45e48]:
+              - listitem [ref=f45e49]:
+                - link "Settings" [ref=f45e50] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8015/settings
+      - generic [ref=f45e55]:
+        - generic [ref=f45e56]:
+          - generic [aria-hidden] [ref=f45e57]: Q
+          - generic [ref=f45e58]:
+            - generic [ref=f45e59]: QA User
+            - generic [ref=f45e60]: qa@test.dev
+        - button "Collapse sidebar" [ref=f45e61]
+    - generic [ref=f45e64]:
+      - banner [ref=f45e65]:
+        - button "Global search (coming soon)" [ref=f45e67]:
+          - generic [ref=f45e70]: Search…
+          - generic [ref=f45e71]: ⌘K
+        - generic [ref=f45e72]:
+          - button "Quick actions (coming soon)" [ref=f45e73]
+          - button "Notifications (coming soon)" [ref=f45e77]
+          - button "Switch business" [ref=f45e82]:
+            - generic [ref=f45e87]:
+              - generic [ref=f45e88]: Switch business
+              - generic "QA Test Business" [ref=f45e89]
+          - button "English" [ref=f45e93]
+          - button "Toggle dark mode" [ref=f45e100]
+          - button "QA User qa@test.dev" [ref=f45e104]:
+            - generic [ref=f45e105]:
+              - generic [aria-hidden] [ref=f45e106]: Q
+              - generic [ref=f45e107]:
+                - generic [ref=f45e108]: QA User
+                - generic [ref=f45e109]: qa@test.dev
+      - main [ref=f45e112]:
+        - generic [ref=f45e114]:
+          - navigation "Breadcrumb" [ref=f45e116]:
+            - list [ref=f45e117]:
+              - listitem [ref=f45e118]:
+                - link "Dashboard" [ref=f45e119] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8015/app
+              - listitem [ref=f45e122]:
+                - link "Invoices" [ref=f45e123] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8015/invoices
+              - listitem [ref=f45e126]:
+                - generic [ref=f45e127]: INV-000001
+          - generic [ref=f45e128]:
+            - generic [ref=f45e129]:
+              - heading "INV-000001" [level=1] [ref=f45e130]
+              - paragraph [ref=f45e131]: Invoice
+            - generic [ref=f45e132]:
+              - link "All invoices" [ref=f45e133] [cursor=pointer]:
+                - /url: http://127.0.0.1:8015/invoices
+              - button "Print" [ref=f45e136]
+              - button "Record payment" [ref=f45e139]
+          - generic [ref=f45e142]:
+            - status [ref=f45e144]:
+              - generic [ref=f45e147]: This invoice is no longer a draft and can no longer be edited or deleted.
+            - generic [ref=f45e149]:
+              - generic [ref=f45e150]:
+                - generic [ref=f45e151]:
+                  - generic [ref=f45e154]:
+                    - heading "Line items" [level=2] [ref=f45e155]
+                    - generic [ref=f45e156]: Partially paid
+                  - generic [ref=f45e158]:
+                    - table [ref=f45e160]:
+                      - rowgroup [ref=f45e161]:
+                        - row [ref=f45e162]:
+                          - columnheader "Product / service" [ref=f45e163]
+                          - columnheader "invoices.description" [ref=f45e164]
+                          - columnheader "Qty" [ref=f45e165]
+                          - columnheader "Unit price" [ref=f45e166]
+                          - columnheader "Amount" [ref=f45e167]
+                      - rowgroup [ref=f45e168]:
+                        - row [ref=f45e169]:
+                          - cell "—" [ref=f45e170]
+                          - cell "QA Testing" [ref=f45e171]
+                          - cell "10.0000" [ref=f45e172]
+                          - cell "10.0000" [ref=f45e173]
+                          - cell "100.0000" [ref=f45e174]
+                    - generic [ref=f45e176]:
+                      - generic [ref=f45e177]:
+                        - term [ref=f45e178]: Subtotal
+                        - definition [ref=f45e179]: "100.0000"
+                      - generic [ref=f45e180]:
+                        - term [ref=f45e181]: Total
+                        - definition [ref=f45e182]: "100.0000"
+                      - generic [ref=f45e183]:
+                        - term [ref=f45e184]: Paid
+                        - definition [ref=f45e185]: "60.0000"
+                      - generic [ref=f45e186]:
+                        - term [ref=f45e187]: Due
+                        - definition [ref=f45e188]: "40.0000"
+                - generic [ref=f45e190]:
+                  - generic [ref=f45e193]:
+                    - heading "Payment history" [level=2] [ref=f45e194]
+                    - generic [ref=f45e195]: 2 payments
+                  - table [ref=f45e198]:
+                    - rowgroup [ref=f45e199]:
+                      - row [ref=f45e200]:
+                        - columnheader "Number" [ref=f45e201]
+                        - columnheader "Date" [ref=f45e202]
+                        - columnheader "Method" [ref=f45e203]
+                        - columnheader "Status" [ref=f45e204]
+                        - columnheader "Amount" [ref=f45e205]
+                        - columnheader "Actions" [ref=f45e206]
+                    - rowgroup [ref=f45e208]:
+                      - row [ref=f45e209]:
+                        - cell [ref=f45e210]:
+                          - link "PAY-000002" [ref=f45e211] [cursor=pointer]:
+                            - /url: http://127.0.0.1:8015/payments/2
+                        - cell "2026-09-12" [ref=f45e212]
+                        - cell "Cash" [ref=f45e213]
+                        - cell "Active" [ref=f45e214]
+                        - cell "60.0000" [ref=f45e217]
+                        - cell [ref=f45e218]:
+                          - generic [ref=f45e219]:
+                            - link "View" [ref=f45e220] [cursor=pointer]:
+                              - /url: http://127.0.0.1:8015/payments/2
+                            - button "Reverse payment" [ref=f45e223]
+                      - row [ref=f45e226]:
+                        - cell [ref=f45e227]:
+                          - link "PAY-000001" [ref=f45e228] [cursor=pointer]:
+                            - /url: http://127.0.0.1:8015/payments/1
+                        - cell "2026-09-12" [ref=f45e229]
+                        - cell "Bank transfer" [ref=f45e230]
+                        - cell "Reversed" [ref=f45e231]
+                        - cell "40.0000" [ref=f45e234]
+                        - cell [ref=f45e235]:
+                          - link "View" [ref=f45e237] [cursor=pointer]:
+                            - /url: http://127.0.0.1:8015/payments/1
+              - generic [ref=f45e241]:
+                - heading "Information" [level=2] [ref=f45e244]
+                - generic [ref=f45e246]:
+                  - generic [ref=f45e247]:
+                    - term [ref=f45e248]: Number
+                    - definition [ref=f45e249]: INV-000001
+                  - generic [ref=f45e250]:
+                    - term [ref=f45e251]: Customer
+                    - definition [ref=f45e252]:
+                      - link "QA Customer" [ref=f45e253] [cursor=pointer]:
+                        - /url: http://127.0.0.1:8015/customers/1
+                  - generic [ref=f45e254]:
+                    - term [ref=f45e255]: Date
+                    - definition [ref=f45e256]: 2026-09-12
+                  - generic [ref=f45e257]:
+                    - term [ref=f45e258]: Status
+                    - definition [ref=f45e259]:
+                      - generic [ref=f45e260]: Partially paid
+                  - generic [ref=f45e262]:
+                    - term [ref=f45e263]: Source
+                    - definition [ref=f45e264]: —
+                  - generic [ref=f45e265]:
+                    - term [ref=f45e266]: Created by
+                    - definition [ref=f45e267]: QA User
+                  - generic [ref=f45e268]:
+                    - term [ref=f45e269]: Created
+                    - definition [ref=f45e270]: 2026-09-12 22:03
+                  - generic [ref=f45e271]:
+                    - term [ref=f45e272]: Updated
+                    - definition [ref=f45e273]: 2026-09-12 22:09

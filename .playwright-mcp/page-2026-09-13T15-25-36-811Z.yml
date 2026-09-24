@@ -1,0 +1,142 @@
+- generic [active] [ref=f12e1]:
+  - link "Skip to content" [ref=f12e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=f12e3]:
+    - complementary "Skip to content" [ref=f12e4]:
+      - generic [ref=f12e10]:
+        - paragraph [ref=f12e11]: BusinessOS
+        - paragraph [ref=f12e12]: Business management
+      - navigation [ref=f12e13]:
+        - list [ref=f12e14]:
+          - listitem [ref=f12e15]:
+            - paragraph [ref=f12e16]: Overview
+            - list [ref=f12e17]:
+              - listitem [ref=f12e18]:
+                - link "Dashboard" [ref=f12e19] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/app
+          - listitem [ref=f12e23]:
+            - paragraph [ref=f12e24]: Business
+            - list [ref=f12e25]:
+              - listitem [ref=f12e26]:
+                - link "Customers" [ref=f12e27] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/customers
+              - listitem [ref=f12e31]:
+                - link "Quotations" [ref=f12e32] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/quotations
+              - listitem [ref=f12e36]:
+                - link "Invoices" [ref=f12e37] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/invoices
+              - listitem [ref=f12e41]:
+                - link "Payments" [ref=f12e42] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/payments
+          - listitem [ref=f12e46]:
+            - paragraph [ref=f12e47]: System
+            - list [ref=f12e48]:
+              - listitem [ref=f12e49]:
+                - link "Settings" [ref=f12e50] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/settings
+      - generic [ref=f12e55]:
+        - generic [ref=f12e56]:
+          - generic [aria-hidden] [ref=f12e57]: A
+          - generic [ref=f12e58]:
+            - generic [ref=f12e59]: Admin User
+            - generic [ref=f12e60]: admin@businessos.test
+        - button "Collapse sidebar" [ref=f12e61]
+    - generic [ref=f12e64]:
+      - banner [ref=f12e65]:
+        - button "Global search (coming soon)" [ref=f12e67]:
+          - generic [ref=f12e70]: Search…
+          - generic [ref=f12e71]: ⌘K
+        - generic [ref=f12e72]:
+          - button "Quick actions (coming soon)" [ref=f12e73]
+          - button "Notifications (coming soon)" [ref=f12e77]
+          - button "Switch business" [ref=f12e82]:
+            - generic [ref=f12e87]:
+              - generic [ref=f12e88]: Switch business
+              - generic "TestCo" [ref=f12e89]
+          - button "English" [ref=f12e93]
+          - button "Toggle dark mode" [ref=f12e100]
+          - button "Admin User admin@businessos.test" [ref=f12e104]:
+            - generic [ref=f12e105]:
+              - generic [aria-hidden] [ref=f12e106]: A
+              - generic [ref=f12e107]:
+                - generic [ref=f12e108]: Admin User
+                - generic [ref=f12e109]: admin@businessos.test
+      - main [ref=f12e112]:
+        - generic [ref=f12e114]:
+          - navigation "Breadcrumb" [ref=f12e116]:
+            - list [ref=f12e117]:
+              - listitem [ref=f12e118]:
+                - link "Dashboard" [ref=f12e119] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/app
+              - listitem [ref=f12e122]:
+                - link "Invoices" [ref=f12e123] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/invoices
+              - listitem [ref=f12e126]:
+                - generic [ref=f12e127]: New invoice
+          - generic [ref=f12e129]:
+            - heading "New invoice" [level=1] [ref=f12e130]
+            - paragraph [ref=f12e131]: Issue and track invoices for your customers.
+          - generic [ref=f12e133]:
+            - generic [ref=f12e134]:
+              - heading "Information" [level=2] [ref=f12e137]
+              - generic [ref=f12e139]:
+                - generic [ref=f12e141]:
+                  - generic [ref=f12e142]: Customer *
+                  - combobox "Customer" [ref=f12e144]:
+                    - option "No customer" [disabled]
+                    - option "Batch16 Buyer (Batch16 Corp)" [selected]
+                - generic [ref=f12e146]:
+                  - generic [ref=f12e147]: Status *
+                  - combobox "Status" [ref=f12e149]:
+                    - option "Draft" [selected]
+                    - option "Sent"
+                - generic [ref=f12e151]:
+                  - generic [ref=f12e152]: Date *
+                  - textbox "Date" [ref=f12e154]: 2026-09-13
+            - generic [ref=f12e155]:
+              - generic [ref=f12e158]:
+                - heading "Line items" [level=2] [ref=f12e159]
+                - button "Add line" [ref=f12e160]
+              - generic [ref=f12e163]:
+                - table [ref=f12e165]:
+                  - rowgroup [ref=f12e166]:
+                    - row [ref=f12e167]:
+                      - columnheader "Product / service" [ref=f12e168]
+                      - columnheader "invoices.description" [ref=f12e169]
+                      - columnheader "Qty" [ref=f12e170]
+                      - columnheader "Unit price" [ref=f12e171]
+                      - columnheader "Remove line" [ref=f12e172]
+                  - rowgroup [ref=f12e174]:
+                    - row [ref=f12e175]:
+                      - cell "—" [ref=f12e176]:
+                        - combobox [ref=f12e177]:
+                          - option "—" [selected]
+                      - cell [ref=f12e178]:
+                        - textbox "Describe the item or service…" [ref=f12e179]
+                      - cell [ref=f12e180]:
+                        - spinbutton [ref=f12e181]: "1"
+                      - cell [ref=f12e182]:
+                        - spinbutton [ref=f12e183]
+                      - cell "Remove line" [ref=f12e184]:
+                        - button "Remove line" [disabled]
+                - paragraph [ref=f12e185]: invoices.items_min
+            - generic [ref=f12e186]:
+              - heading "Total" [level=2] [ref=f12e189]
+              - generic [ref=f12e191]:
+                - generic [ref=f12e193]:
+                  - generic [ref=f12e194]: Discount (exclusive)
+                  - combobox "Discount (exclusive)" [ref=f12e196]:
+                    - option "No discount" [disabled] [selected]
+                    - option "Percentage"
+                    - option "Fixed amount"
+                - generic [ref=f12e198]:
+                  - generic [ref=f12e199]: Discount amount
+                  - spinbutton "Discount amount" [ref=f12e201]
+                - generic [ref=f12e203]:
+                  - generic [ref=f12e204]: Notes
+                  - textbox "Notes" [ref=f12e205]
+            - generic [ref=f12e206]:
+              - button "Create" [ref=f12e207]
+              - link "Cancel" [ref=f12e210] [cursor=pointer]:
+                - /url: http://127.0.0.1:8000/invoices

@@ -1,0 +1,160 @@
+- generic [active] [ref=f84e1]:
+  - link "Skip to content" [ref=f84e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=f84e3]:
+    - complementary "Skip to content" [ref=f84e4]:
+      - generic [ref=f84e10]:
+        - paragraph [ref=f84e11]: BusinessOS
+        - paragraph [ref=f84e12]: Business management
+      - navigation [ref=f84e13]:
+        - list [ref=f84e14]:
+          - listitem [ref=f84e15]:
+            - paragraph [ref=f84e16]: Overview
+            - list [ref=f84e17]:
+              - listitem [ref=f84e18]:
+                - link "Dashboard" [ref=f84e19] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/app
+          - listitem [ref=f84e23]:
+            - paragraph [ref=f84e24]: Business
+            - list [ref=f84e25]:
+              - listitem [ref=f84e26]:
+                - link "Customers" [ref=f84e27] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/customers
+              - listitem [ref=f84e31]:
+                - link "Quotations" [ref=f84e32] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/quotations
+              - listitem [ref=f84e36]:
+                - link "Invoices" [ref=f84e37] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/invoices
+              - listitem [ref=f84e41]:
+                - link "Payments" [ref=f84e42] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/payments
+              - listitem [ref=f84e46]:
+                - link "Products" [ref=f84e47] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/products
+              - listitem [ref=f84e51]:
+                - link "Categories" [ref=f84e52] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/categories
+              - listitem [ref=f84e56]:
+                - link "Units" [ref=f84e57] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/units
+              - listitem [ref=f84e61]:
+                - link "Expenses" [ref=f84e62] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/expenses
+          - listitem [ref=f84e66]:
+            - paragraph [ref=f84e67]: System
+            - list [ref=f84e68]:
+              - listitem [ref=f84e69]:
+                - link "Settings" [ref=f84e70] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/settings
+      - generic [ref=f84e75]:
+        - generic [ref=f84e76]:
+          - generic [aria-hidden] [ref=f84e77]: A
+          - generic [ref=f84e78]:
+            - generic [ref=f84e79]: Admin
+            - generic [ref=f84e80]: admin@businessos.test
+        - button "Collapse sidebar" [ref=f84e81]
+    - generic [ref=f84e84]:
+      - banner [ref=f84e85]:
+        - button "Global search (coming soon)" [ref=f84e87]:
+          - generic [ref=f84e90]: Search…
+          - generic [ref=f84e91]: ⌘K
+        - generic [ref=f84e92]:
+          - button "Quick actions (coming soon)" [ref=f84e93]
+          - button "Notifications (coming soon)" [ref=f84e97]
+          - button "Switch business" [ref=f84e102]:
+            - generic [ref=f84e107]:
+              - generic [ref=f84e108]: Switch business
+              - generic "TestCo" [ref=f84e109]
+          - button "English" [ref=f84e113]
+          - button "Toggle dark mode" [ref=f84e120]
+          - button "Admin admin@businessos.test" [ref=f84e124]:
+            - generic [ref=f84e125]:
+              - generic [aria-hidden] [ref=f84e126]: A
+              - generic [ref=f84e127]:
+                - generic [ref=f84e128]: Admin
+                - generic [ref=f84e129]: admin@businessos.test
+      - main [ref=f84e132]:
+        - generic [ref=f84e134]:
+          - navigation "Breadcrumb" [ref=f84e136]:
+            - list [ref=f84e137]:
+              - listitem [ref=f84e138]:
+                - link "Dashboard" [ref=f84e139] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/app
+              - listitem [ref=f84e142]:
+                - link "Customers" [ref=f84e143] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/customers
+              - listitem [ref=f84e146]:
+                - link "Acme Traders" [ref=f84e147] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/customers/1
+              - listitem [ref=f84e150]:
+                - generic [ref=f84e151]: Customer statement
+          - generic [ref=f84e152]:
+            - generic [ref=f84e153]:
+              - heading "Customer statement" [level=1] [ref=f84e154]
+              - paragraph [ref=f84e155]: Print-ready statement for Acme Traders.
+            - generic [ref=f84e156]:
+              - link "Customer ledger" [ref=f84e157] [cursor=pointer]:
+                - /url: http://127.0.0.1:8000/customers/1/ledger
+              - button "Print statement" [ref=f84e160]
+          - generic [ref=f84e164]:
+            - generic [ref=f84e165]:
+              - heading "TestCo" [level=2] [ref=f84e167]
+              - generic [ref=f84e168]:
+                - paragraph [ref=f84e169]: Statement for
+                - paragraph [ref=f84e170]: Acme Traders
+                - paragraph [ref=f84e172]: Acme Trading LLC
+            - generic [ref=f84e173]:
+              - paragraph [ref=f84e174]: "Period: All dates — All dates"
+              - paragraph [ref=f84e175]: As of 2026-09-13
+            - table [ref=f84e177]:
+              - rowgroup [ref=f84e178]:
+                - row [ref=f84e179]:
+                  - columnheader "Date" [ref=f84e180]
+                  - columnheader "Type" [ref=f84e181]
+                  - columnheader "Reference" [ref=f84e182]
+                  - columnheader "Description" [ref=f84e183]
+                  - columnheader "Debit" [ref=f84e184]
+                  - columnheader "Credit" [ref=f84e185]
+                  - columnheader "Balance" [ref=f84e186]
+              - rowgroup [ref=f84e187]:
+                - row [ref=f84e188]:
+                  - cell "2026-01-01" [ref=f84e189]
+                  - cell "Opening balance" [ref=f84e190]
+                  - cell "—" [ref=f84e191]
+                  - cell "—" [ref=f84e192]
+                  - cell "250.0000" [ref=f84e193]
+                  - cell "—" [ref=f84e194]
+                  - cell "250.0000" [ref=f84e195]
+                - row [ref=f84e196]:
+                  - cell "2026-09-10" [ref=f84e197]
+                  - cell "Invoice" [ref=f84e198]
+                  - cell "INV-000001" [ref=f84e199]
+                  - cell "QA invoice" [ref=f84e200]
+                  - cell "1200.0000" [ref=f84e201]
+                  - cell "—" [ref=f84e202]
+                  - cell "1450.0000" [ref=f84e203]
+                - row [ref=f84e204]:
+                  - cell "2026-09-12" [ref=f84e205]
+                  - cell "Payment" [ref=f84e206]
+                  - cell "PAY-000001" [ref=f84e207]
+                  - cell "—" [ref=f84e208]
+                  - cell "—" [ref=f84e209]
+                  - cell "500.0000" [ref=f84e210]
+                  - cell "950.0000" [ref=f84e211]
+            - generic [ref=f84e212]:
+              - generic [ref=f84e213]:
+                - generic [ref=f84e214]:
+                  - term [ref=f84e215]: Opening balance
+                  - definition [ref=f84e216]: "250.0000"
+                - generic [ref=f84e217]:
+                  - term [ref=f84e218]: Total debits
+                  - definition [ref=f84e219]: "1450.0000"
+                - generic [ref=f84e220]:
+                  - term [ref=f84e221]: Total credits
+                  - definition [ref=f84e222]: "500.0000"
+              - generic [ref=f84e224]:
+                - term [ref=f84e225]: Closing balance
+                - definition [ref=f84e226]: "950.0000"
+                - paragraph [ref=f84e227]: Outstanding balance
+            - paragraph [ref=f84e228]: Prepared on 2026-09-13 20:14

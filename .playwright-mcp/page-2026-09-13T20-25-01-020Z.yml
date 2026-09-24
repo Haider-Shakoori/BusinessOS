@@ -1,0 +1,148 @@
+- generic [ref=f100e1]:
+  - link "Skip to content" [ref=f100e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=f100e3]:
+    - complementary "Skip to content" [ref=f100e4]:
+      - generic [ref=f100e10]:
+        - paragraph [ref=f100e11]: BusinessOS
+        - paragraph [ref=f100e12]: Business management
+      - navigation [ref=f100e13]:
+        - list [ref=f100e14]:
+          - listitem [ref=f100e15]:
+            - paragraph [ref=f100e16]: Overview
+            - list [ref=f100e17]:
+              - listitem [ref=f100e18]:
+                - link "Dashboard" [ref=f100e19] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/app
+          - listitem [ref=f100e23]:
+            - paragraph [ref=f100e24]: Business
+            - list [ref=f100e25]:
+              - listitem [ref=f100e26]:
+                - link "Customers" [ref=f100e27] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/customers
+              - listitem [ref=f100e31]:
+                - link "Invoices" [ref=f100e32] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/invoices
+              - listitem [ref=f100e36]:
+                - link "Payments" [ref=f100e37] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/payments
+              - listitem [ref=f100e41]:
+                - link "Expenses" [ref=f100e42] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/expenses
+          - listitem [ref=f100e46]:
+            - paragraph [ref=f100e47]: System
+            - list [ref=f100e48]:
+              - listitem [ref=f100e49]:
+                - link "Settings" [ref=f100e50] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/settings
+      - generic [ref=f100e55]:
+        - generic [ref=f100e56]:
+          - generic [aria-hidden] [ref=f100e57]: V
+          - generic [ref=f100e58]:
+            - generic [ref=f100e59]: Viewer
+            - generic [ref=f100e60]: viewer@businessos.test
+        - button "Collapse sidebar" [ref=f100e61]
+    - generic [ref=f100e64]:
+      - banner [ref=f100e65]:
+        - button "Global search (coming soon)" [ref=f100e67]:
+          - generic [ref=f100e70]: Search…
+          - generic [ref=f100e71]: ⌘K
+        - generic [ref=f100e72]:
+          - button "Quick actions (coming soon)" [ref=f100e73]
+          - button "Notifications (coming soon)" [ref=f100e77]
+          - button "Switch business" [ref=f100e82]:
+            - generic [ref=f100e87]:
+              - generic [ref=f100e88]: Switch business
+              - generic "TestCo" [ref=f100e89]
+          - button "English" [ref=f100e93]
+          - button "Toggle dark mode" [ref=f100e100]
+          - button "Viewer viewer@businessos.test" [ref=f100e104]:
+            - generic [ref=f100e105]:
+              - generic [aria-hidden] [ref=f100e106]: V
+              - generic [ref=f100e107]:
+                - generic [ref=f100e108]: Viewer
+                - generic [ref=f100e109]: viewer@businessos.test
+      - main [ref=f100e112]:
+        - generic [ref=f100e114]:
+          - navigation "Breadcrumb" [ref=f100e116]:
+            - list [ref=f100e117]:
+              - listitem [ref=f100e118]:
+                - link "Dashboard" [ref=f100e119] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/app
+              - listitem [ref=f100e122]:
+                - link "Customers" [ref=f100e123] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/customers
+              - listitem [ref=f100e126]:
+                - link "Acme Traders" [ref=f100e127] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/customers/1
+              - listitem [ref=f100e130]:
+                - generic [ref=f100e131]: Customer statement
+          - generic [ref=f100e132]:
+            - generic [ref=f100e133]:
+              - heading "Customer statement" [level=1] [ref=f100e134]
+              - paragraph [ref=f100e135]: Print-ready statement for Acme Traders.
+            - generic [ref=f100e136]:
+              - link "Customer ledger" [ref=f100e137] [cursor=pointer]:
+                - /url: http://127.0.0.1:8000/customers/1/ledger
+              - button "Print statement" [ref=f100e140]
+          - generic [ref=f100e144]:
+            - generic [ref=f100e145]:
+              - heading "TestCo" [level=2] [ref=f100e147]
+              - generic [ref=f100e148]:
+                - paragraph [ref=f100e149]: Statement for
+                - paragraph [ref=f100e150]: Acme Traders
+                - paragraph [ref=f100e152]: Acme Trading LLC
+            - generic [ref=f100e153]:
+              - paragraph [ref=f100e154]: "Period: All dates — All dates"
+              - paragraph [ref=f100e155]: As of 2026-09-13
+            - table [ref=f100e157]:
+              - rowgroup [ref=f100e158]:
+                - row [ref=f100e159]:
+                  - columnheader "Date" [ref=f100e160]
+                  - columnheader "Type" [ref=f100e161]
+                  - columnheader "Reference" [ref=f100e162]
+                  - columnheader "Description" [ref=f100e163]
+                  - columnheader "Debit" [ref=f100e164]
+                  - columnheader "Credit" [ref=f100e165]
+                  - columnheader "Balance" [ref=f100e166]
+              - rowgroup [ref=f100e167]:
+                - row [ref=f100e168]:
+                  - cell "2026-01-01" [ref=f100e169]
+                  - cell "Opening balance" [ref=f100e170]
+                  - cell "—" [ref=f100e171]
+                  - cell "—" [ref=f100e172]
+                  - cell "300.0000" [ref=f100e173]
+                  - cell "—" [ref=f100e174]
+                  - cell "300.0000" [ref=f100e175]
+                - row [ref=f100e176]:
+                  - cell "2026-09-10" [ref=f100e177]
+                  - cell "Invoice" [ref=f100e178]
+                  - cell "INV-000001" [ref=f100e179]
+                  - cell "QA invoice" [ref=f100e180]
+                  - cell "1200.0000" [ref=f100e181]
+                  - cell "—" [ref=f100e182]
+                  - cell "1500.0000" [ref=f100e183]
+                - row [ref=f100e184]:
+                  - cell "2026-09-12" [ref=f100e185]
+                  - cell "Payment" [ref=f100e186]
+                  - cell "PAY-000001" [ref=f100e187]
+                  - cell "—" [ref=f100e188]
+                  - cell "—" [ref=f100e189]
+                  - cell "500.0000" [ref=f100e190]
+                  - cell "1000.0000" [ref=f100e191]
+            - generic [ref=f100e192]:
+              - generic [ref=f100e193]:
+                - generic [ref=f100e194]:
+                  - term [ref=f100e195]: Opening balance
+                  - definition [ref=f100e196]: "300.0000"
+                - generic [ref=f100e197]:
+                  - term [ref=f100e198]: Total debits
+                  - definition [ref=f100e199]: "1500.0000"
+                - generic [ref=f100e200]:
+                  - term [ref=f100e201]: Total credits
+                  - definition [ref=f100e202]: "500.0000"
+              - generic [ref=f100e204]:
+                - term [ref=f100e205]: Closing balance
+                - definition [ref=f100e206]: "1000.0000"
+                - paragraph [ref=f100e207]: Outstanding balance
+            - paragraph [ref=f100e208]: Prepared on 2026-09-13 20:25

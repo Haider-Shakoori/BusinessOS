@@ -1,0 +1,596 @@
+<?php
+
+use App\Http\Controllers\BusinessController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CurrencySettingsController;
+use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\ExpenseController;
+use App\Http\Controllers\ImportController;
+use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\QuotationController;
+use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\TaxController;
+use App\Http\Controllers\UnitController;
+use App\Support\SafeRedirect;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Route;
+
+Route::get('/', function () {
+    return redirect()->route(auth()->check() ? 'app.home' : 'login');
+});
+
+/*
+ * Business context foundation (Batch 6).
+ *
+ * Onboarding and switching are authenticated but NOT business-guarded:
+ * EnsureBusinessSelected sends users without a business here, and the switch
+ * action re-validates ownership server-side. All state-changing endpoints use
+ * POST and are covered by the web middleware CSRF protection.
+ */
+Route::middleware('auth')->group(function () {
+    Route::get('/onboarding', [BusinessController::class, 'create'])->name('business.create');
+    Route::post('/onboarding', [BusinessController::class, 'store'])->name('business.store');
+    Route::post('/business/switch', [BusinessController::class, 'switch'])->name('business.switch');
+});
+
+require __DIR__.'/auth.php';
+
+/*
+ * Business settings (Batch 9).
+ *
+ * Settings are scoped to the CURRENT business only — the business is always
+ * resolved via BusinessContext, never from a request-supplied business_id.
+ * Module availability and authorization are enforced independently:
+ *   - module:settings      blocks everything when the module is disabled;
+ *   - permission:settings.view   allows the page to be viewed;
+ *   - permission:settings.manage is required to persist changes.
+ *
+ * Hidden navigation is not security: these same guards apply to direct URLs.
+ */
+Route::middleware(['auth', 'auth.session', 'business-selected', 'module:settings'])->group(function () {
+    Route::get('/settings', [SettingsController::class, 'index'])
+        ->name('settings.index')
+        ->middleware('permission:settings.view');
+
+    Route::patch('/settings', [SettingsController::class, 'update'])
+        ->name('settings.update')
+        ->middleware('permission:settings.manage');
+
+    /*
+     * Batch 19 — currency management (base currency, enabled currencies,
+     * exchange rates). Every action is a state change on the CURRENT business
+     * resolved via BusinessContext; currency_code-enabled/rate rules live in
+     * the App\Http\Requests\Currency form requests, and the base-currency gate
+     * (changeable only before financial history) lives in SettingsController.
+     * `{currency}` binds to the shared global registry; `{exchangeRate}`
+     * binds via the BelongsToBusiness global scope → cross-business rates 404.
+     */
+    Route::post('/settings/currencies', [CurrencySettingsController::class, 'storeCurrency'])
+        ->name('settings.currencies.store')
+        ->middleware('permission:settings.manage');
+
+    Route::delete('/settings/currencies/{currency}', [CurrencySettingsController::class, 'destroyCurrency'])
+        ->name('settings.currencies.destroy')
+        ->middleware('permission:settings.manage');
+
+    Route::post('/settings/exchange-rates', [CurrencySettingsController::class, 'storeRate'])
+        ->name('settings.exchange-rates.store')
+        ->middleware('permission:settings.manage');
+
+    Route::delete('/settings/exchange-rates/{exchangeRate}', [CurrencySettingsController::class, 'destroyRate'])
+        ->name('settings.exchange-rates.destroy')
+        ->middleware('permission:settings.manage');
+});
+
+/*
+ * Customer registry (Batch 10).
+ *
+ * Follows the same guest-host pattern as settings, applied per-route because
+ * reads and writes need different permissions:
+ *   - module:customers      blocks the whole module when it is disabled;
+ *   - permission:customers.view    allows listing and viewing a customer;
+ *   - permission:customers.manage is required to create/edit/delete.
+ *
+ * Batch 18 adds the read-only ledger and print-ready statement routes
+ * (GET /customers/{customer}/ledger and .../statement) behind the same
+ * customers.view permission — no extra permission is created just for
+ * reading or printing.
+ *
+ * `{customer}` uses implicit route-model binding; the BelongsToBusiness global
+ * scope makes cross-business lookups resolve to 404 automatically. Reads go
+ * only to the current business's customers — search, pagination, and views are
+ * all tenant-scoped at the query level.
+ */
+Route::middleware(['auth', 'auth.session', 'business-selected', 'module:customers'])->group(function () {
+    Route::get('/customers', [CustomerController::class, 'index'])
+        ->name('customers.index')
+        ->middleware('permission:customers.view');
+
+    // Batch 20 — create-only CSV import. Registered BEFORE the implicit
+    // {customer} binding routes below, so the literal /customers/import paths
+    // always win. The `type` route parameter is fixed by ->defaults() and can
+    // never be supplied by the client. Template/download + the whole
+    // upload→preview→execute→cancel flow are gated on customers.manage (an
+    // import writes customers, so .view alone is never enough).
+    Route::get('/customers/import', [ImportController::class, 'show'])
+        ->name('customers.import')
+        ->defaults('type', 'customers')
+        ->middleware('permission:customers.manage');
+
+    Route::get('/customers/import/template', [ImportController::class, 'template'])
+        ->name('customers.import.template')
+        ->defaults('type', 'customers')
+        ->middleware('permission:customers.manage');
+
+    Route::post('/customers/import', [ImportController::class, 'preview'])
+        ->name('customers.import.preview')
+        ->defaults('type', 'customers')
+        ->middleware('permission:customers.manage');
+
+    Route::get('/customers/import/preview/{token}', [ImportController::class, 'confirm'])
+        ->name('customers.import.confirm')
+        ->defaults('type', 'customers')
+        ->middleware('permission:customers.manage');
+
+    Route::post('/customers/import/preview/{token}', [ImportController::class, 'execute'])
+        ->name('customers.import.execute')
+        ->defaults('type', 'customers')
+        ->middleware('permission:customers.manage');
+
+    Route::delete('/customers/import/preview/{token}', [ImportController::class, 'cancel'])
+        ->name('customers.import.cancel')
+        ->defaults('type', 'customers')
+        ->middleware('permission:customers.manage');
+
+    Route::get('/customers/create', [CustomerController::class, 'create'])
+        ->name('customers.create')
+        ->middleware('permission:customers.manage');
+
+    Route::post('/customers', [CustomerController::class, 'store'])
+        ->name('customers.store')
+        ->middleware('permission:customers.manage');
+
+    Route::get('/customers/{customer}', [CustomerController::class, 'show'])
+        ->name('customers.show')
+        ->middleware('permission:customers.view');
+
+    Route::get('/customers/{customer}/ledger', [CustomerController::class, 'ledger'])
+        ->name('customers.ledger')
+        ->middleware('permission:customers.view');
+
+    Route::get('/customers/{customer}/statement', [CustomerController::class, 'statement'])
+        ->name('customers.statement')
+        ->middleware('permission:customers.view');
+
+    Route::get('/customers/{customer}/edit', [CustomerController::class, 'edit'])
+        ->name('customers.edit')
+        ->middleware('permission:customers.manage');
+
+    Route::patch('/customers/{customer}', [CustomerController::class, 'update'])
+        ->name('customers.update')
+        ->middleware('permission:customers.manage');
+
+    Route::delete('/customers/{customer}', [CustomerController::class, 'destroy'])
+        ->name('customers.destroy')
+        ->middleware('permission:customers.manage');
+});
+
+/*
+ * Catalog reference data (Batch 11) — categories, units, and taxes.
+ *
+ * Categories and units belong to the `products` module for availability and
+ * are individually permission-guarded (module availability and authorization
+ * stay independent, per Batch 8):
+ *   - module:products           blocks the whole catalogue when disabled;
+ *   - permission:{entity}.view    allows listing;
+ *   - permission:{entity}.manage  is required to create/edit/delete.
+ *
+ * Taxes additionally require the optional-tax feature gate (`tax-enabled`):
+ * while general.tax_enabled is off, every tax route is refused outright even
+ * for users holding taxes.manage — regardless of how many tax rows exist.
+ * Disabling never touches tax rows; re-enabling restores access to them.
+ *
+ * `{category}` / `{unit}` / `{tax}` use implicit route-model binding; the
+ * BelongsToBusiness global scope makes cross-business lookups resolve to 404
+ * automatically.
+ */
+Route::middleware(['auth', 'auth.session', 'business-selected', 'module:products'])->group(function () {
+    Route::get('/categories', [CategoryController::class, 'index'])
+        ->name('categories.index')
+        ->middleware('permission:categories.view');
+
+    Route::get('/categories/create', [CategoryController::class, 'create'])
+        ->name('categories.create')
+        ->middleware('permission:categories.manage');
+
+    Route::post('/categories', [CategoryController::class, 'store'])
+        ->name('categories.store')
+        ->middleware('permission:categories.manage');
+
+    Route::get('/categories/{category}/edit', [CategoryController::class, 'edit'])
+        ->name('categories.edit')
+        ->middleware('permission:categories.manage');
+
+    Route::patch('/categories/{category}', [CategoryController::class, 'update'])
+        ->name('categories.update')
+        ->middleware('permission:categories.manage');
+
+    Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])
+        ->name('categories.destroy')
+        ->middleware('permission:categories.manage');
+
+    Route::get('/units', [UnitController::class, 'index'])
+        ->name('units.index')
+        ->middleware('permission:units.view');
+
+    Route::get('/units/create', [UnitController::class, 'create'])
+        ->name('units.create')
+        ->middleware('permission:units.manage');
+
+    Route::post('/units', [UnitController::class, 'store'])
+        ->name('units.store')
+        ->middleware('permission:units.manage');
+
+    Route::get('/units/{unit}/edit', [UnitController::class, 'edit'])
+        ->name('units.edit')
+        ->middleware('permission:units.manage');
+
+    Route::patch('/units/{unit}', [UnitController::class, 'update'])
+        ->name('units.update')
+        ->middleware('permission:units.manage');
+
+    Route::delete('/units/{unit}', [UnitController::class, 'destroy'])
+        ->name('units.destroy')
+        ->middleware('permission:units.manage');
+});
+
+Route::middleware(['auth', 'auth.session', 'business-selected', 'module:products', 'tax-enabled'])->group(function () {
+    Route::get('/taxes', [TaxController::class, 'index'])
+        ->name('taxes.index')
+        ->middleware('permission:taxes.view');
+
+    Route::get('/taxes/create', [TaxController::class, 'create'])
+        ->name('taxes.create')
+        ->middleware('permission:taxes.manage');
+
+    Route::post('/taxes', [TaxController::class, 'store'])
+        ->name('taxes.store')
+        ->middleware('permission:taxes.manage');
+
+    Route::get('/taxes/{tax}/edit', [TaxController::class, 'edit'])
+        ->name('taxes.edit')
+        ->middleware('permission:taxes.manage');
+
+    Route::patch('/taxes/{tax}', [TaxController::class, 'update'])
+        ->name('taxes.update')
+        ->middleware('permission:taxes.manage');
+
+    Route::delete('/taxes/{tax}', [TaxController::class, 'destroy'])
+        ->name('taxes.destroy')
+        ->middleware('permission:taxes.manage');
+});
+
+/*
+ * Product / service registry (Batch 12).
+ *
+ * Products and services share one table and one set of routes (no show page —
+ * the list is the read view). The `products` module gates availability, and
+ * per-route permissions separate reads from writes:
+ *   - module:products           blocks the whole registry when disabled;
+ *   - permission:products.view    allows listing;
+ *   - permission:products.manage  is required to create/edit/delete.
+ *
+ * `{product}` uses implicit route-model binding; the BelongsToBusiness global
+ * scope makes cross-business lookups resolve to 404 automatically. Category /
+ * unit / tax references are tenant-safe at the request layer (scoped exists
+ * rules) and never at the DB level via foreign keys.
+ *
+ * There is NO inventory/stock behaviour on this entity in this batch.
+ */
+Route::middleware(['auth', 'auth.session', 'business-selected', 'module:products'])->group(function () {
+    Route::get('/products', [ProductController::class, 'index'])
+        ->name('products.index')
+        ->middleware('permission:products.view');
+
+    // Batch 20 — create-only CSV import (see customers.import above for the
+    // identical security layout; this group enforces products.manage).
+    Route::get('/products/import', [ImportController::class, 'show'])
+        ->name('products.import')
+        ->defaults('type', 'products')
+        ->middleware('permission:products.manage');
+
+    Route::get('/products/import/template', [ImportController::class, 'template'])
+        ->name('products.import.template')
+        ->defaults('type', 'products')
+        ->middleware('permission:products.manage');
+
+    Route::post('/products/import', [ImportController::class, 'preview'])
+        ->name('products.import.preview')
+        ->defaults('type', 'products')
+        ->middleware('permission:products.manage');
+
+    Route::get('/products/import/preview/{token}', [ImportController::class, 'confirm'])
+        ->name('products.import.confirm')
+        ->defaults('type', 'products')
+        ->middleware('permission:products.manage');
+
+    Route::post('/products/import/preview/{token}', [ImportController::class, 'execute'])
+        ->name('products.import.execute')
+        ->defaults('type', 'products')
+        ->middleware('permission:products.manage');
+
+    Route::delete('/products/import/preview/{token}', [ImportController::class, 'cancel'])
+        ->name('products.import.cancel')
+        ->defaults('type', 'products')
+        ->middleware('permission:products.manage');
+
+    Route::get('/products/create', [ProductController::class, 'create'])
+        ->name('products.create')
+        ->middleware('permission:products.manage');
+
+    Route::post('/products', [ProductController::class, 'store'])
+        ->name('products.store')
+        ->middleware('permission:products.manage');
+
+    Route::get('/products/{product}/edit', [ProductController::class, 'edit'])
+        ->name('products.edit')
+        ->middleware('permission:products.manage');
+
+    Route::patch('/products/{product}', [ProductController::class, 'update'])
+        ->name('products.update')
+        ->middleware('permission:products.manage');
+
+    Route::delete('/products/{product}', [ProductController::class, 'destroy'])
+        ->name('products.destroy')
+        ->middleware('permission:products.manage');
+});
+
+/*
+ * Quotations (Batch 14).
+ *
+ * The sales module gates availability (module:sales) while separate
+ * permissions separate reads from writes:
+ *   - module:sales             blocks quotations entirely when sales is off;
+ *   - permission:quotations.view   allows listing and viewing a quotation;
+ *   - permission:quotations.manage is required to create/edit/delete.
+ *
+ * `{quotation}` uses implicit route-model binding; the BelongsToBusiness global
+ * scope makes cross-business lookups resolve to 404 automatically. Lines are
+ * validated tenant-safely at the request layer (scoped exists rules) and never
+ * assign a business at the DB level via foreign keys.
+ *
+ * Lifecycle: draft quotations are editable/deletable; later statuses are
+ * immutable in this batch — the 403 is enforced inside QuotationService.
+ */
+Route::middleware(['auth', 'auth.session', 'business-selected', 'module:sales'])->group(function () {
+    Route::get('/quotations', [QuotationController::class, 'index'])
+        ->name('quotations.index')
+        ->middleware('permission:quotations.view');
+
+    Route::get('/quotations/create', [QuotationController::class, 'create'])
+        ->name('quotations.create')
+        ->middleware('permission:quotations.manage');
+
+    Route::post('/quotations', [QuotationController::class, 'store'])
+        ->name('quotations.store')
+        ->middleware('permission:quotations.manage');
+
+    Route::get('/quotations/{quotation}', [QuotationController::class, 'show'])
+        ->name('quotations.show')
+        ->middleware('permission:quotations.view');
+
+    Route::get('/quotations/{quotation}/edit', [QuotationController::class, 'edit'])
+        ->name('quotations.edit')
+        ->middleware('permission:quotations.manage');
+
+    Route::patch('/quotations/{quotation}', [QuotationController::class, 'update'])
+        ->name('quotations.update')
+        ->middleware('permission:quotations.manage');
+
+    Route::delete('/quotations/{quotation}', [QuotationController::class, 'destroy'])
+        ->name('quotations.destroy')
+        ->middleware('permission:quotations.manage');
+});
+
+/*
+ * Invoices (Batch 15).
+ *
+ * Like quotations, invoices live under the sales module (module:sales) and use
+ * separate read/write permissions:
+ *   - module:sales              blocks the whole module when sales is off;
+ *   - permission:invoices.view   allows listing and viewing an invoice;
+ *   - permission:invoices.manage is required to create/edit/delete.
+ *
+ * `{invoice}` uses implicit route-model binding; the BelongsToBusiness global
+ * scope makes cross-business lookups resolve to 404 automatically. Lines are
+ * validated tenant-safely at the request layer (scoped exists rules). Articles
+ * products AND services are allowed; there is NO inventory/stock behaviour.
+ *
+ * Lifecycle: draft invoices are editable/deletable; sent (including converted)
+ * invoices are immutable in this batch — the 403 is enforced inside
+ * InvoiceService. No payment/balance behaviour exists in this batch.
+ *
+ * The quotation -> invoice conversion route is explicitly POST + CSRF:
+ *   - module:sales             blocks conversion entirely when sales is off;
+ *   - permission:quotations.view   the actor must be able to access the source
+ *                                 quotation it is converting;
+ *   - permission:invoices.manage  conversion is an invoice WRITE, so invoice
+ *                                 management authorization is required.
+ *
+ * Convertibility (non-converted, current business) is re-verified under a row
+ * lock inside InvoiceService::convert(); the DB-unique constraint on
+ * invoices.quotation_id backstops the one-to-one rule under concurrency.
+ */
+Route::middleware(['auth', 'auth.session', 'business-selected', 'module:sales'])->group(function () {
+    Route::get('/invoices', [InvoiceController::class, 'index'])
+        ->name('invoices.index')
+        ->middleware('permission:invoices.view');
+
+    Route::get('/invoices/create', [InvoiceController::class, 'create'])
+        ->name('invoices.create')
+        ->middleware('permission:invoices.manage');
+
+    Route::post('/invoices', [InvoiceController::class, 'store'])
+        ->name('invoices.store')
+        ->middleware('permission:invoices.manage');
+
+    Route::get('/invoices/{invoice}', [InvoiceController::class, 'show'])
+        ->name('invoices.show')
+        ->middleware('permission:invoices.view');
+
+    Route::get('/invoices/{invoice}/edit', [InvoiceController::class, 'edit'])
+        ->name('invoices.edit')
+        ->middleware('permission:invoices.manage');
+
+    Route::patch('/invoices/{invoice}', [InvoiceController::class, 'update'])
+        ->name('invoices.update')
+        ->middleware('permission:invoices.manage');
+
+    Route::delete('/invoices/{invoice}', [InvoiceController::class, 'destroy'])
+        ->name('invoices.destroy')
+        ->middleware('permission:invoices.manage');
+
+    Route::post('/quotations/{quotation}/convert', [InvoiceController::class, 'convert'])
+        ->name('quotations.convert')
+        ->middleware(['permission:quotations.view', 'permission:invoices.manage']);
+});
+
+/*
+ * Payments (Batch 16).
+ *
+ * Payments sit on top of invoices, so they live under the same sales module
+ * availability gate (module:sales) and use three separate permissions:
+ *   - module:sales             blocks recording/reversing when sales is off;
+ *   - permission:payments.view    allows listing and viewing a payment;
+ *   - permission:payments.create  is required to record a payment;
+ *   - permission:payments.reverse is required to reverse a payment.
+ *
+ * Like invoices, `{payment}` uses implicit route-model binding; the
+ * BelongsToBusiness global scope makes cross-business lookups resolve to 404
+ * automatically. Payment business rules (payable state, overpayment rejection,
+ * reconciliation, reversal semantics, locking) are enforced WITHOUT exception
+ * inside PaymentService — the controller and forms never decide them.
+ *
+ * Recording is only ever reachable from the targeted invoice's show page, so
+ * the payment is always bound to a live, current-business invoice. Every
+ * state change is an explicit POST covered by the web middleware CSRF
+ * protection; there is deliberately no DELETE route (a reversal marks the
+ * payment, it is never deleted).
+ */
+Route::middleware(['auth', 'auth.session', 'business-selected', 'module:sales'])->group(function () {
+    Route::get('/payments', [PaymentController::class, 'index'])
+        ->name('payments.index')
+        ->middleware('permission:payments.view');
+
+    Route::get('/payments/{payment}', [PaymentController::class, 'show'])
+        ->name('payments.show')
+        ->middleware('permission:payments.view');
+
+    Route::post('/payments', [PaymentController::class, 'store'])
+        ->name('payments.store')
+        ->middleware('permission:payments.create');
+
+    Route::post('/payments/{payment}/reverse', [PaymentController::class, 'reverse'])
+        ->name('payments.reverse')
+        ->middleware('permission:payments.reverse');
+});
+
+/*
+ * Expenses (Batch 17).
+ *
+ * Expense tracking is its own module (module:expenses) with two permissions
+ * separating reads from writes:
+ *   - module:expenses            blocks the whole module when expenses is off;
+ *   - permission:expenses.view    allows listing, viewing and downloading
+ *                                 receipts (and the operational report);
+ *   - permission:expenses.manage  is required to create/update/delete.
+ *
+ * `{expense}` uses implicit route-model binding; the BelongsToBusiness global
+ * scope makes cross-business lookups resolve to 404 automatically, which also
+ * protects the receipt route — a receipt can never be fetched for an expense
+ * of another business.
+ *
+ * The receipt endpoint is a state-free GET but is permission + tenant gated
+ * exactly like the record it belongs to; the underlying file lives on the
+ * private disk and is streamed only through this route.
+ *
+ * The report is the lightweight Batch 17 operational report (date range +
+ * category + list + total), not the Batch 23 reporting engine.
+ */
+Route::middleware(['auth', 'auth.session', 'business-selected', 'module:expenses'])->group(function () {
+    Route::get('/expenses', [ExpenseController::class, 'index'])
+        ->name('expenses.index')
+        ->middleware('permission:expenses.view');
+
+    Route::get('/expenses/create', [ExpenseController::class, 'create'])
+        ->name('expenses.create')
+        ->middleware('permission:expenses.manage');
+
+    Route::post('/expenses', [ExpenseController::class, 'store'])
+        ->name('expenses.store')
+        ->middleware('permission:expenses.manage');
+
+    Route::get('/expenses/report', [ExpenseController::class, 'report'])
+        ->name('expenses.report')
+        ->middleware('permission:expenses.view');
+
+    Route::get('/expenses/{expense}', [ExpenseController::class, 'show'])
+        ->name('expenses.show')
+        ->middleware('permission:expenses.view');
+
+    Route::get('/expenses/{expense}/receipt', [ExpenseController::class, 'receipt'])
+        ->name('expenses.receipt')
+        ->middleware('permission:expenses.view');
+
+    Route::get('/expenses/{expense}/edit', [ExpenseController::class, 'edit'])
+        ->name('expenses.edit')
+        ->middleware('permission:expenses.manage');
+
+    Route::patch('/expenses/{expense}', [ExpenseController::class, 'update'])
+        ->name('expenses.update')
+        ->middleware('permission:expenses.manage');
+
+    Route::delete('/expenses/{expense}', [ExpenseController::class, 'destroy'])
+        ->name('expenses.destroy')
+        ->middleware('permission:expenses.manage');
+});
+
+/*
+ * Locale switching route.
+ *
+ * Validates the requested locale against the supported list, stores
+ * it in the session, and redirects back. No database, no auth.
+ */
+Route::get('/locale/{locale}', function (string $locale) {
+    if (! in_array($locale, config('app.supported_locales', []))) {
+        abort(400, 'Unsupported locale.');
+    }
+
+    session()->put(config('localization.session_key', 'locale'), $locale);
+
+    return redirect(SafeRedirect::path(request()->headers->get('referer'), '/'))
+        ->with('locale_changed', true);
+})->name('locale.switch');
+
+/*
+ * Development-only component showcase for the Batch 2 design system.
+ * Registered solely when the application is running in the local environment
+ * so it can never leak into production builds.
+ */
+if (app()->environment('local')) {
+    Route::get('/ui-preview', function () {
+        $paginator = new LengthAwarePaginator(
+            items: collect(range(1, 5)),
+            total: 48,
+            perPage: 5,
+            currentPage: request()->integer('page', 1),
+            options: ['path' => request()->url(), 'query' => request()->query(), 'pageName' => 'page'],
+        );
+
+        return view('ui-preview', ['paginator' => $paginator]);
+    })->name('ui.preview');
+
+    Route::get('/app-preview', fn () => view('app-preview'))->name('app.preview');
+}

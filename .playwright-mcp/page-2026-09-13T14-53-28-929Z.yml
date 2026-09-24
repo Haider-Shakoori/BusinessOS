@@ -1,0 +1,151 @@
+- generic [active] [ref=f11e1]:
+  - link "Skip to content" [ref=f11e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=f11e3]:
+    - complementary "Skip to content" [ref=f11e4]:
+      - generic [ref=f11e10]:
+        - paragraph [ref=f11e11]: BusinessOS
+        - paragraph [ref=f11e12]: Business management
+      - navigation [ref=f11e13]:
+        - list [ref=f11e14]:
+          - listitem [ref=f11e15]:
+            - paragraph [ref=f11e16]: Overview
+            - list [ref=f11e17]:
+              - listitem [ref=f11e18]:
+                - link "Dashboard" [ref=f11e19] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8015/app
+          - listitem [ref=f11e23]:
+            - paragraph [ref=f11e24]: Business
+            - list [ref=f11e25]:
+              - listitem [ref=f11e26]:
+                - link "Customers" [ref=f11e27] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8015/customers
+              - listitem [ref=f11e31]:
+                - link "Quotations" [ref=f11e32] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8015/quotations
+              - listitem [ref=f11e36]:
+                - link "Invoices" [ref=f11e37] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8015/invoices
+              - listitem [ref=f11e41]:
+                - link "Payments" [ref=f11e42] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8015/payments
+          - listitem [ref=f11e46]:
+            - paragraph [ref=f11e47]: System
+            - list [ref=f11e48]:
+              - listitem [ref=f11e49]:
+                - link "Settings" [ref=f11e50] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8015/settings
+      - generic [ref=f11e55]:
+        - generic [ref=f11e56]:
+          - generic [aria-hidden] [ref=f11e57]: Q
+          - generic [ref=f11e58]:
+            - generic [ref=f11e59]: QA User
+            - generic [ref=f11e60]: qa@test.dev
+        - button "Collapse sidebar" [ref=f11e61]
+    - generic [ref=f11e64]:
+      - banner [ref=f11e65]:
+        - button "Global search (coming soon)" [ref=f11e67]:
+          - generic [ref=f11e70]: Search…
+          - generic [ref=f11e71]: ⌘K
+        - generic [ref=f11e72]:
+          - button "Quick actions (coming soon)" [ref=f11e73]
+          - button "Notifications (coming soon)" [ref=f11e77]
+          - button "Switch business" [ref=f11e82]:
+            - generic [ref=f11e87]:
+              - generic [ref=f11e88]: Switch business
+              - generic "QA Test Business" [ref=f11e89]
+          - button "English" [ref=f11e93]
+          - button "Toggle dark mode" [ref=f11e100]
+          - button "QA User qa@test.dev" [ref=f11e104]:
+            - generic [ref=f11e105]:
+              - generic [aria-hidden] [ref=f11e106]: Q
+              - generic [ref=f11e107]:
+                - generic [ref=f11e108]: QA User
+                - generic [ref=f11e109]: qa@test.dev
+      - main [ref=f11e112]:
+        - generic [ref=f11e114]:
+          - navigation "Breadcrumb" [ref=f11e116]:
+            - list [ref=f11e117]:
+              - listitem [ref=f11e118]:
+                - link "Dashboard" [ref=f11e119] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8015/app
+              - listitem [ref=f11e122]:
+                - link "Invoices" [ref=f11e123] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8015/invoices
+              - listitem [ref=f11e126]:
+                - generic [ref=f11e127]: INV-000002
+          - generic [ref=f11e128]:
+            - generic [ref=f11e129]:
+              - heading "INV-000002" [level=1] [ref=f11e130]
+              - paragraph [ref=f11e131]: Invoice
+            - generic [ref=f11e132]:
+              - link "All invoices" [ref=f11e133] [cursor=pointer]:
+                - /url: http://127.0.0.1:8015/invoices
+              - button "Print" [ref=f11e136]
+              - button "Record payment" [ref=f11e139]
+          - generic [ref=f11e142]:
+            - status [ref=f11e144]:
+              - generic [ref=f11e147]: Invoice created.
+            - status [ref=f11e150]:
+              - generic [ref=f11e153]: This invoice is no longer a draft and can no longer be edited or deleted.
+            - generic [ref=f11e155]:
+              - generic [ref=f11e157]:
+                - generic [ref=f11e160]:
+                  - heading "Line items" [level=2] [ref=f11e161]
+                  - generic [ref=f11e162]: Sent
+                - generic [ref=f11e164]:
+                  - table [ref=f11e166]:
+                    - rowgroup [ref=f11e167]:
+                      - row [ref=f11e168]:
+                        - columnheader "Product / service" [ref=f11e169]
+                        - columnheader "invoices.description" [ref=f11e170]
+                        - columnheader "Qty" [ref=f11e171]
+                        - columnheader "Unit price" [ref=f11e172]
+                        - columnheader "Amount" [ref=f11e173]
+                    - rowgroup [ref=f11e174]:
+                      - row [ref=f11e175]:
+                        - cell "—" [ref=f11e176]
+                        - cell "Batch 16 QA item" [ref=f11e177]
+                        - cell "10.0000" [ref=f11e178]
+                        - cell "10.0000" [ref=f11e179]
+                        - cell "100.0000" [ref=f11e180]
+                  - generic [ref=f11e182]:
+                    - generic [ref=f11e183]:
+                      - term [ref=f11e184]: Subtotal
+                      - definition [ref=f11e185]: "100.0000"
+                    - generic [ref=f11e186]:
+                      - term [ref=f11e187]: Total
+                      - definition [ref=f11e188]: "100.0000"
+                    - generic [ref=f11e189]:
+                      - term [ref=f11e190]: Due
+                      - definition [ref=f11e191]: "100.0000"
+              - generic [ref=f11e193]:
+                - heading "Information" [level=2] [ref=f11e196]
+                - generic [ref=f11e198]:
+                  - generic [ref=f11e199]:
+                    - term [ref=f11e200]: Number
+                    - definition [ref=f11e201]: INV-000002
+                  - generic [ref=f11e202]:
+                    - term [ref=f11e203]: Customer
+                    - definition [ref=f11e204]:
+                      - link "QA Customer" [ref=f11e205] [cursor=pointer]:
+                        - /url: http://127.0.0.1:8015/customers/1
+                  - generic [ref=f11e206]:
+                    - term [ref=f11e207]: Date
+                    - definition [ref=f11e208]: 2026-09-13
+                  - generic [ref=f11e209]:
+                    - term [ref=f11e210]: Status
+                    - definition [ref=f11e211]:
+                      - generic [ref=f11e212]: Sent
+                  - generic [ref=f11e214]:
+                    - term [ref=f11e215]: Source
+                    - definition [ref=f11e216]: —
+                  - generic [ref=f11e217]:
+                    - term [ref=f11e218]: Created by
+                    - definition [ref=f11e219]: QA User
+                  - generic [ref=f11e220]:
+                    - term [ref=f11e221]: Created
+                    - definition [ref=f11e222]: 2026-09-13 14:53
+                  - generic [ref=f11e223]:
+                    - term [ref=f11e224]: Updated
+                    - definition [ref=f11e225]: 2026-09-13 14:53

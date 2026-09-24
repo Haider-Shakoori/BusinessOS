@@ -1,0 +1,167 @@
+- generic [active] [ref=f107e1]:
+  - link "Skip to content" [ref=f107e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=f107e3]:
+    - complementary "Skip to content" [ref=f107e4]:
+      - generic [ref=f107e10]:
+        - paragraph [ref=f107e11]: BusinessOS
+        - paragraph [ref=f107e12]: Business management
+      - navigation [ref=f107e13]:
+        - list [ref=f107e14]:
+          - listitem [ref=f107e15]:
+            - paragraph [ref=f107e16]: Overview
+            - list [ref=f107e17]:
+              - listitem [ref=f107e18]:
+                - link "Dashboard" [ref=f107e19] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/app
+          - listitem [ref=f107e23]:
+            - paragraph [ref=f107e24]: Business
+            - list [ref=f107e25]:
+              - listitem [ref=f107e26]:
+                - link "Customers" [ref=f107e27] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/customers
+              - listitem [ref=f107e31]:
+                - link "Quotations" [ref=f107e32] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/quotations
+              - listitem [ref=f107e36]:
+                - link "Invoices" [ref=f107e37] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/invoices
+              - listitem [ref=f107e41]:
+                - link "Payments" [ref=f107e42] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/payments
+              - listitem [ref=f107e46]:
+                - link "Products" [ref=f107e47] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/products
+              - listitem [ref=f107e51]:
+                - link "Categories" [ref=f107e52] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/categories
+              - listitem [ref=f107e56]:
+                - link "Units" [ref=f107e57] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/units
+              - listitem [ref=f107e61]:
+                - link "Expenses" [ref=f107e62] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/expenses
+          - listitem [ref=f107e66]:
+            - paragraph [ref=f107e67]: System
+            - list [ref=f107e68]:
+              - listitem [ref=f107e69]:
+                - link "Settings" [ref=f107e70] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/settings
+      - generic [ref=f107e75]:
+        - generic [ref=f107e76]:
+          - generic [aria-hidden] [ref=f107e77]: A
+          - generic [ref=f107e78]:
+            - generic [ref=f107e79]: Admin
+            - generic [ref=f107e80]: admin@businessos.test
+        - button "Collapse sidebar" [ref=f107e81]
+    - generic [ref=f107e84]:
+      - banner [ref=f107e85]:
+        - button "Global search (coming soon)" [ref=f107e87]:
+          - generic [ref=f107e90]: Search…
+          - generic [ref=f107e91]: ⌘K
+        - generic [ref=f107e92]:
+          - button "Quick actions (coming soon)" [ref=f107e93]
+          - button "Notifications (coming soon)" [ref=f107e97]
+          - button "Switch business" [ref=f107e102]:
+            - generic [ref=f107e107]:
+              - generic [ref=f107e108]: Switch business
+              - generic "TestCo" [ref=f107e109]
+          - button "English" [ref=f107e113]
+          - button "Toggle dark mode" [ref=f107e120]
+          - button "Admin admin@businessos.test" [ref=f107e124]:
+            - generic [ref=f107e125]:
+              - generic [aria-hidden] [ref=f107e126]: A
+              - generic [ref=f107e127]:
+                - generic [ref=f107e128]: Admin
+                - generic [ref=f107e129]: admin@businessos.test
+      - main [ref=f107e132]:
+        - generic [ref=f107e134]:
+          - navigation "Breadcrumb" [ref=f107e136]:
+            - list [ref=f107e137]:
+              - listitem [ref=f107e138]:
+                - link "Dashboard" [ref=f107e139] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/app
+              - listitem [ref=f107e142]:
+                - link "Quotations" [ref=f107e143] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/quotations
+              - listitem [ref=f107e146]:
+                - generic [ref=f107e147]: QUO-000001
+          - generic [ref=f107e148]:
+            - generic [ref=f107e149]:
+              - heading "QUO-000001" [level=1] [ref=f107e150]
+              - paragraph [ref=f107e151]: Quotation
+            - generic [ref=f107e152]:
+              - link "All quotations" [ref=f107e153] [cursor=pointer]:
+                - /url: http://127.0.0.1:8000/quotations
+              - button "Print" [ref=f107e156]
+              - link "Edit" [ref=f107e159] [cursor=pointer]:
+                - /url: http://127.0.0.1:8000/quotations/1/edit
+              - button "Delete" [ref=f107e162]
+              - button "Convert to invoice" [ref=f107e165]
+          - generic [ref=f107e168]:
+            - status [ref=f107e170]:
+              - generic [ref=f107e173]: Quotation created.
+            - generic [ref=f107e175]:
+              - generic [ref=f107e177]:
+                - generic [ref=f107e180]:
+                  - heading "Line items" [level=2] [ref=f107e181]
+                  - generic [ref=f107e182]: Draft
+                - generic [ref=f107e184]:
+                  - table [ref=f107e186]:
+                    - rowgroup [ref=f107e187]:
+                      - row [ref=f107e188]:
+                        - columnheader "Product / service" [ref=f107e189]
+                        - columnheader "Description" [ref=f107e190]
+                        - columnheader "Qty" [ref=f107e191]
+                        - columnheader "Unit price" [ref=f107e192]
+                        - columnheader "Amount" [ref=f107e193]
+                    - rowgroup [ref=f107e194]:
+                      - row [ref=f107e195]:
+                        - cell "—" [ref=f107e196]
+                        - cell "Maintenance retainer" [ref=f107e197]
+                        - cell "2.0000" [ref=f107e198]
+                        - cell "400.0000" [ref=f107e199]
+                        - cell "800.0000" [ref=f107e200]
+                  - generic [ref=f107e202]:
+                    - generic [ref=f107e203]:
+                      - term [ref=f107e204]: Subtotal
+                      - definition [ref=f107e205]: "800.0000"
+                    - generic [ref=f107e206]:
+                      - term [ref=f107e207]: Total
+                      - definition [ref=f107e208]: "800.0000"
+                    - generic [ref=f107e209]:
+                      - term [ref=f107e210]: Amount (AFN)
+                      - definition [ref=f107e211]: "56400.0000"
+              - generic [ref=f107e213]:
+                - heading "Information" [level=2] [ref=f107e216]
+                - generic [ref=f107e218]:
+                  - generic [ref=f107e219]:
+                    - term [ref=f107e220]: Number
+                    - definition [ref=f107e221]: QUO-000001
+                  - generic [ref=f107e222]:
+                    - term [ref=f107e223]: Customer
+                    - definition [ref=f107e224]:
+                      - link "Acme Traders" [ref=f107e225] [cursor=pointer]:
+                        - /url: http://127.0.0.1:8000/customers/1
+                  - generic [ref=f107e226]:
+                    - term [ref=f107e227]: Date
+                    - definition [ref=f107e228]: 2026-09-14
+                  - generic [ref=f107e229]:
+                    - term [ref=f107e230]: Currency
+                    - definition [ref=f107e231]: USD
+                  - generic [ref=f107e232]:
+                    - term [ref=f107e233]: Expires
+                    - definition [ref=f107e234]: —
+                  - generic [ref=f107e235]:
+                    - term [ref=f107e236]: Status
+                    - definition [ref=f107e237]:
+                      - generic [ref=f107e238]: Draft
+                  - generic [ref=f107e240]:
+                    - term [ref=f107e241]: Created by
+                    - definition [ref=f107e242]: Admin
+                  - generic [ref=f107e243]:
+                    - term [ref=f107e244]: Created
+                    - definition [ref=f107e245]: 2026-09-14 11:35
+                  - generic [ref=f107e246]:
+                    - term [ref=f107e247]: Updated
+                    - definition [ref=f107e248]: 2026-09-14 11:35

@@ -1,0 +1,145 @@
+- generic [active] [ref=f17e1]:
+  - link "Skip to content" [ref=f17e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=f17e3]:
+    - complementary "Skip to content" [ref=f17e4]:
+      - generic [ref=f17e10]:
+        - paragraph [ref=f17e11]: BusinessOS
+        - paragraph [ref=f17e12]: Business management
+      - navigation [ref=f17e13]:
+        - list [ref=f17e14]:
+          - listitem [ref=f17e15]:
+            - paragraph [ref=f17e16]: Overview
+            - list [ref=f17e17]:
+              - listitem [ref=f17e18]:
+                - link "Dashboard" [ref=f17e19] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/app
+          - listitem [ref=f17e23]:
+            - paragraph [ref=f17e24]: Business
+            - list [ref=f17e25]:
+              - listitem [ref=f17e26]:
+                - link "Customers" [ref=f17e27] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/customers
+              - listitem [ref=f17e31]:
+                - link "Quotations" [ref=f17e32] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/quotations
+              - listitem [ref=f17e36]:
+                - link "Invoices" [ref=f17e37] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/invoices
+              - listitem [ref=f17e41]:
+                - link "Payments" [ref=f17e42] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/payments
+          - listitem [ref=f17e46]:
+            - paragraph [ref=f17e47]: System
+            - list [ref=f17e48]:
+              - listitem [ref=f17e49]:
+                - link "Settings" [ref=f17e50] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/settings
+      - generic [ref=f17e55]:
+        - generic [ref=f17e56]:
+          - generic [aria-hidden] [ref=f17e57]: A
+          - generic [ref=f17e58]:
+            - generic [ref=f17e59]: Admin User
+            - generic [ref=f17e60]: admin@businessos.test
+        - button "Collapse sidebar" [ref=f17e61]
+    - generic [ref=f17e64]:
+      - banner [ref=f17e65]:
+        - button "Global search (coming soon)" [ref=f17e67]:
+          - generic [ref=f17e70]: Search…
+          - generic [ref=f17e71]: ⌘K
+        - generic [ref=f17e72]:
+          - button "Quick actions (coming soon)" [ref=f17e73]
+          - button "Notifications (coming soon)" [ref=f17e77]
+          - button "Switch business" [ref=f17e82]:
+            - generic [ref=f17e87]:
+              - generic [ref=f17e88]: Switch business
+              - generic "TestCo" [ref=f17e89]
+          - button "English" [ref=f17e93]
+          - button "Toggle dark mode" [ref=f17e100]
+          - button "Admin User admin@businessos.test" [ref=f17e104]:
+            - generic [ref=f17e105]:
+              - generic [aria-hidden] [ref=f17e106]: A
+              - generic [ref=f17e107]:
+                - generic [ref=f17e108]: Admin User
+                - generic [ref=f17e109]: admin@businessos.test
+      - main [ref=f17e112]:
+        - generic [ref=f17e114]:
+          - navigation "Breadcrumb" [ref=f17e116]:
+            - list [ref=f17e117]:
+              - listitem [ref=f17e118]:
+                - link "Dashboard" [ref=f17e119] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/app
+              - listitem [ref=f17e122]:
+                - link "Payments" [ref=f17e123] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/payments
+              - listitem [ref=f17e126]:
+                - generic [ref=f17e127]: PAY-000001
+          - generic [ref=f17e128]:
+            - generic [ref=f17e129]:
+              - heading "PAY-000001" [level=1] [ref=f17e130]
+              - paragraph [ref=f17e131]: Payment
+            - generic [ref=f17e132]:
+              - link "All payments" [ref=f17e133] [cursor=pointer]:
+                - /url: http://127.0.0.1:8000/payments
+              - link "Back to invoice" [ref=f17e136] [cursor=pointer]:
+                - /url: http://127.0.0.1:8000/invoices/1
+          - generic [ref=f17e139]:
+            - status [ref=f17e141]:
+              - generic [ref=f17e144]: Payment reversed. The invoice balance has been updated.
+            - generic [ref=f17e146]:
+              - generic [ref=f17e148]:
+                - heading "Payment" [level=2] [ref=f17e151]
+                - generic [ref=f17e153]:
+                  - generic [ref=f17e154]:
+                    - term [ref=f17e155]: Number
+                    - definition [ref=f17e156]: PAY-000001
+                  - generic [ref=f17e157]:
+                    - term [ref=f17e158]: Invoice
+                    - definition [ref=f17e159]:
+                      - link "INV-000001" [ref=f17e160] [cursor=pointer]:
+                        - /url: http://127.0.0.1:8000/invoices/1
+                  - generic [ref=f17e161]:
+                    - term [ref=f17e162]: Customer
+                    - definition [ref=f17e163]:
+                      - link "Batch16 Buyer" [ref=f17e164] [cursor=pointer]:
+                        - /url: http://127.0.0.1:8000/customers/1
+                  - generic [ref=f17e165]:
+                    - term [ref=f17e166]: Date
+                    - definition [ref=f17e167]: 2026-09-13
+                  - generic [ref=f17e168]:
+                    - term [ref=f17e169]: Method
+                    - definition [ref=f17e170]: Cash
+                  - generic [ref=f17e171]:
+                    - term [ref=f17e172]: Amount
+                    - definition [ref=f17e173]: "40.0000"
+                  - generic [ref=f17e174]:
+                    - term [ref=f17e175]: Status
+                    - definition [ref=f17e176]:
+                      - generic [ref=f17e177]: Reversed
+              - generic [ref=f17e180]:
+                - heading "Information" [level=2] [ref=f17e183]
+                - generic [ref=f17e185]:
+                  - generic [ref=f17e186]:
+                    - term [ref=f17e187]: Reference
+                    - definition [ref=f17e188]: PARTIAL-001
+                  - generic [ref=f17e189]:
+                    - term [ref=f17e190]: Notes
+                    - definition [ref=f17e191]: —
+                  - generic [ref=f17e192]:
+                    - term [ref=f17e193]: Recorded by
+                    - definition [ref=f17e194]: Admin User
+                  - generic [ref=f17e195]:
+                    - term [ref=f17e196]: Recorded
+                    - definition [ref=f17e197]: 2026-09-13 15:27
+                  - generic [ref=f17e202]:
+                    - paragraph [ref=f17e203]: Reversed
+                    - generic [ref=f17e204]:
+                      - generic [ref=f17e205]:
+                        - term [ref=f17e206]: "Reversed by:"
+                        - definition [ref=f17e207]: Admin User
+                      - generic [ref=f17e208]:
+                        - term [ref=f17e209]: "Reversed:"
+                        - definition [ref=f17e210]: 2026-09-13 15:30
+                      - generic [ref=f17e211]:
+                        - term [ref=f17e212]: "Reason:"
+                        - definition [ref=f17e213]: Customer asked for a refund

@@ -1,0 +1,118 @@
+<?php
+
+namespace App\Http\Requests\Settings;
+
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Arr;
+use Illuminate\Validation\Rule;
+
+/**
+ * Whitelisted settings update (Batch 9).
+ *
+ * Only the explicitly listed keys may be updated: a business name, the three
+ * general profile fields, the four regional fields, and the document numbering
+ * overrides (Batch 13). Anything else sent by the client — including a forged
+ * business_id or unknown admin keys — is never validated and never read by the
+ * controller, which resolves the current business from BusinessContext instead.
+ */
+class UpdateSettingsRequest extends FormRequest
+{
+    /**
+     * Prefix overrides for the five document types and the shared padding.
+     * Prefixes are restricted to an unambigouous character set, and padding is
+     * clamped to the range the formatting code accepts. Sending null (or
+     * omitting keys, since they are `sometimes`) clears the override.
+     */
+    private function numberingRules(): array
+    {
+        return array_merge([
+            'numbering.padding' => ['sometimes', 'nullable', 'integer', 'between:1,'.config('numbering.max_padding', 12)],
+        ], collect(['quotation', 'invoice', 'payment', 'expense', 'purchase_order'])
+            ->mapWithKeys(fn (string $type) => [
+                "numbering.{$type}_prefix" => [
+                    'sometimes', 'nullable', 'string',
+                    'regex:'.config('numbering.prefix_pattern', '/^[A-Z0-9_-]+$/'),
+                    'max:'.config('numbering.max_prefix_length', 10),
+                ],
+            ])->all());
+    }
+
+    public function authorize(): bool
+    {
+        return auth()->check();
+    }
+
+    public function rules(): array
+    {
+        return array_merge([
+            'name' => ['sometimes', 'required', 'string', 'max:255'],
+            'general.address' => ['nullable', 'string', 'max:500'],
+            'general.phone' => ['nullable', 'string', 'max:30'],
+            'general.email' => ['nullable', 'string', 'email:filter', 'max:255'],
+            'general.tax_enabled' => ['sometimes', 'boolean'],
+            'regional.timezone' => ['sometimes', 'required', 'string', 'timezone'],
+            'regional.date_format' => ['sometimes', 'required', 'string', Rule::in(array_keys(config('settings.options.date_formats', [])))],
+            'regional.time_format' => ['sometimes', 'required', 'string', Rule::in(array_keys(config('settings.options.time_formats', [])))],
+            'regional.locale' => ['sometimes', 'required', 'string', Rule::in(array_keys(config('localization.supported', [])))],
+            'regional.currency' => ['sometimes', 'required', 'string', 'size:3', 'alpha', Rule::exists('currencies', 'code')->where('is_active', true)],
+        ], $this->numberingRules());
+    }
+
+    /**
+     * Validation treats dotted keys as nested array paths, but this form posts
+     * flat dotted names (regional.timezone). Remap flat dotted pairs into
+     * nested arrays first so the whitelisted keys actually validate and land
+     * in validated(). Unknown sent keys (e.g. forged business_id, admin keys)
+     * are never nested under a validated group and stay absent from the result.
+     */
+    public function validationData(): array
+    {
+        $data = parent::validationData();
+        $remapped = [];
+
+        foreach ($data as $key => $value) {
+            if (is_string($key) && str_contains($key, '.')) {
+                Arr::set($remapped, $key, $value);
+            } else {
+                $remapped[$key] = $value;
+            }
+        }
+
+        return $remapped;
+    }
+
+    public function messages(): array
+    {
+        $messages = [
+            'name.required' => __('settings.validation.name_required'),
+            'name.max' => __('settings.validation.name_max'),
+            'general.address.max' => __('settings.validation.address_max'),
+            'general.phone.max' => __('settings.validation.phone_max'),
+            'general.email.email' => __('settings.validation.email_invalid'),
+            'general.email.max' => __('settings.validation.email_max'),
+            'general.tax_enabled.boolean' => __('settings.validation.tax_enabled_invalid'),
+            'regional.timezone.required' => __('settings.validation.timezone_required'),
+            'regional.timezone.timezone' => __('settings.validation.timezone_invalid'),
+            'regional.date_format.required' => __('settings.validation.date_format_required'),
+            'regional.date_format.in' => __('settings.validation.date_format_invalid'),
+            'regional.time_format.required' => __('settings.validation.time_format_required'),
+            'regional.time_format.in' => __('settings.validation.time_format_invalid'),
+            'regional.locale.required' => __('settings.validation.locale_required'),
+            'regional.locale.in' => __('settings.validation.locale_invalid'),
+            'regional.currency.required' => __('currencies.validation.invalid'),
+            'regional.currency.size' => __('currencies.validation.invalid'),
+            'regional.currency.alpha' => __('currencies.validation.invalid'),
+            'regional.currency.exists' => __('currencies.validation.invalid'),
+        ];
+
+        foreach (['quotation', 'invoice', 'payment', 'expense', 'purchase_order'] as $type) {
+            $messages["numbering.{$type}_prefix.regex"] = __('settings.validation.numbering_prefix_invalid');
+            $messages["numbering.{$type}_prefix.max"] = __('settings.validation.numbering_prefix_max');
+        }
+
+        $messages['numbering.padding.integer'] = __('settings.validation.numbering_padding_invalid');
+        $messages['numbering.padding.between'] = __('settings.validation.numbering_padding_invalid');
+
+        return $messages;
+    }
+}

@@ -1,0 +1,93 @@
+- generic [active] [ref=f89e1]:
+  - link "Skip to content" [ref=f89e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=f89e3]:
+    - complementary "Skip to content" [ref=f89e4]:
+      - generic [ref=f89e10]:
+        - paragraph [ref=f89e11]: BusinessOS
+        - paragraph [ref=f89e12]: Business management
+      - navigation [ref=f89e13]:
+        - list [ref=f89e14]:
+          - listitem [ref=f89e15]:
+            - paragraph [ref=f89e16]: Overview
+            - list [ref=f89e17]:
+              - listitem [ref=f89e18]:
+                - link "Dashboard" [ref=f89e19] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/app
+          - listitem [ref=f89e24]:
+            - paragraph [ref=f89e25]: Business
+            - list [ref=f89e26]:
+              - listitem [ref=f89e27]:
+                - link "Customers" [ref=f89e28] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/customers
+              - listitem [ref=f89e32]:
+                - link "Quotations" [ref=f89e33] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/quotations
+              - listitem [ref=f89e37]:
+                - link "Invoices" [ref=f89e38] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/invoices
+              - listitem [ref=f89e42]:
+                - link "Payments" [ref=f89e43] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/payments
+              - listitem [ref=f89e47]:
+                - link "Products" [ref=f89e48] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/products
+              - listitem [ref=f89e52]:
+                - link "Categories" [ref=f89e53] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/categories
+              - listitem [ref=f89e57]:
+                - link "Units" [ref=f89e58] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/units
+              - listitem [ref=f89e62]:
+                - link "Expenses" [ref=f89e63] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/expenses
+          - listitem [ref=f89e67]:
+            - paragraph [ref=f89e68]: System
+            - list [ref=f89e69]:
+              - listitem [ref=f89e70]:
+                - link "Settings" [ref=f89e71] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/settings
+      - generic [ref=f89e76]:
+        - generic [ref=f89e77]:
+          - generic [aria-hidden] [ref=f89e78]: A
+          - generic [ref=f89e79]:
+            - generic [ref=f89e80]: Admin
+            - generic [ref=f89e81]: admin@businessos.test
+        - button "Collapse sidebar" [ref=f89e82]
+    - generic [ref=f89e85]:
+      - banner [ref=f89e86]:
+        - button "Global search (coming soon)" [ref=f89e88]:
+          - generic [ref=f89e91]: Search…
+          - generic [ref=f89e92]: ⌘K
+        - generic [ref=f89e93]:
+          - button "Quick actions (coming soon)" [ref=f89e94]
+          - button "Notifications (coming soon)" [ref=f89e98]
+          - button "Switch business" [ref=f89e103]:
+            - generic [ref=f89e108]:
+              - generic [ref=f89e109]: Switch business
+              - generic "TestCo" [ref=f89e110]
+          - button "English" [ref=f89e114]
+          - button "Toggle dark mode" [ref=f89e121]
+          - button "Admin admin@businessos.test" [ref=f89e125]:
+            - generic [ref=f89e126]:
+              - generic [aria-hidden] [ref=f89e127]: A
+              - generic [ref=f89e128]:
+                - generic [ref=f89e129]: Admin
+                - generic [ref=f89e130]: admin@businessos.test
+      - main [ref=f89e133]:
+        - generic [ref=f89e135]:
+          - heading "Account home" [level=1] [ref=f89e138]
+          - generic [ref=f89e141]:
+            - paragraph [ref=f89e142]: Welcome, Admin.
+            - paragraph [ref=f89e143]: You are signed in to BusinessOS.
+            - generic [ref=f89e144]: "Current business: TestCo"
+            - generic [ref=f89e147]:
+              - heading "Your roles in TestCo" [level=3] [ref=f89e148]
+              - generic [ref=f89e151]: Owner
+              - heading "Your permissions in TestCo" [level=3] [ref=f89e155]
+              - list [ref=f89e156]:
+                - listitem [ref=f89e157]: View users
+                - listitem [ref=f89e160]: Manage users
+                - listitem [ref=f89e163]: View settings
+                - listitem [ref=f89e166]: Manage settings
+                - listitem [ref=f89e169]: View customers

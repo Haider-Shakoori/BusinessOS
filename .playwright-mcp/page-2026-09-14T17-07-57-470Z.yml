@@ -1,0 +1,125 @@
+- generic [active] [ref=f1e1]:
+  - link "Skip to content" [ref=f1e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=f1e3]:
+    - complementary "Skip to content" [ref=f1e4]:
+      - generic [ref=f1e10]:
+        - paragraph [ref=f1e11]: BusinessOS
+        - paragraph [ref=f1e12]: Business management
+      - navigation [ref=f1e13]:
+        - list [ref=f1e14]:
+          - listitem [ref=f1e15]:
+            - paragraph [ref=f1e16]: Overview
+            - list [ref=f1e17]:
+              - listitem [ref=f1e18]:
+                - link "Dashboard" [ref=f1e19] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/app
+          - listitem [ref=f1e23]:
+            - paragraph [ref=f1e24]: Business
+            - list [ref=f1e25]:
+              - listitem [ref=f1e26]:
+                - link "Customers" [ref=f1e27] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/customers
+              - listitem [ref=f1e32]:
+                - link "Quotations" [ref=f1e33] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/quotations
+              - listitem [ref=f1e37]:
+                - link "Invoices" [ref=f1e38] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/invoices
+              - listitem [ref=f1e42]:
+                - link "Payments" [ref=f1e43] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/payments
+              - listitem [ref=f1e47]:
+                - link "Products" [ref=f1e48] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/products
+              - listitem [ref=f1e52]:
+                - link "Categories" [ref=f1e53] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/categories
+              - listitem [ref=f1e57]:
+                - link "Units" [ref=f1e58] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/units
+              - listitem [ref=f1e62]:
+                - link "Expenses" [ref=f1e63] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/expenses
+          - listitem [ref=f1e67]:
+            - paragraph [ref=f1e68]: System
+            - list [ref=f1e69]:
+              - listitem [ref=f1e70]:
+                - link "Settings" [ref=f1e71] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/settings
+      - generic [ref=f1e76]:
+        - generic [ref=f1e77]:
+          - generic [aria-hidden] [ref=f1e78]: A
+          - generic [ref=f1e79]:
+            - generic [ref=f1e80]: Admin
+            - generic [ref=f1e81]: admin@businessos.test
+        - button "Collapse sidebar" [ref=f1e82]
+    - generic [ref=f1e85]:
+      - banner [ref=f1e86]:
+        - button "Global search (coming soon)" [ref=f1e88]:
+          - generic [ref=f1e91]: Search…
+          - generic [ref=f1e92]: ⌘K
+        - generic [ref=f1e93]:
+          - button "Quick actions (coming soon)" [ref=f1e94]
+          - button "Notifications (coming soon)" [ref=f1e98]
+          - button "Switch business" [ref=f1e103]:
+            - generic [ref=f1e108]:
+              - generic [ref=f1e109]: Switch business
+              - generic "TestCo" [ref=f1e110]
+          - button "English" [ref=f1e114]
+          - button "Toggle dark mode" [ref=f1e121]
+          - button "Admin admin@businessos.test" [ref=f1e125]:
+            - generic [ref=f1e126]:
+              - generic [aria-hidden] [ref=f1e127]: A
+              - generic [ref=f1e128]:
+                - generic [ref=f1e129]: Admin
+                - generic [ref=f1e130]: admin@businessos.test
+      - main [ref=f1e133]:
+        - generic [ref=f1e135]:
+          - navigation "Breadcrumb" [ref=f1e137]:
+            - list [ref=f1e138]:
+              - listitem [ref=f1e139]:
+                - link "Dashboard" [ref=f1e140] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/app
+              - listitem [ref=f1e143]:
+                - generic [ref=f1e144]: Customers
+          - generic [ref=f1e145]:
+            - generic [ref=f1e146]:
+              - heading "Customers" [level=1] [ref=f1e147]
+              - paragraph [ref=f1e148]: Manage the people and companies you do business with.
+            - generic [ref=f1e149]:
+              - link "Import customers" [ref=f1e150] [cursor=pointer]:
+                - /url: http://127.0.0.1:8000/customers/import
+              - link "Add customer" [ref=f1e153] [cursor=pointer]:
+                - /url: http://127.0.0.1:8000/customers/create
+          - generic [ref=f1e156]:
+            - search [ref=f1e157]:
+              - generic [ref=f1e158]: Search customers
+              - searchbox "Search customers" [ref=f1e160]
+              - button "Search" [ref=f1e161]
+            - table [ref=f1e164]:
+              - caption [ref=f1e165]: Customer list
+              - rowgroup [ref=f1e166]:
+                - row [ref=f1e167]:
+                  - columnheader "Name" [ref=f1e168]
+                  - columnheader "Company name" [ref=f1e169]
+                  - columnheader "Contact" [ref=f1e170]
+                  - columnheader "Notes" [ref=f1e171]
+                  - columnheader "Added" [ref=f1e172]
+                  - columnheader "Actions" [ref=f1e173]
+              - rowgroup [ref=f1e175]:
+                - row [ref=f1e176]:
+                  - cell [ref=f1e177]:
+                    - link "Acme Traders" [ref=f1e178] [cursor=pointer]:
+                      - /url: http://127.0.0.1:8000/customers/1
+                  - cell "Acme Trading LLC" [ref=f1e179]
+                  - cell [ref=f1e180]
+                  - cell [ref=f1e181]
+                  - cell "2026-09-13" [ref=f1e182]
+                  - cell [ref=f1e183]:
+                    - generic [ref=f1e184]:
+                      - link "View" [ref=f1e185] [cursor=pointer]:
+                        - /url: http://127.0.0.1:8000/customers/1
+                      - link "Edit" [ref=f1e188] [cursor=pointer]:
+                        - /url: http://127.0.0.1:8000/customers/1/edit
+                      - button "Delete" [ref=f1e191]

@@ -1,0 +1,168 @@
+- generic [active] [ref=f105e1]:
+  - link "Skip to content" [ref=f105e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=f105e3]:
+    - complementary "Skip to content" [ref=f105e4]:
+      - generic [ref=f105e10]:
+        - paragraph [ref=f105e11]: BusinessOS
+        - paragraph [ref=f105e12]: Business management
+      - navigation [ref=f105e13]:
+        - list [ref=f105e14]:
+          - listitem [ref=f105e15]:
+            - paragraph [ref=f105e16]: Overview
+            - list [ref=f105e17]:
+              - listitem [ref=f105e18]:
+                - link "Dashboard" [ref=f105e19] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/app
+          - listitem [ref=f105e23]:
+            - paragraph [ref=f105e24]: Business
+            - list [ref=f105e25]:
+              - listitem [ref=f105e26]:
+                - link "Customers" [ref=f105e27] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/customers
+              - listitem [ref=f105e31]:
+                - link "Quotations" [ref=f105e32] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/quotations
+              - listitem [ref=f105e36]:
+                - link "Invoices" [ref=f105e37] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/invoices
+              - listitem [ref=f105e41]:
+                - link "Payments" [ref=f105e42] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/payments
+              - listitem [ref=f105e46]:
+                - link "Products" [ref=f105e47] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/products
+              - listitem [ref=f105e51]:
+                - link "Categories" [ref=f105e52] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/categories
+              - listitem [ref=f105e56]:
+                - link "Units" [ref=f105e57] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/units
+              - listitem [ref=f105e61]:
+                - link "Expenses" [ref=f105e62] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/expenses
+          - listitem [ref=f105e66]:
+            - paragraph [ref=f105e67]: System
+            - list [ref=f105e68]:
+              - listitem [ref=f105e69]:
+                - link "Settings" [ref=f105e70] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/settings
+      - generic [ref=f105e75]:
+        - generic [ref=f105e76]:
+          - generic [aria-hidden] [ref=f105e77]: A
+          - generic [ref=f105e78]:
+            - generic [ref=f105e79]: Admin
+            - generic [ref=f105e80]: admin@businessos.test
+        - button "Collapse sidebar" [ref=f105e81]
+    - generic [ref=f105e84]:
+      - banner [ref=f105e85]:
+        - button "Global search (coming soon)" [ref=f105e87]:
+          - generic [ref=f105e90]: Search…
+          - generic [ref=f105e91]: ⌘K
+        - generic [ref=f105e92]:
+          - button "Quick actions (coming soon)" [ref=f105e93]
+          - button "Notifications (coming soon)" [ref=f105e97]
+          - button "Switch business" [ref=f105e102]:
+            - generic [ref=f105e107]:
+              - generic [ref=f105e108]: Switch business
+              - generic "TestCo" [ref=f105e109]
+          - button "English" [ref=f105e113]
+          - button "Toggle dark mode" [ref=f105e120]
+          - button "Admin admin@businessos.test" [ref=f105e124]:
+            - generic [ref=f105e125]:
+              - generic [aria-hidden] [ref=f105e126]: A
+              - generic [ref=f105e127]:
+                - generic [ref=f105e128]: Admin
+                - generic [ref=f105e129]: admin@businessos.test
+      - main [ref=f105e132]:
+        - generic [ref=f105e134]:
+          - navigation "Breadcrumb" [ref=f105e136]:
+            - list [ref=f105e137]:
+              - listitem [ref=f105e138]:
+                - link "Dashboard" [ref=f105e139] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/app
+              - listitem [ref=f105e142]:
+                - link "Quotations" [ref=f105e143] [cursor=pointer]:
+                  - /url: http://127.0.0.1:8000/quotations
+              - listitem [ref=f105e146]:
+                - generic [ref=f105e147]: New quotation
+          - generic [ref=f105e149]:
+            - heading "New quotation" [level=1] [ref=f105e150]
+            - paragraph [ref=f105e151]: Create and track price quotes for your customers.
+          - generic [ref=f105e153]:
+            - generic [ref=f105e154]:
+              - heading "Information" [level=2] [ref=f105e157]
+              - generic [ref=f105e159]:
+                - generic [ref=f105e161]:
+                  - generic [ref=f105e162]: Customer *
+                  - combobox "Customer" [ref=f105e164]:
+                    - option "No customer" [disabled] [selected]
+                    - option "Acme Traders (Acme Trading LLC)"
+                - generic [ref=f105e166]:
+                  - generic [ref=f105e167]: Status *
+                  - combobox "Status" [ref=f105e169]:
+                    - option "Draft" [selected]
+                    - option "Sent"
+                    - option "Accepted"
+                    - option "Rejected"
+                    - option "Expired"
+                - generic [ref=f105e171]:
+                  - generic [ref=f105e172]: Date *
+                  - textbox "Date" [ref=f105e174]: 2026-09-14
+                - generic [ref=f105e176]:
+                  - generic [ref=f105e177]: Expires
+                  - textbox "Expires" [ref=f105e179]
+                - generic [ref=f105e181]:
+                  - generic [ref=f105e182]: Currency
+                  - combobox "Currency" [ref=f105e184]:
+                    - option "AFN — Afghan Afghani" [selected]
+                    - option "USD — US Dollar"
+            - generic [ref=f105e185]:
+              - generic [ref=f105e188]:
+                - heading "Line items" [level=2] [ref=f105e189]
+                - button "Add line" [ref=f105e190]
+              - generic [ref=f105e193]:
+                - table [ref=f105e195]:
+                  - rowgroup [ref=f105e196]:
+                    - row [ref=f105e197]:
+                      - columnheader "Product / service" [ref=f105e198]
+                      - columnheader "quotations.description" [ref=f105e199]
+                      - columnheader "Qty" [ref=f105e200]
+                      - columnheader "Unit price" [ref=f105e201]
+                      - columnheader "Remove line" [ref=f105e202]
+                  - rowgroup [ref=f105e204]:
+                    - row [ref=f105e205]:
+                      - cell "—" [ref=f105e206]:
+                        - combobox [ref=f105e207]:
+                          - option "—" [selected]
+                      - cell [ref=f105e208]:
+                        - textbox "Describe the item or service…" [ref=f105e209]
+                      - cell [ref=f105e210]:
+                        - spinbutton [ref=f105e211]: "1"
+                      - cell [ref=f105e212]:
+                        - spinbutton [ref=f105e213]
+                      - cell "Remove line" [ref=f105e214]:
+                        - button "Remove line" [disabled]
+                - paragraph [ref=f105e215]: quotations.items_min
+            - generic [ref=f105e216]:
+              - heading "Total" [level=2] [ref=f105e219]
+              - generic [ref=f105e221]:
+                - generic [ref=f105e223]:
+                  - generic [ref=f105e224]: Discount (exclusive)
+                  - combobox "Discount (exclusive)" [ref=f105e226]:
+                    - option "No discount" [disabled] [selected]
+                    - option "Percentage"
+                    - option "Fixed amount"
+                - generic [ref=f105e228]:
+                  - generic [ref=f105e229]: Discount amount
+                  - spinbutton "Discount amount" [ref=f105e231]
+                - generic [ref=f105e233]:
+                  - generic [ref=f105e234]: Notes
+                  - textbox "Notes" [ref=f105e235]
+                - generic [ref=f105e237]:
+                  - generic [ref=f105e238]: Terms
+                  - textbox "Terms" [ref=f105e239]
+            - generic [ref=f105e240]:
+              - button "Create" [ref=f105e241]
+              - link "Cancel" [ref=f105e244] [cursor=pointer]:
+                - /url: http://127.0.0.1:8000/quotations
