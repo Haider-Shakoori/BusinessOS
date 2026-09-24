@@ -10,6 +10,9 @@
         ]"
     >
         <x-slot:actions>
+            <x-ui.button href="{{ route('expenses.export', request()->only('search', 'category_id', 'date_from', 'date_to')) }}" variant="secondary">
+                {{ __('exports.export_csv') }}
+            </x-ui.button>
             <x-ui.button variant="secondary" href="{{ route('expenses.report') }}" icon="chart-bar">
                 {{ __('expenses.report') }}
             </x-ui.button>
