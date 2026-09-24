@@ -10,6 +10,9 @@
         ]"
     >
         <x-slot:actions>
+            <x-ui.button href="{{ route('products.export', request()->only('search', 'type')) }}" variant="secondary">
+                {{ __('exports.export_csv') }}
+            </x-ui.button>
             @can('products.manage')
                 <x-ui.button href="{{ route('products.import') }}" variant="secondary" icon="document-text">{{ __('imports.import_products') }}</x-ui.button>
                 <x-ui.button href="{{ route('products.create') }}" icon="plus">{{ __('products.add') }}</x-ui.button>
