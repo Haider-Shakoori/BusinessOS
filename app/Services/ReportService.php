@@ -136,6 +136,22 @@ class ReportService
             ->orderBy('sort_order')
             ->get();
 
+        $lineTotalsByInvoice = [];
+
+        foreach ($items as $item) {
+            $invoice = $item->invoice;
+
+            if ($invoice === null) {
+                continue;
+            }
+
+            $invoiceId = (int) $invoice->id;
+            $lineTotalsByInvoice[$invoiceId] = Decimal::add(
+                $lineTotalsByInvoice[$invoiceId] ?? '0.0000',
+                (string) $item->line_total,
+            );
+        }
+
         foreach ($items as $item) {
             $invoice = $item->invoice;
 
@@ -157,12 +173,14 @@ class ReportService
                 ];
             }
 
-            $allocated = Decimal::isZero((string) $invoice->total)
+            $invoiceLineTotal = $lineTotalsByInvoice[(int) $invoice->id] ?? '0.0000';
+
+            $allocated = Decimal::isZero($invoiceLineTotal)
                 ? '0.0000'
                 : Decimal::mulDiv(
                     (string) $invoice->base_amount,
                     (string) $item->line_total,
-                    (string) $invoice->total,
+                    $invoiceLineTotal,
                 );
 
             $rows[$key]['quantity'] = Decimal::add($rows[$key]['quantity'], (string) $item->quantity);
