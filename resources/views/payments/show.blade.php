@@ -49,17 +49,17 @@
             <div class="lg:col-span-1">
                 <x-ui.card>
                     <x-slot:header>
-                        <h2 class="text-base font-semibold text-gray-900 dark:text-white">{{ __('payments.document') }}</h2>
+                        <h2 class="text-base font-semibold text-slate-900 dark:text-white">{{ __('payments.document') }}</h2>
                     </x-slot:header>
 
                     <dl class="space-y-4">
                         <div>
-                            <dt class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">{{ __('payments.number') }}</dt>
-                            <dd class="mt-1 text-sm font-semibold text-gray-900 dark:text-white" dir="ltr">{{ $payment->payment_number }}</dd>
+                            <dt class="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">{{ __('payments.number') }}</dt>
+                            <dd class="mt-1 text-sm font-semibold text-slate-900 dark:text-white" dir="ltr">{{ $payment->payment_number }}</dd>
                         </div>
                         <div>
-                            <dt class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">{{ __('payments.invoice') }}</dt>
-                            <dd class="mt-1 text-sm text-gray-900 dark:text-gray-100">
+                            <dt class="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">{{ __('payments.invoice') }}</dt>
+                            <dd class="mt-1 text-sm text-slate-900 dark:text-slate-100">
                                 @if ($invoice)
                                     <a href="{{ route('invoices.show', $invoice) }}" class="text-brand-600 hover:text-brand-800 dark:text-brand-400 dark:hover:text-brand-300">
                                         {{ $invoice->invoice_number }}
@@ -70,8 +70,8 @@
                             </dd>
                         </div>
                         <div>
-                            <dt class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">{{ __('payments.customer') }}</dt>
-                            <dd class="mt-1 text-sm text-gray-900 dark:text-gray-100">
+                            <dt class="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">{{ __('payments.customer') }}</dt>
+                            <dd class="mt-1 text-sm text-slate-900 dark:text-slate-100">
                                 @if ($customer)
                                     <a href="{{ route('customers.show', $customer) }}" class="text-brand-600 hover:text-brand-800 dark:text-brand-400 dark:hover:text-brand-300">
                                         {{ $customer->name }}
@@ -82,25 +82,25 @@
                             </dd>
                         </div>
                         <div>
-                            <dt class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">{{ __('payments.date') }}</dt>
-                            <dd class="mt-1 text-sm text-gray-900 dark:text-gray-100">{{ $payment->payment_date->format('Y-m-d') }}</dd>
+                            <dt class="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">{{ __('payments.date') }}</dt>
+                            <dd class="mt-1 text-sm text-slate-900 dark:text-slate-100">{{ $payment->payment_date->format('Y-m-d') }}</dd>
                         </div>
                         <div>
-                            <dt class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">{{ __('payments.method') }}</dt>
-                            <dd class="mt-1 text-sm text-gray-900 dark:text-gray-100">{{ __('payments.methods.'.$payment->payment_method) }}</dd>
+                            <dt class="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">{{ __('payments.method') }}</dt>
+                            <dd class="mt-1 text-sm text-slate-900 dark:text-slate-100">{{ __('payments.methods.'.$payment->payment_method) }}</dd>
                         </div>
                         <div>
-                            <dt class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">{{ __('currencies.currency') }}</dt>
-                            <dd class="mt-1 text-sm font-semibold text-gray-900 dark:text-white" dir="ltr">{{ $payment->currency_code }}</dd>
+                            <dt class="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">{{ __('currencies.currency') }}</dt>
+                            <dd class="mt-1 text-sm font-semibold text-slate-900 dark:text-white" dir="ltr">{{ $payment->currency_code }}</dd>
                         </div>
                         <div>
-                            <dt class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">{{ __('payments.amount') }}</dt>
-                            <dd class="mt-1 text-base font-semibold tabular-nums text-gray-900 dark:text-white" dir="ltr">
-                                {{ $payment->amount }} <span class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ $payment->currency_code }}</span>
+                            <dt class="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">{{ __('payments.amount') }}</dt>
+                            <dd class="mt-1 text-base font-semibold tabular-nums text-slate-900 dark:text-white" dir="ltr">
+                                {{ $payment->amount }} <span class="text-sm font-medium text-slate-500 dark:text-slate-400">{{ $payment->currency_code }}</span>
                             </dd>
                         </div>
                         <div>
-                            <dt class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">{{ __('payments.status') }}</dt>
+                            <dt class="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">{{ __('payments.status') }}</dt>
                             <dd class="mt-1">
                                 <x-ui.status-badge
                                     :status="$payment->reversed_at === null ? 'active' : 'reversed'"
@@ -115,25 +115,25 @@
             <div class="lg:col-span-2">
                 <x-ui.card>
                     <x-slot:header>
-                        <h2 class="text-base font-semibold text-gray-900 dark:text-white">{{ __('payments.information') }}</h2>
+                        <h2 class="text-base font-semibold text-slate-900 dark:text-white">{{ __('payments.information') }}</h2>
                     </x-slot:header>
 
                     <dl class="space-y-4">
                         <div>
-                            <dt class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">{{ __('payments.reference') }}</dt>
-                            <dd class="mt-1 text-sm text-gray-900 dark:text-gray-100">{{ $payment->reference ?: __('payments.no_reference') }}</dd>
+                            <dt class="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">{{ __('payments.reference') }}</dt>
+                            <dd class="mt-1 text-sm text-slate-900 dark:text-slate-100">{{ $payment->reference ?: __('payments.no_reference') }}</dd>
                         </div>
                         <div>
-                            <dt class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">{{ __('payments.notes') }}</dt>
-                            <dd class="mt-1 text-sm whitespace-pre-line text-gray-900 dark:text-gray-100">{{ $payment->notes ?: '—' }}</dd>
+                            <dt class="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">{{ __('payments.notes') }}</dt>
+                            <dd class="mt-1 text-sm whitespace-pre-line text-slate-900 dark:text-slate-100">{{ $payment->notes ?: '—' }}</dd>
                         </div>
                         <div>
-                            <dt class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">{{ __('payments.recorded_by') }}</dt>
-                            <dd class="mt-1 text-sm text-gray-900 dark:text-gray-100">{{ $payment->createdBy?->name ?: '—' }}</dd>
+                            <dt class="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">{{ __('payments.recorded_by') }}</dt>
+                            <dd class="mt-1 text-sm text-slate-900 dark:text-slate-100">{{ $payment->createdBy?->name ?: '—' }}</dd>
                         </div>
                         <div>
-                            <dt class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">{{ __('payments.recorded_at') }}</dt>
-                            <dd class="mt-1 text-sm text-gray-900 dark:text-gray-100">{{ $payment->created_at?->format('Y-m-d H:i') }}</dd>
+                            <dt class="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">{{ __('payments.recorded_at') }}</dt>
+                            <dd class="mt-1 text-sm text-slate-900 dark:text-slate-100">{{ $payment->created_at?->format('Y-m-d H:i') }}</dd>
                         </div>
                         @if ($payment->reversed_at !== null)
                             <div class="rounded-lg border border-red-200 bg-red-50 p-4 dark:border-red-500/30 dark:bg-red-500/10">
@@ -175,14 +175,14 @@
                         __('payments.reverse_title', ['name' => '<span x-text="paymentNumber ?? \'\'"></span>'])
                     );
                     $reverseConfirm = new \Illuminate\Support\HtmlString(
-                        __('payments.reverse_confirm', ['name' => '<span x-text="paymentNumber ?? \'\'" class="font-semibold text-gray-900 dark:text-white"></span>'])
+                        __('payments.reverse_confirm', ['name' => '<span x-text="paymentNumber ?? \'\'" class="font-semibold text-slate-900 dark:text-white"></span>'])
                     );
                 @endphp
 
                 <x-ui.modal id="reverse-payment-modal" :title="$reverseTitle" size="sm">
                     <template x-if="paymentId">
                         <div>
-                            <p class="text-sm text-gray-500 dark:text-gray-400">{!! $reverseConfirm !!}</p>
+                            <p class="text-sm text-slate-500 dark:text-slate-400">{!! $reverseConfirm !!}</p>
 
                             <form
                                 class="mt-6 space-y-4"
@@ -191,7 +191,7 @@
                             >
                                 @csrf
                                 <div>
-                                    <label for="reversal-reason" class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-200">
+                                    <label for="reversal-reason" class="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-200">
                                         {{ __('payments.reversal_reason_label') }}
                                     </label>
                                     <textarea
@@ -199,9 +199,9 @@
                                         name="reversal_reason"
                                         rows="3"
                                         placeholder="{{ __('payments.reversal_reason_placeholder') }}"
-                                        class="block w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm
-                                            placeholder:text-gray-400 transition-colors duration-150 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/30
-                                            dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:placeholder:text-gray-500"
+                                        class="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm
+                                            placeholder:text-slate-400 transition-colors duration-150 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/30
+                                            dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-500"
                                     ></textarea>
                                 </div>
 
@@ -209,7 +209,7 @@
                                     <button
                                         type="button"
                                         x-on:click="close"
-                                        class="inline-flex shrink-0 items-center justify-center rounded-lg border border-gray-300 bg-white px-3.5 py-2 text-sm font-semibold text-gray-700 shadow-sm transition-colors duration-150 hover:bg-gray-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:hover:bg-gray-700"
+                                        class="inline-flex shrink-0 items-center justify-center rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-sm font-semibold text-slate-700 shadow-sm transition-colors duration-150 hover:bg-slate-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:hover:bg-slate-700"
                                     >
                                         {{ __('payments.reverse_cancel') }}
                                     </button>
