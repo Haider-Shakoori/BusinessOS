@@ -92,7 +92,7 @@
                                     <x-slot:items>
                                         <x-ui.dropdown-item :href="route('invoices.show', $invoice)" icon="eye">{{ __('actions.view') }}</x-ui.dropdown-item>
                                         @can('invoices.manage')
-                                            @if ($invoice->status === AppEnumsInvoiceStatus::Draft)
+                                            @if ($invoice->status === \App\Enums\InvoiceStatus::Draft)
                                                 <x-ui.dropdown-item :href="route('invoices.edit', $invoice)" icon="pencil-square">{{ __('actions.edit') }}</x-ui.dropdown-item>
                                                 <button type="button" role="menuitem" class="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-500/10" x-on:click="close(); $dispatch('bos:open-modal', { id: 'delete-invoice-modal' }); $dispatch('bos:delete-invoice', { id: {{ $invoice->id }} })"><x-ui.icon name="trash" class="size-4" />{{ __('actions.delete') }}</button>
                                             @endif
