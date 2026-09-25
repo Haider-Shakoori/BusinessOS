@@ -6,7 +6,7 @@
         $customer = $invoice?->customer;
     @endphp
 
-    <x-app.page
+    <x-app.page icon="banknotes"
         :title="$payment->payment_number"
         :subtitle="__('payments.document')"
         :breadcrumbs="[
