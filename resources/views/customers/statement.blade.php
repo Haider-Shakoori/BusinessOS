@@ -158,7 +158,7 @@
                     </div>
                 </div>
                 <div class="flex items-end justify-end sm:text-end">
-                    <div class="rounded-lg bg-slate-50 px-4 py-3 dark:bg-slate-700/50 print:bg-slate-100">
+                    <div class="rounded-[7px] bg-slate-50 px-4 py-3 dark:bg-slate-700/50 print:bg-slate-100">
                         <dt class="text-sm font-medium text-slate-500 dark:text-slate-400 print:text-slate-600">{{ __('customers.statement.closing_balance') }}</dt>
                         <dd class="mt-0.5 text-2xl font-bold tabular-nums text-slate-900 dark:text-white print:text-slate-900" dir="ltr">{{ $closingBalance }}</dd>
                         <p class="mt-1 text-xs text-slate-500 dark:text-slate-400 print:text-slate-600">{{ __('customers.statement.outstanding_balance') }}</p>
