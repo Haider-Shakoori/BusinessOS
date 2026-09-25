@@ -7,6 +7,14 @@ return new class extends Migration
 {
     public function up(): void
     {
+        // On a fresh install PermissionSeeder runs after migrations and creates
+        // the complete catalogue in config order. Existing installations
+        // already have permissions, so this migration adds the new key and
+        // attaches it to their system roles.
+        if (! DB::table('permissions')->exists()) {
+            return;
+        }
+
         DB::table('permissions')->updateOrInsert(
             ['name' => 'reports.view'],
             [
