@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <x-app.page :title="__('settings.title')" :subtitle="__('settings.subtitle', ['business' => $business?->name ?? __('auth.guest')])">
+    <x-app.page icon="cog" :title="__('settings.title')" :subtitle="__('settings.subtitle', ['business' => $business?->name ?? __('auth.guest')])">
         @if (session('status'))
             <div class="mb-6">
                 <x-ui.alert type="success">{{ session('status') }}</x-ui.alert>
