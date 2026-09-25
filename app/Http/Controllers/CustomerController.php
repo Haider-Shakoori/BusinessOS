@@ -8,8 +8,6 @@ use App\Http\Requests\Customer\UpdateCustomerRequest;
 use App\Models\Customer;
 use App\Models\Invoice;
 use App\Models\Payment;
-use App\Services\BusinessContext;
-use App\Services\BusinessSettings;
 use App\Services\CurrencyService;
 use App\Services\CustomerLedgerService;
 use App\Services\DocumentService;
@@ -38,8 +36,6 @@ class CustomerController extends Controller
 {
     public function __construct(
         private readonly CustomerLedgerService $ledger,
-        private readonly BusinessSettings $settings,
-        private readonly BusinessContext $context,
         private readonly CurrencyService $currencies,
     ) {
         //
