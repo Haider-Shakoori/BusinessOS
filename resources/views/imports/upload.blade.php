@@ -20,7 +20,7 @@
             <div class="lg:col-span-2">
                 <x-ui.card>
                     <x-slot:header>
-                        <h2 class="text-base font-semibold text-gray-900 dark:text-white">{{ __('imports.upload_title') }}</h2>
+                        <h2 class="text-base font-semibold text-slate-900 dark:text-white">{{ __('imports.upload_title') }}</h2>
                     </x-slot:header>
 
                     <form
@@ -52,10 +52,10 @@
             <div class="lg:col-span-1">
                 <x-ui.card>
                     <x-slot:header>
-                        <h2 class="text-base font-semibold text-gray-900 dark:text-white">{{ __('imports.instructions_title') }}</h2>
+                        <h2 class="text-base font-semibold text-slate-900 dark:text-white">{{ __('imports.instructions_title') }}</h2>
                     </x-slot:header>
 
-                    <ul class="space-y-4 text-sm text-gray-600 dark:text-gray-300">
+                    <ul class="space-y-4 text-sm text-slate-600 dark:text-slate-300">
                         <li class="flex items-start gap-3">
                             <x-ui.icon name="document-text" class="mt-0.5 size-4 shrink-0 text-brand-500 dark:text-brand-400" />
                             <span>{{ __('imports.instruction_template') }}</span>
