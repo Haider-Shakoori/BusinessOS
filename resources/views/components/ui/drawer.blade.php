@@ -33,7 +33,7 @@
     @if ($title) aria-labelledby="{{ $id ?? 'drawer' }}-title" @endif
     @keydown.window.escape="close"
 >
-    <div class="absolute inset-0 bg-gray-950/50 backdrop-blur-[2px]" x-on:click="dismissible && close()" aria-hidden="true"></div>
+    <div class="absolute inset-0 bg-slate-950/50 backdrop-blur-[2px]" x-on:click="dismissible && close()" aria-hidden="true"></div>
 
     <div
         x-ref="panel"
@@ -45,23 +45,23 @@
         x-transition:leave="transition-[inset-inline-end] ease-in duration-200"
         x-transition:leave-start="end-0"
         x-transition:leave-end="[inset-inline-end:-100%]"
-        class="absolute inset-y-0 end-0 flex w-full flex-col bg-white shadow-overlay ring-1 ring-black/5 dark:bg-gray-800 dark:ring-white/10 {{ $sizes[$size] ?? $sizes['md'] }}"
+        class="absolute inset-y-0 end-0 flex w-full flex-col bg-white shadow-overlay ring-1 ring-black/5 dark:bg-slate-800 dark:ring-white/10 {{ $sizes[$size] ?? $sizes['md'] }}"
     >
-        <div class="flex items-start justify-between gap-4 border-b border-gray-200 px-6 py-4 dark:border-gray-700">
+        <div class="flex items-start justify-between gap-4 border-b border-slate-200 px-6 py-4 dark:border-slate-700">
             <div class="min-w-0">
                 @if ($title)
-                    <h2 id="{{ $id ?? 'drawer' }}-title" class="text-base font-semibold text-gray-900 dark:text-white">{{ $title }}</h2>
+                    <h2 id="{{ $id ?? 'drawer' }}-title" class="text-base font-semibold text-slate-900 dark:text-white">{{ $title }}</h2>
                 @endif
                 @if ($description)
-                    <p class="mt-0.5 text-sm text-gray-500 dark:text-gray-400">{{ $description }}</p>
+                    <p class="mt-0.5 text-sm text-slate-500 dark:text-slate-400">{{ $description }}</p>
                 @endif
             </div>
             @if ($dismissible)
                 <button
                     type="button"
                     x-on:click="close"
-                    class="shrink-0 rounded-lg p-1.5 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-gray-700 dark:hover:text-gray-200"
-                    aria-label="Close"
+                    class="shrink-0 rounded-[7px] p-1.5 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-700 dark:hover:text-slate-200"
+                    aria-label="{{ __('actions.close') }}"
                 >
                     <x-ui.icon name="x-mark" class="size-5" aria-hidden="true" />
                 </button>
@@ -73,7 +73,7 @@
         </div>
 
         @if (! empty($footer))
-            <div class="flex flex-wrap items-center justify-end gap-3 border-t border-gray-200 bg-gray-50 px-6 py-4 dark:border-gray-700 dark:bg-gray-800/60">
+            <div class="flex flex-wrap items-center justify-end gap-3 border-t border-slate-200 bg-slate-50 px-6 py-4 dark:border-slate-700 dark:bg-slate-800/60">
                 {{ $footer }}
             </div>
         @endif
