@@ -1,5 +1,9 @@
 @extends('documents.layout')
 
+@php
+    $logoSrc = $pdfMode ? ($presentation['logo_data_uri'] ?? null) : ($logoSrc ?? null);
+@endphp
+
 @push('document-styles')
 <style>
     .minimal { padding: 52px 54px; }
@@ -41,6 +45,14 @@
         .minimal-title { text-align: start; }
         .minimal-section { max-width: 100%; }
     }
+    @if ($pdfMode)
+        .minimal { padding: 22px 16px; }
+        .minimal-head, .minimal-info, .minimal-after { display: table; width: 100%; table-layout: fixed; }
+        .minimal-brand, .minimal-title, .minimal-info > div, .minimal-info > table, .minimal-after > div, .minimal-after > table { display: table-cell; vertical-align: top; }
+        .minimal-brand, .minimal-info > div, .minimal-after > div { width: 58%; }
+        .minimal-title, .minimal-info > table, .minimal-after > table { width: 42%; }
+        .minimal-section { max-width: 100%; }
+    @endif
 </style>
 @endpush
 
@@ -48,8 +60,8 @@
 <section class="minimal">
     <header class="minimal-head">
         <div class="minimal-brand">
-            @if ($presentation['logo_url'])
-                <img class="minimal-logo" src="{{ $presentation['logo_url'] }}" alt="{{ $presentation['business']?->name }}">
+            @if ($logoSrc)
+                <img class="minimal-logo" src="{{ $logoSrc }}" alt="{{ $presentation['business']?->name }}">
             @endif
             <div>
                 <h2 class="minimal-business">{{ $presentation['business']?->name }}</h2>
@@ -135,6 +147,10 @@
             <tr class="grand"><td>{{ __('documents.total') }}</td><td class="money">{{ $invoice->currency_code }} {{ number_format((float) $invoice->total, 2) }}</td></tr>
             <tr><td>{{ __('documents.paid') }}</td><td class="money">{{ $invoice->currency_code }} {{ number_format((float) $invoice->amount_paid, 2) }}</td></tr>
             <tr class="due"><td>{{ __('documents.amount_due') }}</td><td class="money">{{ $invoice->currency_code }} {{ number_format((float) $invoice->amount_due, 2) }}</td></tr>
+            @if ($invoice->currency_code !== $baseCurrency)
+                <tr><td>{{ __('documents.base_amount', ['currency' => $baseCurrency]) }}</td><td class="money">{{ $baseCurrency }} {{ number_format((float) $invoice->base_amount, 2) }}</td></tr>
+                <tr><td>{{ __('documents.exchange_rate') }}</td><td class="money">{{ $invoice->exchange_rate }}</td></tr>
+            @endif
         </table>
     </div>
 
