@@ -1,14 +1,14 @@
 @extends('layouts.app')
 @section('content')
-    <x-app.page :title="__('business.create_title')" :subtitle="__('business.create_subtitle')">
+    <x-app.page icon="briefcase" :title="__('business.create_title')" :subtitle="__('business.create_subtitle')">
         <x-ui.card class="max-w-xl">
             <div class="mb-6 flex items-start gap-4">
                 <span class="grid size-10 shrink-0 place-items-center rounded-xl bg-brand-50 text-brand-600 dark:bg-brand-500/10 dark:text-brand-300" aria-hidden="true">
                     <x-ui.icon name="briefcase" class="size-5" />
                 </span>
                 <div class="min-w-0">
-                    <h3 class="text-base font-semibold text-gray-900 dark:text-gray-100">{{ __('business.onboarding_heading') }}</h3>
-                    <p class="mt-1 text-sm text-gray-600 dark:text-gray-300">{{ __('business.onboarding_message') }}</p>
+                    <h3 class="text-base font-semibold text-slate-900 dark:text-slate-100">{{ __('business.onboarding_heading') }}</h3>
+                    <p class="mt-1 text-sm text-slate-600 dark:text-slate-300">{{ __('business.onboarding_message') }}</p>
                 </div>
             </div>
 

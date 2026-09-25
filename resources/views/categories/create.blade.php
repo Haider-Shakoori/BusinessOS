@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <x-app.page
+    <x-app.page icon="tag"
         :title="__('categories.create_title')"
         :subtitle="__('categories.subtitle')"
         :breadcrumbs="[

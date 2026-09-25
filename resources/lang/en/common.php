@@ -22,6 +22,7 @@ return [
     'settings' => 'Settings',
 
     'search' => 'Search…',
+    'filters' => 'Filters',
     'search_coming_soon' => 'Global search (coming soon)',
     'notifications' => 'Notifications',
     'notifications_coming_soon' => 'Notifications (coming soon)',

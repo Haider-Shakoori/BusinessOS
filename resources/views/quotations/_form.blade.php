@@ -61,7 +61,7 @@
 <form
     method="POST"
     action="{{ $action }}"
-    class="space-y-6"
+    class="space-y-5"
     x-data="quotationEditor({{ Js::from($catalog) }}, {{ $taxesEnabled ? 'true' : 'false' }}, {{ Js::from($initialRows) }})"
 >
     @csrf
@@ -71,10 +71,10 @@
 
     <x-ui.card>
         <x-slot:header>
-            <h2 class="text-base font-semibold text-gray-900 dark:text-white">{{ __('quotations.information') }}</h2>
+            <h2 class="text-base font-semibold text-slate-900 dark:text-white">{{ __('quotations.information') }}</h2>
         </x-slot:header>
 
-        <div class="grid gap-x-6 gap-y-5 sm:grid-cols-2">
+        <div class="grid gap-x-5 gap-y-4 sm:grid-cols-2">
             <div>
                 <x-ui.select name="customer_id" :label="__('quotations.customer')" :value="$quotationCustomerId" required>
                     <option value="" disabled @selected($quotationCustomerId === null)>{{ __('quotations.no_customer') }}</option>
@@ -122,7 +122,7 @@
     <x-ui.card>
         <x-slot:header>
             <div class="flex items-center justify-between gap-3">
-                <h2 class="text-base font-semibold text-gray-900 dark:text-white">{{ __('quotations.line_items') }}</h2>
+                <h2 class="text-base font-semibold text-slate-900 dark:text-white">{{ __('quotations.line_items') }}</h2>
                 <x-ui.button type="button" variant="secondary" size="sm" icon="plus" x-on:click="addRow">
                     {{ __('quotations.action_add_line') }}
                 </x-ui.button>
@@ -142,7 +142,7 @@
         @endif
 
         <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+            <table class="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
                 <thead>
                     <tr>
                         <x-ui.th>{{ __('quotations.product') }}</x-ui.th>
@@ -157,7 +157,7 @@
                         </x-ui.th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
+                <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
                     <template x-for="(row, index) in rows" :key="index">
                         <tr>
                             <td class="py-3 pe-3 align-top">
@@ -166,7 +166,7 @@
                                     :name="`items[${index}][product_id]`"
                                     x-model="row.product_id"
                                     x-on:change="pickProduct(row)"
-                                    class="block w-full min-w-40 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm transition-colors duration-150 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/30 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:focus:border-brand-400"
+                                    class="block w-full min-w-40 rounded-[7px] border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm transition-colors duration-150 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/30 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:focus:border-brand-400"
                                 >
                                     <option value="">{{ __('quotations.no_product') }}</option>
                                     <template x-for="product in availableProducts" :key="product.id">
@@ -183,7 +183,7 @@
                                     maxlength="500"
                                     required
                                     :placeholder="`{{ __('quotations.line_placeholder') }}`"
-                                    class="block w-full min-w-52 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm transition-colors duration-150 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/30 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:focus:border-brand-400"
+                                    class="block w-full min-w-52 rounded-[7px] border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm transition-colors duration-150 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/30 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:focus:border-brand-400"
                                 />
                             </td>
                             <td class="py-3 pe-3 align-top">
@@ -196,7 +196,7 @@
                                     step="0.0001"
                                     inputmode="decimal"
                                     required
-                                    class="block w-28 rounded-lg border border-gray-300 bg-white px-3 py-2 text-end tabular-nums text-sm text-gray-900 shadow-sm transition-colors duration-150 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/30 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:focus:border-brand-400"
+                                    class="block w-28 rounded-[7px] border border-slate-300 bg-white px-3 py-2 text-end tabular-nums text-sm text-slate-900 shadow-sm transition-colors duration-150 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/30 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:focus:border-brand-400"
                                 />
                             </td>
                             <td class="py-3 pe-3 align-top">
@@ -209,7 +209,7 @@
                                     step="0.0001"
                                     inputmode="decimal"
                                     required
-                                    class="block w-32 rounded-lg border border-gray-300 bg-white px-3 py-2 text-end tabular-nums text-sm text-gray-900 shadow-sm transition-colors duration-150 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/30 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:focus:border-brand-400"
+                                    class="block w-32 rounded-[7px] border border-slate-300 bg-white px-3 py-2 text-end tabular-nums text-sm text-slate-900 shadow-sm transition-colors duration-150 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/30 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:focus:border-brand-400"
                                 />
                             </td>
                             @if ($taxesEnabled)
@@ -218,7 +218,7 @@
                                         :id="`item-${index}-tax`"
                                         :name="`items[${index}][tax_id]`"
                                         x-model="row.tax_id"
-                                        class="block w-full min-w-36 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm transition-colors duration-150 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/30 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:focus:border-brand-400"
+                                        class="block w-full min-w-36 rounded-[7px] border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm transition-colors duration-150 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/30 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:focus:border-brand-400"
                                     >
                                         <option value="">{{ __('products.no_tax') }}</option>
                                         @foreach ($taxes as $tax)
@@ -233,7 +233,7 @@
                                     x-on:click="removeRow(index)"
                                     :disabled="rows.length <= 1"
                                     :aria-label="'{{ __('quotations.action_remove_line') }}'"
-                                    class="inline-flex size-8 shrink-0 items-center justify-center rounded-lg border border-gray-300 bg-white text-gray-700 shadow-sm transition-colors duration-150 hover:bg-gray-50 disabled:pointer-events-none disabled:opacity-50 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:hover:bg-gray-700"
+                                    class="inline-flex size-8 shrink-0 items-center justify-center rounded-[7px] border border-slate-300 bg-white text-slate-700 shadow-sm transition-colors duration-150 hover:bg-slate-50 disabled:pointer-events-none disabled:opacity-50 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:hover:bg-slate-700"
                                 >
                                     <x-ui.icon name="trash" class="size-4" />
                                 </button>
@@ -244,17 +244,17 @@
             </table>
         </div>
 
-        <p class="mt-3 text-xs text-gray-500 dark:text-gray-400" x-show="rows.length <= 1">
+        <p class="mt-3 text-xs text-slate-500 dark:text-slate-400" x-show="rows.length <= 1">
             {{ __('quotations.validation.items_min') }}
         </p>
     </x-ui.card>
 
     <x-ui.card>
         <x-slot:header>
-            <h2 class="text-base font-semibold text-gray-900 dark:text-white">{{ __('quotations.total') }}</h2>
+            <h2 class="text-base font-semibold text-slate-900 dark:text-white">{{ __('quotations.total') }}</h2>
         </x-slot:header>
 
-        <div class="grid gap-x-6 gap-y-5 sm:grid-cols-2">
+        <div class="grid gap-x-5 gap-y-4 sm:grid-cols-2">
             <div>
                 <x-ui.select name="discount_type" :label="__('quotations.discount_type')" :placeholder="__('quotations.no_discount')" :value="$quotationDiscountType">
                     <option value="percentage" @selected($quotationDiscountType === 'percentage')>

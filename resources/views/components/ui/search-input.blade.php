@@ -14,13 +14,13 @@
 
 <div x-data="{ value: @js(old($name, $attributes->get('value', ''))) }" {{ $attributes->only('class') }}>
     @if ($label)
-        <label for="{{ $fieldId }}" class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-200">
+        <label for="{{ $fieldId }}" class="mb-1.5 block text-[12px] font-semibold text-slate-700 dark:text-slate-200">
             {{ $label }}
         </label>
     @endif
 
     <div class="relative">
-        <div class="pointer-events-none absolute inset-y-0 start-0 flex items-center ps-3 text-gray-400 dark:text-gray-500">
+        <div class="pointer-events-none absolute inset-y-0 start-0 flex items-center ps-3 text-slate-400 dark:text-slate-500">
             <x-ui.icon name="search" class="size-4" />
         </div>
 
@@ -28,11 +28,11 @@
             type="search"
             @if ($fieldId) id="{{ $fieldId }}" @endif
             @if ($name) name="{{ $name }}" @endif
-            placeholder="{{ $placeholder ?? 'Search…' }}"
+            placeholder="{{ $placeholder ?? __('common.search') }}"
             x-model="value"
-            class="block w-full rounded-lg border-gray-300 border bg-white ps-10 pe-10 py-2 text-sm text-gray-900 shadow-sm
-                placeholder:text-gray-400 transition-colors duration-150 focus:outline-none focus:ring-2 focus:border-brand-500 focus:ring-brand-500/30
-                dark:bg-gray-800 dark:text-gray-100 dark:placeholder:text-gray-500 dark:border-gray-600 dark:focus:border-brand-400"
+            class="block w-full rounded-[7px] border border-slate-300 bg-white py-[8px] pe-10 ps-10 text-[13px] text-slate-900 shadow-sm
+                placeholder:text-slate-400 transition-colors duration-150 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20
+                dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus:border-brand-400"
         >
 
         @if ($clearable)
@@ -41,8 +41,8 @@
                 x-show="value.length > 0"
                 x-cloak
                 x-on:click="value = ''"
-                class="absolute inset-y-0 end-0 flex items-center pe-2.5 text-gray-400 transition-colors hover:text-gray-600 dark:hover:text-gray-200"
-                aria-label="{{ __('Clear search') }}"
+                class="absolute inset-y-0 end-0 flex items-center pe-2.5 text-slate-400 transition-colors hover:text-slate-700 dark:hover:text-slate-200"
+                aria-label="{{ __('actions.clear') }}"
             >
                 <x-ui.icon name="x-mark" class="size-4" />
             </button>
@@ -50,10 +50,10 @@
     </div>
 
     @if ($helper && ! $error)
-        <p class="mt-1.5 text-xs text-gray-500 dark:text-gray-400">{{ $helper }}</p>
+        <p class="mt-1.5 text-[11px] leading-4 text-slate-500 dark:text-slate-400">{{ $helper }}</p>
     @endif
 
     @if ($error)
-        <p class="mt-1.5 text-xs font-medium text-red-600 dark:text-red-400">{{ $error }}</p>
+        <p class="mt-1.5 text-[11px] font-medium text-red-600 dark:text-red-400">{{ $error }}</p>
     @endif
 </div>

@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <x-app.page
+    <x-app.page icon="receipt-percent"
         :title="__('invoices.edit_title')"
         :subtitle="__('invoices.subtitle')"
         :breadcrumbs="[

@@ -202,7 +202,7 @@ class AuthenticationTest extends TestCase
             foreach (['/login', '/forgot-password', '/reset-password/example?email=auth@example.test'] as $url) {
                 $this->withSession(['locale' => $locale])->get($url)->assertOk()
                     ->assertSee('lang="'.$locale.'"', false)->assertSee('dir="'.$direction.'"', false)
-                    ->assertSee('bos-theme')->assertSee('dark:bg-gray-900')->assertDontSee('auth.email');
+                    ->assertSee('bos-theme')->assertSee('dark:bg-slate-950')->assertDontSee('auth.email');
             }
             $this->post('/login', ['email' => 'not-an-email'])->assertSessionHasErrors([
                 'email' => __('validation.email'),

@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <x-app.page
+    <x-app.page icon="arrow-up-tray"
         :title="__('imports.preview_title')"
         :subtitle="__('imports.preview_subtitle')"
         :breadcrumbs="[
@@ -53,7 +53,7 @@
             <div class="mt-6">
                 <x-ui.card>
                     <div class="flex flex-wrap items-center justify-between gap-3">
-                        <p class="text-sm text-gray-600 dark:text-gray-300">{{ __('imports.header_invalid_description') }}</p>
+                        <p class="text-sm text-slate-600 dark:text-slate-300">{{ __('imports.header_invalid_description') }}</p>
                         <x-ui.button :href="route($routes['import'])" variant="secondary" icon="arrow-left-on-rectangle">
                             {{ __('imports.back_to_upload') }}
                         </x-ui.button>
@@ -71,9 +71,9 @@
                 <div class="mt-6">
                     <x-ui.card>
                         <x-slot:header>
-                            <h2 class="text-base font-semibold text-gray-900 dark:text-white">{{ __('imports.errors_title') }}</h2>
+                            <h2 class="text-base font-semibold text-slate-900 dark:text-white">{{ __('imports.errors_title') }}</h2>
                         </x-slot:header>
-                        <ul class="space-y-2 text-sm text-gray-700 dark:text-gray-200">
+                        <ul class="space-y-2 text-sm text-slate-700 dark:text-slate-200">
                             @php
                                 $displayErrors = array_slice($preview->rowErrors, 0, 50);
                                 $hidden = count($preview->rowErrors) - count($displayErrors);
@@ -84,11 +84,11 @@
                                     <span>{{ $error }}</span>
                                 </li>
                             @empty
-                                <li class="text-gray-500 dark:text-gray-400">{{ __('imports.no_errors') }}</li>
+                                <li class="text-slate-500 dark:text-slate-400">{{ __('imports.no_errors') }}</li>
                             @endforelse
                         </ul>
                         @if ($hidden > 0)
-                            <p class="mt-4 text-sm font-medium text-gray-500 dark:text-gray-400">
+                            <p class="mt-4 text-sm font-medium text-slate-500 dark:text-slate-400">
                                 {{ __('imports.more_errors', ['count' => $hidden]) }}
                             </p>
                         @endif
@@ -111,29 +111,29 @@
                 <div class="mt-6">
                     <x-ui.card>
                         <x-slot:header>
-                            <h2 class="text-base font-semibold text-gray-900 dark:text-white">{{ __('imports.preview_rows', ['count' => min($previewRows, count($preview->rows)), 'total' => $preview->totalRows]) }}</h2>
+                            <h2 class="text-base font-semibold text-slate-900 dark:text-white">{{ __('imports.preview_rows', ['count' => min($previewRows, count($preview->rows)), 'total' => $preview->totalRows]) }}</h2>
                         </x-slot:header>
 
                         <div class="overflow-x-auto">
-                            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                                <thead class="bg-gray-50 dark:bg-gray-800/60">
+                            <table class="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
+                                <thead class="bg-slate-50 dark:bg-slate-800/60">
                                     <tr>
-                                        <th scope="col" class="px-4 py-2.5 text-start text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
+                                        <th scope="col" class="px-4 py-2.5 text-start text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
                                             {{ __('imports.row_label') }}
                                         </th>
                                         @foreach ($preview->header as $key)
-                                            <th scope="col" class="px-4 py-2.5 text-start text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
+                                            <th scope="col" class="px-4 py-2.5 text-start text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
                                                 {{ $columnLabels[$key] ?? $key }}
                                             </th>
                                         @endforeach
                                     </tr>
                                 </thead>
-                                <tbody class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-800">
+                                <tbody class="divide-y divide-slate-200 bg-white dark:divide-slate-700 dark:bg-slate-800">
                                     @foreach (array_slice($preview->rows, 0, $previewRows) as $row)
                                         <tr>
-                                            <td class="whitespace-nowrap px-4 py-2.5 text-sm text-gray-500 dark:text-gray-400">{{ $row->number }}</td>
+                                            <td class="whitespace-nowrap px-4 py-2.5 text-sm text-slate-500 dark:text-slate-400">{{ $row->number }}</td>
                                             @foreach ($preview->header as $key)
-                                                <td class="px-4 py-2.5 text-sm text-gray-900 dark:text-gray-100">
+                                                <td class="px-4 py-2.5 text-sm text-slate-900 dark:text-slate-100">
                                                     {{ isset($row->values[$key]) ? $row->values[$key] : '' }}
                                                 </td>
                                             @endforeach
@@ -150,7 +150,7 @@
                 <div class="mt-6">
                     <x-ui.card>
                         <div class="flex flex-wrap items-center justify-between gap-4">
-                            <p class="text-sm text-gray-600 dark:text-gray-400">{{ __('imports.confirm_note', ['count' => $preview->totalRows]) }}</p>
+                            <p class="text-sm text-slate-600 dark:text-slate-400">{{ __('imports.confirm_note', ['count' => $preview->totalRows]) }}</p>
 
                             <div class="flex flex-wrap items-center gap-3">
                                 <form method="POST" action="{{ route($routes['cancel'], ['token' => $token]) }}">

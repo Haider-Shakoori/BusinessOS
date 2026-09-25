@@ -3,7 +3,7 @@
 ])
 
 <div {{ $attributes->merge(['class' => 'overflow-hidden rounded-[8px] border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900']) }}>
-    <div class="overflow-x-auto">
+    <div class="bos-scrollbar overflow-x-auto">
         <table class="min-w-full border-collapse">
             @if ($caption)
                 <caption class="sr-only">{{ $caption }}</caption>
@@ -14,7 +14,7 @@
             @endif
 
             @if ($slot->isNotEmpty())
-                <tbody class="divide-y divide-slate-200 dark:divide-slate-800">{{ $slot }}</tbody>
+                <tbody class="divide-y divide-slate-200 dark:divide-slate-800 [&>tr]:transition-colors [&>tr:hover]:bg-slate-50/70 dark:[&>tr:hover]:bg-slate-800/40">{{ $slot }}</tbody>
             @endif
         </table>
     </div>

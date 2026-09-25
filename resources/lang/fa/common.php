@@ -13,6 +13,7 @@ return [
     'settings' => 'تنظیمات',
 
     'search' => 'جستجو…',
+    'filters' => 'فیلترها',
     'search_coming_soon' => 'جستجوی سراسری (به زودی)',
     'notifications' => 'اعلان‌ها',
     'notifications_coming_soon' => 'اعلان‌ها (به زودی)',

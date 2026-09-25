@@ -13,6 +13,7 @@ return [
     'settings' => 'الإعدادات',
 
     'search' => 'بحث…',
+    'filters' => 'المرشحات',
     'search_coming_soon' => 'بحث شامل (قريباً)',
     'notifications' => 'الإشعارات',
     'notifications_coming_soon' => 'الإشعارات (قريباً)',

@@ -23,7 +23,7 @@
         $showAmount = static fn (?string $value): string => $value && ! \App\Support\Decimal::eq($value, '0') ? $value : '—';
     @endphp
 
-    <x-app.page
+    <x-app.page icon="users"
         :title="__('customers.ledger.title')"
         :subtitle="__('customers.ledger.subtitle', ['name' => $customer->name])"
         :breadcrumbs="[
@@ -98,7 +98,7 @@
             </form>
         </x-ui.card>
 
-        <p class="mt-6 flex items-start gap-1.5 text-xs text-gray-500 dark:text-gray-400">
+        <p class="mt-6 flex items-start gap-1.5 text-xs text-slate-500 dark:text-slate-400">
             <x-ui.icon name="info-circle" class="mt-px size-4 shrink-0" />
             {{ __('customers.ledger.base_currency_note', ['currency' => $baseCurrency]) }}
         </p>
@@ -156,31 +156,31 @@
 
                 @foreach ($rows as $row)
                     @if ($row['type'] === 'brought_forward')
-                        <tr class="bg-gray-50 dark:bg-gray-700/40">
+                        <tr class="bg-slate-50 dark:bg-slate-700/40">
                             <x-ui.td colspan="4">
-                                <span class="font-semibold text-gray-700 dark:text-gray-200">{{ __('customers.ledger.types.brought_forward') }}</span>
+                                <span class="font-semibold text-slate-700 dark:text-slate-200">{{ __('customers.ledger.types.brought_forward') }}</span>
                             </x-ui.td>
                             <x-ui.td class="text-end">
-                                <span class="whitespace-nowrap font-medium tabular-nums text-gray-700 dark:text-gray-200" dir="ltr">{{ $showAmount($row['debit']) }}</span>
+                                <span class="whitespace-nowrap font-medium tabular-nums text-slate-700 dark:text-slate-200" dir="ltr">{{ $showAmount($row['debit']) }}</span>
                             </x-ui.td>
                             <x-ui.td class="text-end">
-                                <span class="whitespace-nowrap tabular-nums text-gray-500 dark:text-gray-400" dir="ltr">{{ $showAmount($row['credit']) }}</span>
+                                <span class="whitespace-nowrap tabular-nums text-slate-500 dark:text-slate-400" dir="ltr">{{ $showAmount($row['credit']) }}</span>
                             </x-ui.td>
                             @if ($showRunningBalance)
                                 <x-ui.td class="text-end">
-                                    <span class="whitespace-nowrap font-medium tabular-nums text-gray-700 dark:text-gray-200" dir="ltr">{{ $row['balance'] }}</span>
+                                    <span class="whitespace-nowrap font-medium tabular-nums text-slate-700 dark:text-slate-200" dir="ltr">{{ $row['balance'] }}</span>
                                 </x-ui.td>
                             @endif
                         </tr>
                     @else
                         <tr @if ($row['reversed']) class="opacity-60 dark:opacity-50" @endif>
                             <x-ui.td>
-                                <span class="whitespace-nowrap text-gray-500 dark:text-gray-400">{{ $row['date'] ?: '—' }}</span>
+                                <span class="whitespace-nowrap text-slate-500 dark:text-slate-400">{{ $row['date'] ?: '—' }}</span>
                             </x-ui.td>
                             <x-ui.td>
                                 <span class="whitespace-nowrap">{{ __('customers.ledger.types.' . $row['type']) }}</span>
                                 @if ($row['reversed'])
-                                    <span class="ms-1 inline-flex items-center rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-600 dark:bg-gray-700 dark:text-gray-300">
+                                    <span class="ms-1 inline-flex items-center rounded-full bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-600 dark:bg-slate-700 dark:text-slate-300">
                                         {{ __('customers.ledger.reversed') }}
                                     </span>
                                 @endif
@@ -189,45 +189,45 @@
                                 @if ($row['model_id'] !== null && $row['model_type'] === 'invoice' && auth()->user()->can('invoices.view'))
                                     <a
                                         href="{{ route('invoices.show', $row['model_id']) }}"
-                                        class="whitespace-nowrap font-semibold text-gray-900 transition-colors hover:text-brand-600 dark:text-white dark:hover:text-brand-400"
+                                        class="whitespace-nowrap font-semibold text-slate-900 transition-colors hover:text-brand-600 dark:text-white dark:hover:text-brand-400"
                                     >
                                         {{ $row['reference'] }}
                                     </a>
                                 @elseif ($row['model_id'] !== null && $row['model_type'] === 'payment' && auth()->user()->can('payments.view'))
                                     <a
                                         href="{{ route('payments.show', $row['model_id']) }}"
-                                        class="whitespace-nowrap font-semibold text-gray-900 transition-colors hover:text-brand-600 dark:text-white dark:hover:text-brand-400"
+                                        class="whitespace-nowrap font-semibold text-slate-900 transition-colors hover:text-brand-600 dark:text-white dark:hover:text-brand-400"
                                     >
                                         {{ $row['reference'] }}
                                     </a>
                                 @elseif ($row['reference'] !== '')
-                                    <span class="whitespace-nowrap font-semibold text-gray-900 dark:text-white">{{ $row['reference'] }}</span>
+                                    <span class="whitespace-nowrap font-semibold text-slate-900 dark:text-white">{{ $row['reference'] }}</span>
                                 @else
-                                    <span class="text-gray-400 dark:text-gray-500">—</span>
+                                    <span class="text-slate-400 dark:text-slate-500">—</span>
                                 @endif
                             </x-ui.td>
                             <x-ui.td>
-                                <span class="text-gray-500 dark:text-gray-400">{{ $row['description'] ?: '—' }}</span>
+                                <span class="text-slate-500 dark:text-slate-400">{{ $row['description'] ?: '—' }}</span>
                             </x-ui.td>
                             <x-ui.td class="text-end">
-                                <span class="whitespace-nowrap font-medium tabular-nums text-gray-900 dark:text-white" dir="ltr">
+                                <span class="whitespace-nowrap font-medium tabular-nums text-slate-900 dark:text-white" dir="ltr">
                                     {{ $showAmount($row['debit']) }}
                                     @if ($row['currency_code'] ?? null)
-                                        <span class="text-xs font-medium text-gray-500 dark:text-gray-400">{{ $row['currency_code'] }}</span>
+                                        <span class="text-xs font-medium text-slate-500 dark:text-slate-400">{{ $row['currency_code'] }}</span>
                                     @endif
                                 </span>
                             </x-ui.td>
                             <x-ui.td class="text-end">
-                                <span class="whitespace-nowrap font-medium tabular-nums text-gray-900 dark:text-white" dir="ltr">
+                                <span class="whitespace-nowrap font-medium tabular-nums text-slate-900 dark:text-white" dir="ltr">
                                     {{ $showAmount($row['credit']) }}
                                     @if ($row['currency_code'] ?? null)
-                                        <span class="text-xs font-medium text-gray-500 dark:text-gray-400">{{ $row['currency_code'] }}</span>
+                                        <span class="text-xs font-medium text-slate-500 dark:text-slate-400">{{ $row['currency_code'] }}</span>
                                     @endif
                                 </span>
                             </x-ui.td>
                             @if ($showRunningBalance)
                                 <x-ui.td class="text-end">
-                                    <span class="whitespace-nowrap font-medium tabular-nums text-gray-700 dark:text-gray-200" dir="ltr">{{ $row['balance'] }}</span>
+                                    <span class="whitespace-nowrap font-medium tabular-nums text-slate-700 dark:text-slate-200" dir="ltr">{{ $row['balance'] }}</span>
                                 </x-ui.td>
                             @endif
                         </tr>
@@ -235,23 +235,23 @@
                 @endforeach
 
                 <x-slot:footer>
-                    <div class="grid gap-4 border-t border-gray-200 px-4 py-3 sm:grid-cols-2 dark:border-gray-700">
+                    <div class="grid gap-4 border-t border-slate-200 px-4 py-3 sm:grid-cols-2 dark:border-slate-700">
                         <dl class="space-y-1">
                             <div class="flex items-center justify-between gap-4 text-sm">
-                                <dt class="text-gray-500 dark:text-gray-400">{{ __('customers.statement.debits_total') }}</dt>
-                                <dd class="whitespace-nowrap font-medium tabular-nums text-gray-900 dark:text-white" dir="ltr">{{ $periodDebits }}</dd>
+                                <dt class="text-slate-500 dark:text-slate-400">{{ __('customers.statement.debits_total') }}</dt>
+                                <dd class="whitespace-nowrap font-medium tabular-nums text-slate-900 dark:text-white" dir="ltr">{{ $periodDebits }}</dd>
                             </div>
                             <div class="flex items-center justify-between gap-4 text-sm">
-                                <dt class="text-gray-500 dark:text-gray-400">{{ __('customers.statement.credits_total') }}</dt>
-                                <dd class="whitespace-nowrap font-medium tabular-nums text-gray-900 dark:text-white" dir="ltr">{{ $periodCredits }}</dd>
+                                <dt class="text-slate-500 dark:text-slate-400">{{ __('customers.statement.credits_total') }}</dt>
+                                <dd class="whitespace-nowrap font-medium tabular-nums text-slate-900 dark:text-white" dir="ltr">{{ $periodCredits }}</dd>
                             </div>
                         </dl>
                         <div class="flex items-end justify-end">
                             <div class="text-sm sm:text-right">
-                                <dt class="text-gray-500 dark:text-gray-400">{{ $hasPeriodFilter ? __('customers.ledger.period_closing_balance') : __('customers.ledger.closing_balance') }}</dt>
-                                <dd class="mt-0.5 whitespace-nowrap text-base font-bold tabular-nums text-gray-900 dark:text-white" dir="ltr">{{ $closingBalance }}</dd>
+                                <dt class="text-slate-500 dark:text-slate-400">{{ $hasPeriodFilter ? __('customers.ledger.period_closing_balance') : __('customers.ledger.closing_balance') }}</dt>
+                                <dd class="mt-0.5 whitespace-nowrap text-base font-bold tabular-nums text-slate-900 dark:text-white" dir="ltr">{{ $closingBalance }}</dd>
                                 @if ($hasPeriodFilter)
-                                    <p class="mt-1 text-xs text-gray-400 dark:text-gray-500">{{ __('customers.ledger.outstanding_balance') }} — {{ $summary['outstanding_balance'] ?? '0' }}</p>
+                                    <p class="mt-1 text-xs text-slate-400 dark:text-slate-500">{{ __('customers.ledger.outstanding_balance') }} — {{ $summary['outstanding_balance'] ?? '0' }}</p>
                                 @endif
                             </div>
                         </div>
@@ -260,7 +260,7 @@
             </x-ui.table>
 
             @if (! $showRunningBalance)
-                <p class="mt-3 flex items-start gap-1.5 text-xs text-gray-500 dark:text-gray-400">
+                <p class="mt-3 flex items-start gap-1.5 text-xs text-slate-500 dark:text-slate-400">
                     <x-ui.icon name="info-circle" class="mt-px size-4 shrink-0" />
                     {{ __('customers.ledger.filtered_note') }}
                 </p>

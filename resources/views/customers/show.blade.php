@@ -5,7 +5,7 @@
         $outstandingPositive = \App\Support\Decimal::gt($summary['outstanding_balance'] ?? '0', '0');
     @endphp
 
-    <x-app.page
+    <x-app.page icon="users"
         :title="$customer->name"
         :subtitle="__('customers.details_title')"
         :breadcrumbs="[
@@ -68,7 +68,7 @@
             />
         </div>
 
-        <p class="mt-4 flex items-start gap-1.5 text-xs text-gray-500 dark:text-gray-400">
+        <p class="mt-4 flex items-start gap-1.5 text-xs text-slate-500 dark:text-slate-400">
             <x-ui.icon name="info-circle" class="mt-px size-4 shrink-0" />
             {{ __('customers.ledger.base_currency_note', ['currency' => $baseCurrency]) }}
         </p>
@@ -77,21 +77,21 @@
             <div class="lg:col-span-2">
                 <x-ui.card>
                     <x-slot:header>
-                        <h2 class="text-base font-semibold text-gray-900 dark:text-white">{{ __('customers.about') }}</h2>
+                        <h2 class="text-base font-semibold text-slate-900 dark:text-white">{{ __('customers.about') }}</h2>
                     </x-slot:header>
 
-                    <dl class="grid gap-x-6 gap-y-5 sm:grid-cols-2">
+                    <dl class="grid gap-x-5 gap-y-4 sm:grid-cols-2">
                         <div>
-                            <dt class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">{{ __('customers.name') }}</dt>
-                            <dd class="mt-1 text-sm text-gray-900 dark:text-gray-100">{{ $customer->name }}</dd>
+                            <dt class="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">{{ __('customers.name') }}</dt>
+                            <dd class="mt-1 text-sm text-slate-900 dark:text-slate-100">{{ $customer->name }}</dd>
                         </div>
                         <div>
-                            <dt class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">{{ __('customers.company_name') }}</dt>
-                            <dd class="mt-1 text-sm text-gray-900 dark:text-gray-100">{{ $customer->company_name ?: '—' }}</dd>
+                            <dt class="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">{{ __('customers.company_name') }}</dt>
+                            <dd class="mt-1 text-sm text-slate-900 dark:text-slate-100">{{ $customer->company_name ?: '—' }}</dd>
                         </div>
                         <div>
-                            <dt class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">{{ __('customers.email') }}</dt>
-                            <dd class="mt-1 text-sm text-gray-900 dark:text-gray-100">
+                            <dt class="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">{{ __('customers.email') }}</dt>
+                            <dd class="mt-1 text-sm text-slate-900 dark:text-slate-100">
                                 @if ($customer->email)
                                     <a href="mailto:{{ $customer->email }}" class="text-brand-600 hover:text-brand-800 dark:text-brand-400 dark:hover:text-brand-300">{{ $customer->email }}</a>
                                 @else
@@ -100,8 +100,8 @@
                             </dd>
                         </div>
                         <div>
-                            <dt class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">{{ __('customers.phone') }}</dt>
-                            <dd class="mt-1 text-sm text-gray-900 dark:text-gray-100">
+                            <dt class="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">{{ __('customers.phone') }}</dt>
+                            <dd class="mt-1 text-sm text-slate-900 dark:text-slate-100">
                                 @if ($customer->phone)
                                     <a href="tel:{{ $customer->phone }}" class="text-brand-600 hover:text-brand-800 dark:text-brand-400 dark:hover:text-brand-300">{{ $customer->phone }}</a>
                                 @else
@@ -110,12 +110,12 @@
                             </dd>
                         </div>
                         <div class="sm:col-span-2">
-                            <dt class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">{{ __('customers.address') }}</dt>
-                            <dd class="mt-1 whitespace-pre-line text-sm text-gray-900 dark:text-gray-100">{{ $customer->address ?: '—' }}</dd>
+                            <dt class="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">{{ __('customers.address') }}</dt>
+                            <dd class="mt-1 whitespace-pre-line text-sm text-slate-900 dark:text-slate-100">{{ $customer->address ?: '—' }}</dd>
                         </div>
                         <div class="sm:col-span-2">
-                            <dt class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">{{ __('customers.notes') }}</dt>
-                            <dd class="mt-1 whitespace-pre-line text-sm text-gray-900 dark:text-gray-100">{{ $customer->notes ?: '—' }}</dd>
+                            <dt class="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">{{ __('customers.notes') }}</dt>
+                            <dd class="mt-1 whitespace-pre-line text-sm text-slate-900 dark:text-slate-100">{{ $customer->notes ?: '—' }}</dd>
                         </div>
                     </dl>
                 </x-ui.card>
@@ -124,17 +124,17 @@
             <div class="lg:col-span-1">
                 <x-ui.card>
                     <x-slot:header>
-                        <h2 class="text-base font-semibold text-gray-900 dark:text-white">{{ __('customers.information') }}</h2>
+                        <h2 class="text-base font-semibold text-slate-900 dark:text-white">{{ __('customers.information') }}</h2>
                     </x-slot:header>
 
                     <dl class="space-y-4">
                         <div>
-                            <dt class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">{{ __('customers.created_at') }}</dt>
-                            <dd class="mt-1 text-sm text-gray-900 dark:text-gray-100">{{ $customer->created_at?->format('Y-m-d H:i') }}</dd>
+                            <dt class="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">{{ __('customers.created_at') }}</dt>
+                            <dd class="mt-1 text-sm text-slate-900 dark:text-slate-100">{{ $customer->created_at?->format('Y-m-d H:i') }}</dd>
                         </div>
                         <div>
-                            <dt class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">{{ __('customers.updated_at') }}</dt>
-                            <dd class="mt-1 text-sm text-gray-900 dark:text-gray-100">{{ $customer->updated_at?->format('Y-m-d H:i') }}</dd>
+                            <dt class="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">{{ __('customers.updated_at') }}</dt>
+                            <dd class="mt-1 text-sm text-slate-900 dark:text-slate-100">{{ $customer->updated_at?->format('Y-m-d H:i') }}</dd>
                         </div>
                     </dl>
                 </x-ui.card>
@@ -144,7 +144,7 @@
 
     @can('customers.manage')
         <x-ui.modal id="delete-customer-modal" :title="__('customers.delete_confirm_title', ['name' => $customer->name])" size="sm">
-            <p class="text-sm text-gray-500 dark:text-gray-400">{{ __('customers.delete_confirm') }}</p>
+            <p class="text-sm text-slate-500 dark:text-slate-400">{{ __('customers.delete_confirm') }}</p>
 
             <form method="POST" action="{{ route('customers.destroy', $customer) }}" class="mt-6 flex flex-wrap items-center justify-end gap-3">
                 @csrf
@@ -152,7 +152,7 @@
                 <button
                     type="button"
                     x-on:click="close"
-                    class="inline-flex shrink-0 items-center justify-center rounded-lg border border-gray-300 bg-white px-3.5 py-2 text-sm font-semibold text-gray-700 shadow-sm transition-colors duration-150 hover:bg-gray-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:hover:bg-gray-700"
+                    class="inline-flex shrink-0 items-center justify-center rounded-[7px] border border-slate-300 bg-white px-3.5 py-2 text-sm font-semibold text-slate-700 shadow-sm transition-colors duration-150 hover:bg-slate-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:hover:bg-slate-700"
                 >
                     {{ __('customers.delete_cancel') }}
                 </button>
