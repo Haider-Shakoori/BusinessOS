@@ -166,7 +166,7 @@
                                     :name="`items[${index}][product_id]`"
                                     x-model="row.product_id"
                                     x-on:change="pickProduct(row)"
-                                    class="block w-full min-w-40 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm transition-colors duration-150 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/30 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:focus:border-brand-400"
+                                    class="block w-full min-w-40 rounded-[7px] border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm transition-colors duration-150 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/30 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:focus:border-brand-400"
                                 >
                                     <option value="">{{ __('quotations.no_product') }}</option>
                                     <template x-for="product in availableProducts" :key="product.id">
@@ -183,7 +183,7 @@
                                     maxlength="500"
                                     required
                                     :placeholder="`{{ __('quotations.line_placeholder') }}`"
-                                    class="block w-full min-w-52 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm transition-colors duration-150 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/30 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:focus:border-brand-400"
+                                    class="block w-full min-w-52 rounded-[7px] border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm transition-colors duration-150 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/30 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:focus:border-brand-400"
                                 />
                             </td>
                             <td class="py-3 pe-3 align-top">
@@ -196,7 +196,7 @@
                                     step="0.0001"
                                     inputmode="decimal"
                                     required
-                                    class="block w-28 rounded-lg border border-slate-300 bg-white px-3 py-2 text-end tabular-nums text-sm text-slate-900 shadow-sm transition-colors duration-150 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/30 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:focus:border-brand-400"
+                                    class="block w-28 rounded-[7px] border border-slate-300 bg-white px-3 py-2 text-end tabular-nums text-sm text-slate-900 shadow-sm transition-colors duration-150 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/30 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:focus:border-brand-400"
                                 />
                             </td>
                             <td class="py-3 pe-3 align-top">
@@ -209,7 +209,7 @@
                                     step="0.0001"
                                     inputmode="decimal"
                                     required
-                                    class="block w-32 rounded-lg border border-slate-300 bg-white px-3 py-2 text-end tabular-nums text-sm text-slate-900 shadow-sm transition-colors duration-150 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/30 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:focus:border-brand-400"
+                                    class="block w-32 rounded-[7px] border border-slate-300 bg-white px-3 py-2 text-end tabular-nums text-sm text-slate-900 shadow-sm transition-colors duration-150 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/30 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:focus:border-brand-400"
                                 />
                             </td>
                             @if ($taxesEnabled)
@@ -218,7 +218,7 @@
                                         :id="`item-${index}-tax`"
                                         :name="`items[${index}][tax_id]`"
                                         x-model="row.tax_id"
-                                        class="block w-full min-w-36 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm transition-colors duration-150 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/30 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:focus:border-brand-400"
+                                        class="block w-full min-w-36 rounded-[7px] border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm transition-colors duration-150 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/30 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:focus:border-brand-400"
                                     >
                                         <option value="">{{ __('products.no_tax') }}</option>
                                         @foreach ($taxes as $tax)
@@ -233,7 +233,7 @@
                                     x-on:click="removeRow(index)"
                                     :disabled="rows.length <= 1"
                                     :aria-label="'{{ __('quotations.action_remove_line') }}'"
-                                    class="inline-flex size-8 shrink-0 items-center justify-center rounded-lg border border-slate-300 bg-white text-slate-700 shadow-sm transition-colors duration-150 hover:bg-slate-50 disabled:pointer-events-none disabled:opacity-50 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:hover:bg-slate-700"
+                                    class="inline-flex size-8 shrink-0 items-center justify-center rounded-[7px] border border-slate-300 bg-white text-slate-700 shadow-sm transition-colors duration-150 hover:bg-slate-50 disabled:pointer-events-none disabled:opacity-50 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:hover:bg-slate-700"
                                 >
                                     <x-ui.icon name="trash" class="size-4" />
                                 </button>
