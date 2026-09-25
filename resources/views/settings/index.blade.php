@@ -14,7 +14,7 @@
             </div>
         @endunless
 
-        <form method="POST" action="{{ route('settings.update') }}" class="space-y-6">
+        <form method="POST" action="{{ route('settings.update') }}" enctype="multipart/form-data" class="space-y-6">
             @csrf
             @method('PATCH')
 
@@ -147,6 +147,143 @@
                             <x-ui.alert type="info">{{ __('settings.base_currency_locked', ['currency' => $currency_base]) }}</x-ui.alert>
                         </div>
                     @endif
+                </div>
+            </x-ui.card>
+
+            <x-ui.card>
+                <x-slot:header>
+                    <div>
+                        <h2 class="text-base font-semibold text-gray-900 dark:text-white">{{ __('settings.documents') }}</h2>
+                        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{{ __('settings.documents_helper') }}</p>
+                    </div>
+                </x-slot:header>
+
+                <div class="grid gap-x-6 gap-y-5 sm:grid-cols-2">
+                    <x-ui.select
+                        name="document.invoice_theme"
+                        :label="__('settings.invoice_theme')"
+                        :value="$values['document.invoice_theme']"
+                        :disabled="! $editable"
+                    >
+                        @foreach ($document_themes as $key => $theme)
+                            <option value="{{ $key }}" @selected($values['document.invoice_theme'] === $key)>
+                                {{ __($theme['label']) }}
+                            </option>
+                        @endforeach
+                    </x-ui.select>
+
+                    <x-ui.input
+                        name="document.accent_color"
+                        type="text"
+                        :label="__('settings.accent_color')"
+                        :helper="__('settings.accent_color_helper')"
+                        :value="$values['document.accent_color']"
+                        :disabled="! $editable"
+                        maxlength="7"
+                        pattern="^#[0-9A-Fa-f]{6}$"
+                        dir="ltr"
+                    />
+
+                    <div class="sm:col-span-2">
+                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-200" for="document-logo">
+                            {{ __('settings.document_logo') }}
+                        </label>
+
+                        @if ($document_logo_url)
+                            <div class="mb-3 flex flex-wrap items-center gap-4 rounded-lg border border-gray-200 bg-gray-50 p-3 dark:border-gray-700 dark:bg-gray-800/60">
+                                <img
+                                    src="{{ $document_logo_url }}"
+                                    alt="{{ __('settings.document_logo_current') }}"
+                                    class="h-12 max-w-48 object-contain"
+                                >
+                                <div>
+                                    <p class="text-sm font-medium text-gray-900 dark:text-white">{{ __('settings.document_logo_current') }}</p>
+                                    @if ($editable)
+                                        <label class="mt-2 inline-flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300">
+                                            <input type="hidden" name="document.remove_logo" value="0">
+                                            <input
+                                                type="checkbox"
+                                                name="document.remove_logo"
+                                                value="1"
+                                                class="rounded border-gray-300 text-brand-600 focus:ring-brand-500 dark:border-gray-600 dark:bg-gray-900"
+                                            >
+                                            {{ __('settings.remove_document_logo') }}
+                                        </label>
+                                    @endif
+                                </div>
+                            </div>
+                        @endif
+
+                        <input
+                            id="document-logo"
+                            type="file"
+                            name="document.logo"
+                            accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp"
+                            @disabled(! $editable)
+                            class="block w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-700 file:me-3 file:rounded-md file:border-0 file:bg-brand-50 file:px-3 file:py-1.5 file:text-sm file:font-semibold file:text-brand-700 hover:file:bg-brand-100 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-200 dark:file:bg-brand-500/10 dark:file:text-brand-300"
+                        >
+                        <p class="mt-1.5 text-xs text-gray-500 dark:text-gray-400">{{ __('settings.document_logo_helper') }}</p>
+                        @error('document.logo')
+                            <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <div class="sm:col-span-2">
+                        <x-ui.textarea
+                            name="document.header_text"
+                            :label="__('settings.header_text')"
+                            :helper="__('settings.header_text_helper')"
+                            :value="$values['document.header_text'] ?: null"
+                            rows="2"
+                            :disabled="! $editable"
+                            maxlength="500"
+                        />
+                    </div>
+
+                    <div class="sm:col-span-2">
+                        <x-ui.textarea
+                            name="document.terms"
+                            :label="__('settings.terms_template')"
+                            :helper="__('settings.terms_template_helper')"
+                            :value="$values['document.terms'] ?: null"
+                            rows="4"
+                            :disabled="! $editable"
+                            maxlength="4000"
+                        />
+                    </div>
+
+                    <div class="sm:col-span-2">
+                        <x-ui.textarea
+                            name="document.bank_details"
+                            :label="__('settings.bank_details')"
+                            :helper="__('settings.bank_details_helper')"
+                            :value="$values['document.bank_details'] ?: null"
+                            rows="4"
+                            :disabled="! $editable"
+                            maxlength="2000"
+                        />
+                    </div>
+
+                    <x-ui.input
+                        name="document.signature_line"
+                        :label="__('settings.signature_line')"
+                        :helper="__('settings.signature_line_helper')"
+                        :value="$values['document.signature_line'] ?: null"
+                        :disabled="! $editable"
+                        maxlength="255"
+                    />
+
+                    <div class="sm:col-span-2">
+                        <x-ui.textarea
+                            name="document.footer_text"
+                            :label="__('settings.footer_text')"
+                            :helper="__('settings.footer_text_helper')"
+                            :value="$values['document.footer_text'] ?: null"
+                            rows="2"
+                            :disabled="! $editable"
+                            maxlength="500"
+                        />
+                    </div>
                 </div>
             </x-ui.card>
 
