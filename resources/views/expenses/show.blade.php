@@ -100,7 +100,7 @@
                     @if ($expense->receipt_path)
                         <a
                             href="{{ route('expenses.receipt', $expense) }}"
-                            class="group flex items-center gap-3 rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 transition-colors hover:border-brand-300 hover:bg-brand-50 dark:border-slate-700 dark:bg-slate-800/60 dark:hover:border-brand-500/50 dark:hover:bg-brand-500/10"
+                            class="group flex items-center gap-3 rounded-[7px] border border-slate-200 bg-slate-50 px-4 py-3 transition-colors hover:border-brand-300 hover:bg-brand-50 dark:border-slate-700 dark:bg-slate-800/60 dark:hover:border-brand-500/50 dark:hover:bg-brand-500/10"
                         >
                             <x-ui.icon name="document-text" class="size-6 shrink-0 text-brand-600 dark:text-brand-400" aria-hidden="true" />
                             <span class="min-w-0">
