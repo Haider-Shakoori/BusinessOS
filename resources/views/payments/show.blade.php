@@ -136,7 +136,7 @@
                             <dd class="mt-1 text-sm text-slate-900 dark:text-slate-100">{{ $payment->created_at?->format('Y-m-d H:i') }}</dd>
                         </div>
                         @if ($payment->reversed_at !== null)
-                            <div class="rounded-lg border border-red-200 bg-red-50 p-4 dark:border-red-500/30 dark:bg-red-500/10">
+                            <div class="rounded-[7px] border border-red-200 bg-red-50 p-4 dark:border-red-500/30 dark:bg-red-500/10">
                                 <div class="flex items-start gap-3">
                                     <x-ui.icon name="x-circle" class="mt-0.5 size-5 shrink-0 text-red-500" />
                                     <div class="space-y-2">
@@ -199,7 +199,7 @@
                                         name="reversal_reason"
                                         rows="3"
                                         placeholder="{{ __('payments.reversal_reason_placeholder') }}"
-                                        class="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm
+                                        class="block w-full rounded-[7px] border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm
                                             placeholder:text-slate-400 transition-colors duration-150 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/30
                                             dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-500"
                                     ></textarea>
@@ -209,7 +209,7 @@
                                     <button
                                         type="button"
                                         x-on:click="close"
-                                        class="inline-flex shrink-0 items-center justify-center rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-sm font-semibold text-slate-700 shadow-sm transition-colors duration-150 hover:bg-slate-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:hover:bg-slate-700"
+                                        class="inline-flex shrink-0 items-center justify-center rounded-[7px] border border-slate-300 bg-white px-3.5 py-2 text-sm font-semibold text-slate-700 shadow-sm transition-colors duration-150 hover:bg-slate-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:hover:bg-slate-700"
                                     >
                                         {{ __('payments.reverse_cancel') }}
                                     </button>
