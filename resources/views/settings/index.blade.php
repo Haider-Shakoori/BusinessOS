@@ -14,16 +14,16 @@
             </div>
         @endunless
 
-        <form method="POST" action="{{ route('settings.update') }}" enctype="multipart/form-data" class="space-y-6">
+        <form method="POST" action="{{ route('settings.update') }}" enctype="multipart/form-data" class="space-y-5">
             @csrf
             @method('PATCH')
 
             <x-ui.card>
                 <x-slot:header>
-                    <h2 class="text-base font-semibold text-gray-900 dark:text-white">{{ __('settings.general') }}</h2>
+                    <h2 class="text-base font-semibold text-slate-900 dark:text-white">{{ __('settings.general') }}</h2>
                 </x-slot:header>
 
-                <div class="grid gap-x-6 gap-y-5 sm:grid-cols-2">
+                <div class="grid gap-x-5 gap-y-4 sm:grid-cols-2">
                     <div class="sm:col-span-2">
                         <x-ui.input
                             name="name"
@@ -63,7 +63,7 @@
                         maxlength="255"
                     />
 
-                    <div class="sm:col-span-2 border-t border-gray-100 pt-5 dark:border-gray-700">
+                    <div class="sm:col-span-2 border-t border-slate-100 pt-5 dark:border-slate-700">
                         <input type="hidden" name="general.tax_enabled" value="0">
                         <x-ui.toggle
                             name="general.tax_enabled"
@@ -78,10 +78,10 @@
 
             <x-ui.card>
                 <x-slot:header>
-                    <h2 class="text-base font-semibold text-gray-900 dark:text-white">{{ __('settings.regional') }}</h2>
+                    <h2 class="text-base font-semibold text-slate-900 dark:text-white">{{ __('settings.regional') }}</h2>
                 </x-slot:header>
 
-                <div class="grid gap-x-6 gap-y-5 sm:grid-cols-2">
+                <div class="grid gap-x-5 gap-y-4 sm:grid-cols-2">
                     <x-ui.select
                         name="regional.timezone"
                         :label="__('settings.timezone')"
@@ -153,12 +153,12 @@
             <x-ui.card>
                 <x-slot:header>
                     <div>
-                        <h2 class="text-base font-semibold text-gray-900 dark:text-white">{{ __('settings.documents') }}</h2>
-                        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{{ __('settings.documents_helper') }}</p>
+                        <h2 class="text-base font-semibold text-slate-900 dark:text-white">{{ __('settings.documents') }}</h2>
+                        <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">{{ __('settings.documents_helper') }}</p>
                     </div>
                 </x-slot:header>
 
-                <div class="grid gap-x-6 gap-y-5 sm:grid-cols-2">
+                <div class="grid gap-x-5 gap-y-4 sm:grid-cols-2">
                     <x-ui.select
                         name="document.invoice_theme"
                         :label="__('settings.invoice_theme')"
@@ -185,27 +185,27 @@
                     />
 
                     <div class="sm:col-span-2">
-                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-200" for="document-logo">
+                        <label class="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-200" for="document-logo">
                             {{ __('settings.document_logo') }}
                         </label>
 
                         @if ($document_logo_url)
-                            <div class="mb-3 flex flex-wrap items-center gap-4 rounded-lg border border-gray-200 bg-gray-50 p-3 dark:border-gray-700 dark:bg-gray-800/60">
+                            <div class="mb-3 flex flex-wrap items-center gap-4 rounded-lg border border-slate-200 bg-slate-50 p-3 dark:border-slate-700 dark:bg-slate-800/60">
                                 <img
                                     src="{{ $document_logo_url }}"
                                     alt="{{ __('settings.document_logo_current') }}"
                                     class="h-12 max-w-48 object-contain"
                                 >
                                 <div>
-                                    <p class="text-sm font-medium text-gray-900 dark:text-white">{{ __('settings.document_logo_current') }}</p>
+                                    <p class="text-sm font-medium text-slate-900 dark:text-white">{{ __('settings.document_logo_current') }}</p>
                                     @if ($editable)
-                                        <label class="mt-2 inline-flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300">
+                                        <label class="mt-2 inline-flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
                                             <input type="hidden" name="document.remove_logo" value="0">
                                             <input
                                                 type="checkbox"
                                                 name="document.remove_logo"
                                                 value="1"
-                                                class="rounded border-gray-300 text-brand-600 focus:ring-brand-500 dark:border-gray-600 dark:bg-gray-900"
+                                                class="rounded border-slate-300 text-brand-600 focus:ring-brand-500 dark:border-slate-600 dark:bg-slate-900"
                                             >
                                             {{ __('settings.remove_document_logo') }}
                                         </label>
@@ -220,9 +220,9 @@
                             name="document.logo"
                             accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp"
                             @disabled(! $editable)
-                            class="block w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-700 file:me-3 file:rounded-md file:border-0 file:bg-brand-50 file:px-3 file:py-1.5 file:text-sm file:font-semibold file:text-brand-700 hover:file:bg-brand-100 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-200 dark:file:bg-brand-500/10 dark:file:text-brand-300"
+                            class="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 file:me-3 file:rounded-md file:border-0 file:bg-brand-50 file:px-3 file:py-1.5 file:text-sm file:font-semibold file:text-brand-700 hover:file:bg-brand-100 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-200 dark:file:bg-brand-500/10 dark:file:text-brand-300"
                         >
-                        <p class="mt-1.5 text-xs text-gray-500 dark:text-gray-400">{{ __('settings.document_logo_helper') }}</p>
+                        <p class="mt-1.5 text-xs text-slate-500 dark:text-slate-400">{{ __('settings.document_logo_helper') }}</p>
                         @error('document.logo')
                             <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                         @enderror
@@ -296,12 +296,12 @@
 
         <x-ui.card>
             <x-slot:header>
-                <h2 class="text-base font-semibold text-gray-900 dark:text-white">{{ __('settings.currencies') }}</h2>
+                <h2 class="text-base font-semibold text-slate-900 dark:text-white">{{ __('settings.currencies') }}</h2>
             </x-slot:header>
 
             <div class="mb-5">
-                <h3 class="text-sm font-medium text-gray-700 dark:text-gray-200">{{ __('settings.base_currency') }}</h3>
-                <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                <h3 class="text-sm font-medium text-slate-700 dark:text-slate-200">{{ __('settings.base_currency') }}</h3>
+                <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">
                     {{ $currency_base }}
                     <span class="ms-1 inline-flex items-center rounded-full bg-brand-50 px-2 py-0.5 text-xs font-medium text-brand-700 dark:bg-brand-500/15 dark:text-brand-300">
                         {{ __('settings.base_currency_badge') }}
@@ -310,17 +310,17 @@
             </div>
 
             <div class="mb-5">
-                <h3 class="text-sm font-medium text-gray-700 dark:text-gray-200">{{ __('settings.enabled_currencies') }}</h3>
+                <h3 class="text-sm font-medium text-slate-700 dark:text-slate-200">{{ __('settings.enabled_currencies') }}</h3>
 
                 @if ($currency_enabled->isEmpty())
-                    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{{ __('settings.no_enabled_currencies') }}</p>
+                    <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">{{ __('settings.no_enabled_currencies') }}</p>
                 @else
                     <ul class="mt-2 space-y-2">
                         @foreach ($currency_enabled as $currency)
-                            <li class="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-gray-200 px-3 py-2 dark:border-gray-700">
-                                <span class="text-sm text-gray-900 dark:text-white">
+                            <li class="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-slate-200 px-3 py-2 dark:border-slate-700">
+                                <span class="text-sm text-slate-900 dark:text-white">
                                     <span class="font-semibold" dir="ltr">{{ $currency->code }}</span>
-                                    <span class="text-gray-500 dark:text-gray-400"> — {{ $currency->name }} ({{ $currency->symbol }})</span>
+                                    <span class="text-slate-500 dark:text-slate-400"> — {{ $currency->name }} ({{ $currency->symbol }})</span>
                                 </span>
                                 @if ($editable && $currency->code !== $currency_base)
                                     <form method="POST" action="{{ route('settings.currencies.destroy', $currency) }}">
@@ -338,7 +338,7 @@
             </div>
 
             @if ($editable)
-                <form method="POST" action="{{ route('settings.currencies.store') }}" class="mb-5 grid gap-x-6 gap-y-5 border-t border-gray-100 pt-5 sm:grid-cols-2 dark:border-gray-700">
+                <form method="POST" action="{{ route('settings.currencies.store') }}" class="mb-5 grid gap-x-5 gap-y-4 border-t border-slate-100 pt-5 sm:grid-cols-2 dark:border-slate-700">
                     @csrf
                     <div class="sm:col-span-2">
                         <x-ui.select
@@ -361,10 +361,10 @@
             @endif
 
             <div>
-                <h3 class="text-sm font-medium text-gray-700 dark:text-gray-200">{{ __('settings.exchange_rates') }}</h3>
+                <h3 class="text-sm font-medium text-slate-700 dark:text-slate-200">{{ __('settings.exchange_rates') }}</h3>
 
                 @if ($currency_rates->isEmpty())
-                    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{{ __('settings.no_exchange_rates') }}</p>
+                    <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">{{ __('settings.no_exchange_rates') }}</p>
                 @else
                     <div class="mt-2 overflow-x-auto">
                         <x-ui.table :caption="__('settings.exchange_rates')">
@@ -381,14 +381,14 @@
                             @foreach ($currency_rates as $rate)
                                 <tr>
                                     <x-ui.td>
-                                        <span class="font-semibold text-gray-900 dark:text-white" dir="ltr">{{ $rate->currency_code }}</span>
-                                        <span class="text-gray-500 dark:text-gray-400"> — {{ $rate->currency?->name }}</span>
+                                        <span class="font-semibold text-slate-900 dark:text-white" dir="ltr">{{ $rate->currency_code }}</span>
+                                        <span class="text-slate-500 dark:text-slate-400"> — {{ $rate->currency?->name }}</span>
                                     </x-ui.td>
                                     <x-ui.td>
-                                        <span class="whitespace-nowrap font-medium tabular-nums text-gray-900 dark:text-white" dir="ltr">{{ $rate->rate }}</span>
+                                        <span class="whitespace-nowrap font-medium tabular-nums text-slate-900 dark:text-white" dir="ltr">{{ $rate->rate }}</span>
                                     </x-ui.td>
                                     <x-ui.td>
-                                        <span class="whitespace-nowrap text-gray-500 dark:text-gray-400">{{ $rate->effective_date?->format('Y-m-d') }}</span>
+                                        <span class="whitespace-nowrap text-slate-500 dark:text-slate-400">{{ $rate->effective_date?->format('Y-m-d') }}</span>
                                     </x-ui.td>
                                     <x-ui.td class="text-end">
                                         @if ($editable)
@@ -406,7 +406,7 @@
                 @endif
 
                 @if ($editable)
-                    <form method="POST" action="{{ route('settings.exchange-rates.store') }}" class="mt-5 grid gap-x-6 gap-y-5 border-t border-gray-100 pt-5 sm:grid-cols-2 dark:border-gray-700">
+                    <form method="POST" action="{{ route('settings.exchange-rates.store') }}" class="mt-5 grid gap-x-5 gap-y-4 border-t border-slate-100 pt-5 sm:grid-cols-2 dark:border-slate-700">
                         @csrf
                         <div>
                             <x-ui.select name="currency_code" :label="__('settings.rate_currency')" :placeholder="__('settings.choose_currency')">
