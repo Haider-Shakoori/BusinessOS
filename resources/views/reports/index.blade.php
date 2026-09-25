@@ -202,9 +202,13 @@
                         @foreach ($reportData['rows'] as $row)
                             <tr>
                                 <x-ui.td>
-                                    <a href="{{ route('invoices.show', $row['invoice_id']) }}" class="font-semibold text-slate-900 hover:text-brand-600 dark:text-white dark:hover:text-brand-400">
-                                        {{ $row['invoice_number'] }}
-                                    </a>
+                                    @can('invoices.view')
+                                        <a href="{{ route('invoices.show', $row['invoice_id']) }}" class="font-semibold text-slate-900 hover:text-brand-600 dark:text-white dark:hover:text-brand-400">
+                                            {{ $row['invoice_number'] }}
+                                        </a>
+                                    @else
+                                        <span class="font-semibold text-slate-900 dark:text-white">{{ $row['invoice_number'] }}</span>
+                                    @endcan
                                 </x-ui.td>
                                 <x-ui.td>{{ $row['date'] }}</x-ui.td>
                                 <x-ui.td>{{ $row['customer'] }}</x-ui.td>
