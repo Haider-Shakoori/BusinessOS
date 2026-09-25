@@ -170,6 +170,10 @@ Route::middleware(['auth', 'auth.session', 'business-selected', 'module:customer
         ->name('customers.statement')
         ->middleware('permission:customers.view');
 
+    Route::get('/customers/{customer}/statement/pdf', [CustomerController::class, 'statementPdf'])
+        ->name('customers.statement.pdf')
+        ->middleware('permission:customers.view');
+
     Route::get('/customers/{customer}/edit', [CustomerController::class, 'edit'])
         ->name('customers.edit')
         ->middleware('permission:customers.manage');
@@ -391,6 +395,14 @@ Route::middleware(['auth', 'auth.session', 'business-selected', 'module:sales'])
         ->name('quotations.show')
         ->middleware('permission:quotations.view');
 
+    Route::get('/quotations/{quotation}/print', [QuotationController::class, 'print'])
+        ->name('quotations.print')
+        ->middleware('permission:quotations.view');
+
+    Route::get('/quotations/{quotation}/pdf', [QuotationController::class, 'pdf'])
+        ->name('quotations.pdf')
+        ->middleware('permission:quotations.view');
+
     Route::get('/quotations/{quotation}/edit', [QuotationController::class, 'edit'])
         ->name('quotations.edit')
         ->middleware('permission:quotations.manage');
@@ -456,6 +468,10 @@ Route::middleware(['auth', 'auth.session', 'business-selected', 'module:sales'])
 
     Route::get('/invoices/{invoice}/print', [InvoiceController::class, 'print'])
         ->name('invoices.print')
+        ->middleware('permission:invoices.view');
+
+    Route::get('/invoices/{invoice}/pdf', [InvoiceController::class, 'pdf'])
+        ->name('invoices.pdf')
         ->middleware('permission:invoices.view');
 
     Route::get('/invoices/{invoice}/edit', [InvoiceController::class, 'edit'])
