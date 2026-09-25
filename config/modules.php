@@ -138,10 +138,12 @@ return [
         'reports' => [
             'key' => 'reports',
             'label' => 'modules.reports',
-            'icon' => 'inbox',
+            'icon' => 'chart-bar',
+            'permission' => 'reports.view',
             'navigation' => [
                 'group' => 'insights',
                 'order' => 1,
+                'route' => 'reports.index',
             ],
         ],
         'settings' => [

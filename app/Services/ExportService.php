@@ -13,6 +13,11 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ExportService
 {
+    public function __construct(private readonly ReportService $reports)
+    {
+        //
+    }
+
     public function customers(array $filters): StreamedResponse
     {
         $search = trim((string) ($filters['search'] ?? ''));
@@ -178,6 +183,84 @@ class ExportService
                 $this->safeText($expense->notes),
             ]),
         );
+    }
+
+    /**
+     * Batch 23 report CSV export. Uses the same ReportService read model as the
+     * HTML report so filters, tenant scope and currency math cannot drift.
+     *
+     * @param  array<string, mixed>  $filters
+     */
+    public function report(string $type, array $filters): StreamedResponse
+    {
+        [$range, $dateFrom, $dateTo] = $this->reports->dateRange($filters);
+        $data = $this->reports->run($type, $dateFrom, $dateTo);
+        $currency = $this->reports->baseCurrency();
+
+        [$headers, $rows] = match ($type) {
+            'summary' => [
+                ['Metric', 'Value', 'Currency', 'Date From', 'Date To'],
+                LazyCollection::make([
+                    ['Sales', $data['sales'], $currency, $dateFrom, $dateTo],
+                    ['Invoice Count', (string) $data['invoice_count'], '', $dateFrom, $dateTo],
+                    ['Average Invoice', $data['average_invoice'], $currency, $dateFrom, $dateTo],
+                    ['Tax', $data['tax'], $currency, $dateFrom, $dateTo],
+                    ['Receivables', $data['receivables'], $currency, $dateFrom, $dateTo],
+                ]),
+            ],
+            'products' => [
+                ['Product', 'SKU', 'Quantity', 'Invoice Count', 'Sales', 'Currency', 'Date From', 'Date To'],
+                $data['rows']->map(fn (array $row) => [
+                    $this->safeText((string) $row['name']),
+                    $this->safeText($row['sku']),
+                    (string) $row['quantity'],
+                    (string) $row['invoice_count'],
+                    (string) $row['sales'],
+                    $currency,
+                    $dateFrom,
+                    $dateTo,
+                ])->lazy(),
+            ],
+            'customers' => [
+                ['Customer', 'Company', 'Invoice Count', 'Sales', 'Receivables', 'Currency', 'Date From', 'Date To'],
+                $data['rows']->map(fn (array $row) => [
+                    $this->safeText((string) $row['name']),
+                    $this->safeText($row['company_name']),
+                    (string) $row['invoice_count'],
+                    (string) $row['sales'],
+                    (string) $row['receivables'],
+                    $currency,
+                    $dateFrom,
+                    $dateTo,
+                ])->lazy(),
+            ],
+            'expenses' => [
+                ['Category', 'Expense Count', 'Amount', 'Currency', 'Date From', 'Date To'],
+                $data['rows']->map(fn (array $row) => [
+                    $this->safeText((string) $row['name']),
+                    (string) $row['count'],
+                    (string) $row['amount'],
+                    $currency,
+                    $dateFrom,
+                    $dateTo,
+                ])->lazy(),
+            ],
+            'receivables' => [
+                ['Invoice Number', 'Date', 'Customer', 'Invoice Total', 'Amount Due', 'Currency', 'Date From', 'Date To'],
+                $data['rows']->map(fn (array $row) => [
+                    (string) $row['invoice_number'],
+                    (string) $row['date'],
+                    $this->safeText((string) $row['customer']),
+                    (string) $row['invoice_total'],
+                    (string) $row['amount_due'],
+                    $currency,
+                    $dateFrom,
+                    $dateTo,
+                ])->lazy(),
+            ],
+        };
+
+        return $this->download('report-'.$type, $headers, $rows);
     }
 
     /**

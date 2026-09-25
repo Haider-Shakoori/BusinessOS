@@ -64,5 +64,8 @@ return [
             'expenses.view',
             'expenses.manage',
         ],
+        'reports' => [
+            'reports.view',
+        ],
     ],
 ];
