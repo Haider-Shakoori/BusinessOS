@@ -85,7 +85,7 @@
                                     <x-slot:items>
                                         <x-ui.dropdown-item :href="route('quotations.show', $quotation)" icon="eye">{{ __('actions.view') }}</x-ui.dropdown-item>
                                         @can('quotations.manage')
-                                            @if ($quotation->status === AppEnumsQuotationStatus::Draft)
+                                            @if ($quotation->status === \App\Enums\QuotationStatus::Draft)
                                                 <x-ui.dropdown-item :href="route('quotations.edit', $quotation)" icon="pencil-square">{{ __('actions.edit') }}</x-ui.dropdown-item>
                                                 <button type="button" role="menuitem" class="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-500/10" x-on:click="close(); $dispatch('bos:open-modal', { id: 'delete-quotation-modal' }); $dispatch('bos:delete-quotation', { id: {{ $quotation->id }} })"><x-ui.icon name="trash" class="size-4" />{{ __('actions.delete') }}</button>
                                             @endif
