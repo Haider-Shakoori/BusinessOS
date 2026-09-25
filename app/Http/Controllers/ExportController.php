@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Enums\InvoiceStatus;
 use App\Enums\ProductType;
 use App\Services\ExportService;
+use App\Services\ReportService;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -62,6 +63,19 @@ class ExportController extends Controller
     public function expenseReport(Request $request): StreamedResponse
     {
         return $this->exports->expenses($this->expenseFilters($request), 'expense-report');
+    }
+
+    public function report(Request $request, string $report): StreamedResponse
+    {
+        abort_unless(in_array($report, ReportService::TYPES, true), 404);
+
+        $filters = $request->validate([
+            'range' => ['nullable', 'string', 'in:month,quarter,year,custom'],
+            'date_from' => ['nullable', 'date'],
+            'date_to' => ['nullable', 'date', 'after_or_equal:date_from'],
+        ]);
+
+        return $this->exports->report($report, $filters);
     }
 
     /**
