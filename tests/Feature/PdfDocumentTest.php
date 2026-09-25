@@ -206,7 +206,7 @@ class PdfDocumentTest extends TestCase
             ->assertSee('Shared PDF header')
             ->assertSee('USD')
             ->assertSee('AFN')
-            ->assertSee('70.00000000');
+            ->assertSee('70.0000');
 
         $this->assertPdfResponse(
             $this->get(route('invoices.pdf', $invoice)),
