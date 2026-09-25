@@ -1,0 +1,30 @@
+<?php
+
+return [
+    'invoice' => 'فاکتور',
+    'print' => 'چاپ',
+    'back_to_invoice' => 'بازگشت به فاکتور',
+    'bill_to' => 'صورتحساب برای',
+    'issued_on' => 'تاریخ صدور',
+    'status' => 'وضعیت',
+    'description' => 'شرح',
+    'quantity' => 'تعداد',
+    'unit_price' => 'قیمت واحد',
+    'tax' => 'مالیات',
+    'amount' => 'مبلغ',
+    'subtotal' => 'جمع جزء',
+    'discount' => 'تخفیف',
+    'total' => 'جمع کل',
+    'paid' => 'پرداخت‌شده',
+    'amount_due' => 'مانده قابل پرداخت',
+    'terms' => 'شرایط و ضوابط',
+    'bank_details' => 'جزئیات پرداخت',
+    'signature' => 'امضای مجاز',
+    'quotation' => 'پیش‌فاکتور',
+    'created_by' => 'تهیه‌کننده',
+    'no_customer' => 'مشتری حضوری / نامشخص',
+    'themes' => [
+        'modern' => 'مدرن',
+        'minimal' => 'مینیمال',
+    ],
+];
