@@ -10,6 +10,7 @@ use App\Services\CurrencyService;
 use App\Services\DocumentThemeService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Arr;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
@@ -93,13 +94,14 @@ class SettingsController extends Controller
         // content. Replacing/removing a logo deletes only the current
         // business's previously configured public-disk object.
         $document = $validated['document'] ?? [];
+        $logo = $document['logo'] ?? null;
         $removeLogo = (bool) ($document['remove_logo'] ?? false);
         unset($validated['document']['logo'], $validated['document']['remove_logo']);
 
         $oldLogoPath = $settings->get('document.logo_path');
 
-        if ($request->hasFile('document.logo')) {
-            $path = $request->file('document.logo')->store('business-documents/'.$business->id, 'public');
+        if ($logo instanceof UploadedFile && $logo->isValid()) {
+            $path = $logo->store('business-documents/'.$business->id, 'public');
 
             if (is_string($oldLogoPath) && $oldLogoPath !== '' && $oldLogoPath !== $path) {
                 Storage::disk('public')->delete($oldLogoPath);
@@ -112,6 +114,13 @@ class SettingsController extends Controller
             }
 
             $validated['document']['logo_path'] = null;
+        }
+
+        // Arr::dot() preserves an empty array as the group key itself. Never
+        // pass that group-only key to BusinessSettings: only supported
+        // group.key leaves are first-class settings.
+        if (($validated['document'] ?? null) === []) {
+            unset($validated['document']);
         }
 
         // Only whitelisted group.key definitions are persisted. The form
