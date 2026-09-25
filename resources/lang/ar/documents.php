@@ -1,0 +1,30 @@
+<?php
+
+return [
+    'invoice' => 'فاتورة',
+    'print' => 'طباعة',
+    'back_to_invoice' => 'العودة إلى الفاتورة',
+    'bill_to' => 'الفاتورة إلى',
+    'issued_on' => 'تاريخ الإصدار',
+    'status' => 'الحالة',
+    'description' => 'الوصف',
+    'quantity' => 'الكمية',
+    'unit_price' => 'سعر الوحدة',
+    'tax' => 'الضريبة',
+    'amount' => 'المبلغ',
+    'subtotal' => 'المجموع الفرعي',
+    'discount' => 'الخصم',
+    'total' => 'الإجمالي',
+    'paid' => 'المدفوع',
+    'amount_due' => 'المبلغ المستحق',
+    'terms' => 'الشروط والأحكام',
+    'bank_details' => 'تفاصيل الدفع',
+    'signature' => 'التوقيع المعتمد',
+    'quotation' => 'عرض السعر',
+    'created_by' => 'أعدها',
+    'no_customer' => 'عميل نقدي / غير محدد',
+    'themes' => [
+        'modern' => 'حديث',
+        'minimal' => 'بسيط',
+    ],
+];
