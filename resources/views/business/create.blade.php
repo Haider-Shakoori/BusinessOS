@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @section('content')
-    <x-app.page :title="__('business.create_title')" :subtitle="__('business.create_subtitle')">
+    <x-app.page icon="briefcase" :title="__('business.create_title')" :subtitle="__('business.create_subtitle')">
         <x-ui.card class="max-w-xl">
             <div class="mb-6 flex items-start gap-4">
                 <span class="grid size-10 shrink-0 place-items-center rounded-xl bg-brand-50 text-brand-600 dark:bg-brand-500/10 dark:text-brand-300" aria-hidden="true">
