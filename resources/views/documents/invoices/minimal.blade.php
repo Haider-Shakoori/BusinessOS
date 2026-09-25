@@ -47,10 +47,10 @@
     }
     @if ($pdfMode)
         .minimal { padding: 22px 16px; }
-        .minimal-head, .minimal-info, .minimal-after { display: table; width: 100%; table-layout: fixed; }
-        .minimal-brand, .minimal-title, .minimal-info > div, .minimal-info > table, .minimal-after > div, .minimal-after > table { display: table-cell; vertical-align: top; }
-        .minimal-brand, .minimal-info > div, .minimal-after > div { width: 58%; }
-        .minimal-title, .minimal-info > table, .minimal-after > table { width: 42%; }
+        .minimal-head, .minimal-info, .minimal-after { display: block; }
+        .minimal-brand, .minimal-title, .minimal-info > div, .minimal-info > table, .minimal-after > div, .minimal-after > table { display: block; width: 100%; }
+        .minimal-title { margin-top: 18px; text-align: start; }
+        .minimal-info > table, .minimal-after > table { margin-top: 16px; }
         .minimal-section { max-width: 100%; }
     @endif
 </style>
@@ -149,7 +149,7 @@
             <tr class="due"><td>{{ __('documents.amount_due') }}</td><td class="money">{{ $invoice->currency_code }} {{ number_format((float) $invoice->amount_due, 2) }}</td></tr>
             @if ($invoice->currency_code !== $baseCurrency)
                 <tr><td>{{ __('documents.base_amount', ['currency' => $baseCurrency]) }}</td><td class="money">{{ $baseCurrency }} {{ number_format((float) $invoice->base_amount, 2) }}</td></tr>
-                <tr><td>{{ __('documents.exchange_rate') }}</td><td class="money">{{ $invoice->exchange_rate }}</td></tr>
+                <tr><td>{{ __('documents.exchange_rate') }}</td><td class="money">{{ number_format((float) $invoice->exchange_rate, 4) }}</td></tr>
             @endif
         </table>
     </div>
