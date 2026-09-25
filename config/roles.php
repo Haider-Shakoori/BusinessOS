@@ -45,6 +45,7 @@ return [
                 'payments.reverse',
                 'expenses.view',
                 'expenses.manage',
+                'reports.view',
             ],
         ],
         'admin' => [
@@ -74,6 +75,7 @@ return [
                 'payments.reverse',
                 'expenses.view',
                 'expenses.manage',
+                'reports.view',
             ],
         ],
         'viewer' => [
@@ -86,6 +88,7 @@ return [
                 'invoices.view',
                 'payments.view',
                 'expenses.view',
+                'reports.view',
             ],
         ],
     ],
