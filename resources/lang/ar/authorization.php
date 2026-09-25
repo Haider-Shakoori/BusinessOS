@@ -50,4 +50,5 @@ return [
     'permission_payments_reverse' => 'إلغاء المدفوعات',
     'permission_expenses_view' => 'عرض المصروفات',
     'permission_expenses_manage' => 'إدارة المصروفات',
+    'permission_reports_view' => 'عرض التقارير',
 ];
