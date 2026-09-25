@@ -52,9 +52,10 @@
     @if ($pdfMode)
         .modern { padding: 20px 16px; }
         .modern-head, .modern-meta, .modern-summary, .modern-sections { display: block; }
-        .modern-brand, .modern-title, .modern-meta > div, .modern-meta > dl, .modern-notes, .modern-totals { display: block; width: 100%; }
+        .modern-brand, .modern-title, .modern-meta > div, .modern-meta > dl, .modern-notes { display: block; width: 100%; }
         .modern-title { margin-top: 18px; text-align: start; }
-        .modern-meta > dl, .modern-totals { margin-top: 16px; }
+        .modern-meta > dl { margin-top: 16px; }
+        .modern-totals { display: table; width: 100%; margin-top: 16px; }
         .modern-section { display: block; width: 100%; }
         .modern-signature { display: block; text-align: end; }
         .modern-signature-line { display: inline-block; }
