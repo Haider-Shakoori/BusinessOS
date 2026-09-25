@@ -11,10 +11,13 @@ use App\Models\Quotation;
 use App\Models\Tax;
 use App\Services\BusinessSettings;
 use App\Services\CurrencyService;
+use App\Services\DocumentService;
+use App\Services\PdfService;
 use App\Services\QuotationService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Quotation CRUD controller (Batch 14).
@@ -107,6 +110,21 @@ class QuotationController extends Controller
             'editable' => $this->service->isEditable($quotation),
             'baseCurrency' => $this->baseCurrencyCode(),
         ]);
+    }
+
+    public function print(Quotation $quotation, DocumentService $documents): View
+    {
+        $document = $documents->quotation($quotation);
+
+        return view($document['view'], $document['data']);
+    }
+
+    public function pdf(Quotation $quotation, Request $request, DocumentService $documents, PdfService $pdfs): Response
+    {
+        return $pdfs->render(
+            $documents->quotation($quotation, forPdf: true),
+            $request->boolean('download'),
+        );
     }
 
     public function edit(Quotation $quotation): View
