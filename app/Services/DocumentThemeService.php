@@ -59,7 +59,7 @@ class DocumentThemeService
      *
      * @return array<string, mixed>
      */
-    public function presentation(): array
+    public function presentation(bool $forPdf = false): array
     {
         $accent = (string) $this->settings->get(
             'document.accent_color',
@@ -79,6 +79,7 @@ class DocumentThemeService
             'signature_line' => $this->settings->get('document.signature_line'),
             'logo_path' => $this->settings->get('document.logo_path'),
             'logo_url' => $this->logoUrl(),
+            'logo_data_uri' => $forPdf ? $this->logoDataUri() : null,
             'business' => $this->context->current(),
             'profile' => [
                 'address' => $this->settings->get('general.address'),
@@ -97,5 +98,27 @@ class DocumentThemeService
         }
 
         return Storage::disk('public')->url($path);
+    }
+
+    /**
+     * Embed the locally stored logo for PDF generation without enabling
+     * Dompdf remote access. Unsupported or missing files fail closed.
+     */
+    public function logoDataUri(): ?string
+    {
+        $path = $this->settings->get('document.logo_path');
+
+        if (! is_string($path) || $path === '' || ! Storage::disk('public')->exists($path)) {
+            return null;
+        }
+
+        $mime = Storage::disk('public')->mimeType($path);
+        $allowed = ['image/png', 'image/jpeg', 'image/webp'];
+
+        if (! is_string($mime) || ! in_array($mime, $allowed, true)) {
+            return null;
+        }
+
+        return 'data:'.$mime.';base64,'.base64_encode(Storage::disk('public')->get($path));
     }
 }

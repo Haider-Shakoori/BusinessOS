@@ -8,14 +8,15 @@ use App\Http\Requests\Customer\UpdateCustomerRequest;
 use App\Models\Customer;
 use App\Models\Invoice;
 use App\Models\Payment;
-use App\Services\BusinessContext;
-use App\Services\BusinessSettings;
 use App\Services\CurrencyService;
 use App\Services\CustomerLedgerService;
+use App\Services\DocumentService;
+use App\Services\PdfService;
 use App\Support\Decimal;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Customer CRUD + ledger/statement controller (Batch 10 / Batch 18).
@@ -35,8 +36,6 @@ class CustomerController extends Controller
 {
     public function __construct(
         private readonly CustomerLedgerService $ledger,
-        private readonly BusinessSettings $settings,
-        private readonly BusinessContext $context,
         private readonly CurrencyService $currencies,
     ) {
         //
@@ -194,35 +193,32 @@ class CustomerController extends Controller
         ]);
     }
 
-    /**
-     * Print-ready customer statement — same read model as the ledger, rendered
-     * in a clean printable layout with a window.print() action.
-     */
-    public function statement(Request $request, Customer $customer): View
+    public function statement(Request $request, Customer $customer, DocumentService $documents): View
     {
-        $data = $request->validate([
+        $filters = $this->statementFilters($request);
+        $document = $documents->statement($customer, $filters);
+
+        return view($document['view'], $document['data']);
+    }
+
+    public function statementPdf(Request $request, Customer $customer, DocumentService $documents, PdfService $pdfs): Response
+    {
+        $filters = $this->statementFilters($request);
+
+        return $pdfs->render(
+            $documents->statement($customer, $filters, forPdf: true),
+            $request->boolean('download'),
+        );
+    }
+
+    /**
+     * @return array{date_from?: string|null, date_to?: string|null}
+     */
+    private function statementFilters(Request $request): array
+    {
+        return $request->validate([
             'date_from' => ['nullable', 'date'],
             'date_to' => ['nullable', 'date', 'after_or_equal:date_from'],
-        ]);
-
-        $result = $this->ledger->ledger($customer, [
-            'date_from' => $data['date_from'] ?? null,
-            'date_to' => $data['date_to'] ?? null,
-        ]);
-
-        $business = $this->context->current();
-
-        return view('customers.statement', [
-            'customer' => $customer,
-            'business' => $business,
-            'businessDetails' => $this->settings->group('general'),
-            'baseCurrency' => $this->currencies->baseCurrency(),
-            'rows' => $result['rows'],
-            'broughtForward' => $result['brought_forward'],
-            'openingBalance' => $this->ledger->openingBalance($customer),
-            'closingBalance' => $result['closing_balance'],
-            'dateFrom' => $data['date_from'] ?? null,
-            'dateTo' => $data['date_to'] ?? null,
         ]);
     }
 }

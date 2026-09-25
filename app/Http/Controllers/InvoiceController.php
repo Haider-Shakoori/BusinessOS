@@ -12,12 +12,14 @@ use App\Models\Quotation;
 use App\Models\Tax;
 use App\Services\BusinessSettings;
 use App\Services\CurrencyService;
-use App\Services\DocumentThemeService;
+use App\Services\DocumentService;
 use App\Services\InvoiceService;
+use App\Services\PdfService;
 use App\Support\Decimal;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Invoice CRUD + quotation conversion controller (Batch 15).
@@ -124,23 +126,19 @@ class InvoiceController extends Controller
         ]);
     }
 
-    /**
-     * Render the invoice through the current business's registered static
-     * document theme. The setting resolves only to a code-defined view; no
-     * database value is ever executed as a Blade path.
-     */
-    public function print(Invoice $invoice, DocumentThemeService $themes): View
+    public function print(Invoice $invoice, DocumentService $documents): View
     {
-        $invoice->load(['customer', 'items.product', 'items.tax', 'createdBy', 'quotation']);
+        $document = $documents->invoice($invoice);
 
-        $theme = $themes->resolve('invoice');
+        return view($document['view'], $document['data']);
+    }
 
-        return view($theme['view'], [
-            'invoice' => $invoice,
-            'theme' => $theme,
-            'presentation' => $themes->presentation(),
-            'dateFormat' => (string) $this->settings->get('regional.date_format', 'Y-m-d'),
-        ]);
+    public function pdf(Invoice $invoice, Request $request, DocumentService $documents, PdfService $pdfs): Response
+    {
+        return $pdfs->render(
+            $documents->invoice($invoice, forPdf: true),
+            $request->boolean('download'),
+        );
     }
 
     /**

@@ -29,5 +29,33 @@ return [
                 ],
             ],
         ],
+        'quotation' => [
+            'default' => 'modern',
+            'setting' => 'document.invoice_theme',
+            'themes' => [
+                'modern' => [
+                    'label' => 'documents.themes.modern',
+                    'view' => 'documents.quotations.modern',
+                ],
+                'minimal' => [
+                    'label' => 'documents.themes.minimal',
+                    'view' => 'documents.quotations.minimal',
+                ],
+            ],
+        ],
+        'statement' => [
+            'default' => 'modern',
+            'setting' => 'document.invoice_theme',
+            'themes' => [
+                'modern' => [
+                    'label' => 'documents.themes.modern',
+                    'view' => 'documents.statements.modern',
+                ],
+                'minimal' => [
+                    'label' => 'documents.themes.minimal',
+                    'view' => 'documents.statements.minimal',
+                ],
+            ],
+        ],
     ],
 ];

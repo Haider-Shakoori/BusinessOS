@@ -15,14 +15,15 @@
                 {{ __('quotations.view_all') }}
             </x-ui.button>
 
-            <button
-                type="button"
-                x-on:click="window.print()"
-                class="inline-flex shrink-0 items-center justify-center gap-2 rounded-[7px] border border-slate-300 bg-white px-3.5 py-2 text-sm font-semibold text-slate-700 shadow-sm transition-colors duration-150 hover:bg-slate-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:hover:bg-slate-700"
+            <x-ui.button
+                variant="secondary"
+                href="{{ route('quotations.print', $quotation) }}"
+                target="_blank"
+                rel="noopener"
+                icon="document-text"
             >
-                <x-ui.icon name="document-text" class="size-4" />
                 {{ __('quotations.print') }}
-            </button>
+            </x-ui.button>
 
             @can('quotations.manage')
                 @if ($editable)
