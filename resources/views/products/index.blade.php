@@ -33,7 +33,7 @@
 
                     <x-ui.select name="type" :label="__('products.type_filter')" :value="$typeFilter">
                         <option value="">{{ __('products.types.all') }}</option>
-                        @foreach (AppEnumsProductType::cases() as $case)
+                        @foreach (\App\Enums\ProductType::cases() as $case)
                             <option value="{{ $case->value }}" @selected($typeFilter === $case->value)>{{ __('products.types.'.$case->value) }}</option>
                         @endforeach
                     </x-ui.select>
@@ -76,7 +76,7 @@
                         <tr>
                             <x-ui.td class="text-center text-slate-500">{{ ($products->firstItem() ?? 1) + $loop->index }}</x-ui.td>
                             <x-ui.td>
-                                <x-ui.badge :tone="$product->type === AppEnumsProductType::Product ? 'brand' : 'info'">
+                                <x-ui.badge :tone="$product->type === \App\Enums\ProductType::Product ? 'brand' : 'info'">
                                     {{ __('products.types.'.$product->type->value) }}
                                 </x-ui.badge>
                             </x-ui.td>
