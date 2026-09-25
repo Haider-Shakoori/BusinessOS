@@ -5,7 +5,7 @@
         $outstandingPositive = \App\Support\Decimal::gt($summary['outstanding_balance'] ?? '0', '0');
     @endphp
 
-    <x-app.page
+    <x-app.page icon="users"
         :title="$customer->name"
         :subtitle="__('customers.details_title')"
         :breadcrumbs="[
