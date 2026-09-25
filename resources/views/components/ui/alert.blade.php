@@ -22,13 +22,13 @@
             'iconName' => 'x-circle',
         ],
         'info' => [
-            'wrap' => 'border-sky-200 bg-sky-50 text-sky-800 dark:border-sky-500/30 dark:bg-sky-500/10 dark:text-sky-300',
-            'icon' => 'text-sky-500 dark:text-sky-400',
+            'wrap' => 'border-blue-200 bg-blue-50 text-blue-800 dark:border-blue-500/30 dark:bg-blue-500/10 dark:text-blue-300',
+            'icon' => 'text-brand-600 dark:text-brand-400',
             'iconName' => 'info-circle',
         ],
         'neutral' => [
-            'wrap' => 'border-gray-200 bg-gray-50 text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200',
-            'icon' => 'text-gray-400 dark:text-gray-500',
+            'wrap' => 'border-slate-200 bg-slate-50 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200',
+            'icon' => 'text-slate-400 dark:text-slate-500',
             'iconName' => 'info-circle',
         ],
     ];
@@ -46,9 +46,9 @@
     x-transition:leave-start="opacity-100"
     x-transition:leave-end="opacity-0"
     role="{{ $type === 'danger' ? 'alert' : 'status' }}"
-    {{ $attributes->merge(['class' => 'flex items-start gap-3 rounded-lg border p-4 text-sm '.$tone['wrap']]) }}
+    {{ $attributes->merge(['class' => 'flex items-start gap-3 rounded-[9px] border px-4 py-3 text-[12px] leading-5 '.$tone['wrap']]) }}
 >
-    <x-ui.icon :name="$tone['iconName']" class="mt-0.5 size-5 shrink-0 {{ $tone['icon'] }}" aria-hidden="true" />
+    <x-ui.icon :name="$tone['iconName']" class="mt-0.5 size-4.5 shrink-0 {{ $tone['icon'] }}" aria-hidden="true" />
 
     <div class="min-w-0 flex-1">
         @if ($title)
@@ -64,7 +64,7 @@
             type="button"
             x-on:click="show = false"
             class="shrink-0 rounded p-1 transition-colors hover:bg-black/5 dark:hover:bg-white/10"
-            aria-label="Dismiss"
+            aria-label="{{ __('actions.close') }}"
         >
             <x-ui.icon name="x-mark" class="size-4" aria-hidden="true" />
         </button>
