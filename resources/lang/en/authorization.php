@@ -50,4 +50,5 @@ return [
     'permission_payments_reverse' => 'Reverse payments',
     'permission_expenses_view' => 'View expenses',
     'permission_expenses_manage' => 'Manage expenses',
+    'permission_reports_view' => 'View reports',
 ];
