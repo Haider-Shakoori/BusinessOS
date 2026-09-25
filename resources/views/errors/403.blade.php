@@ -7,8 +7,8 @@
                     <x-ui.icon name="exclamation-triangle" class="size-5" />
                 </span>
                 <div class="min-w-0">
-                    <h3 class="text-base font-semibold text-gray-900 dark:text-gray-100">{{ __('authorization.forbidden') }}</h3>
-                    <p class="mt-1 text-sm text-gray-600 dark:text-gray-300">{{ __('authorization.unauthorized') }}</p>
+                    <h3 class="text-base font-semibold text-slate-900 dark:text-slate-100">{{ __('authorization.forbidden') }}</h3>
+                    <p class="mt-1 text-sm text-slate-600 dark:text-slate-300">{{ __('authorization.unauthorized') }}</p>
                 </div>
             </div>
         </x-ui.card>
