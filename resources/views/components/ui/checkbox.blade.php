@@ -33,33 +33,33 @@
             @if ($disabled) disabled @endif
             @if ($resolvedError) aria-invalid="true" @endif
             {{ $attributes->except(['id', 'name', 'value', 'checked', 'required', 'disabled'])->merge(['class' =>
-                'mt-0.5 size-4 shrink-0 rounded border-gray-300 bg-white text-brand-600 shadow-sm
+                'mt-0.5 size-4 shrink-0 rounded border-slate-300 bg-white text-brand-600 shadow-sm
                 accent-brand-600 transition-colors duration-150
                 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600
                 disabled:cursor-not-allowed disabled:opacity-60
-                dark:border-gray-600 dark:bg-gray-800'
+                dark:border-slate-600 dark:bg-slate-800'
                 .($hasError ? ' border-red-400 dark:border-red-500/70' : '')
             ]) }}
         >
 
         <span class="select-none text-sm">
-            <span class="font-medium text-gray-800 dark:text-gray-100">
+            <span class="font-medium text-slate-800 dark:text-slate-100">
                 {{ $label }}
                 @if ($required)
                     <span class="text-red-500" aria-hidden="true">*</span>
                 @endif
             </span>
             @if ($description)
-                <span class="mt-0.5 block text-xs text-gray-500 dark:text-gray-400">{{ $description }}</span>
+                <span class="mt-0.5 block text-[11px] text-slate-500 dark:text-slate-400">{{ $description }}</span>
             @endif
         </span>
     </label>
 
     @if ($helper && ! $resolvedError)
-        <p class="ms-7 mt-1.5 text-xs text-gray-500 dark:text-gray-400">{{ $helper }}</p>
+        <p class="ms-7 mt-1.5 text-[11px] text-slate-500 dark:text-slate-400">{{ $helper }}</p>
     @endif
 
     @if ($resolvedError)
-        <p id="{{ $fieldId }}-error" class="ms-7 mt-1.5 text-xs font-medium text-red-600 dark:text-red-400">{{ $resolvedError }}</p>
+        <p id="{{ $fieldId }}-error" class="ms-7 mt-1.5 text-[11px] font-medium text-red-600 dark:text-red-400">{{ $resolvedError }}</p>
     @endif
 </div>
