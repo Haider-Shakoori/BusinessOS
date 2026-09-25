@@ -14,7 +14,23 @@ final class PdfService
     {
         $filename = $this->safeFilename($document['filename']);
 
-        $pdf = Pdf::loadView($document['view'], $document['data'])
+        // Render Blade once, then resolve the small set of CSS custom
+        // properties used by browser print. Dompdf targets CSS 2.1 and does
+        // not reliably support CSS variables, so literal values produce
+        // deterministic PDF styling without maintaining separate templates.
+        $html = view($document['view'], $document['data'])->render();
+        $accent = (string) ($document['data']['presentation']['accent_color'] ?? '#2563EB');
+
+        $html = strtr($html, [
+            'var(--accent)' => $accent,
+            'var(--ink)' => '#0f172a',
+            'var(--muted)' => '#64748b',
+            'var(--line)' => '#e2e8f0',
+            'var(--paper)' => '#ffffff',
+            'var(--page)' => '#f1f5f9',
+        ]);
+
+        $pdf = Pdf::loadHTML($html)
             ->setPaper('a4')
             ->setOption([
                 'isRemoteEnabled' => false,
