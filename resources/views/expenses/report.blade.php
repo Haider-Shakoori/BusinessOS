@@ -104,30 +104,30 @@
                         <x-ui.td>
                             <a
                                 href="{{ route('expenses.show', $expense) }}"
-                                class="whitespace-nowrap font-semibold text-gray-900 transition-colors hover:text-brand-600 dark:text-white dark:hover:text-brand-400"
+                                class="whitespace-nowrap font-semibold text-slate-900 transition-colors hover:text-brand-600 dark:text-white dark:hover:text-brand-400"
                             >
                                 {{ $expense->expense_number }}
                             </a>
                         </x-ui.td>
                         <x-ui.td>
-                            <span class="whitespace-nowrap text-gray-500 dark:text-gray-400">{{ $expense->expense_date->format('Y-m-d') }}</span>
+                            <span class="whitespace-nowrap text-slate-500 dark:text-slate-400">{{ $expense->expense_date->format('Y-m-d') }}</span>
                         </x-ui.td>
                         <x-ui.td>
-                            <span class="text-gray-500 dark:text-gray-400">{{ $expense->category?->name ?: __('expenses.no_category') }}</span>
+                            <span class="text-slate-500 dark:text-slate-400">{{ $expense->category?->name ?: __('expenses.no_category') }}</span>
                         </x-ui.td>
                         <x-ui.td>
-                            <span class="text-gray-500 dark:text-gray-400">{{ $expense->vendor ?: '—' }}</span>
+                            <span class="text-slate-500 dark:text-slate-400">{{ $expense->vendor ?: '—' }}</span>
                         </x-ui.td>
                         <x-ui.td>
-                            <span class="whitespace-nowrap font-medium tabular-nums text-gray-900 dark:text-white" dir="ltr">
-                                {{ $expense->amount }} <span class="text-xs font-medium text-gray-500 dark:text-gray-400">{{ $expense->currency_code }}</span>
+                            <span class="whitespace-nowrap font-medium tabular-nums text-slate-900 dark:text-white" dir="ltr">
+                                {{ $expense->amount }} <span class="text-xs font-medium text-slate-500 dark:text-slate-400">{{ $expense->currency_code }}</span>
                             </span>
                         </x-ui.td>
                         <x-ui.td class="text-center">
                             @if ($expense->receipt_path)
                                 <x-ui.icon name="document-text" class="mx-auto size-5 text-brand-600 dark:text-brand-400" aria-hidden="true" />
                             @else
-                                <span class="text-gray-300 dark:text-gray-600">—</span>
+                                <span class="text-slate-300 dark:text-slate-600">—</span>
                             @endif
                         </x-ui.td>
                     </tr>
