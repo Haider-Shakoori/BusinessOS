@@ -48,9 +48,9 @@
     @if ($pdfMode)
         .minimal { padding: 22px 16px; }
         .minimal-head, .minimal-info, .minimal-after { display: block; }
-        .minimal-brand, .minimal-title, .minimal-info > div, .minimal-info > table, .minimal-after > div, .minimal-after > table { display: block; width: 100%; }
+        .minimal-brand, .minimal-title, .minimal-info > div, .minimal-after > div { display: block; width: 100%; }
         .minimal-title { margin-top: 18px; text-align: start; }
-        .minimal-info > table, .minimal-after > table { margin-top: 16px; }
+        .minimal-info > table, .minimal-after > table { display: table; width: 100%; margin-top: 16px; }
         .minimal-section { max-width: 100%; }
     @endif
 </style>
