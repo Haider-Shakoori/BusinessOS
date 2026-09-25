@@ -175,13 +175,13 @@ class DocumentThemeTest extends TestCase
         $this->get(route('invoices.print', $invoice))
             ->assertOk()
             ->assertViewIs('documents.invoices.minimal')
-            ->assertViewHas('presentation', fn (array $presentation): bool =>
-                $presentation['accent_color'] === '#123ABC'
-                && $presentation['header_text'] === 'Header message'
-                && $presentation['terms'] === 'Pay within 30 days.'
-                && $presentation['bank_details'] === 'Bank: Example'
-                && $presentation['signature_line'] === 'Finance Manager'
-            )
+            ->assertViewHas('presentation', function (array $presentation): bool {
+                return $presentation['accent_color'] === '#123ABC'
+                    && $presentation['header_text'] === 'Header message'
+                    && $presentation['terms'] === 'Pay within 30 days.'
+                    && $presentation['bank_details'] === 'Bank: Example'
+                    && $presentation['signature_line'] === 'Finance Manager';
+            })
             ->assertSee('Header message')
             ->assertSee('Footer message')
             ->assertSee('Pay within 30 days.')
