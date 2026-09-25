@@ -1,9 +1,13 @@
+@php
+    $pdfMode = $pdfMode ?? false;
+    $documentTitle = $documentTitle ?? config('app.name');
+@endphp
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ config('localization.supported.'.app()->getLocale().'.direction', 'ltr') }}">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ $invoice->invoice_number }} — {{ __('documents.invoice') }}</title>
+    <title>{{ $documentTitle }}</title>
     <style>
         :root {
             --accent: {{ $presentation['accent_color'] }};
@@ -18,9 +22,9 @@
         html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
         body {
             margin: 0;
-            background: var(--page);
+            background: {{ $pdfMode ? '#ffffff' : 'var(--page)' }};
             color: var(--ink);
-            font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            font-family: "DejaVu Sans", Arial, sans-serif;
             font-size: 13px;
             line-height: 1.45;
         }
@@ -33,6 +37,7 @@
             margin: 18px auto 0;
             padding: 0 12px;
         }
+        .document-toolbar-group { display: flex; flex-wrap: wrap; gap: 8px; }
         .document-toolbar a, .document-toolbar button {
             appearance: none;
             border: 1px solid #cbd5e1;
@@ -45,21 +50,23 @@
             padding: 8px 12px;
             text-decoration: none;
         }
-        .document-toolbar button {
+        .document-toolbar button,
+        .document-toolbar .primary {
             background: var(--accent);
             border-color: var(--accent);
             color: #fff;
         }
         .document-sheet {
-            width: min(920px, calc(100% - 24px));
-            min-height: 1180px;
-            margin: 14px auto 32px;
+            width: {{ $pdfMode ? '100%' : 'min(920px, calc(100% - 24px))' }};
+            min-height: {{ $pdfMode ? '0' : '1180px' }};
+            margin: {{ $pdfMode ? '0' : '14px auto 32px' }};
             background: var(--paper);
-            box-shadow: 0 10px 35px rgba(15, 23, 42, .08);
+            box-shadow: {{ $pdfMode ? 'none' : '0 10px 35px rgba(15, 23, 42, .08)' }};
         }
         .pre-line { white-space: pre-line; }
         .money { white-space: nowrap; font-variant-numeric: tabular-nums; }
         .muted { color: var(--muted); }
+        .numeric { text-align: end; }
 
         @page { size: A4; margin: 12mm; }
 
@@ -78,10 +85,22 @@
     @stack('document-styles')
 </head>
 <body>
-    <div class="document-toolbar">
-        <a href="{{ route('invoices.show', $invoice) }}">{{ __('documents.back_to_invoice') }}</a>
-        <button type="button" onclick="window.print()">{{ __('documents.print') }}</button>
-    </div>
+    @unless ($pdfMode)
+        <div class="document-toolbar">
+            <div class="document-toolbar-group">
+                <a href="{{ $backUrl ?? '#' }}">{{ __('documents.back') }}</a>
+            </div>
+            <div class="document-toolbar-group">
+                <button type="button" onclick="window.print()">{{ __('documents.print') }}</button>
+                @if (! empty($pdfUrl))
+                    <a class="primary" href="{{ $pdfUrl }}" target="_blank" rel="noopener">{{ __('documents.pdf') }}</a>
+                @endif
+                @if (! empty($downloadUrl))
+                    <a href="{{ $downloadUrl }}">{{ __('documents.download_pdf') }}</a>
+                @endif
+            </div>
+        </div>
+    @endunless
 
     <main class="document-sheet">
         @yield('document')
