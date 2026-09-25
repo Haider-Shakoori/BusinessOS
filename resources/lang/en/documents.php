@@ -1,0 +1,30 @@
+<?php
+
+return [
+    'invoice' => 'Invoice',
+    'print' => 'Print',
+    'back_to_invoice' => 'Back to invoice',
+    'bill_to' => 'Bill to',
+    'issued_on' => 'Issued on',
+    'status' => 'Status',
+    'description' => 'Description',
+    'quantity' => 'Qty',
+    'unit_price' => 'Unit price',
+    'tax' => 'Tax',
+    'amount' => 'Amount',
+    'subtotal' => 'Subtotal',
+    'discount' => 'Discount',
+    'total' => 'Total',
+    'paid' => 'Paid',
+    'amount_due' => 'Amount due',
+    'terms' => 'Terms & conditions',
+    'bank_details' => 'Payment details',
+    'signature' => 'Authorized signature',
+    'quotation' => 'Quotation',
+    'created_by' => 'Prepared by',
+    'no_customer' => 'Walk-in / unspecified customer',
+    'themes' => [
+        'modern' => 'Modern',
+        'minimal' => 'Minimal',
+    ],
+];

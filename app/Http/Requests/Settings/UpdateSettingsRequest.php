@@ -55,6 +55,15 @@ class UpdateSettingsRequest extends FormRequest
             'regional.time_format' => ['sometimes', 'required', 'string', Rule::in(array_keys(config('settings.options.time_formats', [])))],
             'regional.locale' => ['sometimes', 'required', 'string', Rule::in(array_keys(config('localization.supported', [])))],
             'regional.currency' => ['sometimes', 'required', 'string', 'size:3', 'alpha', Rule::exists('currencies', 'code')->where('is_active', true)],
+            'document.invoice_theme' => ['sometimes', 'required', 'string', Rule::in(array_keys(config('document_themes.documents.invoice.themes', [])))],
+            'document.accent_color' => ['sometimes', 'required', 'string', 'regex:/^#[0-9A-Fa-f]{6}$/'],
+            'document.header_text' => ['nullable', 'string', 'max:500'],
+            'document.footer_text' => ['nullable', 'string', 'max:500'],
+            'document.terms' => ['nullable', 'string', 'max:4000'],
+            'document.bank_details' => ['nullable', 'string', 'max:2000'],
+            'document.signature_line' => ['nullable', 'string', 'max:255'],
+            'document.logo' => ['nullable', 'file', 'image', 'mimes:png,jpg,jpeg,webp', 'max:2048'],
+            'document.remove_logo' => ['sometimes', 'boolean'],
         ], $this->numberingRules());
     }
 
@@ -103,6 +112,17 @@ class UpdateSettingsRequest extends FormRequest
             'regional.currency.size' => __('currencies.validation.invalid'),
             'regional.currency.alpha' => __('currencies.validation.invalid'),
             'regional.currency.exists' => __('currencies.validation.invalid'),
+            'document.invoice_theme.in' => __('settings.validation.document_theme_invalid'),
+            'document.accent_color.regex' => __('settings.validation.document_accent_invalid'),
+            'document.header_text.max' => __('settings.validation.document_header_max'),
+            'document.footer_text.max' => __('settings.validation.document_footer_max'),
+            'document.terms.max' => __('settings.validation.document_terms_max'),
+            'document.bank_details.max' => __('settings.validation.document_bank_max'),
+            'document.signature_line.max' => __('settings.validation.document_signature_max'),
+            'document.logo.image' => __('settings.validation.document_logo_invalid'),
+            'document.logo.mimes' => __('settings.validation.document_logo_invalid'),
+            'document.logo.max' => __('settings.validation.document_logo_max'),
+            'document.remove_logo.boolean' => __('settings.validation.document_remove_logo_invalid'),
         ];
 
         foreach (['quotation', 'invoice', 'payment', 'expense', 'purchase_order'] as $type) {

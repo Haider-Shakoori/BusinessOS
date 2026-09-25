@@ -12,6 +12,7 @@ use App\Models\Quotation;
 use App\Models\Tax;
 use App\Services\BusinessSettings;
 use App\Services\CurrencyService;
+use App\Services\DocumentThemeService;
 use App\Services\InvoiceService;
 use App\Support\Decimal;
 use Illuminate\Http\RedirectResponse;
@@ -120,6 +121,25 @@ class InvoiceController extends Controller
                 ->orderBy('payment_date', 'desc')
                 ->orderBy('id', 'desc')
                 ->get(),
+        ]);
+    }
+
+    /**
+     * Render the invoice through the current business's registered static
+     * document theme. The setting resolves only to a code-defined view; no
+     * database value is ever executed as a Blade path.
+     */
+    public function print(Invoice $invoice, DocumentThemeService $themes): View
+    {
+        $invoice->load(['customer', 'items.product', 'items.tax', 'createdBy', 'quotation']);
+
+        $theme = $themes->resolve('invoice');
+
+        return view($theme['view'], [
+            'invoice' => $invoice,
+            'theme' => $theme,
+            'presentation' => $themes->presentation(),
+            'dateFormat' => (string) $this->settings->get('regional.date_format', 'Y-m-d'),
         ]);
     }
 

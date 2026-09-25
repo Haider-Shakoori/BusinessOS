@@ -7,8 +7,11 @@ use App\Models\ExchangeRate;
 use App\Services\BusinessContext;
 use App\Services\BusinessSettings;
 use App\Services\CurrencyService;
+use App\Services\DocumentThemeService;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
@@ -27,7 +30,7 @@ use Illuminate\View\View;
  */
 class SettingsController extends Controller
 {
-    public function index(BusinessSettings $settings, BusinessContext $context, CurrencyService $currencies): View
+    public function index(BusinessSettings $settings, BusinessContext $context, CurrencyService $currencies, DocumentThemeService $themes): View
     {
         $base = $currencies->baseCurrency();
 
@@ -48,6 +51,8 @@ class SettingsController extends Controller
                 ->orderByDesc('effective_date')
                 ->get(),
             'currency_history_locked' => $currencies->hasFinancialHistory(),
+            'document_themes' => $themes->themes('invoice'),
+            'document_logo_url' => $themes->logoUrl(),
         ]);
     }
 
@@ -80,6 +85,42 @@ class SettingsController extends Controller
             }
 
             $validated['regional']['currency'] = $newBase;
+        }
+
+        // Batch 24 document logo lifecycle. The upload itself is never stored
+        // under a client filename: Laravel generates the stored filename under
+        // a business-owned directory. SVG is deliberately not accepted by the
+        // form request because browser-rendered SVG can contain executable
+        // content. Replacing/removing a logo deletes only the current
+        // business's previously configured public-disk object.
+        $document = $validated['document'] ?? [];
+        $logo = $document['logo'] ?? null;
+        $removeLogo = (bool) ($document['remove_logo'] ?? false);
+        unset($validated['document']['logo'], $validated['document']['remove_logo']);
+
+        $oldLogoPath = $settings->get('document.logo_path');
+
+        if ($logo instanceof UploadedFile && $logo->isValid()) {
+            $path = $logo->store('business-documents/'.$business->id, 'public');
+
+            if (is_string($oldLogoPath) && $oldLogoPath !== '' && $oldLogoPath !== $path) {
+                Storage::disk('public')->delete($oldLogoPath);
+            }
+
+            $validated['document']['logo_path'] = $path;
+        } elseif ($removeLogo) {
+            if (is_string($oldLogoPath) && $oldLogoPath !== '') {
+                Storage::disk('public')->delete($oldLogoPath);
+            }
+
+            $validated['document']['logo_path'] = null;
+        }
+
+        // Arr::dot() preserves an empty array as the group key itself. Never
+        // pass that group-only key to BusinessSettings: only supported
+        // group.key leaves are first-class settings.
+        if (($validated['document'] ?? null) === []) {
+            unset($validated['document']);
         }
 
         // Only whitelisted group.key definitions are persisted. The form

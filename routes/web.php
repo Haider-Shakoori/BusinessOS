@@ -454,6 +454,10 @@ Route::middleware(['auth', 'auth.session', 'business-selected', 'module:sales'])
         ->name('invoices.show')
         ->middleware('permission:invoices.view');
 
+    Route::get('/invoices/{invoice}/print', [InvoiceController::class, 'print'])
+        ->name('invoices.print')
+        ->middleware('permission:invoices.view');
+
     Route::get('/invoices/{invoice}/edit', [InvoiceController::class, 'edit'])
         ->name('invoices.edit')
         ->middleware('permission:invoices.manage');
