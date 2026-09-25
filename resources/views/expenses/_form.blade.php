@@ -133,7 +133,7 @@
         </x-slot:header>
 
         @if ($expense?->receipt_path)
-            <div class="mb-5 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 dark:border-slate-700 dark:bg-slate-800/60">
+            <div class="mb-5 flex flex-wrap items-center justify-between gap-3 rounded-[7px] border border-slate-200 bg-slate-50 px-4 py-3 dark:border-slate-700 dark:bg-slate-800/60">
                 <div class="flex min-w-0 items-center gap-3">
                     <x-ui.icon name="document-text" class="size-6 shrink-0 text-brand-600 dark:text-brand-400" aria-hidden="true" />
                     <div class="min-w-0">
