@@ -7,7 +7,7 @@
     $expenseCurrency = old('currency_code', $expense?->currency_code ?? $currencyBase);
 @endphp
 
-<form method="POST" action="{{ $action }}" enctype="multipart/form-data" class="space-y-6">
+<form method="POST" action="{{ $action }}" enctype="multipart/form-data" class="space-y-5">
     @csrf
     @if ($method !== 'POST')
         @method($method)
@@ -15,10 +15,10 @@
 
     <x-ui.card>
         <x-slot:header>
-            <h2 class="text-base font-semibold text-gray-900 dark:text-white">{{ __('expenses.information') }}</h2>
+            <h2 class="text-base font-semibold text-slate-900 dark:text-white">{{ __('expenses.information') }}</h2>
         </x-slot:header>
 
-        <div class="grid gap-x-6 gap-y-5 sm:grid-cols-2">
+        <div class="grid gap-x-5 gap-y-4 sm:grid-cols-2">
             <div>
                 <x-ui.input
                     name="expense_date"
@@ -92,10 +92,10 @@
 
     <x-ui.card>
         <x-slot:header>
-            <h2 class="text-base font-semibold text-gray-900 dark:text-white">{{ __('expenses.details') }}</h2>
+            <h2 class="text-base font-semibold text-slate-900 dark:text-white">{{ __('expenses.details') }}</h2>
         </x-slot:header>
 
-        <div class="grid gap-x-6 gap-y-5 sm:grid-cols-2">
+        <div class="grid gap-x-5 gap-y-4 sm:grid-cols-2">
             <div>
                 <x-ui.input
                     name="vendor"
@@ -129,18 +129,18 @@
 
     <x-ui.card>
         <x-slot:header>
-            <h2 class="text-base font-semibold text-gray-900 dark:text-white">{{ __('expenses.receipt') }}</h2>
+            <h2 class="text-base font-semibold text-slate-900 dark:text-white">{{ __('expenses.receipt') }}</h2>
         </x-slot:header>
 
         @if ($expense?->receipt_path)
-            <div class="mb-5 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 dark:border-gray-700 dark:bg-gray-800/60">
+            <div class="mb-5 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 dark:border-slate-700 dark:bg-slate-800/60">
                 <div class="flex min-w-0 items-center gap-3">
                     <x-ui.icon name="document-text" class="size-6 shrink-0 text-brand-600 dark:text-brand-400" aria-hidden="true" />
                     <div class="min-w-0">
-                        <p class="truncate text-sm font-medium text-gray-900 dark:text-white" dir="ltr">
+                        <p class="truncate text-sm font-medium text-slate-900 dark:text-white" dir="ltr">
                             {{ basename($expense->receipt_path) }}
                         </p>
-                        <p class="text-xs text-gray-500 dark:text-gray-400">{{ __('expenses.receipt_current') }}</p>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">{{ __('expenses.receipt_current') }}</p>
                     </div>
                 </div>
                 <x-ui.button variant="secondary" size="sm" href="{{ route('expenses.receipt', $expense) }}" icon="eye">
