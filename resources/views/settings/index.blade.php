@@ -190,7 +190,7 @@
                         </label>
 
                         @if ($document_logo_url)
-                            <div class="mb-3 flex flex-wrap items-center gap-4 rounded-lg border border-slate-200 bg-slate-50 p-3 dark:border-slate-700 dark:bg-slate-800/60">
+                            <div class="mb-3 flex flex-wrap items-center gap-4 rounded-[7px] border border-slate-200 bg-slate-50 p-3 dark:border-slate-700 dark:bg-slate-800/60">
                                 <img
                                     src="{{ $document_logo_url }}"
                                     alt="{{ __('settings.document_logo_current') }}"
@@ -220,7 +220,7 @@
                             name="document.logo"
                             accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp"
                             @disabled(! $editable)
-                            class="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 file:me-3 file:rounded-md file:border-0 file:bg-brand-50 file:px-3 file:py-1.5 file:text-sm file:font-semibold file:text-brand-700 hover:file:bg-brand-100 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-200 dark:file:bg-brand-500/10 dark:file:text-brand-300"
+                            class="block w-full rounded-[7px] border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 file:me-3 file:rounded-md file:border-0 file:bg-brand-50 file:px-3 file:py-1.5 file:text-sm file:font-semibold file:text-brand-700 hover:file:bg-brand-100 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-200 dark:file:bg-brand-500/10 dark:file:text-brand-300"
                         >
                         <p class="mt-1.5 text-xs text-slate-500 dark:text-slate-400">{{ __('settings.document_logo_helper') }}</p>
                         @error('document.logo')
@@ -317,7 +317,7 @@
                 @else
                     <ul class="mt-2 space-y-2">
                         @foreach ($currency_enabled as $currency)
-                            <li class="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-slate-200 px-3 py-2 dark:border-slate-700">
+                            <li class="flex flex-wrap items-center justify-between gap-3 rounded-[7px] border border-slate-200 px-3 py-2 dark:border-slate-700">
                                 <span class="text-sm text-slate-900 dark:text-white">
                                     <span class="font-semibold" dir="ltr">{{ $currency->code }}</span>
                                     <span class="text-slate-500 dark:text-slate-400"> — {{ $currency->name }} ({{ $currency->symbol }})</span>
