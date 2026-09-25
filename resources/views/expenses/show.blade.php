@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <x-app.page
+    <x-app.page icon="arrow-trending-down"
         :title="$expense->expense_number"
         :subtitle="__('expenses.information')"
         :breadcrumbs="[
