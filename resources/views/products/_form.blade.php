@@ -11,7 +11,7 @@
     $productUnitId = old('unit_id', $product?->unit_id);
 @endphp
 
-<form method="POST" action="{{ $action }}" class="space-y-6">
+<form method="POST" action="{{ $action }}" class="space-y-5">
     @csrf
     @if ($method !== 'POST')
         @method($method)
@@ -19,10 +19,10 @@
 
     <x-ui.card>
         <x-slot:header>
-            <h2 class="text-base font-semibold text-gray-900 dark:text-white">{{ __('products.information') }}</h2>
+            <h2 class="text-base font-semibold text-slate-900 dark:text-white">{{ __('products.information') }}</h2>
         </x-slot:header>
 
-        <div class="grid gap-x-6 gap-y-5 sm:grid-cols-2">
+        <div class="grid gap-x-5 gap-y-4 sm:grid-cols-2">
             <div class="sm:col-span-2">
                 <x-ui.select
                     name="type"
