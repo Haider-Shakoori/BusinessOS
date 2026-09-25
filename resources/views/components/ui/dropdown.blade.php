@@ -16,7 +16,7 @@
         x-on:click="toggle"
         aria-haspopup="menu"
         :aria-expanded="open.toString()"
-        {{ $attributes->merge(['class' => 'inline-flex items-center gap-1.5 rounded-lg text-sm font-medium text-gray-700 transition-colors hover:text-gray-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600 dark:text-gray-200 dark:hover:text-white']) }}
+        {{ $attributes->merge(['class' => 'inline-flex items-center gap-1.5 rounded-[7px] text-[12px] font-semibold text-slate-700 transition-colors hover:text-slate-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600 dark:text-slate-200 dark:hover:text-white']) }}
     >
         {{ $trigger }}
         @if (empty($trigger))
@@ -39,7 +39,7 @@
         x-transition:leave-end="opacity-0 scale-95"
         role="menu"
         aria-label="{{ $label ?? 'Dropdown menu' }}"
-        class="absolute z-40 mt-2 origin-top rounded-xl border border-gray-200 bg-white p-1 shadow-popover dark:border-gray-700 dark:bg-gray-800 {{ $width }} {{ $align === 'start' ? 'start-0' : 'end-0' }}"
+        class="absolute z-40 mt-2 origin-top rounded-[10px] border border-slate-200 bg-white p-1 shadow-popover dark:border-slate-700 dark:bg-slate-800 {{ $width }} {{ $align === 'start' ? 'start-0' : 'end-0' }}"
         x-cloak
     >
         {{ $items }}
