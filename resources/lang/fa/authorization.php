@@ -50,4 +50,5 @@ return [
     'permission_payments_reverse' => 'برگرداندن پرداخت',
     'permission_expenses_view' => 'مشاهده هزینه‌ها',
     'permission_expenses_manage' => 'مدیریت هزینه‌ها',
+    'permission_reports_view' => 'مشاهده گزارش‌ها',
 ];
