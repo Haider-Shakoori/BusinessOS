@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <x-app.page
+    <x-app.page icon="arrow-trending-down"
         :title="__('expenses.create_title')"
         :breadcrumbs="[
             ['label' => __('modules.dashboard'), 'url' => route('app.home')],
