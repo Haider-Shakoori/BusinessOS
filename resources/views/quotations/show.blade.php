@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <x-app.page
+    <x-app.page icon="document-text"
         :title="$quotation->quotation_number"
         :subtitle="__('quotations.document')"
         :breadcrumbs="[
