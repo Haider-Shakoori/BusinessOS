@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @section('content')
-    <x-app.page :title="__('authorization.forbidden')">
+    <x-app.page icon="shield-check" :title="__('authorization.forbidden')">
         <x-ui.card class="max-w-xl">
             <div class="flex items-start gap-4">
                 <span class="grid size-10 shrink-0 place-items-center rounded-xl bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-400" aria-hidden="true">
