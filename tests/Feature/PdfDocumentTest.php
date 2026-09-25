@@ -292,7 +292,8 @@ class PdfDocumentTest extends TestCase
 
         $presentation = app(DocumentThemeService::class)->presentation(forPdf: true);
 
-        $this->assertNull($presentation['logo_url'] === null ? null : null);
+        $this->assertIsString($presentation['logo_url']);
+        $this->assertStringContainsString($path, $presentation['logo_url']);
         $this->assertIsString($presentation['logo_data_uri']);
         $this->assertStringStartsWith('data:image/png;base64,', $presentation['logo_data_uri']);
         $this->assertStringNotContainsString('http://', $presentation['logo_data_uri']);
