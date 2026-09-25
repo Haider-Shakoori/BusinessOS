@@ -20,7 +20,7 @@
         $showAmount = static fn (?string $value): string => $value && ! \App\Support\Decimal::eq($value, '0') ? $value : '—';
     @endphp
 
-    <x-app.page
+    <x-app.page icon="users"
         :title="__('customers.statement.title')"
         :subtitle="__('customers.statement.subtitle', ['name' => $customer->name])"
         :breadcrumbs="[
