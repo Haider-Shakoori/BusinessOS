@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <x-app.page
+    <x-app.page icon="arrow-up-tray"
         :title="__('imports.preview_title')"
         :subtitle="__('imports.preview_subtitle')"
         :breadcrumbs="[
