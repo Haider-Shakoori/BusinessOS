@@ -7,8 +7,8 @@
                     <x-ui.icon name="briefcase" class="size-5" />
                 </span>
                 <div class="min-w-0">
-                    <h3 class="text-base font-semibold text-gray-900 dark:text-gray-100">{{ __('business.onboarding_heading') }}</h3>
-                    <p class="mt-1 text-sm text-gray-600 dark:text-gray-300">{{ __('business.onboarding_message') }}</p>
+                    <h3 class="text-base font-semibold text-slate-900 dark:text-slate-100">{{ __('business.onboarding_heading') }}</h3>
+                    <p class="mt-1 text-sm text-slate-600 dark:text-slate-300">{{ __('business.onboarding_message') }}</p>
                 </div>
             </div>
 
