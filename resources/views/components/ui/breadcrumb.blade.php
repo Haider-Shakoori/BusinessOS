@@ -7,12 +7,12 @@
         @foreach ($items as $item)
             <li class="flex items-center gap-1.5">
                 @if (isset($item['url']) && ! $loop->last)
-                    <a href="{{ $item['url'] }}" class="text-gray-500 transition-colors hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100">
+                    <a href="{{ $item['url'] }}" class="text-slate-500 transition-colors hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100">
                         {{ $item['label'] }}
                     </a>
-                    <x-ui.icon name="chevron-right" class="rtl-flip size-3.5 text-gray-400 dark:text-gray-500" aria-hidden="true" />
+                    <x-ui.icon name="chevron-right" class="rtl-flip size-3.5 text-slate-400 dark:text-slate-500" aria-hidden="true" />
                 @else
-                    <span class="font-medium text-gray-900 dark:text-white" aria-current="page">{{ $item['label'] }}</span>
+                    <span class="font-medium text-slate-900 dark:text-white" aria-current="page">{{ $item['label'] }}</span>
                 @endif
             </li>
         @endforeach
