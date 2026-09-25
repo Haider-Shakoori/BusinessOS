@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <x-app.page
+    <x-app.page icon="chart-bar"
         :title="__('expenses.report')"
         :subtitle="__('expenses.report_subtitle')"
         :breadcrumbs="[
