@@ -266,21 +266,21 @@ class ReportTest extends TestCase
             ->assertOk()
             ->assertViewHas('dateFrom', '2026-09-01')
             ->assertViewHas('dateTo', '2026-09-25')
-            ->assertViewHas('reportData', fn (array $data): bool =>
-                $data['sales'] === '300.0000'
-                && $data['invoice_count'] === 2
-                && $data['average_invoice'] === '150.0000'
-                && $data['tax'] === '30.0000'
-                && $data['receivables'] === '60.0000'
-            );
+            ->assertViewHas('reportData', function (array $data): bool {
+                return $data['sales'] === '300.0000'
+                    && $data['invoice_count'] === 2
+                    && $data['average_invoice'] === '150.0000'
+                    && $data['tax'] === '30.0000'
+                    && $data['receivables'] === '60.0000';
+            });
 
         $this->get('/reports?report=summary&range=custom&date_from=2026-08-01&date_to=2026-08-31')
             ->assertOk()
-            ->assertViewHas('reportData', fn (array $data): bool =>
-                $data['sales'] === '50.0000'
-                && $data['invoice_count'] === 1
-                && $data['receivables'] === '50.0000'
-            );
+            ->assertViewHas('reportData', function (array $data): bool {
+                return $data['sales'] === '50.0000'
+                    && $data['invoice_count'] === 1
+                    && $data['receivables'] === '50.0000';
+            });
     }
 
     public function test_sales_by_product_allocates_document_discount_and_reconciles_to_invoice_total(): void
@@ -368,11 +368,11 @@ class ReportTest extends TestCase
 
         $this->get('/reports?report=receivables')
             ->assertOk()
-            ->assertViewHas('reportData', fn (array $data): bool =>
-                $data['total'] === '90.0000'
-                && $data['rows']->count() === 2
-                && $data['rows']->pluck('invoice_number')->sort()->values()->all() === ['INV-A1', 'INV-B1']
-            );
+            ->assertViewHas('reportData', function (array $data): bool {
+                return $data['total'] === '90.0000'
+                    && $data['rows']->count() === 2
+                    && $data['rows']->pluck('invoice_number')->sort()->values()->all() === ['INV-A1', 'INV-B1'];
+            });
     }
 
     public function test_report_csv_uses_same_filters_and_is_formula_safe(): void
