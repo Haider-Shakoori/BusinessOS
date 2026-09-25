@@ -55,6 +55,17 @@ return [
             'purchase_order_prefix' => ['default' => null, 'type' => 'string'],
             'padding' => ['default' => null, 'type' => 'integer'],
         ],
+
+        'document' => [
+            'invoice_theme' => ['default' => 'modern', 'type' => 'string'],
+            'logo_path' => ['default' => null, 'type' => 'string'],
+            'accent_color' => ['default' => '#2563EB', 'type' => 'string'],
+            'header_text' => ['default' => null, 'type' => 'string'],
+            'footer_text' => ['default' => null, 'type' => 'string'],
+            'terms' => ['default' => null, 'type' => 'string'],
+            'bank_details' => ['default' => null, 'type' => 'string'],
+            'signature_line' => ['default' => null, 'type' => 'string'],
+        ],
     ],
 
     /*
