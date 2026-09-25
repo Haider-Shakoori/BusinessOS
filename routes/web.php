@@ -11,6 +11,7 @@ use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\QuotationController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\TaxController;
 use App\Http\Controllers\UnitController;
@@ -576,6 +577,24 @@ Route::middleware(['auth', 'auth.session', 'business-selected', 'module:expenses
     Route::delete('/expenses/{expense}', [ExpenseController::class, 'destroy'])
         ->name('expenses.destroy')
         ->middleware('permission:expenses.manage');
+});
+
+/*
+ * Core reports (Batch 23).
+ *
+ * The reports module is independently switchable and uses its own read
+ * permission. Every underlying query is still tenant-scoped by the source
+ * model (or, for invoice_items, through the tenant-scoped parent invoice).
+ * Reports are read-only; CSV exports reuse the exact same ReportService read
+ * models as the HTML views so filtering and currency math cannot diverge.
+ */
+Route::middleware(['auth', 'auth.session', 'business-selected', 'module:reports', 'permission:reports.view'])->group(function () {
+    Route::get('/reports', [ReportController::class, 'index'])
+        ->name('reports.index');
+
+    Route::get('/reports/export/{report}', [ExportController::class, 'report'])
+        ->where('report', 'summary|products|customers|expenses|receivables')
+        ->name('reports.export');
 });
 
 /*
