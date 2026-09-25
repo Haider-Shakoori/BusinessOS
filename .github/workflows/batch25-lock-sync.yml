@@ -1,27 +1,23 @@
-name: Sync Composer Lock (Batch 25)
+name: Resolve Composer Lock (Batch 25)
 
 on:
-  push:
-    branches:
-      - feat/batch-25-pdf-service
+  pull_request:
+    branches: [main]
     paths:
       - composer.json
+      - .github/workflows/batch25-lock-sync.yml
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
-  sync-lock:
-    if: github.actor != 'github-actions[bot]'
+  resolve-lock:
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
     steps:
-      - name: Checkout feature branch
+      - name: Checkout pull request
         uses: actions/checkout@v4
-        with:
-          ref: feat/batch-25-pdf-service
-          fetch-depth: 0
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -33,14 +29,15 @@ jobs:
       - name: Resolve PDF dependency
         run: composer update barryvdh/laravel-dompdf --with-all-dependencies --no-interaction --prefer-dist --no-progress
 
-      - name: Commit lockfile
+      - name: Validate resolved lock
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add composer.json composer.lock
-          if git diff --cached --quiet; then
-            echo "Lockfile already synchronized."
-            exit 0
-          fi
-          git commit -m "build: lock Laravel Dompdf dependency"
-          git push origin HEAD:feat/batch-25-pdf-service
+          composer validate --strict --no-check-publish
+          composer audit --no-interaction
+
+      - name: Upload resolved lockfile
+        uses: actions/upload-artifact@v4
+        with:
+          name: batch25-composer-lock
+          path: composer.lock
+          if-no-files-found: error
+          retention-days: 1
