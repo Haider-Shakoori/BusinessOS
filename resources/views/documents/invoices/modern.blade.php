@@ -51,16 +51,11 @@
     }
     @if ($pdfMode)
         .modern { padding: 20px 16px; }
-        .modern-head, .modern-meta, .modern-summary { display: table; width: 100%; table-layout: fixed; }
-        .modern-brand, .modern-title, .modern-meta > div, .modern-meta > dl, .modern-notes, .modern-totals { display: table-cell; vertical-align: top; }
-        .modern-brand { width: 58%; }
-        .modern-title { width: 42%; }
-        .modern-meta > div { width: 58%; }
-        .modern-meta > dl { width: 42%; }
-        .modern-notes { width: 58%; padding-inline-end: 24px; }
-        .modern-totals { width: 42%; }
-        .modern-sections { display: block; }
-        .modern-section { display: inline-block; width: 48%; vertical-align: top; }
+        .modern-head, .modern-meta, .modern-summary, .modern-sections { display: block; }
+        .modern-brand, .modern-title, .modern-meta > div, .modern-meta > dl, .modern-notes, .modern-totals { display: block; width: 100%; }
+        .modern-title { margin-top: 18px; text-align: start; }
+        .modern-meta > dl, .modern-totals { margin-top: 16px; }
+        .modern-section { display: block; width: 100%; }
         .modern-signature { display: block; text-align: end; }
         .modern-signature-line { display: inline-block; }
     @endif
@@ -165,7 +160,7 @@
             <tr class="due"><td>{{ __('documents.amount_due') }}</td><td class="money">{{ $invoice->currency_code }} {{ number_format((float) $invoice->amount_due, 2) }}</td></tr>
             @if ($invoice->currency_code !== $baseCurrency)
                 <tr><td>{{ __('documents.base_amount', ['currency' => $baseCurrency]) }}</td><td class="money">{{ $baseCurrency }} {{ number_format((float) $invoice->base_amount, 2) }}</td></tr>
-                <tr><td>{{ __('documents.exchange_rate') }}</td><td class="money">{{ $invoice->exchange_rate }}</td></tr>
+                <tr><td>{{ __('documents.exchange_rate') }}</td><td class="money">{{ number_format((float) $invoice->exchange_rate, 4) }}</td></tr>
             @endif
         </table>
     </div>
