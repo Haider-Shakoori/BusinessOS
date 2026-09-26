@@ -227,6 +227,48 @@
             <x-ui.card>
                 <x-slot:header>
                     <div>
+                        <h2 class="text-base font-semibold text-slate-900 dark:text-white">{{ __('FieldPulse integration') }}</h2>
+                        <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">{{ __('Connect this BusinessOS business to exactly one FieldPulse organization without sharing databases.') }}</p>
+                    </div>
+                </x-slot:header>
+
+                <div class="grid gap-x-5 gap-y-4 sm:grid-cols-2">
+                    <div class="sm:col-span-2">
+                        <input type="hidden" name="fieldpulse.enabled" value="0">
+                        <x-ui.toggle
+                            name="fieldpulse.enabled"
+                            :label="__('Enable FieldPulse integration')"
+                            :description="__('When enabled, the server can expose this business to an authenticated FieldPulse connector. The API token remains server-managed and is never stored here.')"
+                            :checked="(bool) old('fieldpulse.enabled', $fieldpulse_integration->enabled)"
+                            :disabled="! $editable"
+                        />
+                    </div>
+
+                    <div class="sm:col-span-2">
+                        <x-ui.input
+                            name="fieldpulse.organization_key"
+                            :label="__('FieldPulse organization key')"
+                            :value="old('fieldpulse.organization_key', $fieldpulse_integration->organization_key)"
+                            :helper="__('Use the same organization key configured in the FieldPulse tenant. It must be unique across BusinessOS businesses.')"
+                            :disabled="! $editable"
+                            maxlength="120"
+                            dir="ltr"
+                        />
+                    </div>
+
+                    <div class="sm:col-span-2 rounded-[8px] border border-slate-200 bg-slate-50 p-4 text-sm text-slate-600 dark:border-slate-700 dark:bg-slate-800/50 dark:text-slate-300">
+                        <p class="font-semibold">{{ __('Synchronization boundary') }}</p>
+                        <p class="mt-2 leading-6">{{ __('BusinessOS publishes products, customers and the default sale-price list. FieldPulse can send field-created customers, approved orders and verified collections. Incoming orders and collections enter an auditable integration inbox first and do not bypass BusinessOS invoice, payment or accounting controls.') }}</p>
+                        @if ($fieldpulse_integration->last_request_at)
+                            <p class="mt-2 text-xs text-slate-500 dark:text-slate-400">{{ __('Last FieldPulse request:') }} {{ $fieldpulse_integration->last_request_at->format('Y-m-d H:i:s') }}</p>
+                        @endif
+                    </div>
+                </div>
+            </x-ui.card>
+
+            <x-ui.card>
+                <x-slot:header>
+                    <div>
                         <h2 class="text-base font-semibold text-slate-900 dark:text-white">{{ __('settings.documents') }}</h2>
                         <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">{{ __('settings.documents_helper') }}</p>
                     </div>

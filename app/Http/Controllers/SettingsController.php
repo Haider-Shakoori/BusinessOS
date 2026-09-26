@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Settings\UpdateSettingsRequest;
 use App\Models\AttendanceDevice;
 use App\Models\ExchangeRate;
+use App\Models\FieldPulseIntegration;
 use App\Services\BusinessContext;
 use App\Services\BusinessSettings;
 use App\Services\CurrencyService;
@@ -56,6 +57,8 @@ class SettingsController extends Controller
             'document_logo_url' => $themes->logoUrl(),
             'attendance_devices_count' => AttendanceDevice::query()->count(),
             'attendance_brands' => config('attendance.brands', []),
+            'fieldpulse_integration' => FieldPulseIntegration::query()
+                ->firstOrNew(['business_id' => $context->current()?->id]),
             'attendance_sync_intervals' => config('settings.options.attendance_sync_intervals', []),
         ]);
     }
@@ -63,6 +66,9 @@ class SettingsController extends Controller
     public function update(UpdateSettingsRequest $request, BusinessContext $context, BusinessSettings $settings, CurrencyService $currencies): RedirectResponse
     {
         $validated = $request->validated();
+
+        $fieldPulse = $validated['fieldpulse'] ?? null;
+        unset($validated['fieldpulse']);
 
         // The business name lives on the businesses table (the shell and the
         // business switcher read Business::name at render time), so it is
@@ -118,6 +124,38 @@ class SettingsController extends Controller
             }
 
             $validated['document']['logo_path'] = null;
+        }
+
+        if (is_array($fieldPulse)) {
+            $organizationKey = trim((string) ($fieldPulse['organization_key'] ?? ''));
+            $enabled = (bool) ($fieldPulse['enabled'] ?? false);
+
+            if ($enabled && $organizationKey === '') {
+                throw ValidationException::withMessages([
+                    'fieldpulse.organization_key' => __('FieldPulse organization key is required when integration is enabled.'),
+                ]);
+            }
+
+            if ($organizationKey !== '') {
+                $conflict = FieldPulseIntegration::query()
+                    ->where('organization_key', $organizationKey)
+                    ->where('business_id', '!=', $business->id)
+                    ->exists();
+
+                if ($conflict) {
+                    throw ValidationException::withMessages([
+                        'fieldpulse.organization_key' => __('This FieldPulse organization key is already assigned to another business.'),
+                    ]);
+                }
+            }
+
+            FieldPulseIntegration::query()->updateOrCreate(
+                ['business_id' => $business->id],
+                [
+                    'organization_key' => $organizationKey !== '' ? $organizationKey : null,
+                    'enabled' => $enabled,
+                ],
+            );
         }
 
         // Arr::dot() preserves an empty array as the group key itself. Never

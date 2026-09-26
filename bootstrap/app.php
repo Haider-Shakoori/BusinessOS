@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\ActivityLogMiddleware;
+use App\Http\Middleware\AuthenticateFieldPulseIntegration;
 use App\Http\Middleware\EnsureBusinessSelected;
 use App\Http\Middleware\EnsureModule;
 use App\Http\Middleware\EnsurePermission;
@@ -31,6 +32,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'module' => EnsureModule::class,
             'permission' => EnsurePermission::class,
             'tax-enabled' => EnsureTaxEnabled::class,
+            'fieldpulse.integration' => AuthenticateFieldPulseIntegration::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
