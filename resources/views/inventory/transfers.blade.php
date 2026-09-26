@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<x-app.page icon="arrow-path" :title="__('operations.transfers.title')" :subtitle="__('operations.transfers.subtitle')">
+<x-app.page icon="arrow-right" :title="__('operations.transfers.title')" :subtitle="__('operations.transfers.subtitle')">
     <x-slot:actions>
         <div class="flex flex-wrap gap-2">
             <x-ui.button href="{{ route('inventory.returns.index') }}" variant="secondary">{{ __('operations.returns.title') }}</x-ui.button>
