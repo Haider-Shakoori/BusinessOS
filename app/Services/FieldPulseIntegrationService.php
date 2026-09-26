@@ -604,8 +604,10 @@ class FieldPulseIntegrationService
             $hasMore,
             $last
                 ? $this->encodeCursor(
-                    $last->updated_at?->toIso8601String()
-                        ?? '1970-01-01T00:00:00+00:00',
+                    (string) (
+                        $last->getRawOriginal('updated_at')
+                        ?: '1970-01-01 00:00:00'
+                    ),
                     (int) $last->id,
                 )
                 : null,
