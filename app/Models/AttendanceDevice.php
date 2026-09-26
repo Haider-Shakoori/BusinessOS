@@ -15,6 +15,7 @@ class AttendanceDevice extends Model
     use SoftDeletes;
 
     protected $fillable = [
+        'attendance_bridge_id',
         'name',
         'brand',
         'model',
@@ -65,6 +66,11 @@ class AttendanceDevice extends Model
     public function business(): BelongsTo
     {
         return $this->belongsTo(Business::class);
+    }
+
+    public function bridge(): BelongsTo
+    {
+        return $this->belongsTo(AttendanceBridge::class, 'attendance_bridge_id');
     }
 
     public function logs(): HasMany
