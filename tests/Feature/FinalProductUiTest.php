@@ -203,10 +203,13 @@ class FinalProductUiTest extends TestCase
         $this->assertTrue($membership->roles()->where('slug', 'owner')->exists());
         $this->assertSame('fa', session(config('localization.session_key')));
 
-        $this->actingAs($user)
-            ->get('/app')
-            ->assertOk()
-            ->assertSee('var workspaceTheme = "dark";', false);
+        $response = $this->actingAs($user)->get('/app');
+
+        $response->assertOk();
+        $this->assertMatchesRegularExpression(
+            '/var workspaceTheme = [\'"]dark[\'"];/',
+            (string) $response->getContent(),
+        );
     }
 
     public function test_application_shell_keeps_theme_and_mobile_controls_available(): void
