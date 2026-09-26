@@ -35,5 +35,6 @@ return [
     'products' => 'Products',
     'enabled_modules' => 'Enabled modules',
     'usage' => 'Usage',
+    'limit_reached' => 'The :resource limit for this SaaS plan has been reached.',
     'platform_console' => 'Platform console',
 ];
