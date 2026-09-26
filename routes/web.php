@@ -24,6 +24,7 @@ use App\Http\Controllers\NotificationCenterController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PosController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ProductVariantController;
 use App\Http\Controllers\PurchasingController;
 use App\Http\Controllers\QuotationController;
 use App\Http\Controllers\ReportController;
@@ -733,6 +734,22 @@ Route::middleware(['auth', 'auth.session', 'business-selected', 'module:products
 
     Route::delete('/products/{product}', [ProductController::class, 'destroy'])
         ->name('products.destroy')
+        ->middleware('permission:products.manage');
+
+    Route::get('/products/{product}/variants', [ProductVariantController::class, 'index'])
+        ->name('products.variants.index')
+        ->middleware('permission:products.view');
+
+    Route::post('/products/{product}/variants', [ProductVariantController::class, 'store'])
+        ->name('products.variants.store')
+        ->middleware('permission:products.manage');
+
+    Route::patch('/products/{product}/variants/{productVariant}', [ProductVariantController::class, 'update'])
+        ->name('products.variants.update')
+        ->middleware('permission:products.manage');
+
+    Route::delete('/products/{product}/variants/{productVariant}', [ProductVariantController::class, 'destroy'])
+        ->name('products.variants.destroy')
         ->middleware('permission:products.manage');
 });
 
