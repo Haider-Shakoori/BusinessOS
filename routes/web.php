@@ -423,6 +423,9 @@ Route::middleware(['auth', 'auth.session', 'business-selected', 'module:accounti
     Route::get('/accounting', [AccountingController::class, 'index'])
         ->name('accounting.index')
         ->middleware('permission:accounting.view');
+    Route::get('/accounting/reports', [AccountingController::class, 'reports'])
+        ->name('accounting.reports')
+        ->middleware('permission:accounting.view');
     Route::post('/accounting/accounts', [AccountingController::class, 'storeAccount'])
         ->name('accounting.accounts.store')
         ->middleware('permission:accounting.manage');
