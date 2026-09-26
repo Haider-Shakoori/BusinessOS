@@ -23,4 +23,6 @@ enum DocumentType: string
     case Expense = 'expense';
 
     case PurchaseOrder = 'purchase_order';
+
+    case PosSale = 'pos_sale';
 }
