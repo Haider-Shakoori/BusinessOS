@@ -113,6 +113,7 @@ class SmartAssistantService
                     ->selectRaw('product_id, SUM(quantity) as qty')
                     ->groupBy('product_id')
                     ->havingRaw('SUM(quantity) < 0')
+                    ->get()
                     ->count(),
             ] : [],
             'purchasing' => Gate::allows('purchasing.view') ? [
