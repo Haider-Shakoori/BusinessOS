@@ -68,7 +68,6 @@ class UpdateSettingsRequest extends FormRequest
             'document.signature_line' => ['nullable', 'string', 'max:255'],
             'document.logo' => ['nullable', 'file', 'image', 'mimes:png,jpg,jpeg,webp', 'max:2048'],
             'document.remove_logo' => ['sometimes', 'boolean'],
-            'fieldpulse.enabled' => ['sometimes', 'boolean'],
             'fieldpulse.organization_key' => ['nullable', 'string', 'max:120', 'regex:/^[A-Za-z0-9._-]+$/'],
         ], $this->numberingRules());
     }
@@ -133,7 +132,6 @@ class UpdateSettingsRequest extends FormRequest
             'document.logo.mimes' => __('settings.validation.document_logo_invalid'),
             'document.logo.max' => __('settings.validation.document_logo_max'),
             'document.remove_logo.boolean' => __('settings.validation.document_remove_logo_invalid'),
-            'fieldpulse.enabled.boolean' => __('FieldPulse integration switch is invalid.'),
             'fieldpulse.organization_key.max' => __('FieldPulse organization key is too long.'),
             'fieldpulse.organization_key.regex' => __('FieldPulse organization key may contain only letters, numbers, dots, underscores and dashes.'),
         ];

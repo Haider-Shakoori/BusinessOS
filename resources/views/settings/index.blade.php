@@ -233,15 +233,16 @@
                 </x-slot:header>
 
                 <div class="grid gap-x-5 gap-y-4 sm:grid-cols-2">
-                    <div class="sm:col-span-2">
-                        <input type="hidden" name="fieldpulse.enabled" value="0">
-                        <x-ui.toggle
-                            name="fieldpulse.enabled"
-                            :label="__('Enable FieldPulse integration')"
-                            :description="__('When enabled, the server can expose this business to an authenticated FieldPulse connector. The API token remains server-managed and is never stored here.')"
-                            :checked="(bool) old('fieldpulse.enabled', $fieldpulse_integration->enabled)"
-                            :disabled="! $editable"
-                        />
+                    <div class="sm:col-span-2 rounded-[8px] border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800/50">
+                        <div class="flex flex-wrap items-start justify-between gap-3">
+                            <div>
+                                <p class="text-sm font-semibold text-slate-800 dark:text-slate-100">{{ __('Platform activation') }}</p>
+                                <p class="mt-1 text-sm leading-6 text-slate-500 dark:text-slate-400">{{ __('FieldPulse integration can only be activated by the BusinessOS platform/server configuration. Business users cannot enable it from this settings page.') }}</p>
+                            </div>
+                            <span class="rounded-full px-3 py-1 text-xs font-semibold {{ config('fieldpulse.enabled') ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300' : 'bg-amber-100 text-amber-700 dark:bg-amber-500/10 dark:text-amber-300' }}">
+                                {{ config('fieldpulse.enabled') ? __('Enabled by platform') : __('Disabled by platform') }}
+                            </span>
+                        </div>
                     </div>
 
                     <div class="sm:col-span-2">

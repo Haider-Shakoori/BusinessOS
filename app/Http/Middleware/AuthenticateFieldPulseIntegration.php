@@ -47,12 +47,11 @@ class AuthenticateFieldPulseIntegration
         $integration = FieldPulseIntegration::query()
             ->with('business')
             ->where('organization_key', $organizationKey)
-            ->where('enabled', true)
             ->first();
 
         if (! $integration || ! $integration->business) {
             return new JsonResponse([
-                'message' => 'FieldPulse organization mapping is not enabled.',
+                'message' => 'FieldPulse organization mapping was not found.',
             ], 403);
         }
 
