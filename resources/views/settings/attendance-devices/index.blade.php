@@ -29,6 +29,121 @@
 
             @can('settings.manage')
                 <x-ui.card>
+                    <div
+                        x-data="{
+                            loading: false,
+                            result: null,
+                            error: null,
+                            async detect() {
+                                const ip = this.$refs.ip.value.trim();
+                                if (!ip || this.loading) return;
+
+                                this.loading = true;
+                                this.error = null;
+                                this.result = null;
+
+                                try {
+                                    const response = await fetch('{{ route('settings.attendance-devices.detect') }}', {
+                                        method: 'POST',
+                                        headers: {
+                                            'Accept': 'application/json',
+                                            'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content,
+                                            'Content-Type': 'application/json',
+                                        },
+                                        body: JSON.stringify({ ip }),
+                                    });
+                                    const payload = await response.json();
+
+                                    if (!response.ok || !payload.ok) {
+                                        throw new Error(payload.message || '{{ __('attendance.discovery.failed') }}');
+                                    }
+
+                                    this.result = payload.result;
+                                    const set = (id, value) => {
+                                        if (value === null || value === undefined || value === '') return;
+                                        const element = document.getElementById(id);
+                                        if (!element) return;
+                                        element.value = value;
+                                        element.dispatchEvent(new Event('input', { bubbles: true }));
+                                        element.dispatchEvent(new Event('change', { bubbles: true }));
+                                    };
+
+                                    set('host', payload.result.ip);
+                                    set('brand', payload.result.brand);
+                                    set('connection_type', payload.result.connection_type);
+                                    set('port', payload.result.port);
+                                    set('base_url', payload.result.base_url);
+
+                                    const name = document.getElementById('name');
+                                    if (name && !name.value.trim() && payload.result.brand_label) {
+                                        name.value = payload.result.brand_label + ' - ' + payload.result.ip;
+                                        name.dispatchEvent(new Event('input', { bubbles: true }));
+                                    }
+
+                                    document.getElementById('name')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                } catch (e) {
+                                    this.error = e.message || '{{ __('attendance.discovery.failed') }}';
+                                } finally {
+                                    this.loading = false;
+                                }
+                            }
+                        }"
+                    >
+                        <div class="flex flex-wrap items-start justify-between gap-3">
+                            <div>
+                                <h2 class="text-base font-semibold text-slate-900 dark:text-white">{{ __('attendance.discovery.title') }}</h2>
+                                <p class="mt-1 max-w-3xl text-sm text-slate-500 dark:text-slate-400">{{ __('attendance.discovery.helper') }}</p>
+                            </div>
+                            <x-ui.badge tone="brand">{{ __('attendance.discovery.best_effort') }}</x-ui.badge>
+                        </div>
+
+                        <div class="mt-5 flex flex-col gap-3 sm:flex-row sm:items-end">
+                            <div class="min-w-0 flex-1">
+                                <x-ui.input
+                                    x-ref="ip"
+                                    name="attendance_detection_ip"
+                                    :label="__('attendance.discovery.ip_label')"
+                                    placeholder="192.168.1.201"
+                                    dir="ltr"
+                                    autocomplete="off"
+                                    x-on:change="detect()"
+                                />
+                            </div>
+                            <x-ui.button
+                                type="button"
+                                icon="bolt"
+                                x-on:click="detect()"
+                                x-bind:disabled="loading"
+                            >
+                                <span x-show="!loading">{{ __('attendance.discovery.detect') }}</span>
+                                <span x-show="loading" x-cloak>{{ __('attendance.discovery.detecting') }}</span>
+                            </x-ui.button>
+                        </div>
+
+                        <div x-show="error" x-cloak class="mt-4">
+                            <x-ui.alert type="danger"><span x-text="error"></span></x-ui.alert>
+                        </div>
+
+                        <div x-show="result" x-cloak class="mt-4 rounded-[9px] border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800/50">
+                            <div class="flex flex-wrap items-center gap-2">
+                                <span class="text-sm font-semibold text-slate-900 dark:text-white" x-text="result?.brand_label || '{{ __('attendance.discovery.unknown_device') }}'"></span>
+                                <span class="rounded-full bg-brand-50 px-2.5 py-1 text-[11px] font-semibold text-brand-700 dark:bg-brand-500/15 dark:text-brand-300" x-text="result?.confidence_label"></span>
+                                <span class="text-xs text-slate-500 dark:text-slate-400" x-text="result?.confidence ? result.confidence + '%' : ''"></span>
+                            </div>
+                            <div class="mt-3 grid gap-2 text-xs text-slate-600 sm:grid-cols-2 lg:grid-cols-4 dark:text-slate-300">
+                                <div><span class="font-semibold">{{ __('attendance.discovery.connection') }}:</span> <span x-text="result?.connection_label || '—'"></span></div>
+                                <div><span class="font-semibold">{{ __('attendance.fields.port') }}:</span> <span x-text="result?.port || '—'"></span></div>
+                                <div><span class="font-semibold">{{ __('attendance.discovery.open_ports') }}:</span> <span x-text="result?.open_ports?.length ? result.open_ports.join(', ') : '—'"></span></div>
+                                <div><span class="font-semibold">{{ __('attendance.discovery.reachable') }}:</span> <span x-text="result?.reachable ? '{{ __('common.yes') }}' : '{{ __('common.no') }}'"></span></div>
+                            </div>
+                            <p class="mt-3 text-xs text-amber-700 dark:text-amber-300" x-text="result?.warning"></p>
+                            <p class="mt-2 text-xs text-slate-500 dark:text-slate-400">{{ __('attendance.discovery.autofill_notice') }}</p>
+                        </div>
+                    </div>
+                </x-ui.card>
+
+            @can('settings.manage')
+                <x-ui.card>
                     <x-slot:header>
                         <h2 class="text-base font-semibold text-slate-900 dark:text-white">{{ __('attendance.add_device') }}</h2>
                     </x-slot:header>
