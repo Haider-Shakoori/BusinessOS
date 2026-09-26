@@ -8,7 +8,6 @@ Route::post('/attendance/push/{attendanceDevice}', [AttendancePushController::cl
     ->name('attendance.push')
     ->middleware('throttle:120,1');
 
-
 Route::prefix('/attendance/bridge/{bridge}')
     ->middleware('throttle:240,1')
     ->group(function () {
