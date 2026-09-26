@@ -4,7 +4,6 @@ namespace Tests\Feature;
 
 use App\Models\Business;
 use App\Models\BusinessSubscription;
-use App\Models\Product;
 use App\Models\SaasPlan;
 use App\Models\User;
 use App\Services\SaasUsageService;
