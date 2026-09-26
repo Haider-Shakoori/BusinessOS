@@ -43,6 +43,7 @@ class ExpenseService
         private readonly DocumentNumberService $numbers,
         private readonly BusinessContext $context,
         private readonly CurrencyService $currencies,
+        private readonly AccountingPostingService $accounting,
     ) {
         //
     }
@@ -80,6 +81,7 @@ class ExpenseService
             }
 
             $expense->save();
+            $this->accounting->postExpense($expense);
 
             return $expense;
         });
@@ -116,6 +118,7 @@ class ExpenseService
             }
 
             $expense->save();
+            $this->accounting->replaceExpense($expense);
 
             return $expense;
         });
@@ -127,7 +130,10 @@ class ExpenseService
      */
     public function destroy(Expense $expense): void
     {
-        $expense->delete();
+        DB::transaction(function () use ($expense): void {
+            $this->accounting->reverseExpense($expense);
+            $expense->delete();
+        });
     }
 
     /**
