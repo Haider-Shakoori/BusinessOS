@@ -17,6 +17,8 @@
         industry: @js(old('industry', 'retail_wholesale')),
         country: @js($defaultCountry),
         countryProfiles: @js($countryProfiles),
+        industryProfiles: @js($industryProfiles),
+        isFirstWorkspace: @js($isFirstWorkspace),
         currency: @js($defaultCurrency),
         timezone: @js($defaultTimezone),
         address: @js(old('address', '')),
@@ -28,7 +30,38 @@
         selectedModules: @js(array_values($selectedModules)),
         logoPreview: null,
         moduleCount() { return this.selectedModules.length; },
-        next(step) { this.step = step; window.scrollTo({ top: 0, behavior: 'smooth' }); },
+        next(step) { this.step = step; this.saveDraft(); window.scrollTo({ top: 0, behavior: 'smooth' }); },
+        applyIndustryRecommendations() {
+            const profile = this.industryProfiles[this.industry];
+            if (!profile?.recommended_modules) return;
+            const available = Object.keys(@js($onboardingModules));
+            this.selectedModules = profile.recommended_modules.filter(key => available.includes(key));
+            this.saveDraft();
+        },
+        draftKey() { return 'businessos:onboarding:' + @js((string) auth()->id()); },
+        saveDraft() {
+            try {
+                localStorage.setItem(this.draftKey(), JSON.stringify({
+                    step: this.step, name: this.name, industry: this.industry, country: this.country,
+                    currency: this.currency, timezone: this.timezone, address: this.address,
+                    phone: this.phone, email: this.email, locale: this.locale,
+                    appearance: this.appearance, taxEnabled: this.taxEnabled,
+                    selectedModules: this.selectedModules
+                }));
+            } catch (_) {}
+        },
+        restoreDraft() {
+            if (@js($errors->any())) return;
+            try {
+                const draft = JSON.parse(localStorage.getItem(this.draftKey()) || 'null');
+                if (!draft) return;
+                for (const key of ['name','industry','country','currency','timezone','address','phone','email','locale','appearance','taxEnabled','selectedModules']) {
+                    if (draft[key] !== undefined) this[key] = draft[key];
+                }
+                if (Number.isInteger(draft.step)) this.step = Math.min(3, Math.max(1, draft.step));
+            } catch (_) {}
+        },
+        clearDraft() { try { localStorage.removeItem(this.draftKey()); } catch (_) {} },
         applyCountryDefaults() {
             const profile = this.countryProfiles[this.country];
             if (!profile) return;
@@ -36,6 +69,7 @@
             this.timezone = profile.timezone || this.timezone;
             this.locale = profile.locale || this.locale;
             this.taxEnabled = Boolean(profile.tax_enabled);
+            this.saveDraft();
         },
         applyAppearance() {
             if (this.appearance === 'dark') {
@@ -56,7 +90,10 @@
             reader.readAsDataURL(file);
         }
     }"
-    x-on:submit="applyAppearance()"
+    x-init="restoreDraft(); applyAppearance()"
+    x-on:input.debounce.400ms="saveDraft()"
+    x-on:change.debounce.250ms="saveDraft()"
+    x-on:submit="applyAppearance(); clearDraft()"
     class="mx-auto w-full max-w-[1320px]"
 >
     <div class="mb-4 flex items-start justify-between gap-4">
@@ -152,7 +189,7 @@
                             <button type="button" x-on:click="next(2)" class="inline-flex h-11 items-center justify-center gap-3 rounded-[7px] bg-brand-600 px-5 text-sm font-semibold text-white shadow-[0_6px_18px_rgba(20,115,230,.25)] hover:bg-brand-700">
                                 {{ __('onboarding.start_setup') }} <x-ui.icon name="arrow-right" class="size-4 rtl-flip" />
                             </button>
-                            <button type="button" x-on:click="next(2)" class="inline-flex h-11 items-center justify-center rounded-[7px] border border-slate-200 bg-white px-5 text-sm font-semibold text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200">
+                            <button type="button" x-on:click="saveDraft(); window.location.href='{{ route('app.home') }}'" x-show="!isFirstWorkspace" class="inline-flex h-11 items-center justify-center rounded-[7px] border border-slate-200 bg-white px-5 text-sm font-semibold text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200">
                                 {{ __('onboarding.skip_for_now') }}
                             </button>
                         </div>
@@ -217,7 +254,7 @@
 
                         <div class="mt-5 grid gap-x-5 gap-y-4 sm:grid-cols-2">
                             <label><span class="mb-1.5 block text-[10px] font-semibold">{{ __('onboarding.business_name') }} <span class="text-rose-500">*</span></span><input x-ref="name" x-model="name" name="name" value="{{ old('name') }}" required maxlength="255" class="h-9 w-full rounded-[6px] border border-slate-200 px-3 text-[11px] focus:border-brand-500 focus:outline-none dark:border-slate-700 dark:bg-slate-900"></label>
-                            <label><span class="mb-1.5 block text-[10px] font-semibold">{{ __('onboarding.industry') }} <span class="text-rose-500">*</span></span><select x-model="industry" name="industry" class="h-9 w-full rounded-[6px] border border-slate-200 px-3 text-[11px] dark:border-slate-700 dark:bg-slate-900">@foreach($industries as $key=>$label)<option value="{{ $key }}">{{ __($label) }}</option>@endforeach</select></label>
+                            <label><span class="mb-1.5 block text-[10px] font-semibold">{{ __('onboarding.industry') }} <span class="text-rose-500">*</span></span><select x-model="industry" x-on:change="applyIndustryRecommendations()" name="industry" class="h-9 w-full rounded-[6px] border border-slate-200 px-3 text-[11px] dark:border-slate-700 dark:bg-slate-900">@foreach($industries as $key=>$label)<option value="{{ $key }}">{{ __($label) }}</option>@endforeach</select></label>
                             <label><span class="mb-1.5 block text-[10px] font-semibold">{{ __('onboarding.country_region') }} <span class="text-rose-500">*</span></span><select x-model="country" x-on:change="applyCountryDefaults()" name="country" required class="h-9 w-full rounded-[6px] border border-slate-200 px-3 text-[11px] dark:border-slate-700 dark:bg-slate-900">@foreach($countries as $key=>$label)<option value="{{ $key }}">{{ __($label) }}</option>@endforeach</select></label>
                             <label><span class="mb-1.5 block text-[10px] font-semibold">{{ __('onboarding.base_currency') }} <span class="text-rose-500">*</span></span><select x-model="currency" name="currency" required class="h-9 w-full rounded-[6px] border border-slate-200 px-3 text-[11px] dark:border-slate-700 dark:bg-slate-900">@foreach($currencies as $currencyOption)<option value="{{ $currencyOption->code }}">{{ $currencyOption->code }} — {{ $currencyOption->name }}</option>@endforeach</select></label>
                             <label><span class="mb-1.5 block text-[10px] font-semibold">{{ __('onboarding.time_zone') }} <span class="text-rose-500">*</span></span><select x-model="timezone" name="timezone" required class="h-9 w-full rounded-[6px] border border-slate-200 px-3 text-[11px] dark:border-slate-700 dark:bg-slate-900">@foreach($timezones as $key=>$label)<option value="{{ $key }}">{{ __($label) }}</option>@endforeach</select></label>
@@ -237,7 +274,7 @@
                         <div class="mt-5 flex flex-wrap items-center justify-between gap-3">
                             <button type="button" x-on:click="next(1)" class="inline-flex h-9 items-center gap-2 rounded-[6px] border border-slate-200 px-5 text-[11px] font-semibold text-slate-700 dark:border-slate-700 dark:text-slate-200"><x-ui.icon name="chevron-left" class="size-3.5 rtl-flip" /> {{ __('onboarding.back') }}</button>
                             <div class="ms-auto flex flex-wrap gap-2">
-                                <button type="button" x-on:click="next(3)" class="h-9 rounded-[6px] border border-slate-200 px-5 text-[11px] font-semibold text-slate-700 dark:border-slate-700 dark:text-slate-200">{{ __('onboarding.save_continue_later') }}</button>
+                                <button type="button" x-on:click="saveDraft(); window.location.href='{{ route('app.home') }}'" x-show="!isFirstWorkspace" class="h-9 rounded-[6px] border border-slate-200 px-5 text-[11px] font-semibold text-slate-700 dark:border-slate-700 dark:text-slate-200">{{ __('onboarding.save_continue_later') }}</button>
                                 <button type="button" x-on:click="next(3)" class="inline-flex h-9 items-center gap-2 rounded-[6px] bg-brand-600 px-5 text-[11px] font-semibold text-white">{{ __('onboarding.continue') }} <x-ui.icon name="arrow-right" class="size-3.5 rtl-flip" /></button>
                             </div>
                         </div>
@@ -346,7 +383,7 @@
                         <button type="submit" class="mt-4 inline-flex h-10 w-full items-center justify-center gap-3 rounded-[7px] bg-brand-600 px-4 text-[11px] font-semibold text-white shadow-[0_6px_18px_rgba(20,115,230,.25)] hover:bg-brand-700">
                             {{ __('onboarding.go_dashboard') }} <x-ui.icon name="arrow-right" class="size-4 rtl-flip" />
                         </button>
-                        <button type="submit" class="mt-2 w-full py-2 text-[9px] font-semibold text-brand-600">{{ __('onboarding.do_later') }}</button>
+                        <button type="button" x-on:click="saveDraft(); window.location.href='{{ route('app.home') }}'" x-show="!isFirstWorkspace" class="mt-2 w-full py-2 text-[9px] font-semibold text-brand-600">{{ __('onboarding.do_later') }}</button>
 
                         <div class="mt-5 rounded-[9px] border border-white/80 bg-white/70 p-4 text-[9px] leading-4 text-slate-500 shadow-sm dark:border-slate-700 dark:bg-slate-800/70">
                             “{{ __('onboarding.ready_quote') }}”
