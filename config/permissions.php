@@ -64,6 +64,26 @@ return [
             'expenses.view',
             'expenses.manage',
         ],
+        'inventory' => [
+            'inventory.view',
+            'inventory.manage',
+        ],
+        'purchasing' => [
+            'purchasing.view',
+            'purchasing.manage',
+        ],
+        'accounting' => [
+            'accounting.view',
+            'accounting.manage',
+        ],
+        'crm' => [
+            'crm.view',
+            'crm.manage',
+        ],
+        'manufacturing' => [
+            'manufacturing.view',
+            'manufacturing.manage',
+        ],
         'reports' => [
             'reports.view',
         ],

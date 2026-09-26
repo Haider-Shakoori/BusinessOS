@@ -1,17 +1,22 @@
 <?php
 
+use App\Http\Controllers\AccountingController;
 use App\Http\Controllers\AttendanceBridgeController;
 use App\Http\Controllers\AttendanceDeviceController;
 use App\Http\Controllers\BusinessController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CrmController;
 use App\Http\Controllers\CurrencySettingsController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\ExportController;
 use App\Http\Controllers\ImportController;
+use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\ManufacturingController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\PurchasingController;
 use App\Http\Controllers\QuotationController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SettingsController;
@@ -145,6 +150,79 @@ Route::middleware(['auth', 'auth.session', 'business-selected', 'module:settings
     Route::post('/settings/attendance-devices/{attendanceDevice}/map-employee', [AttendanceDeviceController::class, 'mapEmployee'])
         ->name('settings.attendance-devices.map-employee')
         ->middleware('permission:settings.manage');
+});
+
+/*
+ * Batch 30 — core operational modules.
+ *
+ * These are real business-owned data modules rather than workspace
+ * placeholders. Module availability and granular permissions are enforced on
+ * every route, while model global scopes keep reads tenant-local.
+ */
+Route::middleware(['auth', 'auth.session', 'business-selected', 'module:inventory'])->group(function () {
+    Route::get('/inventory', [InventoryController::class, 'index'])
+        ->name('inventory.index')
+        ->middleware('permission:inventory.view');
+    Route::post('/inventory/warehouses', [InventoryController::class, 'storeWarehouse'])
+        ->name('inventory.warehouses.store')
+        ->middleware('permission:inventory.manage');
+    Route::post('/inventory/movements', [InventoryController::class, 'storeMovement'])
+        ->name('inventory.movements.store')
+        ->middleware('permission:inventory.manage');
+});
+
+Route::middleware(['auth', 'auth.session', 'business-selected', 'module:purchasing'])->group(function () {
+    Route::get('/purchasing', [PurchasingController::class, 'index'])
+        ->name('purchasing.index')
+        ->middleware('permission:purchasing.view');
+    Route::post('/purchasing/suppliers', [PurchasingController::class, 'storeSupplier'])
+        ->name('purchasing.suppliers.store')
+        ->middleware('permission:purchasing.manage');
+    Route::post('/purchasing/orders', [PurchasingController::class, 'storeOrder'])
+        ->name('purchasing.orders.store')
+        ->middleware('permission:purchasing.manage');
+    Route::post('/purchasing/orders/{purchaseOrder}/receive', [PurchasingController::class, 'receive'])
+        ->name('purchasing.orders.receive')
+        ->middleware('permission:purchasing.manage');
+});
+
+Route::middleware(['auth', 'auth.session', 'business-selected', 'module:accounting'])->group(function () {
+    Route::get('/accounting', [AccountingController::class, 'index'])
+        ->name('accounting.index')
+        ->middleware('permission:accounting.view');
+    Route::post('/accounting/accounts', [AccountingController::class, 'storeAccount'])
+        ->name('accounting.accounts.store')
+        ->middleware('permission:accounting.manage');
+    Route::post('/accounting/journals', [AccountingController::class, 'storeJournal'])
+        ->name('accounting.journals.store')
+        ->middleware('permission:accounting.manage');
+});
+
+Route::middleware(['auth', 'auth.session', 'business-selected', 'module:crm'])->group(function () {
+    Route::get('/crm', [CrmController::class, 'index'])
+        ->name('crm.index')
+        ->middleware('permission:crm.view');
+    Route::post('/crm/leads', [CrmController::class, 'storeLead'])
+        ->name('crm.leads.store')
+        ->middleware('permission:crm.manage');
+    Route::post('/crm/leads/{crmLead}/activities', [CrmController::class, 'storeActivity'])
+        ->name('crm.leads.activities.store')
+        ->middleware('permission:crm.manage');
+});
+
+Route::middleware(['auth', 'auth.session', 'business-selected', 'module:manufacturing'])->group(function () {
+    Route::get('/manufacturing', [ManufacturingController::class, 'index'])
+        ->name('manufacturing.index')
+        ->middleware('permission:manufacturing.view');
+    Route::post('/manufacturing/boms', [ManufacturingController::class, 'storeBom'])
+        ->name('manufacturing.boms.store')
+        ->middleware('permission:manufacturing.manage');
+    Route::post('/manufacturing/orders', [ManufacturingController::class, 'storeOrder'])
+        ->name('manufacturing.orders.store')
+        ->middleware('permission:manufacturing.manage');
+    Route::post('/manufacturing/orders/{productionOrder}/complete', [ManufacturingController::class, 'complete'])
+        ->name('manufacturing.orders.complete')
+        ->middleware('permission:manufacturing.manage');
 });
 
 /*
