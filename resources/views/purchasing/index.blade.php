@@ -2,11 +2,16 @@
 
 @section('content')
 <x-app.page icon="shopping-cart" :title="__('operations.purchasing.title')" :subtitle="__('operations.purchasing.subtitle')">
-    @can('inventory.view')
-        <x-slot:actions>
-            <x-ui.button href="{{ route('inventory.returns.index') }}" variant="secondary">{{ __('operations.returns.title') }}</x-ui.button>
-        </x-slot:actions>
-    @endcan
+    <x-slot:actions>
+        <div class="flex flex-wrap gap-2">
+            @can('purchasing.view')
+                <x-ui.button href="{{ route('suppliers.index') }}" variant="secondary" icon="users">{{ __('suppliers.title') }}</x-ui.button>
+            @endcan
+            @can('inventory.view')
+                <x-ui.button href="{{ route('inventory.returns.index') }}" variant="secondary">{{ __('operations.returns.title') }}</x-ui.button>
+            @endcan
+        </div>
+    </x-slot:actions>
     @if (session('status')) <div class="mb-5"><x-ui.alert type="success">{{ session('status') }}</x-ui.alert></div> @endif
 
     <div class="grid gap-5 xl:grid-cols-2">
@@ -49,7 +54,7 @@
             <div class="space-y-3">
                 @foreach($suppliers as $supplier)
                     <div class="rounded-lg border border-slate-200 p-3 dark:border-slate-700">
-                        <div class="font-medium text-slate-900 dark:text-white">{{ $supplier->name }}</div>
+                        <a href="{{ route('suppliers.show', $supplier) }}" class="font-medium text-slate-900 hover:text-brand-600 dark:text-white dark:hover:text-brand-400">{{ $supplier->name }}</a>
                         <div class="text-xs text-slate-500">{{ $supplier->phone }} @if($supplier->email) · {{ $supplier->email }} @endif</div>
                     </div>
                 @endforeach
