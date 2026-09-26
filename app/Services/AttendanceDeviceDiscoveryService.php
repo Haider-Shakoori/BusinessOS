@@ -334,8 +334,8 @@ class AttendanceDeviceDiscoveryService
         $first = ord($packed[0]);
         $second = ord($packed[1]);
 
-        $isLinkLocal = $first === 0xfe && ($second & 0xc0) === 0x80;
-        $isMulticast = $first === 0xff;
+        $isLinkLocal = $first === 0xFE && ($second & 0xC0) === 0x80;
+        $isMulticast = $first === 0xFF;
 
         return ! $isLinkLocal && ! $isMulticast;
     }
