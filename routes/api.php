@@ -19,7 +19,6 @@ Route::prefix('/attendance/bridge/{bridge}')
         Route::post('/devices/{device}/records', [AttendanceBridgeApiController::class, 'records'])->name('attendance.bridge.records');
     });
 
-
 Route::prefix('/fieldpulse/v1')
     ->middleware(['fieldpulse.integration', 'throttle:240,1'])
     ->group(function () {
