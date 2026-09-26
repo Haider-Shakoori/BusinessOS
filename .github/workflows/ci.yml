@@ -46,14 +46,15 @@ jobs:
         run: npm run build
 
       - name: Run tests
-        run: true
+        run: php artisan test
+
+      - name: Test attendance bridge
+        run: |
+          python -m py_compile tools/attendance-bridge/bridge.py
+          python tools/attendance-bridge/test_bridge.py
 
       - name: Check code style
-        run: |
-          ./vendor/bin/pint app/Services/FieldPulseIntegrationService.php
-          echo "----- PINT AUTO-FIX DIFF -----"
-          git diff -- app/Services/FieldPulseIntegrationService.php
-          exit 1
+        run: ./vendor/bin/pint --test
 
       - name: Validate Composer configuration
         run: composer validate --strict --no-check-publish
