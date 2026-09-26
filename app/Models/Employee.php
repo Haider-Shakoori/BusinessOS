@@ -14,15 +14,27 @@ class Employee extends Model
     protected $fillable = [
         'employee_code',
         'name',
+        'department',
+        'job_title',
+        'email',
+        'phone',
+        'hire_date',
         'payroll_type',
         'payroll_rate',
+        'standard_daily_minutes',
+        'overtime_rate',
+        'working_days',
         'is_active',
     ];
 
     protected function casts(): array
     {
         return [
+            'hire_date' => 'date',
             'payroll_rate' => 'decimal:4',
+            'standard_daily_minutes' => 'integer',
+            'overtime_rate' => 'decimal:4',
+            'working_days' => 'array',
             'is_active' => 'boolean',
         ];
     }
@@ -40,5 +52,20 @@ class Employee extends Model
     public function deviceMappings(): HasMany
     {
         return $this->hasMany(AttendanceDeviceEmployee::class);
+    }
+
+    public function leaves(): HasMany
+    {
+        return $this->hasMany(HrLeave::class);
+    }
+
+    public function payrollAdjustments(): HasMany
+    {
+        return $this->hasMany(PayrollAdjustment::class);
+    }
+
+    public function payrollLines(): HasMany
+    {
+        return $this->hasMany(PayrollLine::class);
     }
 }
