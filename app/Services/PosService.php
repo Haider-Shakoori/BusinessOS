@@ -21,6 +21,7 @@ class PosService
     public function __construct(
         private readonly DocumentNumberService $numbers,
         private readonly BusinessSettings $settings,
+        private readonly ProductVariantService $variants,
     ) {
         //
     }
@@ -99,7 +100,7 @@ class PosService
     }
 
     /**
-     * @param  list<array{product_id:int, quantity:float|int|string}>  $items
+     * @param  list<array{product_id:int, product_variant_id?:int|null, quantity:float|int|string}>  $items
      */
     public function checkout(
         PosShift $shift,
@@ -132,20 +133,33 @@ class PosService
                 throw new RuntimeException(__('pos.errors.shift_owner_only'));
             }
 
-            $quantities = [];
+            $cartLines = [];
 
             foreach ($items as $item) {
                 $productId = (int) ($item['product_id'] ?? 0);
+                $variantId = isset($item['product_variant_id']) && $item['product_variant_id'] !== null
+                    ? (int) $item['product_variant_id']
+                    : null;
                 $quantity = round((float) ($item['quantity'] ?? 0), 4);
 
                 if ($productId <= 0 || $quantity <= 0) {
                     throw new RuntimeException(__('pos.errors.invalid_cart'));
                 }
 
-                $quantities[$productId] = round(($quantities[$productId] ?? 0) + $quantity, 4);
+                $key = $productId.':'.($variantId ?? 0);
+
+                if (isset($cartLines[$key])) {
+                    $cartLines[$key]['quantity'] = round($cartLines[$key]['quantity'] + $quantity, 4);
+                } else {
+                    $cartLines[$key] = [
+                        'product_id' => $productId,
+                        'variant_id' => $variantId,
+                        'quantity' => $quantity,
+                    ];
+                }
             }
 
-            if ($quantities === []) {
+            if ($cartLines === []) {
                 throw new RuntimeException(__('pos.errors.empty_cart'));
             }
 
@@ -158,15 +172,16 @@ class PosService
             }
 
             $taxEnabled = (bool) $this->settings->get('general.tax_enabled', false);
+            $productIds = collect($cartLines)->pluck('product_id')->unique()->values();
             $products = Product::query()
                 ->with('tax')
-                ->whereIn('id', array_keys($quantities))
+                ->whereIn('id', $productIds)
                 ->orderBy('id')
                 ->lockForUpdate()
                 ->get()
                 ->keyBy('id');
 
-            if ($products->count() !== count($quantities)) {
+            if ($products->count() !== $productIds->count()) {
                 throw new RuntimeException(__('pos.errors.invalid_cart'));
             }
 
@@ -175,31 +190,55 @@ class PosService
             $taxTotal = 0.0;
             $costTotal = 0.0;
 
-            foreach ($quantities as $productId => $quantity) {
+            foreach ($cartLines as $cartLine) {
                 /** @var Product $product */
-                $product = $products->get($productId);
-                $unitPrice = round((float) $product->sale_price, 4);
+                $product = $products->get($cartLine['product_id']);
+                $quantity = $cartLine['quantity'];
+                $variant = null;
+
+                if ($product->type === ProductType::Product) {
+                    try {
+                        $variant = $this->variants->resolve($product, $cartLine['variant_id']);
+                    } catch (RuntimeException $exception) {
+                        throw new RuntimeException($exception->getMessage());
+                    }
+                } elseif ($cartLine['variant_id'] !== null) {
+                    throw new RuntimeException(__('pos.errors.invalid_cart'));
+                }
+
+                $unitPrice = round((float) ($variant?->sale_price ?? $product->sale_price), 4);
                 $lineSubtotal = round($unitPrice * $quantity, 4);
                 $taxRate = $taxEnabled && $product->tax ? (float) $product->tax->rate : 0.0;
                 $lineTax = round($lineSubtotal * $taxRate / 100, 4);
                 $unitCost = 0.0;
 
                 if ($product->type === ProductType::Product) {
-                    $available = (float) StockMovement::query()
+                    $stockQuery = StockMovement::query()
                         ->where('warehouse_id', $lockedShift->register->warehouse_id)
-                        ->where('product_id', $product->id)
-                        ->sum('quantity');
+                        ->where('product_id', $product->id);
+
+                    $variant === null
+                        ? $stockQuery->whereNull('product_variant_id')
+                        : $stockQuery->where('product_variant_id', $variant->id);
+
+                    $available = (float) $stockQuery->sum('quantity');
 
                     if ($available + 0.00001 < $quantity) {
                         throw new RuntimeException(__('pos.errors.insufficient_stock', [
-                            'product' => $product->name,
+                            'product' => $variant ? $product->name.' — '.$variant->name : $product->name,
                             'available' => number_format($available, 4, '.', ''),
                         ]));
                     }
 
-                    $latestCost = StockMovement::query()
+                    $costQuery = StockMovement::query()
                         ->where('warehouse_id', $lockedShift->register->warehouse_id)
-                        ->where('product_id', $product->id)
+                        ->where('product_id', $product->id);
+
+                    $variant === null
+                        ? $costQuery->whereNull('product_variant_id')
+                        : $costQuery->where('product_variant_id', $variant->id);
+
+                    $latestCost = $costQuery
                         ->whereNotNull('unit_cost')
                         ->where('unit_cost', '>', 0)
                         ->latest('occurred_at')
@@ -213,6 +252,9 @@ class PosService
 
                 $prepared[] = [
                     'product' => $product,
+                    'variant' => $variant,
+                    'snapshot_name' => $variant ? $product->name.' — '.$variant->name : $product->name,
+                    'snapshot_sku' => $variant?->sku ?: $product->sku,
                     'quantity' => $quantity,
                     'unit_price' => $unitPrice,
                     'unit_cost' => $unitCost,
@@ -273,10 +315,13 @@ class PosService
                 /** @var Product $product */
                 $product = $line['product'];
 
+                $variant = $line['variant'];
+
                 $sale->items()->create([
                     'product_id' => $product->id,
-                    'product_name' => $product->name,
-                    'sku' => $product->sku,
+                    'product_variant_id' => $variant?->id,
+                    'product_name' => $line['snapshot_name'],
+                    'sku' => $line['snapshot_sku'],
                     'quantity' => $line['quantity'],
                     'unit_price' => $line['unit_price'],
                     'unit_cost' => $line['unit_cost'],
@@ -290,6 +335,7 @@ class PosService
                     StockMovement::create([
                         'warehouse_id' => $lockedShift->register->warehouse_id,
                         'product_id' => $product->id,
+                        'product_variant_id' => $variant?->id,
                         'type' => 'sale',
                         'quantity' => -$line['quantity'],
                         'unit_cost' => $line['unit_cost'] > 0 ? $line['unit_cost'] : null,
@@ -338,6 +384,7 @@ class PosService
                     StockMovement::create([
                         'warehouse_id' => $locked->register->warehouse_id,
                         'product_id' => $item->product_id,
+                        'product_variant_id' => $item->product_variant_id,
                         'type' => 'adjustment',
                         'quantity' => $item->quantity,
                         'unit_cost' => (float) $item->unit_cost > 0 ? $item->unit_cost : null,
