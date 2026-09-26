@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Business;
 use App\Models\BusinessSubscription;
 use App\Models\Product;
+use App\Models\SaasPlan;
 
 class SaasUsageService
 {
@@ -77,6 +78,28 @@ class SaasUsageService
     public function subscription(Business $business): ?BusinessSubscription
     {
         return $business->subscription()->with('plan')->first();
+    }
+
+    public function provisionDefaultSubscription(Business $business): ?BusinessSubscription
+    {
+        $plan = SaasPlan::query()
+            ->where('is_active', true)
+            ->where('is_default', true)
+            ->orderBy('sort_order')
+            ->first();
+
+        if (! $plan) {
+            return null;
+        }
+
+        return BusinessSubscription::query()->firstOrCreate(
+            ['business_id' => $business->id],
+            [
+                'saas_plan_id' => $plan->id,
+                'status' => 'active',
+                'current_period_starts_at' => now(),
+            ],
+        );
     }
 
     private function integerLimit(mixed $value): ?int
