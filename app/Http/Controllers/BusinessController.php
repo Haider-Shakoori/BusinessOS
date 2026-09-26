@@ -6,6 +6,7 @@ use App\Http\Requests\Business\StoreBusinessRequest;
 use App\Models\Currency;
 use App\Services\BusinessContext;
 use App\Services\BusinessOnboardingService;
+use App\Services\CountryLocalizationService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
@@ -16,16 +17,23 @@ class BusinessController extends Controller
     /**
      * Screenshot-aligned first-business onboarding.
      */
-    public function create(): View
+    public function create(CountryLocalizationService $localization): View
     {
+        $profiles = $localization->profiles();
+        $defaultCountry = config('countries.default', 'AF');
+
         return view('business.create', [
-            'countries' => config('onboarding.countries', []),
+            'countries' => $localization->countryOptions(),
+            'countryProfiles' => $profiles,
             'industries' => config('onboarding.industries', []),
             'timezones' => config('onboarding.timezones', []),
             'onboardingModules' => config('onboarding.modules', []),
             'supportedLocales' => config('localization.supported', []),
             'currencies' => Currency::query()->where('is_active', true)->orderBy('code')->get(),
-            'defaults' => config('onboarding.defaults', []),
+            'defaults' => array_merge(
+                config('onboarding.defaults', []),
+                $localization->workspaceDefaults($defaultCountry),
+            ),
         ]);
     }
 
