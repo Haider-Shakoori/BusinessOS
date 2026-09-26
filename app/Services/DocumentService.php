@@ -75,8 +75,8 @@ final class DocumentService
     }
 
     /**
-     * @param array{date_from?:string|null,date_to?:string|null} $filters
-     * @return array{view:string,filename:string,data:array<string,mixed>}
+     * @param  array{date_from?: string|null, date_to?: string|null}  $filters
+     * @return array{view: string, filename: string, data: array<string, mixed>}
      */
     public function supplierStatement(Supplier $supplier, array $filters = [], bool $forPdf = false): array
     {
