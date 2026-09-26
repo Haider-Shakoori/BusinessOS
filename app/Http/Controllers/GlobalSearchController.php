@@ -73,10 +73,11 @@ class GlobalSearchController extends Controller
                     ]));
             }
 
-            if ($modules->isEnabled('purchasing') && Gate::allows('purchasing.view')) {
+            if ($modules->isEnabled('purchasing') && Gate::allows('suppliers.view')) {
                 Supplier::query()
                     ->where(function ($builder) use ($query): void {
-                        $builder->where('name', 'like', "%{$query}%")
+                        $builder->where('code', 'like', "%{$query}%")
+                            ->orWhere('name', 'like', "%{$query}%")
                             ->orWhere('email', 'like', "%{$query}%")
                             ->orWhere('phone', 'like', "%{$query}%");
                     })
@@ -86,10 +87,13 @@ class GlobalSearchController extends Controller
                         'type' => __('system.search.supplier'),
                         'title' => $item->name,
                         'subtitle' => $item->phone ?: $item->email,
-                        'url' => route('purchasing.index'),
-                        'icon' => 'shopping-cart',
+                        'url' => route('suppliers.show', $item),
+                        'icon' => 'users',
                     ]));
 
+            }
+
+            if ($modules->isEnabled('purchasing') && Gate::allows('purchasing.view')) {
                 PurchaseOrder::query()
                     ->with('supplier')
                     ->where('number', 'like', "%{$query}%")
