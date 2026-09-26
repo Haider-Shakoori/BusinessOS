@@ -181,6 +181,9 @@ Route::middleware(['auth', 'auth.session', 'business-selected', 'module:purchasi
     Route::post('/purchasing/orders', [PurchasingController::class, 'storeOrder'])
         ->name('purchasing.orders.store')
         ->middleware('permission:purchasing.manage');
+    Route::post('/purchasing/orders/{purchaseOrder}/receive', [PurchasingController::class, 'receive'])
+        ->name('purchasing.orders.receive')
+        ->middleware('permission:purchasing.manage');
 });
 
 Route::middleware(['auth', 'auth.session', 'business-selected', 'module:accounting'])->group(function () {
@@ -216,6 +219,9 @@ Route::middleware(['auth', 'auth.session', 'business-selected', 'module:manufact
         ->middleware('permission:manufacturing.manage');
     Route::post('/manufacturing/orders', [ManufacturingController::class, 'storeOrder'])
         ->name('manufacturing.orders.store')
+        ->middleware('permission:manufacturing.manage');
+    Route::post('/manufacturing/orders/{productionOrder}/complete', [ManufacturingController::class, 'complete'])
+        ->name('manufacturing.orders.complete')
         ->middleware('permission:manufacturing.manage');
 });
 
