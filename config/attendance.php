@@ -1,21 +1,47 @@
 <?php
 
 return [
+    /*
+     * Compatibility profiles describe connection families BusinessOS knows how
+     * to configure. Some vendors expose a native HTTP/TCP interface while
+     * others are best integrated through their vendor server/SDK or the secure
+     * BusinessOS push bridge.
+     */
     'brands' => [
-        'zkteco' => ['label' => 'ZKTeco', 'connections' => ['zkteco_tcp', 'adms_push', 'http_api']],
-        'suprema' => ['label' => 'Suprema', 'connections' => ['biostar2_api', 'push_webhook']],
-        'hikvision' => ['label' => 'Hikvision', 'connections' => ['isapi', 'push_webhook']],
-        'anviz' => ['label' => 'Anviz', 'connections' => ['crosschex_api', 'tcp_socket', 'push_webhook']],
+        'zkteco' => ['label' => 'ZKTeco / ZK-compatible', 'connections' => ['zkteco_tcp', 'adms_push', 'http_api', 'push_webhook']],
+        'essl' => ['label' => 'eSSL', 'connections' => ['zkteco_tcp', 'adms_push', 'http_api', 'push_webhook']],
+        'realtime' => ['label' => 'Realtime Biometrics', 'connections' => ['zkteco_tcp', 'http_api', 'push_webhook']],
+        'bioenable' => ['label' => 'BioEnable', 'connections' => ['zkteco_tcp', 'http_api', 'push_webhook']],
+        'hikvision' => ['label' => 'Hikvision', 'connections' => ['isapi', 'http_api', 'push_webhook']],
         'dahua' => ['label' => 'Dahua', 'connections' => ['http_api', 'push_webhook']],
-        'essl' => ['label' => 'eSSL', 'connections' => ['zkteco_tcp', 'adms_push', 'http_api']],
+        'suprema' => ['label' => 'Suprema', 'connections' => ['suprema_device_tcp', 'biostar2_api', 'http_api', 'push_webhook']],
+        'anviz' => ['label' => 'Anviz', 'connections' => ['anviz_tcp', 'crosschex_api', 'http_api', 'push_webhook']],
+        'matrix' => ['label' => 'Matrix COSEC', 'connections' => ['http_api', 'tcp_socket', 'push_webhook']],
+        'cpplus' => ['label' => 'CP PLUS', 'connections' => ['http_api', 'tcp_socket', 'push_webhook']],
+        'mantra' => ['label' => 'Mantra', 'connections' => ['http_api', 'tcp_socket', 'push_webhook']],
+        'nitgen' => ['label' => 'Nitgen', 'connections' => ['http_api', 'tcp_socket', 'push_webhook']],
+        'virdi' => ['label' => 'VIRDI / UnionCommunity', 'connections' => ['http_api', 'tcp_socket', 'push_webhook']],
+        'idemia' => ['label' => 'IDEMIA / Morpho', 'connections' => ['http_api', 'tcp_socket', 'push_webhook']],
         'generic' => ['label' => 'Generic / Other', 'connections' => ['tcp_socket', 'http_api', 'push_webhook']],
     ],
 
     'connections' => [
         'zkteco_tcp' => [
-            'label' => 'ZKTeco TCP/IP',
+            'label' => 'ZKTeco-compatible TCP/IP',
             'transport' => 'tcp',
             'default_port' => 4370,
+            'requires' => ['host', 'port'],
+        ],
+        'anviz_tcp' => [
+            'label' => 'Anviz device TCP/IP',
+            'transport' => 'tcp',
+            'default_port' => 5010,
+            'requires' => ['host', 'port'],
+        ],
+        'suprema_device_tcp' => [
+            'label' => 'Suprema device TCP/IP',
+            'transport' => 'tcp',
+            'default_port' => 51211,
             'requires' => ['host', 'port'],
         ],
         'adms_push' => [
@@ -25,7 +51,7 @@ return [
             'requires' => ['serial_number'],
         ],
         'biostar2_api' => [
-            'label' => 'BioStar 2 API',
+            'label' => 'Suprema BioStar 2 API',
             'transport' => 'http',
             'default_port' => 443,
             'requires' => ['base_url', 'username', 'password'],
@@ -33,11 +59,11 @@ return [
         'isapi' => [
             'label' => 'Hikvision ISAPI',
             'transport' => 'http',
-            'default_port' => 443,
+            'default_port' => 80,
             'requires' => ['base_url', 'username', 'password'],
         ],
         'crosschex_api' => [
-            'label' => 'CrossChex API / Cloud',
+            'label' => 'Anviz CrossChex API / Server',
             'transport' => 'http',
             'default_port' => 443,
             'requires' => ['base_url'],
@@ -60,6 +86,62 @@ return [
             'default_port' => null,
             'requires' => ['serial_number'],
         ],
+    ],
+
+    /*
+     * Discovery only performs short, read-only probes against a user supplied
+     * IP. Brand detection is deliberately a confidence score rather than a
+     * guarantee: OEM/rebadged devices often expose identical ports.
+     */
+    'discovery' => [
+        'tcp_timeout_seconds' => 0.35,
+        'http_timeout_seconds' => 1.25,
+        'ports' => [
+            4370 => ['brand' => 'zkteco', 'connection' => 'zkteco_tcp', 'weight' => 72],
+            5010 => ['brand' => 'anviz', 'connection' => 'anviz_tcp', 'weight' => 80],
+            51211 => ['brand' => 'suprema', 'connection' => 'suprema_device_tcp', 'weight' => 82],
+            80 => ['brand' => null, 'connection' => 'http_api', 'weight' => 15],
+            443 => ['brand' => null, 'connection' => 'http_api', 'weight' => 15],
+            8000 => ['brand' => null, 'connection' => 'http_api', 'weight' => 12],
+            8080 => ['brand' => null, 'connection' => 'http_api', 'weight' => 12],
+            8443 => ['brand' => null, 'connection' => 'http_api', 'weight' => 12],
+            3000 => ['brand' => null, 'connection' => 'http_api', 'weight' => 10],
+            3002 => ['brand' => null, 'connection' => 'http_api', 'weight' => 10],
+            9000 => ['brand' => null, 'connection' => 'http_api', 'weight' => 10],
+        ],
+        'fingerprints' => [
+            'hikvision' => ['hikvision', 'isapi', 'minmoe'],
+            'dahua' => ['dahua'],
+            'zkteco' => ['zkteco', 'zkaccess', 'iclock', 'zksoftware'],
+            'essl' => ['essl'],
+            'realtime' => ['realtime biometrics', 'realtime biometric'],
+            'bioenable' => ['bioenable'],
+            'suprema' => ['suprema', 'biostar'],
+            'anviz' => ['anviz', 'crosschex'],
+            'matrix' => ['matrix cosec', 'cosec'],
+            'cpplus' => ['cp plus', 'cpplus'],
+            'mantra' => ['mantra'],
+            'nitgen' => ['nitgen'],
+            'virdi' => ['virdi', 'unioncommunity', 'union community'],
+            'idemia' => ['idemia', 'morpho', 'sagem'],
+        ],
+    ],
+
+    'model_families' => [
+        'zkteco' => ['K40', 'F18', 'iClock', 'uFace', 'MB20 / MB360', 'SpeedFace', 'Horus', 'SilkBio'],
+        'essl' => ['K-series / X-series ZK-compatible terminals', 'Face / Fingerprint attendance terminals'],
+        'realtime' => ['Fingerprint attendance terminals', 'Face attendance terminals'],
+        'bioenable' => ['Fingerprint attendance terminals', 'Face attendance terminals'],
+        'hikvision' => ['MinMoe face terminals', 'Access-control attendance terminals'],
+        'dahua' => ['ASI access-control terminals', 'Face-recognition attendance terminals'],
+        'suprema' => ['BioStation', 'FaceStation', 'BioLite', 'BioEntry', 'X-Station / XPass'],
+        'anviz' => ['W1 / W2', 'EP30', 'A350', 'OA1000', 'VF30 / VP30'],
+        'matrix' => ['COSEC attendance / access terminals'],
+        'cpplus' => ['Biometric attendance / access terminals'],
+        'mantra' => ['Biometric attendance terminals'],
+        'nitgen' => ['eNBio / NAC attendance-access terminals'],
+        'virdi' => ['AC / UBio attendance-access terminals'],
+        'idemia' => ['Morpho / Sigma biometric terminals'],
     ],
 
     'verification_types' => [

@@ -40,7 +40,7 @@
     <x-ui.input name="password" type="password" :label="__('attendance.fields.password')" :helper="$editing ? __('attendance.leave_blank_to_keep') : null" autocomplete="new-password" maxlength="1000" />
 
     <div class="sm:col-span-2">
-        <x-ui.input name="api_key" type="password" :label="__('attendance.fields.api_key')" :helper="$editing ? __('common.leave_blank_to_keep') : null" autocomplete="new-password" maxlength="2000" />
+        <x-ui.input name="api_key" type="password" :label="__('attendance.fields.api_key')" :helper="$editing ? __('attendance.leave_blank_to_keep') : null" autocomplete="new-password" maxlength="2000" />
     </div>
 
     <x-ui.input name="timeout_seconds" type="number" min="1" max="60" :label="__('attendance.fields.timeout_seconds')" :value="old('timeout_seconds', $device->timeout_seconds ?? 8)" />

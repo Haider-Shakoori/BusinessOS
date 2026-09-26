@@ -9,6 +9,7 @@ use App\Models\Business;
 use App\Models\Employee;
 use App\Models\User;
 use App\Services\AttendanceDeviceConnectionService;
+use App\Services\AttendanceDeviceDiscoveryService;
 use App\Services\BusinessSettings;
 use App\Services\PayrollAttendanceService;
 use Database\Seeders\PermissionSeeder;
@@ -70,7 +71,17 @@ class AttendanceDeviceTest extends TestCase
         $this->assertArrayHasKey('anviz', config('attendance.brands'));
         $this->assertArrayHasKey('dahua', config('attendance.brands'));
         $this->assertArrayHasKey('essl', config('attendance.brands'));
+        $this->assertArrayHasKey('realtime', config('attendance.brands'));
+        $this->assertArrayHasKey('bioenable', config('attendance.brands'));
+        $this->assertArrayHasKey('matrix', config('attendance.brands'));
+        $this->assertArrayHasKey('cpplus', config('attendance.brands'));
+        $this->assertArrayHasKey('mantra', config('attendance.brands'));
+        $this->assertArrayHasKey('nitgen', config('attendance.brands'));
+        $this->assertArrayHasKey('virdi', config('attendance.brands'));
+        $this->assertArrayHasKey('idemia', config('attendance.brands'));
         $this->assertSame(4370, config('attendance.connections.zkteco_tcp.default_port'));
+        $this->assertSame(5010, config('attendance.connections.anviz_tcp.default_port'));
+        $this->assertSame(51211, config('attendance.connections.suprema_device_tcp.default_port'));
         $this->assertFalse(config('settings.definitions.attendance.enabled.default'));
         $this->assertSame('attendance', config('settings.definitions.attendance.payroll_source.default'));
     }
@@ -227,6 +238,68 @@ class AttendanceDeviceTest extends TestCase
                 'timestamp' => '2026-09-10T08:00:00Z',
             ]],
         ], ['Authorization' => 'Bearer '.$device->push_token])->assertNotFound();
+    }
+
+    public function test_discovery_classifies_common_attendance_protocol_families_without_network_access(): void
+    {
+        $discovery = app(AttendanceDeviceDiscoveryService::class);
+
+        $zk = $discovery->classify('192.168.1.20', [4370]);
+        $this->assertSame('zkteco', $zk['brand']);
+        $this->assertSame('zkteco_tcp', $zk['connection_type']);
+        $this->assertSame(4370, $zk['port']);
+        $this->assertGreaterThanOrEqual(70, $zk['confidence']);
+
+        $anviz = $discovery->classify('192.168.1.21', [5010]);
+        $this->assertSame('anviz', $anviz['brand']);
+        $this->assertSame('anviz_tcp', $anviz['connection_type']);
+        $this->assertSame(5010, $anviz['port']);
+
+        $suprema = $discovery->classify('192.168.1.22', [51211]);
+        $this->assertSame('suprema', $suprema['brand']);
+        $this->assertSame('suprema_device_tcp', $suprema['connection_type']);
+        $this->assertSame(51211, $suprema['port']);
+
+        $hikvision = $discovery->classify('192.168.1.23', [80], [[
+            'scheme' => 'http',
+            'port' => 80,
+            'status' => 401,
+            'text' => 'Hikvision ISAPI',
+            'isapi' => true,
+        ]]);
+        $this->assertSame('hikvision', $hikvision['brand']);
+        $this->assertSame('isapi', $hikvision['connection_type']);
+        $this->assertSame('http://192.168.1.23', $hikvision['base_url']);
+        $this->assertGreaterThanOrEqual(90, $hikvision['confidence']);
+    }
+
+    public function test_discovery_prefers_exact_http_brand_fingerprint_over_shared_zk_port(): void
+    {
+        $result = app(AttendanceDeviceDiscoveryService::class)->classify('10.10.10.10', [80, 4370], [[
+            'scheme' => 'http',
+            'port' => 80,
+            'status' => 200,
+            'text' => 'eSSL Smart Office biometric attendance',
+        ]]);
+
+        $this->assertSame('essl', $result['brand']);
+        $this->assertSame('zkteco_tcp', $result['connection_type']);
+        $this->assertSame(4370, $result['port']);
+        $this->assertGreaterThanOrEqual(90, $result['confidence']);
+    }
+
+    public function test_discovery_rejects_loopback_and_link_local_targets_before_network_probe(): void
+    {
+        $discovery = app(AttendanceDeviceDiscoveryService::class);
+
+        foreach (['127.0.0.1', '169.254.169.254', '::1', 'fe80::1', '::ffff:127.0.0.1'] as $ip) {
+            try {
+                $discovery->discover($ip);
+                $this->fail('Expected invalid device IP: '.$ip);
+            } catch (\InvalidArgumentException $exception) {
+                $this->assertNotSame('', $exception->getMessage());
+            }
+        }
     }
 
     public function test_push_connection_type_reports_ready_without_contacting_external_network(): void
