@@ -135,8 +135,21 @@ class AccountingPostingService
         );
     }
 
-    public function postSupplierOpeningBalance(Supplier $supplier): ?JournalEntry
+    public function postSupplierOpeningBalance(Supplier $supplier, bool $newRevision = false): ?JournalEntry
     {
+        if (! $newRevision) {
+            $existing = AccountingPosting::query()
+                ->where('source_type', Supplier::class)
+                ->where('source_id', $supplier->id)
+                ->with('journalEntry')
+                ->latest('id')
+                ->first();
+
+            if ($existing !== null) {
+                return $existing->journalEntry;
+            }
+        }
+
         $amount = Decimal::normalize((string) ($supplier->opening_balance ?? '0'));
 
         if (! Decimal::gt($amount, '0')) {
@@ -166,7 +179,7 @@ class AccountingPostingService
     {
         $this->reverseActiveSource(Supplier::class, $supplier->id, 'Supplier opening balance updated');
 
-        return $this->postSupplierOpeningBalance($supplier);
+        return $this->postSupplierOpeningBalance($supplier, true);
     }
 
     public function reverseSupplierOpeningBalance(Supplier $supplier): ?JournalEntry
@@ -174,8 +187,21 @@ class AccountingPostingService
         return $this->reverseActiveSource(Supplier::class, $supplier->id, 'Supplier opening balance removed');
     }
 
-    public function postExpense(Expense $expense): JournalEntry
+    public function postExpense(Expense $expense, bool $newRevision = false): JournalEntry
     {
+        if (! $newRevision) {
+            $existing = AccountingPosting::query()
+                ->where('source_type', Expense::class)
+                ->where('source_id', $expense->id)
+                ->with('journalEntry')
+                ->latest('id')
+                ->first();
+
+            if ($existing !== null) {
+                return $existing->journalEntry;
+            }
+        }
+
         $revision = AccountingPosting::query()
             ->where('source_type', Expense::class)
             ->where('source_id', $expense->id)
@@ -202,7 +228,7 @@ class AccountingPostingService
     {
         $this->reverseActiveSource(Expense::class, $expense->id, 'Expense updated');
 
-        return $this->postExpense($expense);
+        return $this->postExpense($expense, true);
     }
 
     public function reverseExpense(Expense $expense): ?JournalEntry
