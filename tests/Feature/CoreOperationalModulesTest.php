@@ -18,6 +18,7 @@ use App\Models\Warehouse;
 use Database\Seeders\PermissionSeeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use Tests\TestCase;
 
@@ -94,7 +95,7 @@ class CoreOperationalModulesTest extends TestCase
             'bom_items',
             'production_orders',
         ] as $table) {
-            $this->assertTrue(\Illuminate\Support\Facades\Schema::hasTable($table));
+            $this->assertTrue(Schema::hasTable($table));
         }
 
         foreach (['inventory', 'purchasing', 'accounting', 'crm', 'manufacturing'] as $module) {
