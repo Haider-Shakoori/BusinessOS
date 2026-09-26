@@ -253,10 +253,10 @@ class FieldPulseIntegrationApiTest extends TestCase
             $customerExternalId,
         );
 
-        $this->assertDatabaseCount('fieldpulse_events', 3);
-        $this->assertDatabaseCount('fieldpulse_entity_links', 1);
-        $this->assertDatabaseCount('fieldpulse_orders', 1);
-        $this->assertDatabaseCount('fieldpulse_collections', 1);
+        $this->assertDatabaseCount('field_pulse_events', 3);
+        $this->assertDatabaseCount('field_pulse_entity_links', 1);
+        $this->assertDatabaseCount('field_pulse_orders', 1);
+        $this->assertDatabaseCount('field_pulse_collections', 1);
         $this->assertSame(
             1,
             Customer::query()
@@ -294,10 +294,10 @@ class FieldPulseIntegrationApiTest extends TestCase
                 $customerExternalId,
             );
 
-        $this->assertDatabaseCount('fieldpulse_events', 3);
-        $this->assertDatabaseCount('fieldpulse_entity_links', 1);
-        $this->assertDatabaseCount('fieldpulse_orders', 1);
-        $this->assertDatabaseCount('fieldpulse_collections', 1);
+        $this->assertDatabaseCount('field_pulse_events', 3);
+        $this->assertDatabaseCount('field_pulse_entity_links', 1);
+        $this->assertDatabaseCount('field_pulse_orders', 1);
+        $this->assertDatabaseCount('field_pulse_collections', 1);
     }
 
     private function headers(string $organizationKey): array
