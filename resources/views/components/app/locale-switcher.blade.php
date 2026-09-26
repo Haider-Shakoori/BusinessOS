@@ -1,5 +1,6 @@
 @props([
     'current' => null,
+    'showLabelOnMobile' => false,
 ])
 
 @php
@@ -17,8 +18,8 @@
     <x-slot:trigger>
         <span class="flex items-center gap-1.5 font-medium text-slate-700 dark:text-slate-200">
             <x-ui.icon name="globe" class="size-3.5 text-slate-600 dark:text-slate-300" />
-            <span class="hidden sm:inline">{{ $currentLocale['native'] ?? strtoupper($current) }}</span>
-            <x-ui.icon name="chevron-down" class="hidden size-3 text-slate-400 sm:block" />
+            <span class="{{ $showLabelOnMobile ? 'inline' : 'hidden sm:inline' }}">{{ $currentLocale['native'] ?? strtoupper($current) }}</span>
+            <x-ui.icon name="chevron-down" class="{{ $showLabelOnMobile ? 'block' : 'hidden sm:block' }} size-3 text-slate-400" />
         </span>
     </x-slot:trigger>
     <x-slot:items>
