@@ -160,13 +160,15 @@ return [
             'key' => 'smart-assistant',
             'label' => 'navigation.smart_assistant',
             'icon' => 'light-bulb',
-            'placeholder' => 'smart-assistant',
+            'route' => 'system.assistant.index',
+            'permission' => 'assistant.use',
         ],
         [
             'key' => 'saas-businesses',
             'label' => 'navigation.saas_businesses',
             'icon' => 'saas',
-            'placeholder' => 'saas-businesses',
+            'route' => 'system.businesses.index',
+            'permission' => 'businesses.view',
         ],
         [
             'key' => 'users-roles',
