@@ -39,12 +39,17 @@ class PaymentController extends Controller
             ->with([
                 'allocations.invoice' => fn ($query) => $query->withTrashed(),
                 'allocations.invoice.customer',
+                'supplier',
                 'createdBy',
             ])
             ->when($searchTerm !== '', function ($query) use ($searchTerm) {
                 $query->where(function ($query) use ($searchTerm) {
                     $query->where('payment_number', 'like', "%{$searchTerm}%")
                         ->orWhere('reference', 'like', "%{$searchTerm}%")
+                        ->orWhereHas('supplier', function ($query) use ($searchTerm) {
+                            $query->where('name', 'like', "%{$searchTerm}%")
+                                ->orWhere('code', 'like', "%{$searchTerm}%");
+                        })
                         ->orWhereHas('allocations.invoice', function ($query) use ($searchTerm) {
                             $query->withTrashed()
                                 ->where('invoice_number', 'like', "%{$searchTerm}%")
@@ -72,6 +77,7 @@ class PaymentController extends Controller
             'payment' => $payment->load([
                 'createdBy',
                 'reversedBy',
+                'supplier',
                 'allocations.invoice' => fn ($query) => $query->withTrashed(),
                 'allocations.invoice.customer',
             ]),
