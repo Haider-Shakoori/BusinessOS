@@ -20,7 +20,7 @@ class StoreBusinessRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:255'],
             'industry' => ['nullable', 'string', Rule::in(array_keys(config('onboarding.industries', [])))],
-            'country' => ['sometimes', 'required', 'string', Rule::in(array_keys(config('onboarding.countries', [])))],
+            'country' => ['sometimes', 'required', 'string', Rule::in(array_keys(config('countries.profiles', [])))],
             'currency' => ['sometimes', 'required', 'string', 'size:3', Rule::exists('currencies', 'code')->where('is_active', true)],
             'timezone' => ['sometimes', 'required', 'string', Rule::in(array_keys(config('onboarding.timezones', [])))],
             'address' => ['nullable', 'string', 'max:1000'],
