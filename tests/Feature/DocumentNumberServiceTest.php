@@ -108,6 +108,8 @@ class DocumentNumberServiceTest extends TestCase
         $this->assertSame('PO', config('numbering.prefixes.purchase_order'));
         $this->assertSame('POS', config('numbering.prefixes.pos_sale'));
         $this->assertSame('PRL', config('numbering.prefixes.payroll_run'));
+        $this->assertSame('TRF', config('numbering.prefixes.warehouse_transfer'));
+        $this->assertSame('RET', config('numbering.prefixes.inventory_return'));
         $this->assertSame(6, config('numbering.padding'));
 
         // Purchasing is now a real Batch 30 module; the generic future
@@ -135,6 +137,8 @@ class DocumentNumberServiceTest extends TestCase
         $this->assertSame('PO-000001', $this->numbering()->next(DocumentType::PurchaseOrder));
         $this->assertSame('POS-000001', $this->numbering()->next(DocumentType::PosSale));
         $this->assertSame('PRL-000001', $this->numbering()->next(DocumentType::PayrollRun));
+        $this->assertSame('TRF-000001', $this->numbering()->next(DocumentType::WarehouseTransfer));
+        $this->assertSame('RET-000001', $this->numbering()->next(DocumentType::InventoryReturn));
 
         $this->assertDatabaseHas('document_number_sequences', [
             'business_id' => $business->id,
