@@ -32,7 +32,7 @@ return [
         [
             'key' => 'sales',
             'label' => 'navigation.sales',
-            'icon' => 'chart-bar',
+            'icon' => 'chart-line',
             'expandable' => true,
             'active_prefixes' => ['quotations.', 'invoices.', 'payments.'],
             'module' => 'sales',
@@ -40,7 +40,7 @@ return [
         [
             'key' => 'quotations',
             'label' => 'navigation.quotations',
-            'icon' => 'document-text',
+            'icon' => 'documents',
             'route' => 'quotations.index',
             'module' => 'sales',
             'permission' => 'quotations.view',
@@ -48,7 +48,7 @@ return [
         [
             'key' => 'invoices',
             'label' => 'navigation.invoices',
-            'icon' => 'receipt-percent',
+            'icon' => 'clipboard-document-list',
             'route' => 'invoices.index',
             'module' => 'sales',
             'permission' => 'invoices.view',
@@ -56,7 +56,7 @@ return [
         [
             'key' => 'payments',
             'label' => 'navigation.payments',
-            'icon' => 'banknotes',
+            'icon' => 'payment-card',
             'route' => 'payments.index',
             'module' => 'sales',
             'permission' => 'payments.view',
@@ -64,7 +64,7 @@ return [
         [
             'key' => 'expenses',
             'label' => 'navigation.expenses',
-            'icon' => 'receipt-percent',
+            'icon' => 'receipt-list',
             'route' => 'expenses.index',
             'module' => 'expenses',
             'permission' => 'expenses.view',
@@ -72,7 +72,7 @@ return [
         [
             'key' => 'products',
             'label' => 'navigation.products',
-            'icon' => 'cube',
+            'icon' => 'gift',
             'route' => 'products.index',
             'module' => 'products',
             'permission' => 'products.view',
@@ -92,26 +92,26 @@ return [
         [
             'key' => 'pos',
             'label' => 'navigation.pos',
-            'icon' => 'calculator',
+            'icon' => 'building-storefront',
             'placeholder' => 'pos',
         ],
         [
             'key' => 'accounting',
             'label' => 'navigation.accounting',
-            'icon' => 'credit-card',
+            'icon' => 'ledger',
             'expandable' => true,
             'placeholder' => 'accounting',
         ],
         [
             'key' => 'manufacturing',
             'label' => 'navigation.manufacturing',
-            'icon' => 'building-office',
+            'icon' => 'factory',
             'placeholder' => 'manufacturing',
         ],
         [
             'key' => 'crm',
             'label' => 'navigation.crm',
-            'icon' => 'chat-bubble',
+            'icon' => 'contact-card',
             'expandable' => true,
             'placeholder' => 'crm',
         ],
@@ -128,6 +128,7 @@ return [
             'label' => 'navigation.notifications',
             'icon' => 'bell',
             'placeholder' => 'notifications',
+            'badge' => 3,
         ],
         [
             'key' => 'global-search',
@@ -138,19 +139,19 @@ return [
         [
             'key' => 'activity-log',
             'label' => 'navigation.activity_log',
-            'icon' => 'clock',
+            'icon' => 'history',
             'placeholder' => 'activity-log',
         ],
         [
             'key' => 'smart-assistant',
             'label' => 'navigation.smart_assistant',
-            'icon' => 'sparkles',
+            'icon' => 'light-bulb',
             'placeholder' => 'smart-assistant',
         ],
         [
             'key' => 'saas-businesses',
             'label' => 'navigation.saas_businesses',
-            'icon' => 'building-storefront',
+            'icon' => 'saas',
             'placeholder' => 'saas-businesses',
         ],
         [
@@ -162,7 +163,7 @@ return [
         [
             'key' => 'modules',
             'label' => 'navigation.modules',
-            'icon' => 'squares-2x2',
+            'icon' => 'module-grid',
             'placeholder' => 'modules',
         ],
         [

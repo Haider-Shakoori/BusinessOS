@@ -28,7 +28,7 @@
 
     @if ($badge !== null)
         <span
-            class="inline-flex min-w-5 items-center justify-center rounded-full bg-rose-500 px-1.5 py-0.5 text-[10px] font-bold leading-none text-white"
+            class="inline-flex size-5 items-center justify-center rounded-[5px] bg-rose-500 text-[10px] font-bold leading-none text-white shadow-[0_0_0_1px_rgba(244,63,94,0.12)]"
             x-bind:class="collapsed ? 'absolute end-0 top-0' : ''"
         >
             {{ $badge }}
