@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\ProductType;
 use App\Models\Product;
 use App\Models\Warehouse;
 use App\Models\WarehouseTransfer;
@@ -19,7 +20,7 @@ class WarehouseTransferController extends Controller
     {
         return view('inventory.transfers', [
             'warehouses' => Warehouse::query()->where('is_active', true)->orderBy('name')->get(),
-            'products' => Product::query()->orderBy('name')->get(),
+            'products' => Product::query()->where('type', ProductType::Product->value)->orderBy('name')->get(),
             'transfers' => WarehouseTransfer::query()
                 ->with(['sourceWarehouse', 'destinationWarehouse', 'items.product'])
                 ->latest('id')
