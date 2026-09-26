@@ -20,7 +20,7 @@ final class SupplierPaymentService
     }
 
     /**
-     * @param array{supplier_id:int,purchase_order_id?:int|null,payment_date:string,amount:string|int|float,payment_method:string,reference?:string|null,notes?:string|null} $validated
+     * @param  array{supplier_id: int, purchase_order_id?: int|null, payment_date: string, amount: string|int|float, payment_method: string, reference?: string|null, notes?: string|null}  $validated
      */
     public function record(array $validated, int $createdBy): Payment
     {
