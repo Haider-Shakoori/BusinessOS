@@ -101,7 +101,7 @@ final class SupplierImportMapper extends ImportMapper
     }
 
     /**
-     * @param array<string,string|null> $values
+     * @param  array<string,string|null>  $values
      */
     public function createRow(array $values, int $businessId): void
     {
