@@ -12,6 +12,7 @@ use App\Services\PaymentService;
 use App\Services\SupplierLedgerService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
@@ -72,13 +73,17 @@ class SupplierController extends Controller
             $data['code'] = Str::upper($data['code']);
         }
 
-        $supplier = Supplier::create($data + ['is_active' => true]);
+        $supplier = DB::transaction(function () use ($data): Supplier {
+            $supplier = Supplier::create($data + ['is_active' => true]);
 
-        if (empty($supplier->code)) {
-            $supplier->update(['code' => $this->generatedCode($supplier)]);
-        }
+            if (empty($supplier->code)) {
+                $supplier->update(['code' => $this->generatedCode($supplier)]);
+            }
 
-        $this->accounting->postSupplierOpeningBalance($supplier);
+            $this->accounting->postSupplierOpeningBalance($supplier);
+
+            return $supplier;
+        });
 
         return redirect()
             ->route('suppliers.show', $supplier)
@@ -107,8 +112,11 @@ class SupplierController extends Controller
     {
         $data = $this->validatedSupplier($request, $context, $supplier);
         $data['code'] = Str::upper((string) $data['code']);
-        $supplier->update($data);
-        $this->accounting->replaceSupplierOpeningBalance($supplier);
+
+        DB::transaction(function () use ($supplier, $data): void {
+            $supplier->update($data);
+            $this->accounting->replaceSupplierOpeningBalance($supplier);
+        });
 
         return redirect()
             ->route('suppliers.show', $supplier)
@@ -121,8 +129,10 @@ class SupplierController extends Controller
             return back()->withErrors(['supplier' => __('suppliers.validation.has_history')]);
         }
 
-        $this->accounting->reverseSupplierOpeningBalance($supplier);
-        $supplier->delete();
+        DB::transaction(function () use ($supplier): void {
+            $this->accounting->reverseSupplierOpeningBalance($supplier);
+            $supplier->delete();
+        });
 
         return redirect()
             ->route('suppliers.index')
