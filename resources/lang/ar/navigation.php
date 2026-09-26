@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'workspace' => 'مساحة العمل',
     'overview' => 'نظرة عامة',
     'business' => 'الأعمال',
     'insights' => 'الرؤى',
@@ -9,8 +10,24 @@ return [
     'dashboard' => 'لوحة التحكم',
     'customers' => 'العملاء',
     'sales' => 'المبيعات',
-    'products' => 'المنتجات',
+    'quotations' => 'عروض الأسعار',
+    'invoices' => 'الفواتير',
+    'payments' => 'المدفوعات',
     'expenses' => 'المصروفات',
+    'products' => 'المنتجات',
+    'inventory' => 'المخزون',
+    'purchasing' => 'المشتريات',
+    'pos' => 'نقطة البيع',
+    'accounting' => 'المحاسبة',
+    'manufacturing' => 'التصنيع',
+    'crm' => 'إدارة العملاء',
     'reports' => 'التقارير',
+    'notifications' => 'الإشعارات',
+    'global_search' => 'البحث الشامل',
+    'activity_log' => 'سجل النشاط',
+    'smart_assistant' => 'المساعد الذكي',
+    'saas_businesses' => 'SaaS / الأنشطة',
+    'users_roles' => 'المستخدمون والأدوار',
+    'modules' => 'الوحدات',
     'settings' => 'الإعدادات',
 ];
