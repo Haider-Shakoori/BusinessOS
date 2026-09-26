@@ -63,8 +63,8 @@ return new class extends Migration
             $table->string('device_user_id', 100);
             $table->timestamps();
 
-            $table->unique(['attendance_device_id', 'device_user_id']);
-            $table->unique(['attendance_device_id', 'employee_id']);
+            $table->unique(['attendance_device_id', 'device_user_id'], 'att_dev_user_unique');
+            $table->unique(['attendance_device_id', 'employee_id'], 'att_dev_employee_unique');
             $table->index(['business_id', 'employee_id']);
         });
 
