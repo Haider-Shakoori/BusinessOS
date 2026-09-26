@@ -69,6 +69,8 @@ class WarehouseTransferService
             }
 
             foreach ($locked->items as $item) {
+                Product::query()->whereKey($item->product_id)->lockForUpdate()->firstOrFail();
+
                 $available = (float) StockMovement::query()
                     ->where('warehouse_id', $locked->source_warehouse_id)
                     ->where('product_id', $item->product_id)
