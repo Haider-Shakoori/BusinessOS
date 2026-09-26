@@ -8,6 +8,7 @@ use App\Models\Role;
 use App\Models\User;
 use App\Services\BusinessContext;
 use App\Services\BusinessNotificationService;
+use App\Services\SaasUsageService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -45,10 +46,12 @@ class UserRoleController extends Controller
         Request $request,
         BusinessContext $context,
         BusinessNotificationService $notifications,
+        SaasUsageService $saasUsage,
     ): RedirectResponse {
-        $businessId = $context->currentId();
+        $business = $context->current();
+        $businessId = $business?->id;
 
-        abort_unless($businessId, 404);
+        abort_unless($business, 404);
 
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
@@ -60,6 +63,19 @@ class UserRoleController extends Controller
                 Rule::exists('roles', 'id')->where('business_id', $businessId),
             ],
         ]);
+
+        $existingUser = User::query()
+            ->where('email', strtolower($data['email']))
+            ->first();
+        $alreadyMember = $existingUser?->memberships()
+            ->where('business_id', $businessId)
+            ->exists() ?? false;
+
+        if (! $alreadyMember && ! $saasUsage->canAdd($business, 'members')) {
+            throw ValidationException::withMessages([
+                'email' => __('saas.limit_reached', ['resource' => __('saas.members')]),
+            ]);
+        }
 
         $role = Role::query()
             ->where('business_id', $businessId)
