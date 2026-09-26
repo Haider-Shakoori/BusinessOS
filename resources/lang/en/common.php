@@ -21,7 +21,9 @@ return [
     'reports' => 'Reports',
     'settings' => 'Settings',
 
-    'search' => 'Search…',
+    'search' => 'Search anything... (customers, invoices, products, etc.)',
+    'search_shortcut' => 'K',
+    'notification_center' => 'Notification center',
     'filters' => 'Filters',
     'search_coming_soon' => 'Global search (coming soon)',
     'notifications' => 'Notifications',
