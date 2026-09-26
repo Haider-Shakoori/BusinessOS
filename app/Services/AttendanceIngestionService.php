@@ -12,7 +12,7 @@ use Illuminate\Support\Str;
 class AttendanceIngestionService
 {
     /**
-     * @param list<array<string, mixed>> $records
+     * @param  list<array<string, mixed>>  $records
      * @return array{accepted: int, duplicates: int, unmapped: int}
      */
     public function ingest(AttendanceDevice $device, array $records): array
@@ -60,7 +60,7 @@ class AttendanceIngestionService
                 continue;
             }
 
-            $log = new AttendanceLog();
+            $log = new AttendanceLog;
             $log->forceFill([
                 'business_id' => $device->business_id,
                 'attendance_device_id' => $device->id,
