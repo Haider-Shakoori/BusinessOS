@@ -7,6 +7,14 @@ return new class extends Migration
 {
     public function up(): void
     {
+        // Fresh installations are seeded immediately after migrations, which
+        // preserves the canonical config order used by the authorization
+        // catalogue. This migration exists only to upgrade installations that
+        // already have a permission catalogue from earlier batches.
+        if (DB::table('permissions')->count() === 0) {
+            return;
+        }
+
         $permissions = [
             'assistant.use' => 'assistant',
             'businesses.view' => 'businesses',
