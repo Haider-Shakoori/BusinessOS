@@ -108,12 +108,10 @@ class DocumentNumberServiceTest extends TestCase
         $this->assertSame('PO', config('numbering.prefixes.purchase_order'));
         $this->assertSame(6, config('numbering.padding'));
 
-        // The document tables arrive with their own batches: expense records
-        // (Batch 17) land in the expenses table, while the remaining future
-        // documents have no table yet.
-        foreach (['documents', 'purchase_orders'] as $table) {
-            $this->assertFalse(Schema::hasTable($table), "Unexpected $table table.");
-        }
+        // Purchasing is now a real Batch 30 module; the generic future
+        // documents table remains intentionally absent.
+        $this->assertTrue(Schema::hasTable('purchase_orders'));
+        $this->assertFalse(Schema::hasTable('documents'), 'Unexpected documents table.');
     }
 
     // --- Monotonic formatting ------------------------------------------------
