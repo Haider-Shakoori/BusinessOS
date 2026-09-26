@@ -13,6 +13,7 @@ final class BusinessOnboardingService
     public function __construct(
         private readonly BusinessContext $context,
         private readonly BusinessSettings $settings,
+        private readonly SaasUsageService $saasUsage,
     ) {
         //
     }
@@ -33,6 +34,7 @@ final class BusinessOnboardingService
             }
 
             $business->provisionDefaultModules();
+            $this->saasUsage->provisionDefaultSubscription($business);
 
             $selectedModules = array_values(array_unique(array_merge(
                 ['dashboard', 'settings'],
