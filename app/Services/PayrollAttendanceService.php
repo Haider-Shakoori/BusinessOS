@@ -38,17 +38,19 @@ class PayrollAttendanceService
 
         foreach ($days as $dayLogs) {
             /** @var Collection<int, AttendanceLog> $dayLogs */
-            if ($dayLogs->count() < 2) {
-                $missingCheckoutDays++;
+            $ordered = $dayLogs->values();
 
-                continue;
+            if ($ordered->count() % 2 !== 0) {
+                $missingCheckoutDays++;
             }
 
-            $first = $dayLogs->first()->occurred_at;
-            $last = $dayLogs->last()->occurred_at;
+            for ($index = 0; $index + 1 < $ordered->count(); $index += 2) {
+                $checkIn = $ordered[$index]->occurred_at;
+                $checkOut = $ordered[$index + 1]->occurred_at;
 
-            if ($last->greaterThan($first)) {
-                $workedMinutes += (int) floor($first->diffInMinutes($last));
+                if ($checkOut->greaterThan($checkIn)) {
+                    $workedMinutes += (int) floor($checkIn->diffInMinutes($checkOut));
+                }
             }
         }
 
