@@ -9,6 +9,9 @@ use Illuminate\Support\Str;
 
 final class SupplierImportMapper extends ImportMapper
 {
+    /** @var array<string, true> */
+    private array $seenCodes = [];
+
     public function resourceKey(): string
     {
         return 'suppliers';
@@ -48,11 +51,19 @@ final class SupplierImportMapper extends ImportMapper
 
             if (mb_strlen($code) > 50 || preg_match('/^[A-Z0-9_-]+$/', $code) !== 1) {
                 $errors[] = __('suppliers.validation.code_invalid');
+            } elseif (isset($this->seenCodes[$code])) {
+                $errors[] = __('suppliers.validation.code_duplicate_file');
             } elseif (Supplier::withoutGlobalScope('business')
                 ->where('business_id', $businessId)
                 ->where('code', $code)
                 ->exists()) {
                 $errors[] = __('suppliers.validation.code_unique');
+            }
+
+            if (! in_array(__('suppliers.validation.code_invalid'), $errors, true)
+                && ! in_array(__('suppliers.validation.code_duplicate_file'), $errors, true)
+                && ! in_array(__('suppliers.validation.code_unique'), $errors, true)) {
+                $this->seenCodes[$code] = true;
             }
 
             $values['code'] = $code;
