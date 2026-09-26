@@ -9,6 +9,37 @@ use Throwable;
 
 class AttendanceDeviceDiscoveryService
 {
+    public function requiresLocalBridge(string $ip): bool
+    {
+        if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
+            $long = ip2long($ip);
+
+            if ($long === false) {
+                return false;
+            }
+
+            $unsigned = (int) sprintf('%u', $long);
+
+            return (($unsigned & 0xFF000000) === 0x0A000000)
+                || (($unsigned & 0xFFF00000) === 0xAC100000)
+                || (($unsigned & 0xFFFF0000) === 0xC0A80000);
+        }
+
+        if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
+            $packed = inet_pton($ip);
+
+            if ($packed === false) {
+                return false;
+            }
+
+            $first = ord($packed[0]);
+
+            return ($first & 0xFE) === 0xFC;
+        }
+
+        return false;
+    }
+
     /**
      * @return array<string, mixed>
      */

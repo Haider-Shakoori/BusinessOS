@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Settings;
 
+use App\Services\BusinessContext;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
@@ -16,6 +17,7 @@ class AttendanceDeviceRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'attendance_bridge_id' => ['nullable', 'integer', Rule::exists('attendance_bridges', 'id')->where('business_id', app(BusinessContext::class)->currentId())],
             'name' => ['required', 'string', 'max:255'],
             'brand' => ['required', 'string', Rule::in(array_keys(config('attendance.brands', [])))],
             'model' => ['nullable', 'string', 'max:255'],

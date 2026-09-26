@@ -5,6 +5,23 @@
 @endphp
 
 <div class="grid gap-x-5 gap-y-4 sm:grid-cols-2">
+    @if (isset($bridges) && $bridges->isNotEmpty())
+        <div class="sm:col-span-2">
+            <x-ui.select
+                name="attendance_bridge_id"
+                :label="__('attendance.bridge.device_bridge')"
+                :value="old('attendance_bridge_id', $device->attendance_bridge_id ?? null)"
+            >
+                <option value="">{{ __('attendance.bridge.direct_or_push') }}</option>
+                @foreach ($bridges as $bridge)
+                    <option value="{{ $bridge->id }}" @selected((string) old('attendance_bridge_id', $device->attendance_bridge_id ?? '') === (string) $bridge->id)>
+                        {{ $bridge->name }} — {{ $bridge->isOnline() ? __('attendance.bridge.online') : __('attendance.bridge.offline') }}
+                    </option>
+                @endforeach
+            </x-ui.select>
+        </div>
+    @endif
+
     <x-ui.input name="name" :label="__('attendance.fields.name')" :value="old('name', $device->name ?? null)" required maxlength="255" />
 
     <x-ui.select name="brand" :label="__('attendance.fields.brand')" :value="$selectedBrand" required>

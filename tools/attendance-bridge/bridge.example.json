@@ -1,0 +1,5 @@
+{
+  "server": "https://erp.businessos.af",
+  "bridge": "BRIDGE-UUID-FROM-BUSINESSOS",
+  "token": "BRIDGE-TOKEN-FROM-BUSINESSOS"
+}

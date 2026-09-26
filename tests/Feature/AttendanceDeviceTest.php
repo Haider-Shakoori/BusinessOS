@@ -2,6 +2,8 @@
 
 namespace Tests\Feature;
 
+use App\Models\AttendanceBridge;
+use App\Models\AttendanceBridgeJob;
 use App\Models\AttendanceDevice;
 use App\Models\AttendanceDeviceEmployee;
 use App\Models\AttendanceLog;
@@ -300,6 +302,142 @@ class AttendanceDeviceTest extends TestCase
                 $this->assertNotSame('', $exception->getMessage());
             }
         }
+    }
+
+    public function test_private_ip_detection_is_routed_through_online_local_bridge(): void
+    {
+        $user = $this->user();
+        $business = $this->business($user);
+        $this->actIn($user, $business);
+
+        $bridge = AttendanceBridge::create([
+            'name' => 'Main Office Bridge',
+            'status' => 'online',
+            'last_seen_at' => now(),
+        ]);
+
+        $this->postJson('/settings/attendance-devices/detect', [
+            'ip' => '192.168.10.20',
+            'bridge_id' => $bridge->id,
+        ])
+            ->assertOk()
+            ->assertJson([
+                'ok' => true,
+                'pending' => true,
+                'bridge_id' => $bridge->id,
+            ]);
+
+        $job = AttendanceBridgeJob::query()->firstOrFail();
+        $this->assertSame('detect', $job->type);
+        $this->assertSame('192.168.10.20', $job->payload['ip']);
+
+        $headers = ['Authorization' => 'Bearer '.$bridge->token];
+
+        $this->getJson('/api/attendance/bridge/'.$bridge->uuid.'/jobs', $headers)
+            ->assertOk()
+            ->assertJsonPath('jobs.0.id', $job->uuid);
+
+        $this->postJson('/api/attendance/bridge/'.$bridge->uuid.'/jobs/'.$job->uuid.'/result', [
+            'ok' => true,
+            'open_ports' => [4370],
+            'http_evidence' => [],
+        ], $headers)->assertOk();
+
+        $job->refresh();
+
+        $this->assertSame('completed', $job->status);
+        $this->assertSame('zkteco', $job->result['brand']);
+        $this->assertSame('zkteco_tcp', $job->result['connection_type']);
+        $this->assertSame($bridge->id, $job->result['bridge_id']);
+
+        $this->getJson('/settings/attendance-device-discovery/'.$job->uuid)
+            ->assertOk()
+            ->assertJsonPath('result.brand', 'zkteco');
+    }
+
+    public function test_private_ip_detection_requires_online_bridge(): void
+    {
+        $user = $this->user();
+        $business = $this->business($user);
+        $this->actIn($user, $business);
+
+        $this->postJson('/settings/attendance-devices/detect', [
+            'ip' => '10.20.30.40',
+        ])
+            ->assertStatus(422)
+            ->assertJson(['ok' => false]);
+    }
+
+    public function test_bridge_heartbeat_and_device_record_upload_are_authenticated_and_drive_attendance(): void
+    {
+        $user = $this->user();
+        $business = $this->business($user);
+        $this->actIn($user, $business);
+
+        app(BusinessSettings::class)->set('attendance.enabled', true);
+
+        $bridge = AttendanceBridge::create(['name' => 'Warehouse Bridge']);
+        $headers = ['Authorization' => 'Bearer '.$bridge->token];
+
+        $this->postJson('/api/attendance/bridge/'.$bridge->uuid.'/heartbeat', [
+            'hostname' => 'ATTENDANCE-PC',
+            'local_ips' => ['192.168.1.10'],
+            'version' => '1.0.0',
+        ], $headers)
+            ->assertOk()
+            ->assertJson(['ok' => true]);
+
+        $bridge->refresh();
+        $this->assertTrue($bridge->isOnline());
+        $this->assertSame('ATTENDANCE-PC', $bridge->hostname);
+        $this->assertSame(['192.168.1.10'], $bridge->local_ips);
+        $this->assertNotSame($bridge->token, DB::table('attendance_bridges')->where('id', $bridge->id)->value('token'));
+
+        $employee = Employee::create([
+            'employee_code' => 'BR-EMP-1',
+            'name' => 'Bridge Employee',
+            'payroll_type' => 'monthly',
+            'is_active' => true,
+        ]);
+
+        $device = AttendanceDevice::create([
+            'attendance_bridge_id' => $bridge->id,
+            'name' => 'LAN ZK',
+            'brand' => 'zkteco',
+            'connection_type' => 'zkteco_tcp',
+            'host' => '192.168.1.201',
+            'port' => 4370,
+            'enabled' => true,
+        ]);
+
+        AttendanceDeviceEmployee::create([
+            'attendance_device_id' => $device->id,
+            'employee_id' => $employee->id,
+            'device_user_id' => '5',
+        ]);
+
+        $this->postJson('/api/attendance/bridge/'.$bridge->uuid.'/devices/'.$device->uuid.'/records', [
+            'records' => [[
+                'external_id' => 'bridge-punch-1',
+                'device_user_id' => '5',
+                'timestamp' => '2026-09-26T08:00:00+04:30',
+                'punch_type' => '0',
+                'verification_type' => 'fingerprint',
+            ]],
+        ], $headers)
+            ->assertOk()
+            ->assertJson([
+                'accepted' => 1,
+                'duplicates' => 0,
+                'unmapped' => 0,
+            ]);
+
+        $this->assertDatabaseHas('attendance_logs', [
+            'business_id' => $business->id,
+            'attendance_device_id' => $device->id,
+            'employee_id' => $employee->id,
+            'external_id' => 'bridge-punch-1',
+        ]);
     }
 
     public function test_push_connection_type_reports_ready_without_contacting_external_network(): void

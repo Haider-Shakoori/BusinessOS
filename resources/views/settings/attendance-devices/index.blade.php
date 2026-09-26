@@ -29,20 +29,131 @@
 
             @can('settings.manage')
                 <x-ui.card>
+                    <x-slot:header>
+                        <div class="flex flex-wrap items-start justify-between gap-3">
+                            <div>
+                                <h2 class="text-base font-semibold text-slate-900 dark:text-white">{{ __('attendance.bridge.title') }}</h2>
+                                <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">{{ __('attendance.bridge.helper') }}</p>
+                            </div>
+                            <x-ui.button href="/downloads/BusinessOS-Attendance-Bridge.zip" variant="secondary" size="sm" icon="arrow-down-tray">
+                                {{ __('attendance.bridge.download') }}
+                            </x-ui.button>
+                        </div>
+                    </x-slot:header>
+
+                    <form method="POST" action="{{ route('settings.attendance-bridges.store') }}" class="flex flex-col gap-3 sm:flex-row sm:items-end">
+                        @csrf
+                        <div class="min-w-0 flex-1">
+                            <x-ui.input name="name" :label="__('attendance.bridge.name')" :placeholder="__('attendance.bridge.name_placeholder')" required maxlength="255" />
+                        </div>
+                        <x-ui.button type="submit" icon="plus">{{ __('attendance.bridge.create') }}</x-ui.button>
+                    </form>
+
+                    @if ($bridges->isNotEmpty())
+                        <div class="mt-5 space-y-3 border-t border-slate-100 pt-5 dark:border-slate-700">
+                            @foreach ($bridges as $bridge)
+                                <div class="rounded-[9px] border border-slate-200 bg-slate-50/70 p-4 dark:border-slate-700 dark:bg-slate-800/50">
+                                    <div class="flex flex-wrap items-start justify-between gap-3">
+                                        <div>
+                                            <div class="flex flex-wrap items-center gap-2">
+                                                <h3 class="font-semibold text-slate-900 dark:text-white">{{ $bridge->name }}</h3>
+                                                <x-ui.badge :tone="$bridge->isOnline() ? 'success' : 'neutral'">
+                                                    {{ $bridge->isOnline() ? __('attendance.bridge.online') : __('attendance.bridge.offline') }}
+                                                </x-ui.badge>
+                                            </div>
+                                            <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                                                {{ __('attendance.bridge.last_seen') }}:
+                                                {{ $bridge->last_seen_at?->diffForHumans() ?? __('attendance.never') }}
+                                                @if ($bridge->hostname) · {{ $bridge->hostname }} @endif
+                                                @if ($bridge->version) · v{{ $bridge->version }} @endif
+                                            </p>
+                                        </div>
+                                        <div class="flex flex-wrap gap-2">
+                                            <form method="POST" action="{{ route('settings.attendance-bridges.regenerate-token', $bridge) }}" onsubmit="return confirm('{{ __('attendance.bridge.regenerate_confirm') }}')">
+                                                @csrf
+                                                <x-ui.button type="submit" variant="secondary" size="sm">{{ __('attendance.bridge.regenerate') }}</x-ui.button>
+                                            </form>
+                                            <form method="POST" action="{{ route('settings.attendance-bridges.destroy', $bridge) }}" onsubmit="return confirm('{{ __('attendance.bridge.delete_confirm') }}')">
+                                                @csrf
+                                                @method('DELETE')
+                                                <x-ui.button type="submit" variant="danger" size="sm" icon="trash">{{ __('attendance.bridge.delete') }}</x-ui.button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                    <div class="mt-4 grid gap-3 md:grid-cols-2">
+                                        <div>
+                                            <p class="text-[11px] font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">{{ __('attendance.bridge.uuid') }}</p>
+                                            <code class="mt-1 block break-all rounded bg-white p-2 text-xs text-slate-700 dark:bg-slate-900 dark:text-slate-200">{{ $bridge->uuid }}</code>
+                                        </div>
+                                        <div>
+                                            <p class="text-[11px] font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">{{ __('attendance.bridge.token') }}</p>
+                                            <code class="mt-1 block break-all rounded bg-white p-2 text-xs text-slate-700 dark:bg-slate-900 dark:text-slate-200">{{ $bridge->token }}</code>
+                                        </div>
+                                    </div>
+                                    <p class="mt-3 text-xs text-slate-500 dark:text-slate-400">{{ __('attendance.bridge.install_hint') }}</p>
+                                </div>
+                            @endforeach
+                        </div>
+                    @endif
+                </x-ui.card>
+
+                <x-ui.card>
                     <div
                         x-data="{
                             loading: false,
                             result: null,
                             error: null,
+                            statusMessage: null,
+                            sleep(ms) { return new Promise(resolve => setTimeout(resolve, ms)); },
+                            applyResult(result) {
+                                this.result = result;
+                                const set = (id, value) => {
+                                    if (value === null || value === undefined || value === '') return;
+                                    const element = document.getElementById(id);
+                                    if (!element) return;
+                                    element.value = value;
+                                    element.dispatchEvent(new Event('input', { bubbles: true }));
+                                    element.dispatchEvent(new Event('change', { bubbles: true }));
+                                };
+                                set('host', result.ip);
+                                set('brand', result.brand);
+                                set('connection_type', result.connection_type);
+                                set('port', result.port);
+                                set('base_url', result.base_url);
+                                set('attendance_bridge_id', result.bridge_id);
+                                const name = document.getElementById('name');
+                                if (name && !name.value.trim() && result.brand_label) {
+                                    name.value = result.brand_label + ' - ' + result.ip;
+                                    name.dispatchEvent(new Event('input', { bubbles: true }));
+                                }
+                                document.getElementById('name')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            },
+                            async pollJob(jobId) {
+                                for (let attempt = 0; attempt < 60; attempt++) {
+                                    await this.sleep(1500);
+                                    const response = await fetch('{{ url('/settings/attendance-device-discovery') }}/' + jobId, {
+                                        headers: { 'Accept': 'application/json' },
+                                    });
+                                    const payload = await response.json();
+                                    if (payload.status === 'completed' && payload.result) {
+                                        this.applyResult(payload.result);
+                                        return;
+                                    }
+                                    if (['failed', 'expired'].includes(payload.status)) {
+                                        throw new Error(payload.message || '{{ __('attendance.discovery.failed') }}');
+                                    }
+                                }
+                                throw new Error('{{ __('attendance.bridge.discovery_timeout') }}');
+                            },
                             async detect() {
                                 const ip = this.$refs.ip.value.trim();
                                 if (!ip || this.loading) return;
-
                                 this.loading = true;
                                 this.error = null;
                                 this.result = null;
-
+                                this.statusMessage = null;
                                 try {
+                                    const bridgeSelect = document.getElementById('attendance_bridge_id');
                                     const response = await fetch('{{ route('settings.attendance-devices.detect') }}', {
                                         method: 'POST',
                                         headers: {
@@ -50,41 +161,26 @@
                                             'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content,
                                             'Content-Type': 'application/json',
                                         },
-                                        body: JSON.stringify({ ip }),
+                                        body: JSON.stringify({
+                                            ip,
+                                            bridge_id: bridgeSelect?.value || null,
+                                        }),
                                     });
                                     const payload = await response.json();
-
                                     if (!response.ok || !payload.ok) {
                                         throw new Error(payload.message || '{{ __('attendance.discovery.failed') }}');
                                     }
-
-                                    this.result = payload.result;
-                                    const set = (id, value) => {
-                                        if (value === null || value === undefined || value === '') return;
-                                        const element = document.getElementById(id);
-                                        if (!element) return;
-                                        element.value = value;
-                                        element.dispatchEvent(new Event('input', { bubbles: true }));
-                                        element.dispatchEvent(new Event('change', { bubbles: true }));
-                                    };
-
-                                    set('host', payload.result.ip);
-                                    set('brand', payload.result.brand);
-                                    set('connection_type', payload.result.connection_type);
-                                    set('port', payload.result.port);
-                                    set('base_url', payload.result.base_url);
-
-                                    const name = document.getElementById('name');
-                                    if (name && !name.value.trim() && payload.result.brand_label) {
-                                        name.value = payload.result.brand_label + ' - ' + payload.result.ip;
-                                        name.dispatchEvent(new Event('input', { bubbles: true }));
+                                    if (payload.pending) {
+                                        this.statusMessage = payload.message;
+                                        await this.pollJob(payload.job_id);
+                                    } else {
+                                        this.applyResult(payload.result);
                                     }
-
-                                    document.getElementById('name')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
                                 } catch (e) {
                                     this.error = e.message || '{{ __('attendance.discovery.failed') }}';
                                 } finally {
                                     this.loading = false;
+                                    this.statusMessage = null;
                                 }
                             }
                         }"
@@ -92,7 +188,7 @@
                         <div class="flex flex-wrap items-start justify-between gap-3">
                             <div>
                                 <h2 class="text-base font-semibold text-slate-900 dark:text-white">{{ __('attendance.discovery.title') }}</h2>
-                                <p class="mt-1 max-w-3xl text-sm text-slate-500 dark:text-slate-400">{{ __('attendance.discovery.helper') }}</p>
+                                <p class="mt-1 max-w-3xl text-sm text-slate-500 dark:text-slate-400">{{ __('attendance.discovery.helper_bridge') }}</p>
                             </div>
                             <x-ui.badge tone="brand">{{ __('attendance.discovery.best_effort') }}</x-ui.badge>
                         </div>
@@ -109,16 +205,13 @@
                                     x-on:change="detect()"
                                 />
                             </div>
-                            <x-ui.button
-                                type="button"
-                                icon="bolt"
-                                x-on:click="detect()"
-                                x-bind:disabled="loading"
-                            >
+                            <x-ui.button type="button" icon="bolt" x-on:click="detect()" x-bind:disabled="loading">
                                 <span x-show="!loading">{{ __('attendance.discovery.detect') }}</span>
                                 <span x-show="loading" x-cloak>{{ __('attendance.discovery.detecting') }}</span>
                             </x-ui.button>
                         </div>
+
+                        <p x-show="statusMessage" x-cloak class="mt-3 text-sm text-brand-700 dark:text-brand-300" x-text="statusMessage"></p>
 
                         <div x-show="error" x-cloak class="mt-4">
                             <x-ui.alert type="danger"><span x-text="error"></span></x-ui.alert>
@@ -129,6 +222,7 @@
                                 <span class="text-sm font-semibold text-slate-900 dark:text-white" x-text="result?.brand_label || '{{ __('attendance.discovery.unknown_device') }}'"></span>
                                 <span class="rounded-full bg-brand-50 px-2.5 py-1 text-[11px] font-semibold text-brand-700 dark:bg-brand-500/15 dark:text-brand-300" x-text="result?.confidence_label"></span>
                                 <span class="text-xs text-slate-500 dark:text-slate-400" x-text="result?.confidence ? result.confidence + '%' : ''"></span>
+                                <span x-show="result?.bridge_name" class="text-xs text-slate-500 dark:text-slate-400" x-text="result?.bridge_name ? '· ' + result.bridge_name : ''"></span>
                             </div>
                             <div class="mt-3 grid gap-2 text-xs text-slate-600 sm:grid-cols-2 lg:grid-cols-4 dark:text-slate-300">
                                 <div><span class="font-semibold">{{ __('attendance.discovery.connection') }}:</span> <span x-text="result?.connection_label || '—'"></span></div>
@@ -141,6 +235,7 @@
                         </div>
                     </div>
                 </x-ui.card>
+            @endcan
 
             @can('settings.manage')
                 <x-ui.card>
