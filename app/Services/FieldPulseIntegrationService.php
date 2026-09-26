@@ -564,14 +564,22 @@ class FieldPulseIntegrationService
         $decoded = $this->decodeCursor($cursor);
 
         if ($decoded !== null) {
-            $query->where(function (Builder $builder) use ($decoded): void {
+            // Bind the cursor timestamp as a DateTime value so Laravel formats it
+            // using the active database grammar. This keeps cursor pagination
+            // consistent across MySQL and SQLite (used by CI), where raw ISO-8601
+            // strings do not compare equal to database datetime strings.
+            $updatedAt = \Illuminate\Support\Carbon::parse(
+                $decoded['updated_at'],
+            );
+
+            $query->where(function (Builder $builder) use ($decoded, $updatedAt): void {
                 $builder
-                    ->where('updated_at', '>', $decoded['updated_at'])
-                    ->orWhere(function (Builder $same) use ($decoded): void {
+                    ->where('updated_at', '>', $updatedAt)
+                    ->orWhere(function (Builder $same) use ($decoded, $updatedAt): void {
                         $same->where(
                             'updated_at',
                             '=',
-                            $decoded['updated_at'],
+                            $updatedAt,
                         )->where('id', '>', $decoded['id']);
                     });
             });
