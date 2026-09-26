@@ -128,14 +128,6 @@ class SettingsController extends Controller
 
         if (is_array($fieldPulse)) {
             $organizationKey = trim((string) ($fieldPulse['organization_key'] ?? ''));
-            $enabled = (bool) ($fieldPulse['enabled'] ?? false);
-
-            if ($enabled && $organizationKey === '') {
-                throw ValidationException::withMessages([
-                    'fieldpulse.organization_key' => __('FieldPulse organization key is required when integration is enabled.'),
-                ]);
-            }
-
             if ($organizationKey !== '') {
                 $conflict = FieldPulseIntegration::query()
                     ->where('organization_key', $organizationKey)
@@ -153,7 +145,6 @@ class SettingsController extends Controller
                 ['business_id' => $business->id],
                 [
                     'organization_key' => $organizationKey !== '' ? $organizationKey : null,
-                    'enabled' => $enabled,
                 ],
             );
         }
