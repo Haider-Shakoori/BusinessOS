@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\AttendanceDevice;
+use App\Models\Setting;
 use App\Services\AttendanceIngestionService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -11,7 +12,14 @@ class AttendancePushController extends Controller
 {
     public function store(Request $request, AttendanceDevice $attendanceDevice, AttendanceIngestionService $ingestion): JsonResponse
     {
-        abort_unless($attendanceDevice->enabled, 404);
+        $integrationEnabled = Setting::query()
+            ->where('business_id', $attendanceDevice->business_id)
+            ->where('group', 'attendance')
+            ->where('key', 'enabled')
+            ->where('value', '1')
+            ->exists();
+
+        abort_unless($attendanceDevice->enabled && $integrationEnabled, 404);
 
         $token = $request->bearerToken() ?: $request->header('X-Attendance-Token');
 
