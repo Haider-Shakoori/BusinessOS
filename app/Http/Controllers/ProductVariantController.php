@@ -6,6 +6,7 @@ use App\Enums\ProductType;
 use App\Models\Product;
 use App\Models\ProductVariant;
 use App\Models\StockMovement;
+use App\Models\WarehouseTransferItem;
 use App\Services\BusinessContext;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -80,14 +81,22 @@ class ProductVariantController extends Controller
     {
         abort_unless($productVariant->product_id === $product->id, 404);
 
-        $stock = (float) StockMovement::query()
+        $warehouseBalances = StockMovement::query()
             ->where('product_variant_id', $productVariant->id)
-            ->sum('quantity');
+            ->selectRaw('warehouse_id, SUM(quantity) as quantity')
+            ->groupBy('warehouse_id')
+            ->get();
 
-        if (abs($stock) > 0.00001) {
+        $stockMagnitude = $warehouseBalances->sum(fn ($row) => abs((float) $row->quantity));
+        $hasOpenTransfer = WarehouseTransferItem::query()
+            ->where('product_variant_id', $productVariant->id)
+            ->whereHas('transfer', fn ($query) => $query->whereIn('status', ['draft', 'in_transit']))
+            ->exists();
+
+        if ($stockMagnitude > 0.00001 || $hasOpenTransfer) {
             return back()->withErrors([
                 'variant' => __('products.variants.delete_with_stock', [
-                    'quantity' => number_format($stock, 4, '.', ''),
+                    'quantity' => number_format($stockMagnitude, 4, '.', ''),
                 ]),
             ]);
         }
