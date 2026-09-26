@@ -6,6 +6,7 @@ use App\Models\AttendanceBridge;
 use App\Services\BusinessContext;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class AttendanceBridgeController extends Controller
 {
@@ -26,7 +27,7 @@ class AttendanceBridgeController extends Controller
     public function regenerateToken(AttendanceBridge $attendanceBridge): RedirectResponse
     {
         $attendanceBridge->forceFill([
-            'token' => \Illuminate\Support\Str::random(64),
+            'token' => Str::random(64),
             'status' => 'offline',
         ])->save();
 
