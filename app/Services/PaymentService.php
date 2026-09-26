@@ -48,6 +48,7 @@ class PaymentService
         private readonly DocumentNumberService $numbers,
         private readonly CurrencyService $currencies,
         private readonly SupplierLedgerService $supplierLedger,
+        private readonly AccountingPostingService $accounting,
     ) {
         //
     }
@@ -117,6 +118,7 @@ class PaymentService
             ]);
 
             $this->reconcile($invoice);
+            $this->accounting->postPayment($payment);
 
             return $payment;
         });
@@ -163,6 +165,8 @@ class PaymentService
                 'created_by' => $createdBy,
             ])->save();
 
+            $this->accounting->postPayment($payment);
+
             return $payment->fresh(['supplier', 'createdBy']);
         });
     }
@@ -197,6 +201,8 @@ class PaymentService
                     'reversal_reason' => $reason,
                 ])->save();
 
+                $this->accounting->reversePayment($locked, $reason);
+
                 return;
             }
 
@@ -216,6 +222,7 @@ class PaymentService
             ])->save();
 
             $this->reconcile($invoice);
+            $this->accounting->reversePayment($locked, $reason);
         });
     }
 

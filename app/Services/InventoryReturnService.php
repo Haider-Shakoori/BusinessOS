@@ -19,8 +19,10 @@ use RuntimeException;
 
 class InventoryReturnService
 {
-    public function __construct(private readonly DocumentNumberService $numbers)
-    {
+    public function __construct(
+        private readonly DocumentNumberService $numbers,
+        private readonly AccountingPostingService $accounting,
+    ) {
         //
     }
 
@@ -185,6 +187,8 @@ class InventoryReturnService
                 'note' => $return->number,
                 'occurred_at' => now(),
             ]);
+
+            $this->accounting->postPurchaseReturn($return);
 
             return $return->load(['warehouse', 'items.product', 'processor']);
         });

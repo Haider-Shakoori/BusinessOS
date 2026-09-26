@@ -2,6 +2,11 @@
 
 @section('content')
 <x-app.page icon="ledger" :title="__('operations.accounting.title')" :subtitle="__('operations.accounting.subtitle')">
+    <x-slot:actions>
+        <x-ui.button href="{{ route('accounting.reports') }}" variant="secondary" icon="chart-bar">
+            {{ __('operations.accounting.financial_reports') }}
+        </x-ui.button>
+    </x-slot:actions>
     @if (session('status')) <div class="mb-5"><x-ui.alert type="success">{{ session('status') }}</x-ui.alert></div> @endif
 
     <div class="grid gap-5 xl:grid-cols-2">

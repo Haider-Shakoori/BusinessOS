@@ -54,6 +54,7 @@ class InvoiceService
         private readonly BusinessSettings $settings,
         private readonly CurrencyService $currencies,
         private readonly PaymentService $payments,
+        private readonly AccountingPostingService $accounting,
     ) {
         //
     }
@@ -95,6 +96,10 @@ class InvoiceService
             // needing a first payment to trigger the reconciliation.
             $this->payments->reconcileBalance($invoice);
 
+            if ($invoice->status !== InvoiceStatus::Draft) {
+                $this->accounting->postInvoice($invoice);
+            }
+
             return $invoice->fresh(['items']);
         });
     }
@@ -133,6 +138,10 @@ class InvoiceService
 
             // Drafts keep the balance caches truthful after the totals change.
             $this->payments->reconcileBalance($invoice);
+
+            if ($invoice->status !== InvoiceStatus::Draft) {
+                $this->accounting->postInvoice($invoice);
+            }
         });
     }
 
@@ -257,6 +266,7 @@ class InvoiceService
             // A converted invoice is Sent and immediately payable, so its
             // balance caches must be initialised (amount_due = total) here.
             $this->payments->reconcileBalance($invoice);
+            $this->accounting->postInvoice($invoice);
 
             return $invoice->fresh(['items']);
         });
