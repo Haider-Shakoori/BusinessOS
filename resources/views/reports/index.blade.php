@@ -2,7 +2,9 @@
 
 @section('content')
     @php
-        $money = fn (string $amount): string => $baseCurrency.' '.number_format((float) $amount, 2);
+        $formatter = app(\App\Support\LocalizedFormatter::class);
+        $money = fn (string $amount): string => $formatter->currency($amount, $baseCurrency);
+        $displayDate = fn (?string $date): string => $formatter->date($date);
         $exportQuery = array_filter([
             'range' => $range,
             'date_from' => $range === 'custom' ? $dateFrom : null,
@@ -57,7 +59,7 @@
                     <p class="mt-1 text-[11px] leading-4 text-slate-500 dark:text-slate-400">{{ $help }}</p>
                 </div>
                 <span class="mt-2 inline-flex w-fit rounded-full bg-slate-100 px-3 py-1 text-[11px] font-medium text-slate-600 dark:bg-slate-800 dark:text-slate-300 sm:mt-0">
-                    {{ __('reports.period', ['from' => $dateFrom, 'to' => $dateTo]) }}
+                    {{ __('reports.period', ['from' => $displayDate($dateFrom), 'to' => $displayDate($dateTo)]) }}
                 </span>
             </div>
         </div>
@@ -72,7 +74,7 @@
                 />
                 <x-ui.stat-card
                     :title="__('reports.invoice_count')"
-                    :value="number_format($reportData['invoice_count'])"
+                    :value="$formatter->number($reportData['invoice_count'], 0)"
                     icon="receipt-percent"
                     tone="info"
                 />
@@ -210,7 +212,7 @@
                                         <span class="font-semibold text-slate-900 dark:text-white">{{ $row['invoice_number'] }}</span>
                                     @endcan
                                 </x-ui.td>
-                                <x-ui.td>{{ $row['date'] }}</x-ui.td>
+                                <x-ui.td>{{ $displayDate($row['date']) }}</x-ui.td>
                                 <x-ui.td>{{ $row['customer'] }}</x-ui.td>
                                 <x-ui.td numeric>{{ $money($row['invoice_total']) }}</x-ui.td>
                                 <x-ui.td numeric><span class="font-semibold text-red-600 dark:text-red-400">{{ $money($row['amount_due']) }}</span></x-ui.td>
