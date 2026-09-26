@@ -8,6 +8,7 @@ return [
     'expenses' => 'المصروفات',
     'inventory' => 'المخزون',
     'purchasing' => 'المشتريات',
+    'pos' => 'POS',
     'accounting' => 'المحاسبة',
     'manufacturing' => 'التصنيع',
     'crm' => 'CRM',
