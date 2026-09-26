@@ -35,5 +35,6 @@ return [
     'products' => 'المنتجات',
     'enabled_modules' => 'الوحدات المفعلة',
     'usage' => 'الاستخدام',
+    'limit_reached' => 'تم الوصول إلى حد :resource في خطة SaaS الحالية.',
     'platform_console' => 'لوحة المنصة',
 ];
