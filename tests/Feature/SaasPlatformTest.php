@@ -95,6 +95,7 @@ class SaasPlatformTest extends TestCase
             ->assertForbidden();
 
         $admin = $this->user(true);
+        $this->flushSession();
         $this->actingAs($admin)
             ->get('/platform/saas')
             ->assertOk()
@@ -192,7 +193,14 @@ class SaasPlatformTest extends TestCase
         $this->assertFalse($usage->canAdd($business, 'members'));
         $this->assertTrue($usage->canAdd($business, 'products'));
 
-        Product::factory()->create(['business_id' => $business->id]);
+        DB::table('products')->insert([
+            'business_id' => $business->id,
+            'type' => 'product',
+            'name' => 'Capped Product',
+            'sale_price' => '10.0000',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
 
         $this->assertFalse($usage->canAdd($business, 'products'));
         $this->assertFalse($usage->canAdd($business, 'enabled_modules'));
