@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Payment;
 use App\Models\Supplier;
+use App\Services\BusinessContext;
 use App\Services\CurrencyService;
 use App\Services\DocumentService;
 use App\Services\PdfService;
@@ -195,11 +196,11 @@ class SupplierController extends Controller
     }
 
     /**
-     * @return array<string,mixed>
+     * @return array<string, mixed>
      */
     private function validatedSupplier(Request $request, ?Supplier $supplier = null): array
     {
-        $businessId = (int) app(\App\Services\BusinessContext::class)->currentId();
+        $businessId = (int) app(BusinessContext::class)->currentId();
 
         return $request->validate([
             'code' => [
@@ -222,7 +223,7 @@ class SupplierController extends Controller
     }
 
     /**
-     * @return array{date_from?:string|null,date_to?:string|null}
+     * @return array{date_from?: string|null, date_to?: string|null}
      */
     private function statementFilters(Request $request): array
     {
