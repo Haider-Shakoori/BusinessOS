@@ -13,6 +13,8 @@ class PosSaleItem extends Model
         'sku',
         'quantity',
         'unit_price',
+        'unit_cost',
+        'cost_total',
         'tax_rate',
         'tax_amount',
         'line_total',
@@ -23,6 +25,8 @@ class PosSaleItem extends Model
         return [
             'quantity' => 'decimal:4',
             'unit_price' => 'decimal:4',
+            'unit_cost' => 'decimal:4',
+            'cost_total' => 'decimal:4',
             'tax_rate' => 'decimal:4',
             'tax_amount' => 'decimal:4',
             'line_total' => 'decimal:4',
