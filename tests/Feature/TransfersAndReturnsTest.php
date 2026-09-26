@@ -95,6 +95,30 @@ class TransfersAndReturnsTest extends TestCase
         $this->assertSame('RET', config('numbering.prefixes.inventory_return'));
     }
 
+    public function test_transfer_and_return_pages_render_with_inventory_actions(): void
+    {
+        $user = $this->user();
+        $business = $this->business($user);
+        $this->actIn($user, $business);
+
+        Warehouse::create(['code' => 'MAIN', 'name' => 'Main Warehouse', 'is_active' => true]);
+        $this->product();
+
+        $this->get('/inventory')
+            ->assertOk()
+            ->assertSee(__('operations.transfers.title'))
+            ->assertSee(__('operations.returns.title'));
+
+        $this->get('/inventory/transfers')
+            ->assertOk()
+            ->assertSee(__('operations.transfers.new'));
+
+        $this->get('/inventory/returns')
+            ->assertOk()
+            ->assertSee(__('operations.returns.sales_return'))
+            ->assertSee(__('operations.returns.purchase_return'));
+    }
+
     public function test_warehouse_transfer_moves_stock_only_after_dispatch_and_receipt(): void
     {
         $user = $this->user();
