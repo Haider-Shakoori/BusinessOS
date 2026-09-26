@@ -104,7 +104,7 @@ class ModuleSystemTest extends TestCase
         $registry = app(ModuleRegistry::class);
         $keys = array_keys($registry->all());
         $this->assertSame(
-            ['dashboard', 'customers', 'sales', 'products', 'expenses', 'inventory', 'purchasing', 'accounting', 'manufacturing', 'crm', 'reports', 'settings'],
+            ['dashboard', 'customers', 'sales', 'products', 'expenses', 'inventory', 'purchasing', 'pos', 'accounting', 'manufacturing', 'crm', 'reports', 'settings'],
             $keys,
         );
 

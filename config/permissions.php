@@ -76,6 +76,11 @@ return [
             'accounting.view',
             'accounting.manage',
         ],
+        'pos' => [
+            'pos.view',
+            'pos.sell',
+            'pos.manage',
+        ],
         'crm' => [
             'crm.view',
             'crm.manage',

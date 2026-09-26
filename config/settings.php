@@ -66,6 +66,7 @@ return [
             'payment_prefix' => ['default' => null, 'type' => 'string'],
             'expense_prefix' => ['default' => null, 'type' => 'string'],
             'purchase_order_prefix' => ['default' => null, 'type' => 'string'],
+            'pos_sale_prefix' => ['default' => null, 'type' => 'string'],
             'padding' => ['default' => null, 'type' => 'integer'],
         ],
 

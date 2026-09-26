@@ -15,6 +15,7 @@ use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\ManufacturingController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\PosController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\PurchasingController;
 use App\Http\Controllers\QuotationController;
@@ -150,6 +151,37 @@ Route::middleware(['auth', 'auth.session', 'business-selected', 'module:settings
     Route::post('/settings/attendance-devices/{attendanceDevice}/map-employee', [AttendanceDeviceController::class, 'mapEmployee'])
         ->name('settings.attendance-devices.map-employee')
         ->middleware('permission:settings.manage');
+});
+
+/*
+ * Batch 31 — Point of Sale.
+ *
+ * The full-screen terminal uses the same products, warehouse stock and
+ * accounting ledger as the rest of BusinessOS. No separate POS inventory is
+ * maintained.
+ */
+Route::middleware(['auth', 'auth.session', 'business-selected', 'module:pos'])->group(function () {
+    Route::get('/pos', [PosController::class, 'index'])
+        ->name('pos.index')
+        ->middleware('permission:pos.view');
+    Route::post('/pos/registers', [PosController::class, 'storeRegister'])
+        ->name('pos.registers.store')
+        ->middleware('permission:pos.manage');
+    Route::post('/pos/registers/{posRegister}/open-shift', [PosController::class, 'openShift'])
+        ->name('pos.shifts.open')
+        ->middleware('permission:pos.sell');
+    Route::post('/pos/shifts/{posShift}/close', [PosController::class, 'closeShift'])
+        ->name('pos.shifts.close')
+        ->middleware('permission:pos.sell');
+    Route::post('/pos/shifts/{posShift}/checkout', [PosController::class, 'checkout'])
+        ->name('pos.checkout')
+        ->middleware('permission:pos.sell');
+    Route::get('/pos/sales/{posSale}/receipt', [PosController::class, 'receipt'])
+        ->name('pos.receipt')
+        ->middleware('permission:pos.view');
+    Route::post('/pos/sales/{posSale}/void', [PosController::class, 'void'])
+        ->name('pos.sales.void')
+        ->middleware('permission:pos.manage');
 });
 
 /*

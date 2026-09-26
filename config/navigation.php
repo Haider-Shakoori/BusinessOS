@@ -97,7 +97,9 @@ return [
             'key' => 'pos',
             'label' => 'navigation.pos',
             'icon' => 'building-storefront',
-            'placeholder' => 'pos',
+            'route' => 'pos.index',
+            'module' => 'pos',
+            'permission' => 'pos.view',
         ],
         [
             'key' => 'accounting',
