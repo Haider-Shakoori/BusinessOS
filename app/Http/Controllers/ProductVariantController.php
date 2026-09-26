@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Enums\ProductType;
 use App\Models\Product;
 use App\Models\ProductVariant;
+use App\Models\StockMovement;
 use App\Services\BusinessContext;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -67,7 +68,9 @@ class ProductVariantController extends Controller
 
         $productVariant->update([
             ...$data,
-            'is_active' => $request->boolean('is_active'),
+            'is_active' => array_key_exists('is_active', $data)
+                ? (bool) $data['is_active']
+                : $productVariant->is_active,
         ]);
 
         return back()->with('status', __('products.variants.updated'));
@@ -76,6 +79,18 @@ class ProductVariantController extends Controller
     public function destroy(Product $product, ProductVariant $productVariant): RedirectResponse
     {
         abort_unless($productVariant->product_id === $product->id, 404);
+
+        $stock = (float) StockMovement::query()
+            ->where('product_variant_id', $productVariant->id)
+            ->sum('quantity');
+
+        if (abs($stock) > 0.00001) {
+            return back()->withErrors([
+                'variant' => __('products.variants.delete_with_stock', [
+                    'quantity' => number_format($stock, 4, '.', ''),
+                ]),
+            ]);
+        }
 
         $productVariant->delete();
 
