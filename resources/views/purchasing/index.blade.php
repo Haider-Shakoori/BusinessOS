@@ -55,11 +55,27 @@
             <x-slot:header><h2 class="font-semibold text-slate-900 dark:text-white">{{ __('operations.purchasing.purchase_orders') }}</h2></x-slot:header>
             <div class="overflow-x-auto">
                 <x-ui.table>
-                    <x-slot:head><tr><x-ui.th>{{ __('operations.purchasing.number') }}</x-ui.th><x-ui.th>{{ __('operations.purchasing.supplier') }}</x-ui.th><x-ui.th>{{ __('operations.purchasing.status') }}</x-ui.th><x-ui.th>{{ __('operations.purchasing.total') }}</x-ui.th></tr></x-slot:head>
+                    <x-slot:head><tr><x-ui.th>{{ __('operations.purchasing.number') }}</x-ui.th><x-ui.th>{{ __('operations.purchasing.supplier') }}</x-ui.th><x-ui.th>{{ __('operations.purchasing.status') }}</x-ui.th><x-ui.th>{{ __('operations.purchasing.total') }}</x-ui.th><x-ui.th></x-ui.th></tr></x-slot:head>
                     @forelse($orders as $order)
-                        <tr><x-ui.td>{{ $order->number }}</x-ui.td><x-ui.td>{{ $order->supplier?->name }}</x-ui.td><x-ui.td>{{ ucfirst($order->status) }}</x-ui.td><x-ui.td>{{ $order->total }}</x-ui.td></tr>
+                        <tr>
+                            <x-ui.td>{{ $order->number }}</x-ui.td>
+                            <x-ui.td>{{ $order->supplier?->name }}</x-ui.td>
+                            <x-ui.td>{{ ucfirst($order->status) }}</x-ui.td>
+                            <x-ui.td>{{ $order->total }}</x-ui.td>
+                            <x-ui.td>
+                                @if($order->status !== 'received' && $warehouses->isNotEmpty())
+                                    <form method="POST" action="{{ route('purchasing.orders.receive', $order) }}" class="flex items-center gap-2">
+                                        @csrf
+                                        <select name="warehouse_id" class="rounded-md border-slate-300 text-xs dark:border-slate-700 dark:bg-slate-900" required>
+                                            @foreach($warehouses as $warehouse)<option value="{{ $warehouse->id }}">{{ $warehouse->name }}</option>@endforeach
+                                        </select>
+                                        <x-ui.button type="submit" size="sm" variant="secondary">{{ __('operations.purchasing.receive') }}</x-ui.button>
+                                    </form>
+                                @endif
+                            </x-ui.td>
+                        </tr>
                     @empty
-                        <tr><x-ui.td colspan="4">{{ __('operations.purchasing.no_orders') }}</x-ui.td></tr>
+                        <tr><x-ui.td colspan="5">{{ __('operations.purchasing.no_orders') }}</x-ui.td></tr>
                     @endforelse
                 </x-ui.table>
             </div>
