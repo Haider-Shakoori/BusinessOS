@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Services\CountryLocalizationService;
 use App\Support\LocalizedFormatter;
 use Illuminate\Support\Arr;
 use Tests\TestCase;
@@ -40,12 +41,31 @@ class LocalizationCompletionTest extends TestCase
     {
         $supported = config('localization.supported');
 
-        $this->assertSame(['en', 'fa', 'ar'], array_keys($supported));
+        $this->assertSame(['en', 'fa', 'ps', 'ar'], array_keys($supported));
         $this->assertSame('ltr', $supported['en']['direction']);
         $this->assertSame('rtl', $supported['fa']['direction']);
+        $this->assertSame('rtl', $supported['ps']['direction']);
         $this->assertSame('rtl', $supported['ar']['direction']);
         $this->assertSame('Dari', $supported['fa']['label']);
         $this->assertSame('دری', $supported['fa']['native']);
+        $this->assertSame('Pashto', $supported['ps']['label']);
+        $this->assertSame('پښتو', $supported['ps']['native']);
+    }
+
+    public function test_afghanistan_profile_is_curated_without_hard_coding_the_core(): void
+    {
+        $service = app(CountryLocalizationService::class);
+        $afghanistan = $service->workspaceDefaults('AF');
+
+        $this->assertSame('AF', $afghanistan['country']);
+        $this->assertSame('AFN', $afghanistan['currency']);
+        $this->assertSame('Asia/Kabul', $afghanistan['timezone']);
+        $this->assertSame('fa', $afghanistan['locale']);
+        $this->assertFalse($afghanistan['tax_enabled']);
+
+        $this->assertSame('AED', $service->workspaceDefaults('AE')['currency']);
+        $this->assertSame('USD', $service->workspaceDefaults('US')['currency']);
+        $this->assertSame('CAD', $service->workspaceDefaults('CA')['currency']);
     }
 
     public function test_central_formatter_localizes_numbers_dates_and_currency(): void
