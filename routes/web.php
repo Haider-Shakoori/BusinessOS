@@ -28,6 +28,7 @@ use App\Http\Controllers\ProductVariantController;
 use App\Http\Controllers\PurchasingController;
 use App\Http\Controllers\QuotationController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\SaasAdminController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\SmartAssistantController;
 use App\Http\Controllers\SupplierController;
@@ -59,6 +60,26 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/auth.php';
+
+/*
+ * Batch 40 — platform SaaS administration.
+ *
+ * Platform administration is intentionally outside the selected-business
+ * middleware. Only explicitly bootstrapped super-admin accounts can manage
+ * plans and subscription state across tenants.
+ */
+Route::middleware(['auth', 'auth.session', 'super-admin'])
+    ->prefix('platform')
+    ->group(function () {
+        Route::get('/saas', [SaasAdminController::class, 'index'])
+            ->name('platform.saas.index');
+        Route::post('/saas/plans', [SaasAdminController::class, 'storePlan'])
+            ->name('platform.saas.plans.store');
+        Route::patch('/saas/plans/{saasPlan}', [SaasAdminController::class, 'updatePlan'])
+            ->name('platform.saas.plans.update');
+        Route::patch('/saas/businesses/{business}/subscription', [SaasAdminController::class, 'updateSubscription'])
+            ->name('platform.saas.subscriptions.update');
+    });
 
 /*
  * Business settings (Batch 9).

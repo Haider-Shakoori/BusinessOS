@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Services\BusinessContext;
+use App\Services\SaasUsageService;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -35,7 +36,15 @@ class EnsureBusinessSelected
         }
 
         // Resolve (and persist) the authoritative current business.
-        $context->current();
+        $business = $context->current();
+
+        if (
+            $business
+            && ! $request->user()?->is_super_admin
+            && ! app(SaasUsageService::class)->isOperational($business)
+        ) {
+            abort(403, __('saas.subscription_inactive'));
+        }
 
         return $next($request);
     }

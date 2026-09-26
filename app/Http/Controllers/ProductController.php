@@ -9,7 +9,9 @@ use App\Models\Category;
 use App\Models\Product;
 use App\Models\Tax;
 use App\Models\Unit;
+use App\Services\BusinessContext;
 use App\Services\BusinessSettings;
+use App\Services\SaasUsageService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -74,8 +76,23 @@ class ProductController extends Controller
         ]);
     }
 
-    public function store(StoreProductRequest $request): RedirectResponse
-    {
+    public function store(
+        StoreProductRequest $request,
+        BusinessContext $context,
+        SaasUsageService $saasUsage,
+    ): RedirectResponse {
+        $business = $context->current();
+
+        abort_unless($business, 404);
+
+        if (! $saasUsage->canAdd($business, 'products')) {
+            return back()
+                ->withInput()
+                ->withErrors([
+                    'name' => __('saas.limit_reached', ['resource' => __('saas.products')]),
+                ]);
+        }
+
         Product::create($request->validated());
 
         return redirect()

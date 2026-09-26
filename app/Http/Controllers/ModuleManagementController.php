@@ -6,6 +6,7 @@ use App\Models\BusinessModule;
 use App\Services\BusinessContext;
 use App\Services\BusinessNotificationService;
 use App\Services\ModuleRegistry;
+use App\Services\SaasUsageService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -39,10 +40,12 @@ class ModuleManagementController extends Controller
         ModuleRegistry $registry,
         BusinessContext $context,
         BusinessNotificationService $notifications,
+        SaasUsageService $saasUsage,
     ): RedirectResponse {
-        $businessId = $context->currentId();
+        $business = $context->current();
+        $businessId = $business?->id;
 
-        abort_unless($businessId, 404);
+        abort_unless($business, 404);
 
         $data = $request->validate([
             'module_key' => ['required', 'string', Rule::in(array_keys($registry->all()))],
@@ -51,6 +54,24 @@ class ModuleManagementController extends Controller
 
         if (in_array($data['module_key'], ['dashboard', 'settings'], true) && ! $data['enabled']) {
             return back()->withErrors(['module_key' => __('system.modules.core_required')]);
+        }
+
+        $alreadyEnabled = BusinessModule::query()
+            ->where('business_id', $businessId)
+            ->where('module_key', $data['module_key'])
+            ->where('enabled', true)
+            ->exists();
+
+        if (
+            (bool) $data['enabled']
+            && ! $alreadyEnabled
+            && ! $saasUsage->canAdd($business, 'enabled_modules')
+        ) {
+            return back()->withErrors([
+                'module_key' => __('saas.limit_reached', [
+                    'resource' => __('saas.enabled_modules'),
+                ]),
+            ]);
         }
 
         BusinessModule::query()->updateOrCreate(
