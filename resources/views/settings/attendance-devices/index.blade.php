@@ -22,7 +22,7 @@
                 <p class="text-sm text-slate-600 dark:text-slate-300">{{ __('attendance.connection_notes') }}</p>
                 <div class="mt-4 flex flex-wrap gap-2">
                     @foreach ($brands as $brand)
-                        <x-ui.badge variant="neutral">{{ $brand['label'] }}</x-ui.badge>
+                        <x-ui.badge tone="neutral">{{ $brand['label'] }}</x-ui.badge>
                     @endforeach
                 </div>
             </x-ui.card>
@@ -58,11 +58,11 @@
                                     <div>
                                         <div class="flex flex-wrap items-center gap-2">
                                             <h3 class="font-semibold text-slate-900 dark:text-white">{{ $device->name }}</h3>
-                                            <x-ui.badge :variant="$device->enabled ? 'success' : 'neutral'">
+                                            <x-ui.badge :tone="$device->enabled ? 'success' : 'neutral'">
                                                 {{ $brands[$device->brand]['label'] ?? $device->brand }}
                                             </x-ui.badge>
                                             @if ($device->last_status)
-                                                <x-ui.badge :variant="$device->last_status === 'online' ? 'success' : ($device->last_status === 'error' || $device->last_status === 'offline' ? 'danger' : 'neutral')">
+                                                <x-ui.badge :tone="$device->last_status === 'online' ? 'success' : ($device->last_status === 'error' || $device->last_status === 'offline' ? 'danger' : 'neutral')">
                                                     {{ $device->last_status }}
                                                 </x-ui.badge>
                                             @endif
@@ -226,7 +226,7 @@
                                     <x-ui.td>{{ $log->employee?->name ?? __('attendance.unmapped') }}</x-ui.td>
                                     <x-ui.td><span dir="ltr">{{ $log->device_user_id }}</span></x-ui.td>
                                     <x-ui.td>{{ $log->verification_type }}</x-ui.td>
-                                    <x-ui.td>{{ $log->occurred_at?->timezone($device->timezone ?? config('app.timezone'))->format('Y-m-d H:i:s') }}</x-ui.td>
+                                    <x-ui.td>{{ $log->occurred_at?->timezone($log->device?->timezone ?? config('app.timezone'))->format('Y-m-d H:i:s') }}</x-ui.td>
                                 </tr>
                             @endforeach
                         </x-ui.table>
