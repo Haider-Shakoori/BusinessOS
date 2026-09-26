@@ -2,7 +2,7 @@
 
 @section('content')
 @php
-    $showAmount = static fn ($value) => !AppSupportDecimal::eq((string)$value, '0') ? $value : '—';
+    $showAmount = static fn ($value) => !\App\Support\Decimal::eq((string)$value, '0') ? $value : '—';
 @endphp
 <x-app.page
     icon="ledger"
