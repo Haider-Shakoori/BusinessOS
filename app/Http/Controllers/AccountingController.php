@@ -27,7 +27,7 @@ class AccountingController extends Controller
             'code' => ['required', 'string', 'max:40', Rule::unique('accounts', 'code')->where('business_id', $context->currentId())],
             'name' => ['required', 'string', 'max:255'],
             'type' => ['required', Rule::in(['asset', 'liability', 'equity', 'income', 'expense'])],
-            'parent_id' => ['nullable', Rule::exists('accounts', 'id')],
+            'parent_id' => ['nullable', Rule::exists('accounts', 'id')->where('business_id', $context->currentId())],
         ]);
 
         Account::create($data + ['is_active' => true]);
@@ -41,8 +41,8 @@ class AccountingController extends Controller
             'number' => ['required', 'string', 'max:80', Rule::unique('journal_entries', 'number')->where('business_id', $context->currentId())],
             'entry_date' => ['required', 'date'],
             'description' => ['nullable', 'string', 'max:2000'],
-            'debit_account_id' => ['required', 'different:credit_account_id', Rule::exists('accounts', 'id')],
-            'credit_account_id' => ['required', 'different:debit_account_id', Rule::exists('accounts', 'id')],
+            'debit_account_id' => ['required', 'different:credit_account_id', Rule::exists('accounts', 'id')->where('business_id', $context->currentId())],
+            'credit_account_id' => ['required', 'different:debit_account_id', Rule::exists('accounts', 'id')->where('business_id', $context->currentId())],
             'amount' => ['required', 'numeric', 'gt:0'],
         ]);
 
