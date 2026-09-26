@@ -72,13 +72,21 @@ class FiscalPeriodService
 
     public function reopen(FiscalPeriod $period): FiscalPeriod
     {
-        $period->update([
-            'status' => 'open',
-            'closed_at' => null,
-            'closed_by' => null,
-            'close_note' => null,
-        ]);
+        return DB::transaction(function () use ($period): FiscalPeriod {
+            $locked = FiscalPeriod::query()->lockForUpdate()->findOrFail($period->id);
 
-        return $period->refresh();
+            if ($locked->status === 'open') {
+                return $locked;
+            }
+
+            $locked->update([
+                'status' => 'open',
+                'closed_at' => null,
+                'closed_by' => null,
+                'close_note' => null,
+            ]);
+
+            return $locked->refresh();
+        });
     }
 }
