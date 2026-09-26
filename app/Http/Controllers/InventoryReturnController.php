@@ -10,6 +10,7 @@ use App\Models\PurchaseOrderItem;
 use App\Models\Warehouse;
 use App\Services\BusinessContext;
 use App\Services\InventoryReturnService;
+use App\Services\ModuleManager;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -20,12 +21,12 @@ use RuntimeException;
 
 class InventoryReturnController extends Controller
 {
-    public function index(): View
+    public function index(ModuleManager $modules): View
     {
         $sales = collect();
         $purchases = collect();
 
-        if (Gate::allows('pos.view')) {
+        if ($modules->isEnabled('pos') && Gate::allows('pos.view')) {
             $sales = PosSale::query()
                 ->where('status', 'completed')
                 ->with(['items.product', 'register'])
@@ -34,7 +35,7 @@ class InventoryReturnController extends Controller
                 ->get();
         }
 
-        if (Gate::allows('purchasing.view')) {
+        if ($modules->isEnabled('purchasing') && Gate::allows('purchasing.view')) {
             $purchases = PurchaseOrder::query()
                 ->where('status', 'received')
                 ->with(['items.product', 'supplier'])
