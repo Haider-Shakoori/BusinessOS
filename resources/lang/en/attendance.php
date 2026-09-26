@@ -66,7 +66,6 @@ return [
     'unmapped' => 'Unmapped',
     'bridge' => [
         'title' => 'Local Attendance Bridge',
-        'helper_bridge' => 'Enter the device IP. Public IPs are probed by the server; private LAN IPs such as 192.168.x.x are automatically routed through an online BusinessOS Attendance Bridge on that LAN.',
         'helper' => 'Install the bridge on one Windows PC inside the customer LAN. It makes private-IP devices reachable to BusinessOS over outbound HTTPS, without exposing the attendance machine to the internet.',
         'download' => 'Download Windows Bridge',
         'name' => 'Bridge name',
@@ -93,6 +92,7 @@ return [
         'discovery_timeout' => 'Timed out waiting for the local attendance bridge.',
     ],
     'discovery' => [
+        'helper_bridge' => 'Enter the device IP. Public IPs are probed by the server; private LAN IPs such as 192.168.x.x are automatically routed through an online BusinessOS Attendance Bridge on that LAN.',
         'title' => 'Auto-detect attendance device',
         'helper' => 'Enter the device IP. BusinessOS will perform short read-only probes on common attendance ports and safe HTTP endpoints, then suggest the most likely brand and connection profile.',
         'best_effort' => 'Best-effort detection',
