@@ -9,6 +9,7 @@ return [
     'register_name' => 'Register name',
     'register_code' => 'Register code',
     'warehouse' => 'Warehouse',
+    'warehouse_auto' => 'No warehouse exists yet. BusinessOS will create a Main Warehouse automatically.',
     'create_register' => 'Create register',
     'setup_title' => 'Create your first POS register',
     'setup_help' => 'A register is linked to one warehouse so every sale updates the correct stock location.',
