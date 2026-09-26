@@ -419,7 +419,6 @@ Route::middleware(['auth', 'auth.session', 'business-selected', 'module:purchasi
         ->name('suppliers.payments.reverse')
         ->middleware('permission:purchasing.manage');
 
-
     Route::get('/purchasing', [PurchasingController::class, 'index'])
         ->name('purchasing.index')
         ->middleware('permission:purchasing.view');
