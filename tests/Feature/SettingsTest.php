@@ -467,12 +467,12 @@ class SettingsTest extends TestCase
             'fieldpulse.organization_key' => 'business-b-fieldpulse',
         ])->assertRedirect(route('settings.index'));
 
-        $this->assertDatabaseHas('fieldpulse_integrations', [
+        $this->assertDatabaseHas('field_pulse_integrations', [
             'business_id' => $businessA->id,
             'organization_key' => 'business-a-fieldpulse',
             'enabled' => 1,
         ]);
-        $this->assertDatabaseHas('fieldpulse_integrations', [
+        $this->assertDatabaseHas('field_pulse_integrations', [
             'business_id' => $businessB->id,
             'organization_key' => 'business-b-fieldpulse',
             'enabled' => 1,
