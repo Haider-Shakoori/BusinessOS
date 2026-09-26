@@ -79,6 +79,7 @@ return [
         'empty' => 'No variants yet. The base product continues to be sold and stocked normally until variants are added.',
         'created' => 'Variant created.',
         'updated' => 'Variant updated.',
+        'delete_with_stock' => 'This variant still has :quantity units in stock. Deactivate it or clear its stock before deleting it.',
         'deleted' => 'Variant removed.',
         'base' => 'Base product',
         'select' => 'Variant',
