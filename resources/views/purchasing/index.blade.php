@@ -2,6 +2,9 @@
 
 @section('content')
 <x-app.page icon="shopping-cart" :title="__('operations.purchasing.title')" :subtitle="__('operations.purchasing.subtitle')">
+    <x-slot:actions>
+        <x-ui.button href="{{ route('suppliers.index') }}" variant="secondary" icon="users">{{ __('suppliers.title') }}</x-ui.button>
+    </x-slot:actions>
     @can('inventory.view')
         <x-slot:actions>
             <x-ui.button href="{{ route('inventory.returns.index') }}" variant="secondary">{{ __('operations.returns.title') }}</x-ui.button>

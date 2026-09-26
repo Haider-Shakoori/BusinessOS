@@ -29,6 +29,7 @@ use App\Http\Controllers\QuotationController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\SmartAssistantController;
+use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\TaxController;
 use App\Http\Controllers\UnitController;
 use App\Http\Controllers\UserRoleController;
@@ -344,6 +345,66 @@ Route::middleware(['auth', 'auth.session', 'business-selected', 'module:inventor
 });
 
 Route::middleware(['auth', 'auth.session', 'business-selected', 'module:purchasing'])->group(function () {
+    Route::get('/suppliers', [SupplierController::class, 'index'])
+        ->name('suppliers.index')
+        ->middleware('permission:suppliers.view');
+
+    Route::get('/suppliers/import', [ImportController::class, 'show'])
+        ->name('suppliers.import')
+        ->defaults('type', 'suppliers')
+        ->middleware('permission:suppliers.manage');
+    Route::get('/suppliers/import/template', [ImportController::class, 'template'])
+        ->name('suppliers.import.template')
+        ->defaults('type', 'suppliers')
+        ->middleware('permission:suppliers.manage');
+    Route::post('/suppliers/import', [ImportController::class, 'preview'])
+        ->name('suppliers.import.preview')
+        ->defaults('type', 'suppliers')
+        ->middleware('permission:suppliers.manage');
+    Route::get('/suppliers/import/preview/{token}', [ImportController::class, 'confirm'])
+        ->name('suppliers.import.confirm')
+        ->defaults('type', 'suppliers')
+        ->middleware('permission:suppliers.manage');
+    Route::post('/suppliers/import/preview/{token}', [ImportController::class, 'execute'])
+        ->name('suppliers.import.execute')
+        ->defaults('type', 'suppliers')
+        ->middleware('permission:suppliers.manage');
+    Route::delete('/suppliers/import/preview/{token}', [ImportController::class, 'cancel'])
+        ->name('suppliers.import.cancel')
+        ->defaults('type', 'suppliers')
+        ->middleware('permission:suppliers.manage');
+
+    Route::get('/suppliers/create', [SupplierController::class, 'create'])
+        ->name('suppliers.create')
+        ->middleware('permission:suppliers.manage');
+    Route::post('/suppliers', [SupplierController::class, 'store'])
+        ->name('suppliers.store')
+        ->middleware('permission:suppliers.manage');
+    Route::get('/suppliers/{supplier}', [SupplierController::class, 'show'])
+        ->name('suppliers.show')
+        ->middleware('permission:suppliers.view');
+    Route::get('/suppliers/{supplier}/ledger', [SupplierController::class, 'ledger'])
+        ->name('suppliers.ledger')
+        ->middleware('permission:suppliers.view');
+    Route::get('/suppliers/{supplier}/statement', [SupplierController::class, 'statement'])
+        ->name('suppliers.statement')
+        ->middleware('permission:suppliers.view');
+    Route::post('/suppliers/{supplier}/payments', [SupplierController::class, 'storePayment'])
+        ->name('suppliers.payments.store')
+        ->middleware(['permission:suppliers.manage', 'permission:payments.create']);
+    Route::post('/suppliers/{supplier}/payments/{payment}/reverse', [SupplierController::class, 'reversePayment'])
+        ->name('suppliers.payments.reverse')
+        ->middleware(['permission:suppliers.manage', 'permission:payments.reverse']);
+    Route::get('/suppliers/{supplier}/edit', [SupplierController::class, 'edit'])
+        ->name('suppliers.edit')
+        ->middleware('permission:suppliers.manage');
+    Route::patch('/suppliers/{supplier}', [SupplierController::class, 'update'])
+        ->name('suppliers.update')
+        ->middleware('permission:suppliers.manage');
+    Route::delete('/suppliers/{supplier}', [SupplierController::class, 'destroy'])
+        ->name('suppliers.destroy')
+        ->middleware('permission:suppliers.manage');
+
     Route::get('/purchasing', [PurchasingController::class, 'index'])
         ->name('purchasing.index')
         ->middleware('permission:purchasing.view');

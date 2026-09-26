@@ -11,6 +11,7 @@ use App\Services\Imports\ImportPreview;
 use App\Services\Imports\ImportResult;
 use App\Services\Imports\ImportRow;
 use App\Services\Imports\ProductImportMapper;
+use App\Services\Imports\SupplierImportMapper;
 use App\Services\Imports\TooManyRowsException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
@@ -62,13 +63,14 @@ class ImportService
         return match ($type) {
             'customers' => new CustomerImportMapper,
             'products' => new ProductImportMapper($this->taxEnabledFor($businessId)),
+            'suppliers' => new SupplierImportMapper,
             default => throw new RuntimeException("Unknown import type: {$type}."),
         };
     }
 
     public function supports(string $type): bool
     {
-        return in_array($type, ['customers', 'products'], true);
+        return in_array($type, ['customers', 'products', 'suppliers'], true);
     }
 
     /**

@@ -7,6 +7,7 @@ return [
     'products' => 'محصولات',
     'expenses' => 'هزینه‌ها',
     'inventory' => 'موجودی',
+    'suppliers' => 'تأمین‌کنندگان',
     'purchasing' => 'خریداری',
     'pos' => 'POS',
     'accounting' => 'حسابداری',

@@ -350,8 +350,8 @@ class AuthorizationTest extends TestCase
     {
         $this->registerProtectedRoute('/__perm/settings-manage', 'settings.manage');
 
-        // The catalogue grows with implemented modules. Batch 34 adds
-        // HR and attendance-backed payroll permissions.
+        // The catalogue grows with implemented modules. Supplier management
+        // adds its own read/manage capabilities under Purchasing.
         $expected = [
             'users.view', 'users.manage',
             'settings.view', 'settings.manage',
@@ -366,6 +366,7 @@ class AuthorizationTest extends TestCase
             'expenses.view', 'expenses.manage',
             'inventory.view', 'inventory.manage',
             'purchasing.view', 'purchasing.manage',
+            'suppliers.view', 'suppliers.manage',
             'accounting.view', 'accounting.manage',
             'pos.view', 'pos.sell', 'pos.manage',
             'crm.view', 'crm.manage',

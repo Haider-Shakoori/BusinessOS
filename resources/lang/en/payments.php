@@ -9,7 +9,7 @@ return [
     'reversed' => 'Payment reversed. The invoice balance has been updated.',
 
     'search' => 'Search payments',
-    'search_placeholder' => 'Search by payment number, invoice, customer or reference…',
+    'search_placeholder' => 'Search by payment number, invoice, customer, supplier or reference…',
 
     'no_payments' => 'No payments',
     'no_payments_description' => 'There are no payments in this business yet. Record a payment from an invoice.',
@@ -21,6 +21,7 @@ return [
     'number' => 'Number',
     'invoice' => 'Invoice',
     'customer' => 'Customer',
+    'party' => 'Party',
     'date' => 'Date',
     'method' => 'Method',
     'amount' => 'Amount',
@@ -65,6 +66,7 @@ return [
 
     'view_all' => 'All payments',
     'back_to_invoice' => 'Back to invoice',
+    'back_to_supplier' => 'Back to supplier',
 
     'reverse_title' => 'Reverse payment :name?',
     'reverse_confirm' => 'This marks payment :name as reversed. The payment amount is returned to the invoice balance and the invoice status is updated. The payment row and its number are kept as an audit record.',
@@ -76,7 +78,8 @@ return [
     'columns' => [
         'number' => 'Number',
         'invoice' => 'Invoice',
-        'customer' => 'Customer',
+        'party' => 'Party',
+        'customer' => 'Customer / Supplier',
         'date' => 'Date',
         'method' => 'Method',
         'status' => 'Status',

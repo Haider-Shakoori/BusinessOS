@@ -7,6 +7,7 @@ use App\Enums\InvoiceStatus;
 use App\Models\Invoice;
 use App\Models\Payment;
 use App\Models\PaymentAllocation;
+use App\Models\Supplier;
 use App\Support\Decimal;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
@@ -46,6 +47,7 @@ class PaymentService
     public function __construct(
         private readonly DocumentNumberService $numbers,
         private readonly CurrencyService $currencies,
+        private readonly SupplierLedgerService $supplierLedger,
     ) {
         //
     }
@@ -123,6 +125,49 @@ class PaymentService
     }
 
     /**
+     * Record an outgoing payment to a supplier. Supplier payments reuse the
+     * same auditable payment table but do not create an invoice allocation.
+     *
+     * @param  array{amount:string|int|float,payment_method:string,payment_date:string,reference?:string|null,notes?:string|null}  $validated
+     */
+    public function recordSupplier(Supplier $supplier, array $validated, int $createdBy): Payment
+    {
+        return DB::transaction(function () use ($supplier, $validated, $createdBy): Payment {
+            $locked = Supplier::query()->lockForUpdate()->findOrFail($supplier->id);
+            $amount = Decimal::normalize((string) $validated['amount']);
+            $due = $this->supplierLedger->outstandingBalance($locked);
+
+            if (Decimal::gt($amount, $due)) {
+                throw ValidationException::withMessages([
+                    'amount' => __('suppliers.validation.payment_exceeds_balance'),
+                ]);
+            }
+
+            $currency = $this->currencies->baseCurrency();
+
+            $payment = new Payment;
+            $payment->forceFill([
+                'payment_number' => $this->numbers->next(DocumentType::Payment),
+                'paymentable_type' => Supplier::class,
+                'paymentable_id' => $locked->id,
+                'party_type' => 'supplier',
+                'party_id' => $locked->id,
+                'payment_date' => $validated['payment_date'],
+                'amount' => $amount,
+                'currency_code' => $currency,
+                'exchange_rate' => '1.00000000',
+                'base_amount' => $amount,
+                'payment_method' => $validated['payment_method'],
+                'reference' => $validated['reference'] ?? null,
+                'notes' => $validated['notes'] ?? null,
+                'created_by' => $createdBy,
+            ])->save();
+
+            return $payment->fresh(['supplier', 'createdBy']);
+        });
+    }
+
+    /**
      * Mark a payment as reversed (never deleted) and reconcile the invoice.
      *
      * @throws ValidationException when the payment is already reversed
@@ -143,6 +188,16 @@ class PaymentService
                 throw ValidationException::withMessages([
                     'payment' => __('payments.validation.already_reversed'),
                 ]);
+            }
+
+            if ($locked->party_type === 'supplier') {
+                $locked->forceFill([
+                    'reversed_at' => now(),
+                    'reversed_by' => $reversedBy,
+                    'reversal_reason' => $reason,
+                ])->save();
+
+                return;
             }
 
             $invoice = Invoice::query()

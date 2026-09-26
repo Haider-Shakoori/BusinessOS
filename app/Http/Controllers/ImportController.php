@@ -163,6 +163,10 @@ class ImportController extends Controller
                 'title' => __('imports.import_products'),
                 'subtitle' => __('imports.import_products_subtitle'),
             ],
+            'suppliers' => [
+                'title' => __('imports.import_suppliers'),
+                'subtitle' => __('imports.import_suppliers_subtitle'),
+            ],
             default => abort(404),
         };
     }

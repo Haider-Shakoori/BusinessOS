@@ -72,6 +72,10 @@ return [
             'purchasing.view',
             'purchasing.manage',
         ],
+        'suppliers' => [
+            'suppliers.view',
+            'suppliers.manage',
+        ],
         'accounting' => [
             'accounting.view',
             'accounting.manage',
