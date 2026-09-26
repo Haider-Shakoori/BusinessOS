@@ -458,7 +458,6 @@ class SettingsTest extends TestCase
         ])->assertSessionHasErrors(['fieldpulse.organization_key']);
 
         $this->patch('/settings', [
-            'fieldpulse.enabled' => '1',
             'fieldpulse.organization_key' => 'business-b-fieldpulse',
         ])->assertRedirect(route('settings.index'));
 
@@ -469,7 +468,7 @@ class SettingsTest extends TestCase
         $this->assertDatabaseHas('field_pulse_integrations', [
             'business_id' => $businessB->id,
             'organization_key' => 'business-b-fieldpulse',
-            'enabled' => 1,
+            'enabled' => 0,
         ]);
     }
 }
