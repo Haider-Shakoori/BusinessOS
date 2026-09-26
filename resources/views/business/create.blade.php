@@ -81,8 +81,11 @@
     <form method="POST" action="{{ route('business.store') }}" enctype="multipart/form-data">
         @csrf
 
-        <div class="overflow-hidden rounded-[12px] border border-slate-200 bg-white shadow-[0_12px_40px_rgba(15,23,42,0.06)] dark:border-slate-700 dark:bg-slate-900">
-            <div class="grid grid-cols-4 gap-0 border-b border-slate-100 px-6 py-5 dark:border-slate-800 sm:px-10">
+        <div class="relative overflow-hidden rounded-[12px] border border-slate-200 bg-white shadow-[0_12px_40px_rgba(15,23,42,0.06)] dark:border-slate-700 dark:bg-slate-900">
+            <div
+                class="grid grid-cols-4 gap-0 border-b border-slate-100 bg-white px-6 py-5 dark:border-slate-800 dark:bg-slate-900 sm:px-10 lg:absolute lg:start-0 lg:top-0 lg:z-10"
+                x-bind:class="step === 3 ? 'lg:w-[calc(100%-330px)]' : 'lg:w-[52.5%]'"
+            >
                 @foreach ([
                     1 => ['label' => __('onboarding.steps.welcome'), 'help' => __('onboarding.steps.welcome_help')],
                     2 => ['label' => __('onboarding.steps.business'), 'help' => __('onboarding.steps.business_help')],
@@ -106,7 +109,7 @@
 
             <section x-show="step === 1" x-cloak>
                 <div class="grid lg:grid-cols-[1.05fr_.95fr]">
-                    <div class="px-7 py-8 sm:px-10 sm:py-10">
+                    <div class="px-7 py-8 sm:px-10 sm:py-10 lg:pt-[118px]">
                         <h2 class="text-[26px] font-bold tracking-[-0.035em] text-slate-950 dark:text-white">{{ __('onboarding.welcome_hero') }}</h2>
                         <p class="mt-2 text-[16px] font-medium text-slate-700 dark:text-slate-200">{{ __('onboarding.welcome_tagline') }}</p>
                         <p class="mt-4 max-w-2xl text-[13px] leading-6 text-slate-500 dark:text-slate-400">{{ __('onboarding.welcome_description') }}</p>
@@ -182,7 +185,7 @@
 
             <section x-show="step === 2" x-cloak>
                 <div class="grid lg:grid-cols-[1.05fr_.95fr]">
-                    <div class="px-7 py-7 sm:px-10">
+                    <div class="px-7 py-7 sm:px-10 lg:pt-[112px]">
                         <div>
                             <h2 class="text-[17px] font-bold text-slate-950 dark:text-white">{{ __('onboarding.company_details') }}</h2>
                             <p class="mt-1 text-[11px] text-slate-500 dark:text-slate-400">{{ __('onboarding.company_details_help') }}</p>
@@ -272,7 +275,7 @@
 
             <section x-show="step === 3" x-cloak>
                 <div class="grid lg:grid-cols-[minmax(0,1fr)_330px]">
-                    <div class="px-5 py-5 sm:px-7">
+                    <div class="px-5 py-5 sm:px-7 lg:pt-[112px]">
                         <div class="rounded-[9px] border border-slate-200 p-4 dark:border-slate-700">
                             <div class="flex items-center gap-3"><span class="grid size-8 place-items-center rounded-[7px] bg-brand-50 text-brand-600"><x-ui.icon name="squares-2x2" class="size-4" /></span><div><h2 class="text-[13px] font-bold">{{ __('onboarding.enable_modules') }}</h2><p class="text-[9px] text-slate-500">{{ __('onboarding.enable_modules_help') }}</p></div></div>
                             <div class="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
