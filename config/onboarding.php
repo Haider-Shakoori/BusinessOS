@@ -71,7 +71,7 @@ return [
             'icon' => 'chart-bar',
             'tone' => 'blue',
         ],
-        'smart-assistant' => [
+        'smart_assistant' => [
             'label' => 'navigation.smart_assistant',
             'description' => 'onboarding.modules.smart_assistant',
             'icon' => 'sparkles',
