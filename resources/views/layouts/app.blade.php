@@ -1,6 +1,12 @@
 @php
     $locale = app()->getLocale();
     $direction = App\Http\Middleware\SetLocale::direction($locale);
+    $currentBusiness = auth()->check()
+        ? app(\App\Services\BusinessContext::class)->current()
+        : null;
+    $workspaceTheme = $currentBusiness
+        ? app(\App\Services\BusinessSettings::class)->get('ui.appearance', 'light')
+        : null;
 @endphp
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', $locale) }}" dir="{{ $direction }}">
@@ -12,9 +18,19 @@
 
     <script>
         (function () {
-            var stored = localStorage.getItem('bos-theme');
+            var workspaceTheme = @js($workspaceTheme);
+            var stored = null;
+
+            try {
+                stored = localStorage.getItem('bos-theme');
+            } catch {
+                // localStorage may be unavailable in restricted browser contexts.
+            }
+
+            var preferred = stored || workspaceTheme;
             var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            if (stored === 'dark' || (!stored && prefersDark)) {
+
+            if (preferred === 'dark' || (!preferred && prefersDark)) {
                 document.documentElement.classList.add('dark');
             }
         })();
