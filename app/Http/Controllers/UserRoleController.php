@@ -127,6 +127,27 @@ class UserRoleController extends Controller
             ->where('business_id', $context->currentId())
             ->findOrFail($data['role_id']);
 
+        $ownerRole = Role::query()
+            ->where('business_id', $context->currentId())
+            ->where('slug', config('roles.owner_role', 'owner'))
+            ->first();
+
+        if (
+            $ownerRole
+            && $membership->roles()->whereKey($ownerRole->id)->exists()
+            && $role->id !== $ownerRole->id
+        ) {
+            $otherOwnerCount = BusinessMembership::query()
+                ->where('business_id', $context->currentId())
+                ->where('id', '!=', $membership->id)
+                ->whereHas('roles', fn ($query) => $query->whereKey($ownerRole->id))
+                ->count();
+
+            if ($otherOwnerCount === 0) {
+                return back()->withErrors(['role_id' => __('system.users.last_owner_required')]);
+            }
+        }
+
         $membership->roles()->sync([$role->id]);
 
         return back()->with('status', __('system.users.role_updated'));
