@@ -15,6 +15,7 @@ return [
         'role_updated' => 'تم تحديث دور العضو.',
         'members' => 'أعضاء النشاط',
         'no_members' => 'لا يوجد أعضاء.',
+        'last_owner_required' => 'يجب أن يحتفظ النشاط دائماً بمالك واحد على الأقل.',
         'password_required_for_new_user' => 'كلمة المرور مطلوبة عند إنشاء مستخدم جديد.',
     ],
     'roles' => [
