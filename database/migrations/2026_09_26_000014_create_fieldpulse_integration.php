@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('fieldpulse_integrations', function (Blueprint $table) {
+        Schema::create('field_pulse_integrations', function (Blueprint $table) {
             $table->id();
             $table->foreignId('business_id')->unique()->constrained()->cascadeOnDelete();
             $table->string('organization_key', 120)->nullable()->unique();
@@ -18,7 +18,7 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::create('fieldpulse_entity_links', function (Blueprint $table) {
+        Schema::create('field_pulse_entity_links', function (Blueprint $table) {
             $table->id();
             $table->foreignId('business_id')->constrained()->cascadeOnDelete();
             $table->string('entity_type', 60);
@@ -28,15 +28,15 @@ return new class extends Migration
 
             $table->unique(
                 ['business_id', 'entity_type', 'fieldpulse_uuid'],
-                'fieldpulse_link_remote_unique',
+                'field_pulse_link_remote_unique',
             );
             $table->unique(
                 ['business_id', 'entity_type', 'local_id'],
-                'fieldpulse_link_local_unique',
+                'field_pulse_link_local_unique',
             );
         });
 
-        Schema::create('fieldpulse_orders', function (Blueprint $table) {
+        Schema::create('field_pulse_orders', function (Blueprint $table) {
             $table->id();
             $table->foreignId('business_id')->constrained()->cascadeOnDelete();
             $table->uuid('fieldpulse_uuid');
@@ -59,7 +59,7 @@ return new class extends Migration
             $table->index(['business_id', 'order_number']);
         });
 
-        Schema::create('fieldpulse_collections', function (Blueprint $table) {
+        Schema::create('field_pulse_collections', function (Blueprint $table) {
             $table->id();
             $table->foreignId('business_id')->constrained()->cascadeOnDelete();
             $table->uuid('fieldpulse_uuid');
@@ -82,7 +82,7 @@ return new class extends Migration
             $table->index(['business_id', 'receipt_number']);
         });
 
-        Schema::create('fieldpulse_events', function (Blueprint $table) {
+        Schema::create('field_pulse_events', function (Blueprint $table) {
             $table->id();
             $table->foreignId('business_id')->constrained()->cascadeOnDelete();
             $table->uuid('fieldpulse_tenant_uuid')->nullable();
@@ -98,7 +98,7 @@ return new class extends Migration
 
             $table->unique(
                 ['business_id', 'idempotency_key'],
-                'fieldpulse_event_idempotency_unique',
+                'field_pulse_event_idempotency_unique',
             );
             $table->index(['business_id', 'status', 'received_at']);
         });
@@ -106,10 +106,10 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('fieldpulse_events');
-        Schema::dropIfExists('fieldpulse_collections');
-        Schema::dropIfExists('fieldpulse_orders');
-        Schema::dropIfExists('fieldpulse_entity_links');
-        Schema::dropIfExists('fieldpulse_integrations');
+        Schema::dropIfExists('field_pulse_events');
+        Schema::dropIfExists('field_pulse_collections');
+        Schema::dropIfExists('field_pulse_orders');
+        Schema::dropIfExists('field_pulse_entity_links');
+        Schema::dropIfExists('field_pulse_integrations');
     }
 };
