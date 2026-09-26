@@ -4,6 +4,7 @@
     @php
         $invoice = $payment->allocations->first()?->invoice;
         $customer = $invoice?->customer;
+        $supplier = $payment->party_type === 'supplier' ? $payment->supplier : null;
     @endphp
 
     <x-app.page icon="banknotes"
@@ -23,6 +24,10 @@
             @if ($invoice)
                 <x-ui.button variant="secondary" href="{{ route('invoices.show', $invoice) }}" icon="receipt-percent">
                     {{ __('payments.back_to_invoice') }}
+                </x-ui.button>
+            @elseif($supplier)
+                <x-ui.button variant="secondary" href="{{ route('suppliers.show', $supplier) }}" icon="users">
+                    {{ __('payments.back_to_supplier') }}
                 </x-ui.button>
             @endif
 
@@ -70,12 +75,12 @@
                             </dd>
                         </div>
                         <div>
-                            <dt class="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">{{ __('payments.customer') }}</dt>
+                            <dt class="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">{{ __('payments.party') }}</dt>
                             <dd class="mt-1 text-sm text-slate-900 dark:text-slate-100">
-                                @if ($customer)
-                                    <a href="{{ route('customers.show', $customer) }}" class="text-brand-600 hover:text-brand-800 dark:text-brand-400 dark:hover:text-brand-300">
-                                        {{ $customer->name }}
-                                    </a>
+                                @if ($supplier)
+                                    <a href="{{ route('suppliers.show', $supplier) }}" class="text-brand-600 hover:text-brand-800 dark:text-brand-400 dark:hover:text-brand-300">{{ $supplier->name }}</a>
+                                @elseif ($customer)
+                                    <a href="{{ route('customers.show', $customer) }}" class="text-brand-600 hover:text-brand-800 dark:text-brand-400 dark:hover:text-brand-300">{{ $customer->name }}</a>
                                 @else
                                     {{ __('payments.no_customer') }}
                                 @endif
