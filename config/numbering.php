@@ -25,6 +25,7 @@ return [
         'payment' => 'PAY',
         'expense' => 'EXP',
         'purchase_order' => 'PO',
+        'pos_sale' => 'POS',
     ],
 
     'padding' => 6,
