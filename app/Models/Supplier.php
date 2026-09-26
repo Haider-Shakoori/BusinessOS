@@ -12,11 +12,25 @@ class Supplier extends Model
     use BelongsToBusiness;
     use SoftDeletes;
 
-    protected $fillable = ['name', 'email', 'phone', 'address', 'is_active'];
+    protected $fillable = [
+        'code',
+        'name',
+        'email',
+        'phone',
+        'address',
+        'opening_balance',
+        'opening_balance_date',
+        'notes',
+        'is_active',
+    ];
 
     protected function casts(): array
     {
-        return ['is_active' => 'boolean'];
+        return [
+            'opening_balance' => 'decimal:4',
+            'opening_balance_date' => 'date',
+            'is_active' => 'boolean',
+        ];
     }
 
     public function purchaseOrders(): HasMany
