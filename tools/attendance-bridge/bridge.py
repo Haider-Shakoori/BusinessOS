@@ -15,8 +15,9 @@ import urllib.request
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
+from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
-VERSION = "1.0.0"
+VERSION = "1.1.0"
 DISCOVERY_PORTS = [4370, 5010, 51211, 80, 443, 8000, 8080, 8443, 3000, 3002, 9000]
 HTTP_PORTS = {80: "http", 443: "https", 8000: "http", 8080: "http", 8443: "https", 3000: "http", 3002: "https", 9000: "http"}
 
@@ -83,10 +84,12 @@ class BridgeClient:
         if not response.get("attendance_enabled"):
             return
         for device in response.get("devices", []):
-            if device.get("connection_type") != "zkteco_tcp":
-                continue
+            connection_type = str(device.get("connection_type") or "")
             try:
-                self.sync_zkteco(device)
+                if connection_type == "zkteco_tcp":
+                    self.sync_zkteco(device)
+                elif connection_type == "isapi":
+                    self.sync_hikvision_isapi(device)
             except Exception as exc:
                 log(f"{device.get('name', device.get('id'))}: sync failed: {exc}")
 
@@ -164,6 +167,133 @@ class BridgeClient:
             self._save_state()
             log(f"{device.get('name', device_id)}: synced {len(records)} punch(es).")
 
+    def sync_hikvision_isapi(self, device: dict[str, Any]) -> None:
+        device_id = str(device["id"])
+        base_url = device_base_url(device)
+        username = str(device.get("username") or "").strip()
+        password = str(device.get("password") or "")
+        timeout = int(device.get("timeout_seconds") or 8)
+        config = device.get("connection_config") if isinstance(device.get("connection_config"), dict) else {}
+
+        if not base_url or not username:
+            log(f"{device.get('name', device_id)}: Hikvision ISAPI requires base URL/host and username.")
+            return
+
+        page_size = max(1, min(2000, int(config.get("page_size") or 200)))
+        overlap_minutes = max(1, min(120, int(config.get("overlap_minutes") or 5)))
+        major = int(config.get("major") if config.get("major") is not None else 0)
+        minor = int(config.get("minor") if config.get("minor") is not None else 0)
+        cutoff = self._device_cutoff(device_id, overlap_minutes)
+        end_utc = datetime.now(timezone.utc)
+        device_tz = resolve_timezone(str(device.get("timezone") or "UTC"))
+        search_id = hashlib.sha256(
+            f"{device_id}|{int(end_utc.timestamp())}".encode("utf-8")
+        ).hexdigest()[:32]
+        opener = hikvision_opener(
+            base_url,
+            username,
+            password,
+            bool(device.get("tls_verify", True)),
+        )
+
+        records: list[dict[str, Any]] = []
+        newest = cutoff
+        position = 0
+        max_pages = 500
+
+        for _ in range(max_pages):
+            payload = {
+                "AcsEventCond": {
+                    "searchID": search_id,
+                    "searchResultPosition": position,
+                    "maxResults": page_size,
+                    "major": major,
+                    "minor": minor,
+                    "startTime": cutoff.astimezone(device_tz).isoformat(timespec="seconds"),
+                    "endTime": end_utc.astimezone(device_tz).isoformat(timespec="seconds"),
+                }
+            }
+            response = http_json(
+                opener,
+                f"{base_url}/ISAPI/AccessControl/AcsEvent?format=json",
+                payload,
+                timeout,
+            )
+            acs_event = response.get("AcsEvent") if isinstance(response, dict) else None
+            if not isinstance(acs_event, dict):
+                raise RuntimeError("Hikvision ISAPI response did not contain AcsEvent.")
+
+            items = acs_event.get("InfoList")
+            if not isinstance(items, list) or not items:
+                break
+
+            for item in items:
+                if not isinstance(item, dict):
+                    continue
+                record = normalize_hikvision_event(item, device_id, device_tz)
+                if record is None:
+                    continue
+                timestamp_utc = datetime.fromisoformat(
+                    record["timestamp"].replace("Z", "+00:00")
+                )
+                if timestamp_utc < cutoff:
+                    continue
+                records.append(record)
+                newest = max(newest, timestamp_utc)
+
+            position += len(items)
+            total = int(acs_event.get("totalMatches") or position)
+            status = str(acs_event.get("responseStatusStrg") or "").upper()
+            if position >= total or status in {"NO MATCH", "NOMATCH"}:
+                break
+
+        self._upload_records(device, records, newest)
+        if records:
+            log(f"{device.get('name', device_id)}: synced {len(records)} Hikvision event(s).")
+
+    def _device_cutoff(self, device_id: str, overlap_minutes: int = 5) -> datetime:
+        last_iso = self.state.get("devices", {}).get(device_id, {}).get("last_punch")
+        if last_iso:
+            try:
+                last = datetime.fromisoformat(str(last_iso).replace("Z", "+00:00"))
+                if last.tzinfo is None:
+                    last = last.replace(tzinfo=timezone.utc)
+                return last.astimezone(timezone.utc) - timedelta(minutes=overlap_minutes)
+            except ValueError:
+                pass
+        return datetime.now(timezone.utc) - timedelta(days=30)
+
+    def _upload_records(
+        self,
+        device: dict[str, Any],
+        records: list[dict[str, Any]],
+        newest: datetime,
+    ) -> None:
+        if not records:
+            return
+
+        device_id = str(device["id"])
+        unique = {record["external_id"]: record for record in records}
+        ordered = sorted(unique.values(), key=lambda item: item["timestamp"])
+
+        for offset in range(0, len(ordered), 500):
+            self.api(
+                f"/devices/{device_id}/records",
+                "POST",
+                {"records": ordered[offset:offset + 500]},
+            )
+
+        current = self.state.get("devices", {}).get(device_id, {}).get("last_punch")
+        current_dt = None
+        if current:
+            try:
+                current_dt = datetime.fromisoformat(str(current).replace("Z", "+00:00"))
+            except ValueError:
+                current_dt = None
+        if current_dt is None or newest > current_dt.astimezone(timezone.utc):
+            self.state.setdefault("devices", {}).setdefault(device_id, {})["last_punch"] = newest.isoformat()
+            self._save_state()
+
     def run(self) -> None:
         log(f"BusinessOS Attendance Bridge {VERSION} starting on {socket.gethostname()}.")
         next_device_sync = 0.0
@@ -194,6 +324,138 @@ class BridgeClient:
         temporary = self.state_path.with_suffix(".tmp")
         temporary.write_text(json.dumps(self.state, indent=2), encoding="utf-8")
         temporary.replace(self.state_path)
+
+
+def resolve_timezone(name: str):
+    try:
+        return ZoneInfo(name)
+    except (ZoneInfoNotFoundError, ValueError):
+        return timezone.utc
+
+
+def device_base_url(device: dict[str, Any]) -> str:
+    configured = str(device.get("base_url") or "").strip().rstrip("/")
+    if configured:
+        return configured
+
+    host = str(device.get("host") or "").strip()
+    if not host:
+        return ""
+
+    port = int(device.get("port") or 80)
+    scheme = "https" if port in (443, 8443) else "http"
+    default_port = (scheme == "http" and port == 80) or (scheme == "https" and port == 443)
+    return f"{scheme}://{host}" + ("" if default_port else f":{port}")
+
+
+def hikvision_opener(
+    base_url: str,
+    username: str,
+    password: str,
+    tls_verify: bool,
+):
+    password_manager = urllib.request.HTTPPasswordMgrWithDefaultRealm()
+    password_manager.add_password(None, base_url, username, password)
+    handlers: list[Any] = [
+        urllib.request.HTTPDigestAuthHandler(password_manager),
+        urllib.request.HTTPBasicAuthHandler(password_manager),
+    ]
+
+    if base_url.lower().startswith("https://"):
+        context = ssl.create_default_context() if tls_verify else ssl._create_unverified_context()
+        handlers.append(urllib.request.HTTPSHandler(context=context))
+
+    return urllib.request.build_opener(*handlers)
+
+
+def http_json(
+    opener,
+    url: str,
+    payload: dict[str, Any],
+    timeout: int,
+) -> dict[str, Any]:
+    request = urllib.request.Request(
+        url,
+        data=json.dumps(payload).encode("utf-8"),
+        method="POST",
+        headers={
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+            "User-Agent": f"BusinessOS-Attendance-Bridge/{VERSION}",
+        },
+    )
+    with opener.open(request, timeout=timeout) as response:
+        body = response.read().decode("utf-8", errors="replace")
+    decoded = json.loads(body)
+    if not isinstance(decoded, dict):
+        raise RuntimeError("Device returned a non-object JSON response.")
+    return decoded
+
+
+def normalize_hikvision_event(
+    event: dict[str, Any],
+    device_id: str,
+    device_tz,
+) -> dict[str, Any] | None:
+    raw_time = str(event.get("time") or event.get("dateTime") or "").strip()
+    user_id = str(
+        event.get("employeeNoString")
+        or event.get("employeeNo")
+        or event.get("cardNo")
+        or ""
+    ).strip()
+    if not raw_time or not user_id:
+        return None
+
+    try:
+        occurred = datetime.fromisoformat(raw_time.replace("Z", "+00:00"))
+    except ValueError:
+        return None
+    if occurred.tzinfo is None:
+        occurred = occurred.replace(tzinfo=device_tz)
+    occurred_utc = occurred.astimezone(timezone.utc)
+
+    verification_raw = str(
+        event.get("currentVerifyMode")
+        or event.get("verifyMode")
+        or event.get("attendanceStatus")
+        or ""
+    ).lower()
+    if "face" in verification_raw:
+        verification = "face"
+    elif "finger" in verification_raw:
+        verification = "fingerprint"
+    elif "card" in verification_raw:
+        verification = "card"
+    elif "password" in verification_raw or "pin" in verification_raw:
+        verification = "pin"
+    else:
+        verification = "unknown"
+
+    punch_type = str(
+        event.get("attendanceStatus")
+        or event.get("statusValue")
+        or event.get("minor")
+        or ""
+    ).strip()
+
+    fingerprint = "|".join([
+        device_id,
+        str(event.get("serialNo") or ""),
+        user_id,
+        occurred_utc.isoformat(),
+        str(event.get("major") or ""),
+        str(event.get("minor") or ""),
+        str(event.get("doorNo") or ""),
+        str(event.get("cardNo") or ""),
+    ])
+    return {
+        "external_id": hashlib.sha256(fingerprint.encode("utf-8")).hexdigest(),
+        "device_user_id": user_id,
+        "timestamp": occurred_utc.isoformat(),
+        "punch_type": punch_type or None,
+        "verification_type": verification,
+    }
 
 
 def local_ips() -> list[str]:
