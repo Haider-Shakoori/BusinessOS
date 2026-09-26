@@ -105,9 +105,9 @@ return [
             8000 => ['brand' => null, 'connection' => 'http_api', 'weight' => 12],
             8080 => ['brand' => null, 'connection' => 'http_api', 'weight' => 12],
             8443 => ['brand' => null, 'connection' => 'http_api', 'weight' => 12],
-            3000 => ['brand' => 'suprema', 'connection' => 'biostar2_api', 'weight' => 35],
-            3002 => ['brand' => 'suprema', 'connection' => 'biostar2_api', 'weight' => 45],
-            9000 => ['brand' => 'suprema', 'connection' => 'biostar2_api', 'weight' => 30],
+            3000 => ['brand' => null, 'connection' => 'http_api', 'weight' => 10],
+            3002 => ['brand' => null, 'connection' => 'http_api', 'weight' => 10],
+            9000 => ['brand' => null, 'connection' => 'http_api', 'weight' => 10],
         ],
         'fingerprints' => [
             'hikvision' => ['hikvision', 'isapi', 'minmoe'],
@@ -125,6 +125,23 @@ return [
             'virdi' => ['virdi', 'unioncommunity', 'union community'],
             'idemia' => ['idemia', 'morpho', 'sagem'],
         ],
+    ],
+
+    'model_families' => [
+        'zkteco' => ['K40', 'F18', 'iClock', 'uFace', 'MB20 / MB360', 'SpeedFace', 'Horus', 'SilkBio'],
+        'essl' => ['K-series / X-series ZK-compatible terminals', 'Face / Fingerprint attendance terminals'],
+        'realtime' => ['Fingerprint attendance terminals', 'Face attendance terminals'],
+        'bioenable' => ['Fingerprint attendance terminals', 'Face attendance terminals'],
+        'hikvision' => ['MinMoe face terminals', 'Access-control attendance terminals'],
+        'dahua' => ['ASI access-control terminals', 'Face-recognition attendance terminals'],
+        'suprema' => ['BioStation', 'FaceStation', 'BioLite', 'BioEntry', 'X-Station / XPass'],
+        'anviz' => ['W1 / W2', 'EP30', 'A350', 'OA1000', 'VF30 / VP30'],
+        'matrix' => ['COSEC attendance / access terminals'],
+        'cpplus' => ['Biometric attendance / access terminals'],
+        'mantra' => ['Biometric attendance terminals'],
+        'nitgen' => ['eNBio / NAC attendance-access terminals'],
+        'virdi' => ['AC / UBio attendance-access terminals'],
+        'idemia' => ['Morpho / Sigma biometric terminals'],
     ],
 
     'verification_types' => [
