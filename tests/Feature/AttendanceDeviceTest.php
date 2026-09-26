@@ -14,6 +14,7 @@ use App\Services\AttendanceDeviceConnectionService;
 use App\Services\AttendanceDeviceDiscoveryService;
 use App\Services\BusinessSettings;
 use App\Services\PayrollAttendanceService;
+use App\Services\PayrollService;
 use Database\Seeders\PermissionSeeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -438,6 +439,95 @@ class AttendanceDeviceTest extends TestCase
             'employee_id' => $employee->id,
             'external_id' => 'bridge-punch-1',
         ]);
+    }
+
+    public function test_bridge_punches_flow_end_to_end_into_payroll_calculation(): void
+    {
+        $user = $this->user();
+        $business = $this->business($user);
+        $this->actIn($user, $business);
+
+        app(BusinessSettings::class)->set('attendance.enabled', true);
+        app(BusinessSettings::class)->set('regional.timezone', 'Asia/Kabul');
+
+        $bridge = AttendanceBridge::create(['name' => 'Payroll Bridge']);
+        $headers = ['Authorization' => 'Bearer '.$bridge->token];
+
+        $employee = Employee::create([
+            'employee_code' => 'PAY-BRIDGE-1',
+            'name' => 'Payroll Bridge Employee',
+            'payroll_type' => 'hourly',
+            'payroll_rate' => '100.0000',
+            'standard_daily_minutes' => 480,
+            'overtime_rate' => '150.0000',
+            'working_days' => [6],
+            'is_active' => true,
+        ]);
+
+        $device = AttendanceDevice::create([
+            'attendance_bridge_id' => $bridge->id,
+            'name' => 'Payroll ZK',
+            'brand' => 'zkteco',
+            'connection_type' => 'zkteco_tcp',
+            'host' => '192.168.20.20',
+            'port' => 4370,
+            'timezone' => 'Asia/Kabul',
+            'enabled' => true,
+        ]);
+
+        AttendanceDeviceEmployee::create([
+            'attendance_device_id' => $device->id,
+            'employee_id' => $employee->id,
+            'device_user_id' => '77',
+        ]);
+
+        $this->postJson(
+            '/api/attendance/bridge/'.$bridge->uuid.'/devices/'.$device->uuid.'/records',
+            [
+                'records' => [
+                    [
+                        'external_id' => 'payroll-bridge-in',
+                        'device_user_id' => '77',
+                        'timestamp' => '2026-09-26T08:00:00+04:30',
+                        'punch_type' => 'check_in',
+                        'verification_type' => 'fingerprint',
+                    ],
+                    [
+                        'external_id' => 'payroll-bridge-out',
+                        'device_user_id' => '77',
+                        'timestamp' => '2026-09-26T17:00:00+04:30',
+                        'punch_type' => 'check_out',
+                        'verification_type' => 'fingerprint',
+                    ],
+                ],
+            ],
+            $headers,
+        )
+            ->assertOk()
+            ->assertJson([
+                'accepted' => 2,
+                'duplicates' => 0,
+                'unmapped' => 0,
+            ]);
+
+        $summary = app(PayrollAttendanceService::class)
+            ->summary($employee, '2026-09-26', '2026-09-26');
+
+        $this->assertSame(540, $summary['worked_minutes']);
+        $this->assertSame(0, $summary['missing_checkout_days']);
+
+        $run = app(PayrollService::class)
+            ->generate('2026-09-26', '2026-09-26');
+        $line = $run->lines()
+            ->where('employee_id', $employee->id)
+            ->firstOrFail();
+
+        $this->assertSame(480, $line->regular_minutes);
+        $this->assertSame(60, $line->overtime_minutes);
+        $this->assertSame('800.0000', $line->base_pay);
+        $this->assertSame('150.0000', $line->overtime_pay);
+        $this->assertSame('950.0000', $line->gross_pay);
+        $this->assertSame('950.0000', $line->net_pay);
     }
 
     public function test_push_connection_type_reports_ready_without_contacting_external_network(): void
