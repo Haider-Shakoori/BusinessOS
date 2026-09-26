@@ -5,10 +5,11 @@ namespace App\Services\Imports;
 use App\Models\Supplier;
 use App\Support\Decimal;
 use Illuminate\Support\Carbon;
+use Throwable;
 
 final class SupplierImportMapper extends ImportMapper
 {
-    /** @var array<string,true> */
+    /** @var array<string, true> */
     private array $seenCodes = [];
 
     public function resourceKey(): string
@@ -34,7 +35,7 @@ final class SupplierImportMapper extends ImportMapper
     }
 
     /**
-     * @param array<string,string|null> $values
+     * @param  array<string, string|null>  $values
      * @return list<string>
      */
     protected function validateRow(array &$values, int $rowNumber, int $businessId): array
@@ -87,7 +88,7 @@ final class SupplierImportMapper extends ImportMapper
         if ($date !== null) {
             try {
                 $values['opening_balance_date'] = Carbon::parse($date)->format('Y-m-d');
-            } catch (\Throwable) {
+            } catch (Throwable) {
                 $errors[] = __('suppliers.validation.opening_balance_date_invalid');
             }
         }
