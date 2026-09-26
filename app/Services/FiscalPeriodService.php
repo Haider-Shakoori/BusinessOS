@@ -75,10 +75,6 @@ class FiscalPeriodService
         return DB::transaction(function () use ($period): FiscalPeriod {
             $locked = FiscalPeriod::query()->lockForUpdate()->findOrFail($period->id);
 
-            if ($locked->status === 'open') {
-                return $locked;
-            }
-
             $locked->update([
                 'status' => 'open',
                 'closed_at' => null,
