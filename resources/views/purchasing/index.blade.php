@@ -2,6 +2,11 @@
 
 @section('content')
 <x-app.page icon="shopping-cart" :title="__('operations.purchasing.title')" :subtitle="__('operations.purchasing.subtitle')">
+    @can('inventory.view')
+        <x-slot:actions>
+            <x-ui.button href="{{ route('inventory.returns.index') }}" variant="secondary">{{ __('operations.returns.title') }}</x-ui.button>
+        </x-slot:actions>
+    @endcan
     @if (session('status')) <div class="mb-5"><x-ui.alert type="success">{{ session('status') }}</x-ui.alert></div> @endif
 
     <div class="grid gap-5 xl:grid-cols-2">

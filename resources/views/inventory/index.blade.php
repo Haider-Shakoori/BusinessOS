@@ -2,6 +2,12 @@
 
 @section('content')
 <x-app.page icon="archive-box" :title="__('operations.inventory.title')" :subtitle="__('operations.inventory.subtitle')">
+    <x-slot:actions>
+        <div class="flex flex-wrap gap-2">
+            <x-ui.button href="{{ route('inventory.transfers.index') }}" variant="secondary">{{ __('operations.transfers.title') }}</x-ui.button>
+            <x-ui.button href="{{ route('inventory.returns.index') }}" variant="secondary">{{ __('operations.returns.title') }}</x-ui.button>
+        </div>
+    </x-slot:actions>
     @if (session('status')) <div class="mb-5"><x-ui.alert type="success">{{ session('status') }}</x-ui.alert></div> @endif
 
     <div class="grid gap-5 xl:grid-cols-2">
