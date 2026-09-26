@@ -46,7 +46,7 @@
                             <x-ui.th class="w-12 text-center">#</x-ui.th>
                             <x-ui.th>{{ __('payments.columns.number') }}</x-ui.th>
                             <x-ui.th>{{ __('payments.columns.invoice') }}</x-ui.th>
-                            <x-ui.th>{{ __('payments.columns.customer') }}</x-ui.th>
+                            <x-ui.th>{{ __('payments.columns.party') }}</x-ui.th>
                             <x-ui.th>{{ __('payments.columns.date') }}</x-ui.th>
                             <x-ui.th>{{ __('payments.columns.method') }}</x-ui.th>
                             <x-ui.th>{{ __('payments.columns.status') }}</x-ui.th>
@@ -59,6 +59,7 @@
                         @php
                             $invoice = $payment->allocations->first()?->invoice;
                             $customer = $invoice?->customer;
+                            $supplier = $payment->party_type === 'supplier' ? $payment->supplier : null;
                         @endphp
                         <tr>
                             <x-ui.td class="text-center text-slate-500">{{ ($payments->firstItem() ?? 1) + $loop->index }}</x-ui.td>
@@ -70,7 +71,13 @@
                                     <span class="text-slate-500 dark:text-slate-400">{{ __('payments.no_invoice') }}</span>
                                 @endif
                             </x-ui.td>
-                            <x-ui.td><span class="text-slate-500 dark:text-slate-400">{{ $customer?->name ?: __('payments.no_customer') }}</span></x-ui.td>
+                            <x-ui.td>
+                                @if($supplier)
+                                    <a href="{{ route('suppliers.show', $supplier) }}" class="font-medium text-brand-600 hover:text-brand-800 dark:text-brand-400">{{ $supplier->name }}</a>
+                                @else
+                                    <span class="text-slate-500 dark:text-slate-400">{{ $customer?->name ?: __('payments.no_customer') }}</span>
+                                @endif
+                            </x-ui.td>
                             <x-ui.td><span class="whitespace-nowrap text-slate-500 dark:text-slate-400">{{ $payment->payment_date->format('Y-m-d') }}</span></x-ui.td>
                             <x-ui.td><span class="text-slate-500 dark:text-slate-400">{{ __('payments.methods.'.$payment->payment_method) }}</span></x-ui.td>
                             <x-ui.td><x-ui.status-badge :status="$payment->reversed_at === null ? 'active' : 'reversed'" :label="__('payments.statuses.'.($payment->reversed_at === null ? 'active' : 'reversed'))" /></x-ui.td>
