@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\FiscalPeriod;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 use RuntimeException;
 
 class FiscalPeriodService
@@ -20,7 +21,9 @@ class FiscalPeriodService
             ->exists();
 
         if ($closed) {
-            throw new RuntimeException('The accounting period for this date is closed.');
+            throw ValidationException::withMessages([
+                'entry_date' => __('operations.accounting.period_closed_error'),
+            ]);
         }
     }
 
