@@ -245,7 +245,7 @@ class AttendanceDeviceDiscoveryService
      */
     protected function suggestConnection(string $ip, ?string $brand, array $openPorts, array $httpEvidence): array
     {
-        if ($brand === 'zkteco' && in_array(4370, $openPorts, true)) {
+        if (in_array($brand, ['zkteco', 'essl', 'realtime', 'bioenable'], true) && in_array(4370, $openPorts, true)) {
             return ['zkteco_tcp', 4370, null];
         }
 
@@ -309,26 +309,26 @@ class AttendanceDeviceDiscoveryService
         }
 
         if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
-            $long = ip2long($ip);
-
-            if ($long === false) {
-                return false;
-            }
-
-            $unsigned = (int) sprintf('%u', $long);
-            $first = $unsigned >> 24;
-            $firstTwo = $unsigned >> 16;
-
-            return $first !== 0
-                && $first !== 127
-                && $firstTwo !== ((169 << 8) | 254)
-                && $first < 224;
+            return $this->isAllowedIpv4($ip);
         }
 
         $packed = inet_pton($ip);
 
         if ($packed === false || $ip === '::' || $ip === '::1') {
             return false;
+        }
+
+        // Reject IPv4-mapped/compatible loopback or link-local addresses too.
+        $prefix10 = substr($packed, 0, 10);
+        $prefix12 = substr($packed, 0, 12);
+
+        if (
+            ($prefix10 === str_repeat("\0", 10) && substr($packed, 10, 2) === "\xff\xff")
+            || $prefix12 === str_repeat("\0", 12)
+        ) {
+            $v4 = inet_ntop(substr($packed, 12, 4));
+
+            return is_string($v4) && $this->isAllowedIpv4($v4);
         }
 
         $first = ord($packed[0]);
@@ -338,5 +338,23 @@ class AttendanceDeviceDiscoveryService
         $isMulticast = $first === 0xff;
 
         return ! $isLinkLocal && ! $isMulticast;
+    }
+
+    protected function isAllowedIpv4(string $ip): bool
+    {
+        $long = ip2long($ip);
+
+        if ($long === false) {
+            return false;
+        }
+
+        $unsigned = (int) sprintf('%u', $long);
+        $first = $unsigned >> 24;
+        $firstTwo = $unsigned >> 16;
+
+        return $first !== 0
+            && $first !== 127
+            && $firstTwo !== ((169 << 8) | 254)
+            && $first < 224;
     }
 }
