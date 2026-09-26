@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\PaymentMethod;
+use App\Models\Payment;
 use App\Models\Supplier;
 use App\Services\BusinessContext;
 use App\Services\CurrencyService;
@@ -182,6 +183,28 @@ class SupplierController extends Controller
         return redirect()
             ->route('suppliers.show', $supplier)
             ->with('status', __('suppliers.payment_created'));
+    }
+
+    public function reversePayment(Request $request, Supplier $supplier, Payment $payment): RedirectResponse
+    {
+        abort_unless(
+            $payment->party_type === 'supplier' && (int) $payment->party_id === (int) $supplier->id,
+            404,
+        );
+
+        $data = $request->validate([
+            'reversal_reason' => ['nullable', 'string', 'max:1000'],
+        ]);
+
+        $this->payments->reverse(
+            $payment,
+            $data['reversal_reason'] ?? null,
+            (int) auth()->id(),
+        );
+
+        return redirect()
+            ->route('suppliers.show', $supplier)
+            ->with('status', __('suppliers.payment_reversed'));
     }
 
     /**
