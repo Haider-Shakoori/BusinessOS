@@ -46,6 +46,59 @@
         </x-ui.card>
     </div>
 
+    <div class="mt-5">
+        <x-ui.card>
+            <x-slot:header>
+                <div>
+                    <h2 class="font-semibold text-slate-900 dark:text-white">{{ __('operations.accounting.fiscal_periods') }}</h2>
+                    <p class="mt-1 text-sm text-slate-500">{{ __('operations.accounting.fiscal_periods_help') }}</p>
+                </div>
+            </x-slot:header>
+
+            <form method="POST" action="{{ route('accounting.fiscal-periods.store') }}" class="grid gap-4 md:grid-cols-4">
+                @csrf
+                <x-ui.input name="name" :label="__('operations.accounting.period_name')" required />
+                <x-ui.input name="start_date" type="date" :label="__('operations.accounting.start_date')" required />
+                <x-ui.input name="end_date" type="date" :label="__('operations.accounting.end_date')" required />
+                <div class="flex items-end"><x-ui.button type="submit" icon="plus">{{ __('operations.accounting.create_period') }}</x-ui.button></div>
+            </form>
+
+            <div class="mt-5 overflow-x-auto">
+                <x-ui.table>
+                    <x-slot:head><tr>
+                        <x-ui.th>{{ __('operations.accounting.period_name') }}</x-ui.th>
+                        <x-ui.th>{{ __('operations.accounting.period_range') }}</x-ui.th>
+                        <x-ui.th>{{ __('operations.accounting.status') }}</x-ui.th>
+                        <x-ui.th>{{ __('operations.accounting.actions') }}</x-ui.th>
+                    </tr></x-slot:head>
+                    @forelse($fiscalPeriods as $period)
+                        <tr>
+                            <x-ui.td>{{ $period->name }}</x-ui.td>
+                            <x-ui.td>{{ $period->start_date?->format('Y-m-d') }} — {{ $period->end_date?->format('Y-m-d') }}</x-ui.td>
+                            <x-ui.td>{{ __('operations.accounting.period_'.$period->status) }}</x-ui.td>
+                            <x-ui.td>
+                                @if($period->status === 'open')
+                                    <form method="POST" action="{{ route('accounting.fiscal-periods.close', $period) }}" class="flex gap-2">
+                                        @csrf
+                                        <input name="note" class="min-w-40 rounded-md border border-slate-200 bg-white px-2 py-1 text-sm dark:border-slate-700 dark:bg-slate-900" placeholder="{{ __('operations.accounting.close_note') }}">
+                                        <x-ui.button type="submit" variant="secondary">{{ __('operations.accounting.close_period') }}</x-ui.button>
+                                    </form>
+                                @else
+                                    <form method="POST" action="{{ route('accounting.fiscal-periods.reopen', $period) }}">
+                                        @csrf
+                                        <x-ui.button type="submit" variant="secondary">{{ __('operations.accounting.reopen_period') }}</x-ui.button>
+                                    </form>
+                                @endif
+                            </x-ui.td>
+                        </tr>
+                    @empty
+                        <tr><x-ui.td colspan="4">{{ __('operations.accounting.no_fiscal_periods') }}</x-ui.td></tr>
+                    @endforelse
+                </x-ui.table>
+            </div>
+        </x-ui.card>
+    </div>
+
     <div class="mt-5 grid gap-5 xl:grid-cols-2">
         <x-ui.card>
             <x-slot:header><h2 class="font-semibold text-slate-900 dark:text-white">{{ __('operations.accounting.chart') }}</h2></x-slot:header>
