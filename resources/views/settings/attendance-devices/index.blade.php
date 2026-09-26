@@ -203,6 +203,47 @@
 
             <x-ui.card>
                 <x-slot:header>
+                    <div>
+                        <h2 class="text-base font-semibold text-slate-900 dark:text-white">{{ __('attendance.payroll_preview') }}</h2>
+                        <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">
+                            {{ __('attendance.payroll_preview_helper', ['from' => $payrollPeriodStart->format('Y-m-d'), 'to' => $payrollPeriodEnd->format('Y-m-d')]) }}
+                        </p>
+                    </div>
+                </x-slot:header>
+
+                @if ($payrollSummaries->isEmpty())
+                    <p class="text-sm text-slate-500 dark:text-slate-400">{{ __('attendance.no_logs') }}</p>
+                @else
+                    <div class="overflow-x-auto">
+                        <x-ui.table :caption="__('attendance.payroll_preview')">
+                            <x-slot:head>
+                                <tr>
+                                    <x-ui.th>{{ __('attendance.employee_code') }}</x-ui.th>
+                                    <x-ui.th>{{ __('attendance.employee_name') }}</x-ui.th>
+                                    <x-ui.th>{{ __('attendance.attended_days') }}</x-ui.th>
+                                    <x-ui.th>{{ __('attendance.punch_count') }}</x-ui.th>
+                                    <x-ui.th>{{ __('attendance.worked_minutes') }}</x-ui.th>
+                                    <x-ui.th>{{ __('attendance.missing_checkout_days') }}</x-ui.th>
+                                </tr>
+                            </x-slot:head>
+                            @foreach ($payrollSummaries as $summary)
+                                @php $payrollEmployee = $employees->firstWhere('id', $summary['employee_id']); @endphp
+                                <tr>
+                                    <x-ui.td>{{ $summary['employee_code'] }}</x-ui.td>
+                                    <x-ui.td>{{ $payrollEmployee?->name }}</x-ui.td>
+                                    <x-ui.td>{{ $summary['attended_days'] }}</x-ui.td>
+                                    <x-ui.td>{{ $summary['punch_count'] }}</x-ui.td>
+                                    <x-ui.td>{{ $summary['worked_minutes'] }}</x-ui.td>
+                                    <x-ui.td>{{ $summary['missing_checkout_days'] }}</x-ui.td>
+                                </tr>
+                            @endforeach
+                        </x-ui.table>
+                    </div>
+                @endif
+            </x-ui.card>
+
+            <x-ui.card>
+                <x-slot:header>
                     <h2 class="text-base font-semibold text-slate-900 dark:text-white">{{ __('attendance.recent_logs') }}</h2>
                 </x-slot:header>
 
