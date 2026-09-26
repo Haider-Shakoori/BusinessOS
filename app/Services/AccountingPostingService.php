@@ -30,12 +30,12 @@ class AccountingPostingService
         $baseRevenue = Decimal::sub($baseTotal, $baseTax);
 
         $lines = [
-            $this->line('1100', 'Accounts Receivable', 'asset', $baseTotal, '0', $invoice->invoice_number),
-            $this->line('4000', 'Sales Revenue', 'income', '0', $baseRevenue, $invoice->invoice_number),
+            $this->line('AUTO-AR', 'Accounts Receivable', 'asset', $baseTotal, '0', $invoice->invoice_number),
+            $this->line('AUTO-SALES', 'Sales Revenue', 'income', '0', $baseRevenue, $invoice->invoice_number),
         ];
 
         if (! Decimal::isZero($baseTax)) {
-            $lines[] = $this->line('2100', 'Tax Payable', 'liability', '0', $baseTax, $invoice->invoice_number);
+            $lines[] = $this->line('AUTO-TAX', 'Tax Payable', 'liability', '0', $baseTax, $invoice->invoice_number);
         }
 
         return $this->post(
@@ -63,7 +63,7 @@ class AccountingPostingService
                 $payment->payment_date->toDateString(),
                 'Supplier payment '.$payment->payment_number,
                 [
-                    $this->line('2000', 'Accounts Payable', 'liability', $amount, '0', $payment->payment_number),
+                    $this->line('AUTO-AP', 'Accounts Payable', 'liability', $amount, '0', $payment->payment_number),
                     $this->line($cash['code'], $cash['name'], 'asset', '0', $amount, $payment->payment_number),
                 ],
             );
@@ -78,7 +78,7 @@ class AccountingPostingService
             'Customer payment '.$payment->payment_number,
             [
                 $this->line($cash['code'], $cash['name'], 'asset', $amount, '0', $payment->payment_number),
-                $this->line('1100', 'Accounts Receivable', 'asset', '0', $amount, $payment->payment_number),
+                $this->line('AUTO-AR', 'Accounts Receivable', 'asset', '0', $amount, $payment->payment_number),
             ],
         );
     }
@@ -107,8 +107,8 @@ class AccountingPostingService
             $order->order_date->toDateString(),
             'Purchase receipt '.$order->number,
             [
-                $this->line('1200', 'Inventory', 'asset', $amount, '0', $order->number),
-                $this->line('2000', 'Accounts Payable', 'liability', '0', $amount, $order->number),
+                $this->line('AUTO-INVENTORY', 'Inventory', 'asset', $amount, '0', $order->number),
+                $this->line('AUTO-AP', 'Accounts Payable', 'liability', '0', $amount, $order->number),
             ],
         );
     }
@@ -129,8 +129,8 @@ class AccountingPostingService
             $return->processed_at->toDateString(),
             'Purchase return '.$return->number,
             [
-                $this->line('2000', 'Accounts Payable', 'liability', $amount, '0', $return->number),
-                $this->line('1200', 'Inventory', 'asset', '0', $amount, $return->number),
+                $this->line('AUTO-AP', 'Accounts Payable', 'liability', $amount, '0', $return->number),
+                $this->line('AUTO-INVENTORY', 'Inventory', 'asset', '0', $amount, $return->number),
             ],
         );
     }
@@ -169,8 +169,8 @@ class AccountingPostingService
             ($supplier->opening_balance_date ?? $supplier->created_at)->toDateString(),
             'Supplier opening balance '.$supplier->code.' revision '.$revision,
             [
-                $this->line('3990', 'Opening Balance Equity', 'equity', $amount, '0', $supplier->code),
-                $this->line('2000', 'Accounts Payable', 'liability', '0', $amount, $supplier->code),
+                $this->line('AUTO-OPENING', 'Opening Balance Equity', 'equity', $amount, '0', $supplier->code),
+                $this->line('AUTO-AP', 'Accounts Payable', 'liability', '0', $amount, $supplier->code),
             ],
         );
     }
@@ -218,7 +218,7 @@ class AccountingPostingService
             $expense->expense_date->toDateString(),
             'Expense '.$expense->expense_number.' revision '.$revision,
             [
-                $this->line('6000', 'General Expenses', 'expense', $amount, '0', $expense->expense_number),
+                $this->line('AUTO-EXPENSE', 'General Expenses', 'expense', $amount, '0', $expense->expense_number),
                 $this->line($cash['code'], $cash['name'], 'asset', '0', $amount, $expense->expense_number),
             ],
         );
@@ -382,11 +382,17 @@ class AccountingPostingService
         string $credit,
         ?string $memo = null,
     ): array {
+        $account = Account::firstOrCreate(
+            ['code' => $code],
+            ['name' => $name, 'type' => $type, 'is_active' => true],
+        );
+
+        if ($account->type !== $type) {
+            throw new RuntimeException("Reserved accounting code {$code} has an incompatible account type.");
+        }
+
         return [
-            'account' => Account::firstOrCreate(
-                ['code' => $code],
-                ['name' => $name, 'type' => $type, 'is_active' => true],
-            ),
+            'account' => $account,
             'debit' => Decimal::normalize($debit),
             'credit' => Decimal::normalize($credit),
             'memo' => $memo,
@@ -399,8 +405,8 @@ class AccountingPostingService
     private function paymentAccount(string $method): array
     {
         return match ($method) {
-            'cash' => ['code' => '1000', 'name' => 'Cash'],
-            default => ['code' => '1010', 'name' => 'Bank & Payment Clearing'],
+            'cash' => ['code' => 'AUTO-CASH', 'name' => 'Cash'],
+            default => ['code' => 'AUTO-BANK', 'name' => 'Bank & Payment Clearing'],
         };
     }
 }
