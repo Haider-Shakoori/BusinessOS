@@ -2,7 +2,6 @@
 
 namespace Tests\Feature;
 
-use App\Models\ActivityLog;
 use App\Models\Business;
 use App\Models\BusinessMembership;
 use App\Models\BusinessModule;
