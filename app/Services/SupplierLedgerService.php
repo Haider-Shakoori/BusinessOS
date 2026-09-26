@@ -82,7 +82,7 @@ final class SupplierLedgerService
      * while debits (returns/payments) reduce it.
      *
      * @param  array{search?:string|null,type?:string|null,date_from?:string|null,date_to?:string|null}  $filters
-     * @return array{rows:list<array<string,mixed>>,closing_balance:string,show_running_balance:bool}
+     * @return array{rows:list<array<string,mixed>>,brought_forward:?string,closing_balance:string,show_running_balance:bool}
      */
     public function ledger(Supplier $supplier, array $filters = []): array
     {
@@ -109,25 +109,69 @@ final class SupplierLedgerService
         }
 
         $rowLevelFilter = $search !== '' || $type !== null;
+        $broughtForward = null;
         $balance = '0.0000';
         $rows = [];
 
-        foreach ($entries as $entry) {
-            if ($dateFrom !== null && $entry['date'] !== null && $entry['date'] < $dateFrom) {
-                continue;
+        if ($dateFrom !== null && ! $rowLevelFilter) {
+            $visible = [];
+            $broughtForward = '0.0000';
+
+            foreach ($entries as $entry) {
+                if ($entry['date'] === null || $entry['date'] < $dateFrom) {
+                    $broughtForward = Decimal::add(
+                        $broughtForward,
+                        Decimal::sub($entry['credit'], $entry['debit']),
+                    );
+
+                    continue;
+                }
+
+                if ($dateTo === null || $entry['date'] <= $dateTo) {
+                    $visible[] = $entry;
+                }
             }
 
-            if ($dateTo !== null && $entry['date'] !== null && $entry['date'] > $dateTo) {
-                continue;
-            }
+            $balance = $broughtForward;
 
-            $balance = Decimal::add($balance, Decimal::sub($entry['credit'], $entry['debit']));
-            $entry['balance'] = $balance;
-            $rows[] = $entry;
+            $rows[] = [
+                'date' => null,
+                'type' => 'brought_forward',
+                'reference' => '',
+                'description' => null,
+                'debit' => Decimal::lt($broughtForward, '0')
+                    ? Decimal::sub('0.0000', $broughtForward)
+                    : '0.0000',
+                'credit' => Decimal::gt($broughtForward, '0') ? $broughtForward : '0.0000',
+                'balance' => $broughtForward,
+                'reversed' => false,
+                'sort' => -1,
+            ];
+
+            foreach ($visible as $entry) {
+                $balance = Decimal::add($balance, Decimal::sub($entry['credit'], $entry['debit']));
+                $entry['balance'] = $balance;
+                $rows[] = $entry;
+            }
+        } else {
+            foreach ($entries as $entry) {
+                if ($dateFrom !== null && $entry['date'] !== null && $entry['date'] < $dateFrom) {
+                    continue;
+                }
+
+                if ($dateTo !== null && $entry['date'] !== null && $entry['date'] > $dateTo) {
+                    continue;
+                }
+
+                $balance = Decimal::add($balance, Decimal::sub($entry['credit'], $entry['debit']));
+                $entry['balance'] = $balance;
+                $rows[] = $entry;
+            }
         }
 
         return [
             'rows' => $rows,
+            'brought_forward' => $broughtForward,
             'closing_balance' => $balance,
             'show_running_balance' => ! $rowLevelFilter,
         ];
