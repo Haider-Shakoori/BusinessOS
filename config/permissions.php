@@ -89,6 +89,20 @@ return [
             'manufacturing.view',
             'manufacturing.manage',
         ],
+        'notifications' => [
+            'notifications.view',
+            'notifications.manage',
+        ],
+        'search' => [
+            'search.use',
+        ],
+        'activity' => [
+            'activity.view',
+        ],
+        'modules' => [
+            'modules.view',
+            'modules.manage',
+        ],
         'reports' => [
             'reports.view',
         ],
