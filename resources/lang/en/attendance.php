@@ -85,7 +85,7 @@ return [
         'disabled' => 'Device integration is disabled.',
         'invalid_connection' => 'The selected connection type is not configured.',
         'push_ready' => 'Push endpoint is ready and waiting for the device.',
-        'push_stale' => 'No recent push has been received from this device.'
+        'push_stale' => 'No recent push has been received from this device.',
         'host_port_required' => 'Host and port are required for this connection type.',
         'tcp_failed' => 'TCP connection failed: :error',
         'tcp_ok' => 'TCP connection succeeded.',
