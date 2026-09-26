@@ -12,6 +12,7 @@ use App\Models\Product;
 use App\Models\Setting;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
 use Throwable;
@@ -682,7 +683,7 @@ class FieldPulseIntegrationService
     {
         $uuid = trim((string) ($data['fieldpulse_uuid'] ?? ''));
 
-        if (! \Illuminate\Support\Str::isUuid($uuid)) {
+        if (! Str::isUuid($uuid)) {
             throw new InvalidArgumentException(
                 'FieldPulse entity UUID is required.',
             );
