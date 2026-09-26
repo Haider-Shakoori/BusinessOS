@@ -3,8 +3,8 @@
 namespace App\Support;
 
 use App\Services\BusinessSettings;
-use Carbon\CarbonInterface;
 use Carbon\CarbonImmutable;
+use Carbon\CarbonInterface;
 use NumberFormatter;
 
 final class LocalizedFormatter
