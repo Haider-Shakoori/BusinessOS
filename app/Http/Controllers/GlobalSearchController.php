@@ -9,19 +9,20 @@ use App\Models\Product;
 use App\Models\ProductionOrder;
 use App\Models\PurchaseOrder;
 use App\Models\Supplier;
+use App\Services\ModuleManager;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
 
 class GlobalSearchController extends Controller
 {
-    public function index(Request $request): View
+    public function index(Request $request, ModuleManager $modules): View
     {
         $query = trim((string) $request->string('q'));
         $results = collect();
 
         if (mb_strlen($query) >= 2) {
-            if (Gate::allows('customers.view')) {
+            if ($modules->isEnabled('customers') && Gate::allows('customers.view')) {
                 Customer::query()
                     ->where(function ($builder) use ($query): void {
                         $builder->where('name', 'like', "%{$query}%")
@@ -40,7 +41,7 @@ class GlobalSearchController extends Controller
                     ]));
             }
 
-            if (Gate::allows('products.view')) {
+            if ($modules->isEnabled('products') && Gate::allows('products.view')) {
                 Product::query()
                     ->where(function ($builder) use ($query): void {
                         $builder->where('name', 'like', "%{$query}%")
@@ -57,7 +58,7 @@ class GlobalSearchController extends Controller
                     ]));
             }
 
-            if (Gate::allows('invoices.view')) {
+            if ($modules->isEnabled('sales') && Gate::allows('invoices.view')) {
                 Invoice::query()
                     ->with('customer')
                     ->where('invoice_number', 'like', "%{$query}%")
@@ -72,7 +73,7 @@ class GlobalSearchController extends Controller
                     ]));
             }
 
-            if (Gate::allows('purchasing.view')) {
+            if ($modules->isEnabled('purchasing') && Gate::allows('purchasing.view')) {
                 Supplier::query()
                     ->where(function ($builder) use ($query): void {
                         $builder->where('name', 'like', "%{$query}%")
@@ -103,7 +104,7 @@ class GlobalSearchController extends Controller
                     ]));
             }
 
-            if (Gate::allows('crm.view')) {
+            if ($modules->isEnabled('crm') && Gate::allows('crm.view')) {
                 CrmLead::query()
                     ->where(function ($builder) use ($query): void {
                         $builder->where('name', 'like', "%{$query}%")
@@ -122,7 +123,7 @@ class GlobalSearchController extends Controller
                     ]));
             }
 
-            if (Gate::allows('manufacturing.view')) {
+            if ($modules->isEnabled('manufacturing') && Gate::allows('manufacturing.view')) {
                 ProductionOrder::query()
                     ->with('product')
                     ->where('number', 'like', "%{$query}%")
