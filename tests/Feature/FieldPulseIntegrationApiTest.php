@@ -6,8 +6,6 @@ use App\Enums\ProductType;
 use App\Models\Business;
 use App\Models\Customer;
 use App\Models\FieldPulseCollection;
-use App\Models\FieldPulseEntityLink;
-use App\Models\FieldPulseEvent;
 use App\Models\FieldPulseIntegration;
 use App\Models\FieldPulseOrder;
 use App\Models\Product;
