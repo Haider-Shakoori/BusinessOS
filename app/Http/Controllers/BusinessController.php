@@ -28,6 +28,8 @@ class BusinessController extends Controller
             'industries' => config('onboarding.industries', []),
             'timezones' => config('onboarding.timezones', []),
             'onboardingModules' => config('onboarding.modules', []),
+            'industryProfiles' => config('onboarding_industries', []),
+            'isFirstWorkspace' => $requestIsFirstWorkspace = auth()->user()?->businesses()->doesntExist() ?? true,
             'supportedLocales' => config('localization.supported', []),
             'currencies' => Currency::query()->where('is_active', true)->orderBy('code')->get(),
             'defaults' => array_merge(
