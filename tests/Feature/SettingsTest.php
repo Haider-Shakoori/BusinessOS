@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\Business;
 use App\Models\BusinessMembership;
+use App\Models\FieldPulseIntegration;
 use App\Models\Permission;
 use App\Models\Role;
 use App\Models\User;
@@ -422,4 +423,60 @@ class SettingsTest extends TestCase
         $this->get('/app')->assertOk();
         $this->assertSame(config('app.locale'), app()->getLocale());
     }
+
+    public function test_fieldpulse_integration_settings_are_business_scoped_and_require_a_mapping_key(): void
+    {
+        $user = $this->makeUser('Integration Owner');
+        [$businessA] = $this->provision($user, 'Integration A', 'owner');
+        [$businessB] = $this->provision($user, 'Integration B', 'owner');
+
+        $this->actIn($user, $businessA);
+
+        $this->patch('/settings', [
+            'fieldpulse.enabled' => '1',
+            'fieldpulse.organization_key' => '',
+        ])->assertSessionHasErrors(['fieldpulse.organization_key']);
+
+        $this->patch('/settings', [
+            'fieldpulse.enabled' => '1',
+            'fieldpulse.organization_key' => 'business-a-fieldpulse',
+        ])->assertRedirect(route('settings.index'));
+
+        $integrationA = FieldPulseIntegration::query()
+            ->where('business_id', $businessA->id)
+            ->firstOrFail();
+        $this->assertTrue($integrationA->enabled);
+        $this->assertSame(
+            'business-a-fieldpulse',
+            $integrationA->organization_key,
+        );
+
+        $this->actIn($user, $businessB);
+        $this->get('/settings')
+            ->assertOk()
+            ->assertSee('FieldPulse integration')
+            ->assertDontSee('business-a-fieldpulse');
+
+        $this->patch('/settings', [
+            'fieldpulse.enabled' => '1',
+            'fieldpulse.organization_key' => 'business-a-fieldpulse',
+        ])->assertSessionHasErrors(['fieldpulse.organization_key']);
+
+        $this->patch('/settings', [
+            'fieldpulse.enabled' => '1',
+            'fieldpulse.organization_key' => 'business-b-fieldpulse',
+        ])->assertRedirect(route('settings.index'));
+
+        $this->assertDatabaseHas('fieldpulse_integrations', [
+            'business_id' => $businessA->id,
+            'organization_key' => 'business-a-fieldpulse',
+            'enabled' => 1,
+        ]);
+        $this->assertDatabaseHas('fieldpulse_integrations', [
+            'business_id' => $businessB->id,
+            'organization_key' => 'business-b-fieldpulse',
+            'enabled' => 1,
+        ]);
+    }
+
 }
