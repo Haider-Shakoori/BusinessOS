@@ -98,6 +98,7 @@ return [
     'validation' => [
         'name_max' => 'Supplier name may not exceed 255 characters.',
         'code_invalid' => 'Supplier code may contain only letters, numbers, dashes and underscores.',
+        'code_duplicate_file' => 'Duplicate supplier code in the same CSV file.',
         'code_unique' => 'This supplier code is already used in this business.',
         'email_invalid' => 'Enter a valid supplier email address.',
         'email_max' => 'Supplier email may not exceed 255 characters.',
