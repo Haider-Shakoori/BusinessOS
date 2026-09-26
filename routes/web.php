@@ -16,6 +16,7 @@ use App\Http\Controllers\GlobalSearchController;
 use App\Http\Controllers\HrPayrollController;
 use App\Http\Controllers\ImportController;
 use App\Http\Controllers\InventoryController;
+use App\Http\Controllers\InventoryReturnController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\ManufacturingController;
 use App\Http\Controllers\ModuleManagementController;
@@ -31,6 +32,7 @@ use App\Http\Controllers\SmartAssistantController;
 use App\Http\Controllers\TaxController;
 use App\Http\Controllers\UnitController;
 use App\Http\Controllers\UserRoleController;
+use App\Http\Controllers\WarehouseTransferController;
 use App\Http\Controllers\WorkspaceController;
 use App\Support\SafeRedirect;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -317,6 +319,27 @@ Route::middleware(['auth', 'auth.session', 'business-selected', 'module:inventor
         ->middleware('permission:inventory.manage');
     Route::post('/inventory/movements', [InventoryController::class, 'storeMovement'])
         ->name('inventory.movements.store')
+        ->middleware('permission:inventory.manage');
+    Route::get('/inventory/transfers', [WarehouseTransferController::class, 'index'])
+        ->name('inventory.transfers.index')
+        ->middleware('permission:inventory.view');
+    Route::post('/inventory/transfers', [WarehouseTransferController::class, 'store'])
+        ->name('inventory.transfers.store')
+        ->middleware('permission:inventory.manage');
+    Route::post('/inventory/transfers/{warehouseTransfer}/dispatch', [WarehouseTransferController::class, 'dispatch'])
+        ->name('inventory.transfers.dispatch')
+        ->middleware('permission:inventory.manage');
+    Route::post('/inventory/transfers/{warehouseTransfer}/receive', [WarehouseTransferController::class, 'receive'])
+        ->name('inventory.transfers.receive')
+        ->middleware('permission:inventory.manage');
+    Route::get('/inventory/returns', [InventoryReturnController::class, 'index'])
+        ->name('inventory.returns.index')
+        ->middleware('permission:inventory.view');
+    Route::post('/inventory/returns/sales', [InventoryReturnController::class, 'storeSales'])
+        ->name('inventory.returns.sales.store')
+        ->middleware('permission:inventory.manage');
+    Route::post('/inventory/returns/purchases', [InventoryReturnController::class, 'storePurchase'])
+        ->name('inventory.returns.purchases.store')
         ->middleware('permission:inventory.manage');
 });
 
