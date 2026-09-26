@@ -87,7 +87,7 @@ class PosController extends Controller
     public function storeRegister(Request $request, BusinessContext $context): RedirectResponse
     {
         $data = $request->validate([
-            'warehouse_id' => ['required', Rule::exists('warehouses', 'id')->where('business_id', $context->currentId())],
+            'warehouse_id' => ['nullable', Rule::exists('warehouses', 'id')->where('business_id', $context->currentId())],
             'code' => [
                 'required',
                 'string',
@@ -97,7 +97,28 @@ class PosController extends Controller
             'name' => ['required', 'string', 'max:255'],
         ]);
 
-        $register = PosRegister::create($data + ['is_active' => true]);
+        $warehouseId = $data['warehouse_id'] ?? null;
+
+        if ($warehouseId === null) {
+            $warehouse = Warehouse::query()->where('is_active', true)->orderBy('id')->first();
+
+            if ($warehouse === null) {
+                $warehouse = Warehouse::create([
+                    'code' => 'MAIN',
+                    'name' => 'Main Warehouse',
+                    'is_active' => true,
+                ]);
+            }
+
+            $warehouseId = $warehouse->id;
+        }
+
+        $register = PosRegister::create([
+            'warehouse_id' => $warehouseId,
+            'code' => $data['code'],
+            'name' => $data['name'],
+            'is_active' => true,
+        ]);
 
         return redirect()
             ->route('pos.index', ['register' => $register->id])
