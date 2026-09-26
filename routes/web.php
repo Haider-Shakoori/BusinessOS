@@ -5,6 +5,7 @@ use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\AttendanceBridgeController;
 use App\Http\Controllers\AttendanceDeviceController;
 use App\Http\Controllers\BusinessController;
+use App\Http\Controllers\BusinessWorkspaceController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CrmController;
 use App\Http\Controllers\CurrencySettingsController;
@@ -25,6 +26,7 @@ use App\Http\Controllers\PurchasingController;
 use App\Http\Controllers\QuotationController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\SmartAssistantController;
 use App\Http\Controllers\TaxController;
 use App\Http\Controllers\UnitController;
 use App\Http\Controllers\UserRoleController;
@@ -117,6 +119,20 @@ Route::middleware(['auth', 'auth.session', 'business-selected'])->group(function
     Route::get('/system/search', [GlobalSearchController::class, 'index'])
         ->name('system.search.index')
         ->middleware('permission:search.use');
+
+    Route::get('/system/smart-assistant', [SmartAssistantController::class, 'index'])
+        ->name('system.assistant.index')
+        ->middleware('permission:assistant.use');
+    Route::post('/system/smart-assistant', [SmartAssistantController::class, 'ask'])
+        ->name('system.assistant.ask')
+        ->middleware('permission:assistant.use');
+    Route::post('/system/smart-assistant/clear', [SmartAssistantController::class, 'clear'])
+        ->name('system.assistant.clear')
+        ->middleware('permission:assistant.use');
+
+    Route::get('/system/businesses', [BusinessWorkspaceController::class, 'index'])
+        ->name('system.businesses.index')
+        ->middleware('permission:businesses.view');
 });
 
 Route::middleware(['auth', 'auth.session', 'business-selected', 'module:settings'])->group(function () {
