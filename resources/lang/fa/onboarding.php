@@ -57,9 +57,20 @@ return [
         'customers' => 'مدیریت اطلاعات و ارتباط مشتریان', 'sales' => 'پیش‌فاکتور، فاکتور و سفارش فروش', 'products' => 'مدیریت محصولات و خدمات', 'inventory' => 'پیگیری موجودی و انبارها',
         'expenses' => 'ثبت و مدیریت مصارف', 'reports' => 'بینش و تحلیل کسب‌وکار', 'smart_assistant' => 'کمک و اتوماسیون مبتنی بر هوش مصنوعی', 'notifications' => 'دریافت به‌روزرسانی‌ها و هشدارها',
     ],
-    'countries' => ['afghanistan' => 'افغانستان'],
+    'countries' => [
+        'afghanistan' => 'افغانستان',
+        'united_arab_emirates' => 'امارات متحده عربی',
+        'united_states' => 'ایالات متحده',
+        'canada' => 'کانادا',
+    ],
     'industries' => ['retail_wholesale' => 'خرده‌فروشی و عمده‌فروشی', 'services' => 'خدمات', 'manufacturing' => 'تولید', 'distribution' => 'توزیع', 'restaurant' => 'رستورانت', 'pharmacy' => 'دواخانه', 'other' => 'سایر'],
-    'timezones' => ['kabul' => '(GMT+04:30) کابل', 'utc' => '(GMT+00:00) UTC'],
+    'timezones' => [
+        'kabul' => '(GMT+04:30) کابل',
+        'dubai' => '(GMT+04:00) Dubai',
+        'new_york' => '(GMT-05:00) New York',
+        'toronto' => '(GMT-05:00) Toronto',
+        'utc' => '(GMT+00:00) UTC',
+    ],
     'validation' => [
         'country_required' => 'کشور یا منطقه را انتخاب کنید.', 'currency_required' => 'ارز پایه را انتخاب کنید.', 'currency_invalid' => 'ارز پایه انتخاب‌شده در دسترس نیست.',
         'timezone_required' => 'منطقه زمانی را انتخاب کنید.', 'locale_required' => 'زبان را انتخاب کنید.', 'logo_invalid' => 'لوگو باید PNG، JPG، JPEG یا WebP باشد.', 'logo_max' => 'حجم لوگو نباید بیشتر از ۲ مگابایت باشد.',

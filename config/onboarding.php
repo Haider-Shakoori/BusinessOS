@@ -10,9 +10,10 @@ return [
         'invoice_preview' => 'INV-000001',
     ],
 
-    'countries' => [
-        'AF' => 'onboarding.countries.afghanistan',
-    ],
+    // Country choices are sourced from config/countries.php by the controller.
+    // This legacy key remains empty so older callers fail safely instead of
+    // carrying a second country registry.
+    'countries' => [],
 
     'industries' => [
         'retail_wholesale' => 'onboarding.industries.retail_wholesale',
@@ -26,6 +27,9 @@ return [
 
     'timezones' => [
         'Asia/Kabul' => 'onboarding.timezones.kabul',
+        'Asia/Dubai' => 'onboarding.timezones.dubai',
+        'America/New_York' => 'onboarding.timezones.new_york',
+        'America/Toronto' => 'onboarding.timezones.toronto',
         'UTC' => 'onboarding.timezones.utc',
     ],
 

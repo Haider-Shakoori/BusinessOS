@@ -23,6 +23,11 @@ return [
             'label' => 'Dari',
             'native' => 'دری',
         ],
+        'ps' => [
+            'direction' => 'rtl',
+            'label' => 'Pashto',
+            'native' => 'پښتو',
+        ],
         'ar' => [
             'direction' => 'rtl',
             'label' => 'Arabic',

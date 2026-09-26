@@ -16,6 +16,7 @@
         name: @js(old('name', '')),
         industry: @js(old('industry', 'retail_wholesale')),
         country: @js($defaultCountry),
+        countryProfiles: @js($countryProfiles),
         currency: @js($defaultCurrency),
         timezone: @js($defaultTimezone),
         address: @js(old('address', '')),
@@ -28,6 +29,14 @@
         logoPreview: null,
         moduleCount() { return this.selectedModules.length; },
         next(step) { this.step = step; window.scrollTo({ top: 0, behavior: 'smooth' }); },
+        applyCountryDefaults() {
+            const profile = this.countryProfiles[this.country];
+            if (!profile) return;
+            this.currency = profile.currency || this.currency;
+            this.timezone = profile.timezone || this.timezone;
+            this.locale = profile.locale || this.locale;
+            this.taxEnabled = Boolean(profile.tax_enabled);
+        },
         applyAppearance() {
             if (this.appearance === 'dark') {
                 document.documentElement.classList.add('dark');
@@ -209,7 +218,7 @@
                         <div class="mt-5 grid gap-x-5 gap-y-4 sm:grid-cols-2">
                             <label><span class="mb-1.5 block text-[10px] font-semibold">{{ __('onboarding.business_name') }} <span class="text-rose-500">*</span></span><input x-ref="name" x-model="name" name="name" value="{{ old('name') }}" required maxlength="255" class="h-9 w-full rounded-[6px] border border-slate-200 px-3 text-[11px] focus:border-brand-500 focus:outline-none dark:border-slate-700 dark:bg-slate-900"></label>
                             <label><span class="mb-1.5 block text-[10px] font-semibold">{{ __('onboarding.industry') }} <span class="text-rose-500">*</span></span><select x-model="industry" name="industry" class="h-9 w-full rounded-[6px] border border-slate-200 px-3 text-[11px] dark:border-slate-700 dark:bg-slate-900">@foreach($industries as $key=>$label)<option value="{{ $key }}">{{ __($label) }}</option>@endforeach</select></label>
-                            <label><span class="mb-1.5 block text-[10px] font-semibold">{{ __('onboarding.country_region') }} <span class="text-rose-500">*</span></span><select x-model="country" name="country" required class="h-9 w-full rounded-[6px] border border-slate-200 px-3 text-[11px] dark:border-slate-700 dark:bg-slate-900">@foreach($countries as $key=>$label)<option value="{{ $key }}">{{ __($label) }}</option>@endforeach</select></label>
+                            <label><span class="mb-1.5 block text-[10px] font-semibold">{{ __('onboarding.country_region') }} <span class="text-rose-500">*</span></span><select x-model="country" x-on:change="applyCountryDefaults()" name="country" required class="h-9 w-full rounded-[6px] border border-slate-200 px-3 text-[11px] dark:border-slate-700 dark:bg-slate-900">@foreach($countries as $key=>$label)<option value="{{ $key }}">{{ __($label) }}</option>@endforeach</select></label>
                             <label><span class="mb-1.5 block text-[10px] font-semibold">{{ __('onboarding.base_currency') }} <span class="text-rose-500">*</span></span><select x-model="currency" name="currency" required class="h-9 w-full rounded-[6px] border border-slate-200 px-3 text-[11px] dark:border-slate-700 dark:bg-slate-900">@foreach($currencies as $currencyOption)<option value="{{ $currencyOption->code }}">{{ $currencyOption->code }} — {{ $currencyOption->name }}</option>@endforeach</select></label>
                             <label><span class="mb-1.5 block text-[10px] font-semibold">{{ __('onboarding.time_zone') }} <span class="text-rose-500">*</span></span><select x-model="timezone" name="timezone" required class="h-9 w-full rounded-[6px] border border-slate-200 px-3 text-[11px] dark:border-slate-700 dark:bg-slate-900">@foreach($timezones as $key=>$label)<option value="{{ $key }}">{{ __($label) }}</option>@endforeach</select></label>
                             <label><span class="mb-1.5 block text-[10px] font-semibold">{{ __('onboarding.business_address') }}</span><input x-model="address" name="address" value="{{ old('address') }}" maxlength="1000" class="h-9 w-full rounded-[6px] border border-slate-200 px-3 text-[11px] focus:border-brand-500 focus:outline-none dark:border-slate-700 dark:bg-slate-900"></label>

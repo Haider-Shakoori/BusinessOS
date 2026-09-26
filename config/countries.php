@@ -1,0 +1,76 @@
+<?php
+
+return [
+    /*
+     * Country profiles drive onboarding defaults without coupling the ERP core
+     * to one market. Afghanistan is the first fully curated localization pack.
+     */
+    'default' => env('BUSINESSOS_DEFAULT_COUNTRY', 'AF'),
+
+    'profiles' => [
+        'AF' => [
+            'name' => 'onboarding.countries.afghanistan',
+            'currency' => 'AFN',
+            'timezone' => 'Asia/Kabul',
+            'locale' => 'fa',
+            'locales' => ['fa', 'ps', 'en'],
+            'tax_enabled' => false,
+            'calendar' => 'gregorian',
+            'alternate_calendars' => ['solar_hijri'],
+            'phone_prefix' => '+93',
+            'date_format' => 'Y-m-d',
+            'time_format' => 'H:i',
+            'week_starts_on' => 6,
+            'weekend_days' => [5],
+            'address_format' => 'freeform',
+        ],
+        'AE' => [
+            'name' => 'onboarding.countries.united_arab_emirates',
+            'currency' => 'AED',
+            'timezone' => 'Asia/Dubai',
+            'locale' => 'en',
+            'locales' => ['en', 'ar'],
+            'tax_enabled' => true,
+            'calendar' => 'gregorian',
+            'alternate_calendars' => [],
+            'phone_prefix' => '+971',
+            'date_format' => 'd/m/Y',
+            'time_format' => 'H:i',
+            'week_starts_on' => 1,
+            'weekend_days' => [6, 7],
+            'address_format' => 'freeform',
+        ],
+        'US' => [
+            'name' => 'onboarding.countries.united_states',
+            'currency' => 'USD',
+            'timezone' => 'America/New_York',
+            'locale' => 'en',
+            'locales' => ['en'],
+            'tax_enabled' => false,
+            'calendar' => 'gregorian',
+            'alternate_calendars' => [],
+            'phone_prefix' => '+1',
+            'date_format' => 'm/d/Y',
+            'time_format' => 'g:i A',
+            'week_starts_on' => 7,
+            'weekend_days' => [6, 7],
+            'address_format' => 'structured',
+        ],
+        'CA' => [
+            'name' => 'onboarding.countries.canada',
+            'currency' => 'CAD',
+            'timezone' => 'America/Toronto',
+            'locale' => 'en',
+            'locales' => ['en'],
+            'tax_enabled' => true,
+            'calendar' => 'gregorian',
+            'alternate_calendars' => [],
+            'phone_prefix' => '+1',
+            'date_format' => 'Y-m-d',
+            'time_format' => 'H:i',
+            'week_starts_on' => 7,
+            'weekend_days' => [6, 7],
+            'address_format' => 'structured',
+        ],
+    ],
+];

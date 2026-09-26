@@ -1,0 +1,47 @@
+<?php
+
+return [
+    'step_of' => 'ګام :step له ۴ څخه',
+    'almost_there' => 'نږدې بشپړ شو! خپل کاري چاپېریال برابر کړئ.',
+    'few_minutes' => 'یوازې څو دقیقې تر هوښیار کاروبار پورې',
+    'steps' => [
+        'welcome' => 'ښه راغلاست', 'welcome_help' => 'پیل وکړئ',
+        'business' => 'د کاروبار معلومات', 'business_help' => 'د خپل شرکت په اړه ووایئ',
+        'preferences' => 'غوراوي', 'preferences_help' => 'خپل کاري چاپېریال برابر کړئ',
+        'complete' => 'بشپړ', 'complete_help' => 'هر څه چمتو دي!',
+    ],
+    'welcome_title' => 'BusinessOS ته ښه راغلاست',
+    'welcome_subtitle' => 'خپل کاروبار په څو ساده ګامونو کې برابر کړئ.',
+    'welcome_hero' => 'BusinessOS ته ښه راغلاست 👋',
+    'welcome_tagline' => 'ستاسو د کاروبار ټول عملیات په یوه پیاوړي پلاتفورم کې.',
+    'welcome_description' => 'BusinessOS تاسو سره د پلور، پېرودونکو، موجودۍ، پېرود، حسابدارۍ او نورو چارو په اداره کولو کې مرسته کوي.',
+    'select_language' => 'ژبه وټاکئ', 'choose_appearance' => 'بڼه وټاکئ',
+    'light_default' => 'روښانه (اصلي)', 'dark' => 'تیاره', 'system' => 'سیسټم',
+    'change_anytime' => 'دا هر وخت بدلولی شئ.', 'appearance_help' => 'وروسته د روښانه او تیاره بڼې ترمنځ بدلون کولی شئ.',
+    'start_setup' => 'تنظیم پیل کړئ', 'skip_for_now' => 'اوس یې پرېږدئ', 'complete_later' => 'تنظیم وروسته له Settings څخه بشپړولی شئ.',
+    'business_kicker' => 'تنظیم', 'business_title' => 'د کاروبار معلومات', 'business_subtitle' => 'د خپل کاري چاپېریال د شخصي کولو لپاره د شرکت په اړه معلومات ورکړئ.',
+    'company_details' => 'د شرکت معلومات', 'company_details_help' => 'دا معلومات ستاسو د کاري چاپېریال په برابرولو کې مرسته کوي.',
+    'company_logo' => 'د شرکت نښه', 'company_logo_help' => 'د شرکت نښه پورته کړئ (اختیاري).', 'upload_logo' => 'نښه پورته کړئ',
+    'business_name' => 'د کاروبار نوم', 'industry' => 'صنعت', 'country_region' => 'هېواد / سیمه', 'base_currency' => 'اصلي اسعار', 'time_zone' => 'وخت سیمه', 'business_address' => 'د کاروبار پته', 'phone_number' => 'د ټیلیفون شمېره', 'email_address' => 'برېښنالیک',
+    'back' => 'شاته', 'save_continue_later' => 'ذخیره او وروسته دوام', 'continue' => 'دوام',
+    'preferences_title' => 'خپل کاري چاپېریال برابر کړئ', 'preferences_subtitle' => 'هغه ماډیولونه او غوراوي وټاکئ چې ستاسو کاروبار ته مناسب دي.',
+    'enable_modules' => 'ماډیولونه فعال کړئ', 'enable_modules_help' => 'هغه وسایل وټاکئ چې کارول یې غواړئ.',
+    'workspace_preferences' => 'د کاري چاپېریال غوراوي', 'workspace_preferences_help' => 'د غوره تجربې لپاره اصلي غوراوي وټاکئ.',
+    'language' => 'ژبه', 'appearance' => 'بڼه', 'enable_tax' => 'مالیه (VAT) فعاله کړئ', 'enable_tax_help' => 'په بلونو او نرخ پاڼو کې د مالیې ساحې شاملې کړئ.',
+    'go_dashboard' => 'ډشبورډ ته لاړ شئ', 'do_later' => 'وروسته به یې وکړم',
+    'countries' => [
+        'afghanistan' => 'افغانستان', 'united_arab_emirates' => 'متحده عربي امارات',
+        'united_states' => 'متحده ایالات', 'canada' => 'کاناډا',
+    ],
+    'industries' => [
+        'retail_wholesale' => 'پرچون او عمده پلور', 'services' => 'خدمتونه', 'manufacturing' => 'تولید',
+        'distribution' => 'وېش', 'restaurant' => 'رستورانت', 'pharmacy' => 'درملتون', 'other' => 'نور',
+    ],
+    'timezones' => ['kabul' => '(GMT+04:30) کابل', 'utc' => '(GMT+00:00) UTC'],
+    'validation' => [
+        'country_required' => 'هېواد یا سیمه وټاکئ.', 'currency_required' => 'اصلي اسعار وټاکئ.',
+        'currency_invalid' => 'ټاکل شوي اسعار شتون نه لري.', 'timezone_required' => 'وخت سیمه وټاکئ.',
+        'locale_required' => 'ژبه وټاکئ.', 'logo_invalid' => 'نښه باید PNG، JPG، JPEG یا WebP وي.',
+        'logo_max' => 'د نښې اندازه باید له ۲ MB زیاته نه وي.',
+    ],
+];
