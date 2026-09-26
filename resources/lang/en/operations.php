@@ -182,6 +182,8 @@ return [
             'invalid_quantity' => 'Transfer quantity must be greater than zero.',
             'not_draft' => 'Only draft transfers can be dispatched.',
             'not_in_transit' => 'Only in-transit transfers can be received.',
+            'wrong_purchase_warehouse' => 'The selected warehouse did not receive this purchase item.',
+            'sale_has_returns' => 'This sale already has one or more returns and cannot be voided. Return the remaining items instead.',
             'insufficient_stock' => ':product has insufficient stock. Available: :available.',
         ],
     ],
