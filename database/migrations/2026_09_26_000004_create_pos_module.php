@@ -76,6 +76,8 @@ return new class extends Migration
             $table->string('sku')->nullable();
             $table->decimal('quantity', 16, 4);
             $table->decimal('unit_price', 16, 4);
+            $table->decimal('unit_cost', 16, 4)->default(0);
+            $table->decimal('cost_total', 16, 4)->default(0);
             $table->decimal('tax_rate', 8, 4)->default(0);
             $table->decimal('tax_amount', 16, 4)->default(0);
             $table->decimal('line_total', 16, 4);
