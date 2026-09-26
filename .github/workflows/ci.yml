@@ -48,6 +48,11 @@ jobs:
       - name: Run tests
         run: php artisan test
 
+      - name: Test attendance bridge
+        run: |
+          python -m py_compile tools/attendance-bridge/bridge.py
+          python tools/attendance-bridge/test_bridge.py
+
       - name: Check code style
         run: ./vendor/bin/pint --test
 
