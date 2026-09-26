@@ -50,7 +50,7 @@ class PayrollAttendanceService
             $last = $dayLogs->last()->occurred_at;
 
             if ($last->greaterThan($first)) {
-                $workedMinutes += $first->diffInMinutes($last);
+                $workedMinutes += (int) floor($first->diffInMinutes($last));
             }
         }
 
