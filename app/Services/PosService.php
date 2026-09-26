@@ -7,6 +7,7 @@ use App\Enums\ProductType;
 use App\Models\Account;
 use App\Models\Customer;
 use App\Models\InventoryReturn;
+use App\Models\InventoryReturn;
 use App\Models\JournalEntry;
 use App\Models\PosRegister;
 use App\Models\PosSale;
