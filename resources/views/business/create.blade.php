@@ -189,18 +189,17 @@
                         </div>
 
                         <div class="mt-4 flex items-center gap-4">
-                            <label class="grid size-20 shrink-0 cursor-pointer place-items-center overflow-hidden rounded-[9px] border border-dashed border-slate-300 bg-slate-50 text-slate-400 hover:border-brand-400 dark:border-slate-700 dark:bg-slate-800">
+                            <label for="business-logo" class="grid size-20 shrink-0 cursor-pointer place-items-center overflow-hidden rounded-[9px] border border-dashed border-slate-300 bg-slate-50 text-slate-400 hover:border-brand-400 dark:border-slate-700 dark:bg-slate-800">
                                 <template x-if="logoPreview"><img :src="logoPreview" class="size-full object-cover" alt=""></template>
                                 <template x-if="!logoPreview"><x-ui.icon name="building-office" class="size-8" /></template>
-                                <input type="file" name="logo" accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp" class="sr-only" x-on:change="previewLogo">
                             </label>
                             <div>
                                 <p class="text-[11px] font-semibold text-slate-800 dark:text-slate-200">{{ __('onboarding.company_logo') }}</p>
                                 <p class="mt-1 max-w-sm text-[9px] leading-4 text-slate-500 dark:text-slate-400">{{ __('onboarding.company_logo_help') }}</p>
-                                <label class="mt-2 inline-flex cursor-pointer items-center gap-2 rounded-[6px] bg-brand-50 px-3 py-1.5 text-[10px] font-semibold text-brand-700 hover:bg-brand-100 dark:bg-brand-500/10 dark:text-brand-300">
+                                <label for="business-logo" class="mt-2 inline-flex cursor-pointer items-center gap-2 rounded-[6px] bg-brand-50 px-3 py-1.5 text-[10px] font-semibold text-brand-700 hover:bg-brand-100 dark:bg-brand-500/10 dark:text-brand-300">
                                     <x-ui.icon name="arrow-up-tray" class="size-3.5" /> {{ __('onboarding.upload_logo') }}
-                                    <input type="file" name="logo" accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp" class="sr-only" x-on:change="previewLogo">
                                 </label>
+                                <input id="business-logo" type="file" name="logo" accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp" class="sr-only" x-on:change="previewLogo">
                             </div>
                         </div>
 
