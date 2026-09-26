@@ -14,6 +14,7 @@ final class BusinessOnboardingService
         private readonly BusinessContext $context,
         private readonly BusinessSettings $settings,
         private readonly SaasUsageService $saasUsage,
+        private readonly CountryLocalizationService $localization,
     ) {
         //
     }
@@ -54,18 +55,24 @@ final class BusinessOnboardingService
         $this->context->switchTo($business->id);
         $this->settings->resetResolvedContext();
 
-        $defaults = config('onboarding.defaults', []);
+        $country = strtoupper((string) ($validated['country'] ?? config('countries.default', 'AF')));
+        $defaults = array_merge(
+            config('onboarding.defaults', []),
+            $this->localization->workspaceDefaults($country),
+        );
 
         $this->settings->updateMany([
             'general.address' => $validated['address'] ?? null,
             'general.phone' => $validated['phone'] ?? null,
             'general.email' => $validated['email'] ?? null,
             'general.industry' => $validated['industry'] ?? null,
-            'general.country' => $validated['country'] ?? ($defaults['country'] ?? null),
-            'general.tax_enabled' => (bool) ($validated['tax_enabled'] ?? false),
+            'general.country' => $country,
+            'general.tax_enabled' => (bool) ($validated['tax_enabled'] ?? ($defaults['tax_enabled'] ?? false)),
             'regional.timezone' => $validated['timezone'] ?? ($defaults['timezone'] ?? 'UTC'),
-            'regional.locale' => $validated['locale'] ?? ($defaults['locale'] ?? null),
-            'regional.currency' => strtoupper((string) ($validated['currency'] ?? ($defaults['currency'] ?? 'AFN'))),
+            'regional.locale' => $validated['locale'] ?? ($defaults['locale'] ?? 'en'),
+            'regional.currency' => strtoupper((string) ($validated['currency'] ?? ($defaults['currency'] ?? 'USD'))),
+            'regional.date_format' => $defaults['date_format'] ?? 'Y-m-d',
+            'regional.time_format' => $defaults['time_format'] ?? 'H:i',
             'ui.appearance' => $validated['appearance'] ?? ($defaults['appearance'] ?? 'light'),
         ]);
 
