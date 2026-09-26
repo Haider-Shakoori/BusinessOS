@@ -6,10 +6,10 @@
     $periodCredits = '0.0000';
     foreach($rows as $row) {
         if(($row['type'] ?? '') === 'brought_forward') continue;
-        $periodDebits = AppSupportDecimal::add($periodDebits, (string)$row['debit']);
-        $periodCredits = AppSupportDecimal::add($periodCredits, (string)$row['credit']);
+        $periodDebits = \App\Support\Decimal::add($periodDebits, (string)$row['debit']);
+        $periodCredits = \App\Support\Decimal::add($periodCredits, (string)$row['credit']);
     }
-    $showAmount = static fn ($value) => !AppSupportDecimal::eq((string)$value, '0') ? $value : '—';
+    $showAmount = static fn ($value) => !\App\Support\Decimal::eq((string)$value, '0') ? $value : '—';
 @endphp
 
 <x-app.page
