@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AccountingController;
+use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\AttendanceBridgeController;
 use App\Http\Controllers\AttendanceDeviceController;
 use App\Http\Controllers\BusinessController;
@@ -10,10 +11,13 @@ use App\Http\Controllers\CurrencySettingsController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\ExportController;
+use App\Http\Controllers\GlobalSearchController;
 use App\Http\Controllers\ImportController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\ManufacturingController;
+use App\Http\Controllers\ModuleManagementController;
+use App\Http\Controllers\NotificationCenterController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PosController;
 use App\Http\Controllers\ProductController;
@@ -23,6 +27,7 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\TaxController;
 use App\Http\Controllers\UnitController;
+use App\Http\Controllers\UserRoleController;
 use App\Http\Controllers\WorkspaceController;
 use App\Support\SafeRedirect;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -63,6 +68,56 @@ require __DIR__.'/auth.php';
 Route::get('/workspace/{section}', [WorkspaceController::class, 'placeholder'])
     ->middleware(['auth', 'auth.session', 'business-selected'])
     ->name('workspace.placeholder');
+
+/*
+ * Batch 32 — system workspace modules.
+ *
+ * These routes are business-context and permission guarded but are not tied to
+ * an optional BusinessModule row: they are the shell used to manage users,
+ * modules, audit history, notifications and cross-module search.
+ */
+Route::middleware(['auth', 'auth.session', 'business-selected'])->group(function () {
+    Route::get('/system/users-roles', [UserRoleController::class, 'index'])
+        ->name('system.users-roles.index')
+        ->middleware('permission:users.view');
+    Route::post('/system/users-roles/members', [UserRoleController::class, 'storeMember'])
+        ->name('system.users-roles.members.store')
+        ->middleware('permission:users.manage');
+    Route::patch('/system/users-roles/members/{membership}', [UserRoleController::class, 'updateMember'])
+        ->name('system.users-roles.members.update')
+        ->middleware('permission:users.manage');
+    Route::post('/system/users-roles/roles', [UserRoleController::class, 'storeRole'])
+        ->name('system.users-roles.roles.store')
+        ->middleware('permission:users.manage');
+    Route::patch('/system/users-roles/roles/{role}', [UserRoleController::class, 'updateRole'])
+        ->name('system.users-roles.roles.update')
+        ->middleware('permission:users.manage');
+
+    Route::get('/system/modules', [ModuleManagementController::class, 'index'])
+        ->name('system.modules.index')
+        ->middleware('permission:modules.view');
+    Route::post('/system/modules/toggle', [ModuleManagementController::class, 'toggle'])
+        ->name('system.modules.toggle')
+        ->middleware('permission:modules.manage');
+
+    Route::get('/system/activity', [ActivityLogController::class, 'index'])
+        ->name('system.activity.index')
+        ->middleware('permission:activity.view');
+
+    Route::get('/system/notifications', [NotificationCenterController::class, 'index'])
+        ->name('system.notifications.index')
+        ->middleware('permission:notifications.view');
+    Route::post('/system/notifications/{notification}/read', [NotificationCenterController::class, 'markRead'])
+        ->name('system.notifications.mark-read')
+        ->middleware('permission:notifications.view');
+    Route::post('/system/notifications/read-all', [NotificationCenterController::class, 'markAllRead'])
+        ->name('system.notifications.mark-all-read')
+        ->middleware('permission:notifications.manage');
+
+    Route::get('/system/search', [GlobalSearchController::class, 'index'])
+        ->name('system.search.index')
+        ->middleware('permission:search.use');
+});
 
 Route::middleware(['auth', 'auth.session', 'business-selected', 'module:settings'])->group(function () {
     Route::get('/settings', [SettingsController::class, 'index'])

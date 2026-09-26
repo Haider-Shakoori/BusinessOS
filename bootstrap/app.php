@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\ActivityLogMiddleware;
 use App\Http\Middleware\EnsureBusinessSelected;
 use App\Http\Middleware\EnsureModule;
 use App\Http\Middleware\EnsurePermission;
@@ -23,6 +24,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->redirectUsersTo(fn () => route('app.home'));
         $middleware->web(append: [
             SetLocale::class,
+            ActivityLogMiddleware::class,
         ]);
         $middleware->alias([
             'business-selected' => EnsureBusinessSelected::class,

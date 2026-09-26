@@ -21,9 +21,9 @@
 
     <div class="ms-3 hidden w-full max-w-[480px] md:block lg:ms-4">
         <a
-            href="{{ auth()->check() && app(\App\Services\BusinessContext::class)->current() ? route('workspace.placeholder', ['section' => 'global-search']) : '#' }}"
+            href="{{ auth()->check() && app(\App\Services\BusinessContext::class)->current() && \Illuminate\Support\Facades\Gate::allows('search.use') ? route('system.search.index') : '#' }}"
             class="group flex h-8.5 w-full items-center gap-2 rounded-[6px] border border-slate-200 bg-slate-50/70 px-3 text-[11px] text-slate-400 shadow-sm transition-colors hover:border-slate-300 hover:bg-white focus-visible:outline-2 focus-visible:outline-brand-500 dark:border-slate-700 dark:bg-slate-800/60 dark:text-slate-500"
-            aria-label="{{ __('common.search_coming_soon') }}"
+            aria-label="{{ __('navigation.global_search') }}"
         >
             <x-ui.icon name="search" class="size-3.5 text-slate-500" aria-hidden="true" />
             <span class="truncate">{{ __('common.search') }}</span>
@@ -60,7 +60,7 @@
         <span class="mx-1 hidden h-5 w-px bg-slate-200 sm:block dark:bg-slate-700" aria-hidden="true"></span>
 
         <a
-            href="{{ auth()->check() && app(\App\Services\BusinessContext::class)->current() ? route('workspace.placeholder', ['section' => 'notifications']) : '#' }}"
+            href="{{ auth()->check() && app(\App\Services\BusinessContext::class)->current() && \Illuminate\Support\Facades\Gate::allows('notifications.view') ? route('system.notifications.index') : '#' }}"
             class="relative inline-flex size-8 items-center justify-center rounded-lg text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white"
             aria-label="{{ __('common.notification_center') }}"
         >
