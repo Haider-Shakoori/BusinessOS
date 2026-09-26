@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<x-app.page icon="truck" :title="__('suppliers.title')" :subtitle="__('suppliers.subtitle')">
+<x-app.page icon="users" :title="__('suppliers.title')" :subtitle="__('suppliers.subtitle')">
     @can('purchasing.manage')
         <x-slot:actions>
             <x-ui.button href="{{ route('suppliers.import') }}" variant="secondary" icon="arrow-up-tray">{{ __('suppliers.import') }}</x-ui.button>
