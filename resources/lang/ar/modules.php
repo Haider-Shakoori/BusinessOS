@@ -7,6 +7,7 @@ return [
     'products' => 'المنتجات',
     'expenses' => 'المصروفات',
     'inventory' => 'المخزون',
+    'suppliers' => 'الموردون',
     'purchasing' => 'المشتريات',
     'pos' => 'POS',
     'accounting' => 'المحاسبة',
