@@ -36,10 +36,11 @@ class BusinessController extends Controller
     {
         $business = $onboarding->create($request, $request->user());
 
-        Session::put(
-            config('localization.session_key', 'locale'),
-            $request->validated('locale'),
-        );
+        $locale = $request->validated('locale');
+
+        if (is_string($locale) && $locale !== '') {
+            Session::put(config('localization.session_key', 'locale'), $locale);
+        }
 
         return redirect()->route('app.home')->with('status', __('business.created', [
             'business' => $business->name,
