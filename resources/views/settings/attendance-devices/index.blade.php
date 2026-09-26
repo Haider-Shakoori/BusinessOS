@@ -134,7 +134,7 @@
                                 <div><span class="font-semibold">{{ __('attendance.discovery.connection') }}:</span> <span x-text="result?.connection_label || '—'"></span></div>
                                 <div><span class="font-semibold">{{ __('attendance.fields.port') }}:</span> <span x-text="result?.port || '—'"></span></div>
                                 <div><span class="font-semibold">{{ __('attendance.discovery.open_ports') }}:</span> <span x-text="result?.open_ports?.length ? result.open_ports.join(', ') : '—'"></span></div>
-                                <div><span class="font-semibold">{{ __('attendance.discovery.reachable') }}:</span> <span x-text="result?.reachable ? '{{ __('common.yes') }}' : '{{ __('common.no') }}'"></span></div>
+                                <div><span class="font-semibold">{{ __('attendance.discovery.reachable') }}:</span> <span x-text="result?.reachable ? '{{ __('attendance.discovery.yes') }}' : '{{ __('attendance.discovery.no') }}'"></span></div>
                             </div>
                             <p class="mt-3 text-xs text-amber-700 dark:text-amber-300" x-text="result?.warning"></p>
                             <p class="mt-2 text-xs text-slate-500 dark:text-slate-400">{{ __('attendance.discovery.autofill_notice') }}</p>
