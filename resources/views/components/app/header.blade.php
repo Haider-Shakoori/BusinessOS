@@ -54,7 +54,7 @@
             aria-label="{{ __('common.toggle_dark_mode') }}"
         >
             <template x-if="dark"><x-ui.icon name="sun" class="size-[16px]" aria-hidden="true" /></template>
-            <template x-if="!dark"><x-ui.icon name="sun" class="size-[16px]" aria-hidden="true" /></template>
+            <template x-if="!dark"><x-ui.icon name="moon" class="size-[16px]" aria-hidden="true" /></template>
         </button>
 
         <span class="mx-1 hidden h-5 w-px bg-slate-200 sm:block dark:bg-slate-700" aria-hidden="true"></span>
