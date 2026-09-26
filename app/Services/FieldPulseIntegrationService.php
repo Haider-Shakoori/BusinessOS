@@ -11,6 +11,7 @@ use App\Models\FieldPulseOrder;
 use App\Models\Product;
 use App\Models\Setting;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
 use Throwable;
@@ -568,7 +569,7 @@ class FieldPulseIntegrationService
             // using the active database grammar. This keeps cursor pagination
             // consistent across MySQL and SQLite (used by CI), where raw ISO-8601
             // strings do not compare equal to database datetime strings.
-            $updatedAt = \Illuminate\Support\Carbon::parse(
+            $updatedAt = Carbon::parse(
                 $decoded['updated_at'],
             );
 
