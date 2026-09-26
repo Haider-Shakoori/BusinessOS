@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Enums\PaymentMethod;
 use App\Models\Payment;
 use App\Models\Supplier;
+use App\Services\AccountingPostingService;
 use App\Services\BusinessContext;
 use App\Services\CurrencyService;
 use App\Services\PaymentService;
@@ -21,6 +22,7 @@ class SupplierController extends Controller
         private readonly SupplierLedgerService $ledger,
         private readonly CurrencyService $currencies,
         private readonly PaymentService $payments,
+        private readonly AccountingPostingService $accounting,
     ) {
         //
     }
@@ -76,6 +78,8 @@ class SupplierController extends Controller
             $supplier->update(['code' => $this->generatedCode($supplier)]);
         }
 
+        $this->accounting->postSupplierOpeningBalance($supplier);
+
         return redirect()
             ->route('suppliers.show', $supplier)
             ->with('status', __('suppliers.created'));
@@ -104,6 +108,7 @@ class SupplierController extends Controller
         $data = $this->validatedSupplier($request, $context, $supplier);
         $data['code'] = Str::upper((string) $data['code']);
         $supplier->update($data);
+        $this->accounting->replaceSupplierOpeningBalance($supplier);
 
         return redirect()
             ->route('suppliers.show', $supplier)
@@ -116,6 +121,7 @@ class SupplierController extends Controller
             return back()->withErrors(['supplier' => __('suppliers.validation.has_history')]);
         }
 
+        $this->accounting->reverseSupplierOpeningBalance($supplier);
         $supplier->delete();
 
         return redirect()
