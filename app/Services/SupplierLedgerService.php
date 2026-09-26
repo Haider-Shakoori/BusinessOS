@@ -42,7 +42,7 @@ final class SupplierLedgerService
     }
 
     /**
-     * @return array{opening_balance:string,total_purchases:string,total_returns:string,total_paid:string,outstanding_balance:string}
+     * @return array{opening_balance: string, total_purchases: string, total_returns: string, total_paid: string, outstanding_balance: string}
      */
     public function summary(Supplier $supplier): array
     {
@@ -62,8 +62,8 @@ final class SupplierLedgerService
     }
 
     /**
-     * @param array{date_from?:string|null,date_to?:string|null,search?:string|null,type?:string|null} $filters
-     * @return array{rows:list<array<string,mixed>>,brought_forward:?string,closing_balance:string,show_running_balance:bool,has_period_filter:bool}
+     * @param  array{date_from?: string|null, date_to?: string|null, search?: string|null, type?: string|null}  $filters
+     * @return array{rows: list<array<string, mixed>>, brought_forward: ?string, closing_balance: string, show_running_balance: bool, has_period_filter: bool}
      */
     public function ledger(Supplier $supplier, array $filters = []): array
     {
@@ -75,9 +75,10 @@ final class SupplierLedgerService
         $entries = $this->rawEntries($supplier);
 
         if ($search !== '') {
-            $entries = array_values(array_filter($entries, fn (array $entry): bool =>
-                stripos((string) $entry['reference'], $search) !== false
-                || stripos((string) $entry['description'], $search) !== false
+            $entries = array_values(array_filter(
+                $entries,
+                fn (array $entry): bool => stripos((string) $entry['reference'], $search) !== false
+                    || stripos((string) $entry['description'], $search) !== false,
             ));
         }
 
@@ -139,7 +140,7 @@ final class SupplierLedgerService
     }
 
     /**
-     * @return list<array<string,mixed>>
+     * @return list<array<string, mixed>>
      */
     private function rawEntries(Supplier $supplier): array
     {
