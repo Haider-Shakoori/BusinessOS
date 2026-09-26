@@ -12,6 +12,7 @@ return [
     'accounting' => 'المحاسبة',
     'manufacturing' => 'التصنيع',
     'crm' => 'CRM',
+    'hr' => 'الموارد البشرية والرواتب',
     'reports' => 'التقارير',
     'settings' => 'الإعدادات',
     'categories' => 'التصنيفات',
