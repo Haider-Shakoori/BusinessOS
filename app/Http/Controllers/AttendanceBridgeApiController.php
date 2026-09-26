@@ -181,6 +181,7 @@ class AttendanceBridgeApiController extends Controller
                 'api_key' => $device->api_key,
                 'serial_number' => $device->serial_number,
                 'timezone' => $device->timezone,
+                'tls_verify' => $device->tls_verify,
                 'timeout_seconds' => $device->timeout_seconds,
                 'connection_config' => $device->connection_config,
             ])->values(),
