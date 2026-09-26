@@ -79,21 +79,27 @@
                         <h2 class="mt-4 text-xl font-bold text-slate-950 dark:text-white">{{ __('pos.setup_title') }}</h2>
                         <p class="mx-auto mt-2 max-w-xl text-sm text-slate-500 dark:text-slate-400">{{ __('pos.setup_help') }}</p>
                     </div>
-                    <form method="POST" action="{{ route('pos.registers.store') }}" class="mt-6 grid gap-4 sm:grid-cols-2">
-                        @csrf
-                        <x-ui.input name="code" :label="__('pos.register_code')" placeholder="POS-01" required />
-                        <x-ui.input name="name" :label="__('pos.register_name')" placeholder="Main Counter" required />
-                        <div class="sm:col-span-2">
-                            <x-ui.select name="warehouse_id" :label="__('pos.warehouse')" required>
-                                @foreach($warehouses as $warehouse)
-                                    <option value="{{ $warehouse->id }}">{{ $warehouse->code }} — {{ $warehouse->name }}</option>
-                                @endforeach
-                            </x-ui.select>
-                        </div>
-                        <div class="sm:col-span-2 flex justify-end">
-                            <x-ui.button type="submit" icon="plus">{{ __('pos.create_register') }}</x-ui.button>
-                        </div>
-                    </form>
+                    @can('pos.manage')
+                        <form method="POST" action="{{ route('pos.registers.store') }}" class="mt-6 grid gap-4 sm:grid-cols-2">
+                            @csrf
+                            <x-ui.input name="code" :label="__('pos.register_code')" placeholder="POS-01" required />
+                            <x-ui.input name="name" :label="__('pos.register_name')" placeholder="Main Counter" required />
+                            <div class="sm:col-span-2">
+                                @if($warehouses->isNotEmpty())
+                                    <x-ui.select name="warehouse_id" :label="__('pos.warehouse')" required>
+                                        @foreach($warehouses as $warehouse)
+                                            <option value="{{ $warehouse->id }}">{{ $warehouse->code }} — {{ $warehouse->name }}</option>
+                                        @endforeach
+                                    </x-ui.select>
+                                @else
+                                    <div class="rounded-lg bg-brand-50 p-3 text-sm text-brand-800 dark:bg-brand-500/10 dark:text-brand-200">{{ __('pos.warehouse_auto') }}</div>
+                                @endif
+                            </div>
+                            <div class="sm:col-span-2 flex justify-end">
+                                <x-ui.button type="submit" icon="plus">{{ __('pos.create_register') }}</x-ui.button>
+                            </div>
+                        </form>
+                    @endcan
                 </x-ui.card>
             </div>
         @elseif(!$openShift)
@@ -116,33 +122,41 @@
                                 <h2 class="mt-4 text-xl font-bold text-slate-950 dark:text-white">{{ __('pos.open_shift') }}</h2>
                                 <p class="mt-2 text-sm text-slate-500 dark:text-slate-400">{{ $register->name }} · {{ $register->warehouse?->name }}</p>
                             </div>
-                            <form method="POST" action="{{ route('pos.shifts.open', $register) }}" class="mx-auto mt-6 max-w-sm">
-                                @csrf
-                                <x-ui.input name="opening_cash" type="number" min="0" step="0.0001" :label="__('pos.opening_cash')" value="0" required />
-                                <div class="mt-4">
-                                    <x-ui.button type="submit" class="w-full justify-center" icon="bolt">{{ __('pos.open_shift') }}</x-ui.button>
-                                </div>
-                            </form>
+                            @can('pos.sell')
+                                <form method="POST" action="{{ route('pos.shifts.open', $register) }}" class="mx-auto mt-6 max-w-sm">
+                                    @csrf
+                                    <x-ui.input name="opening_cash" type="number" min="0" step="0.0001" :label="__('pos.opening_cash')" value="0" required />
+                                    <div class="mt-4">
+                                        <x-ui.button type="submit" class="w-full justify-center" icon="bolt">{{ __('pos.open_shift') }}</x-ui.button>
+                                    </div>
+                                </form>
+                            @endcan
                         @endif
                     </x-ui.card>
                 </div>
 
-                <div class="lg:col-span-2">
-                    <x-ui.card>
-                        <x-slot:header><h3 class="font-semibold text-slate-900 dark:text-white">{{ __('pos.create_register') }}</h3></x-slot:header>
-                        <form method="POST" action="{{ route('pos.registers.store') }}" class="space-y-4">
-                            @csrf
-                            <x-ui.input name="code" :label="__('pos.register_code')" required />
-                            <x-ui.input name="name" :label="__('pos.register_name')" required />
-                            <x-ui.select name="warehouse_id" :label="__('pos.warehouse')" required>
-                                @foreach($warehouses as $warehouse)
-                                    <option value="{{ $warehouse->id }}">{{ $warehouse->name }}</option>
-                                @endforeach
-                            </x-ui.select>
-                            <x-ui.button type="submit" variant="secondary" class="w-full justify-center">{{ __('pos.create_register') }}</x-ui.button>
-                        </form>
-                    </x-ui.card>
-                </div>
+                @can('pos.manage')
+                    <div class="lg:col-span-2">
+                        <x-ui.card>
+                            <x-slot:header><h3 class="font-semibold text-slate-900 dark:text-white">{{ __('pos.create_register') }}</h3></x-slot:header>
+                            <form method="POST" action="{{ route('pos.registers.store') }}" class="space-y-4">
+                                @csrf
+                                <x-ui.input name="code" :label="__('pos.register_code')" required />
+                                <x-ui.input name="name" :label="__('pos.register_name')" required />
+                                @if($warehouses->isNotEmpty())
+                                    <x-ui.select name="warehouse_id" :label="__('pos.warehouse')" required>
+                                        @foreach($warehouses as $warehouse)
+                                            <option value="{{ $warehouse->id }}">{{ $warehouse->name }}</option>
+                                        @endforeach
+                                    </x-ui.select>
+                                @else
+                                    <div class="rounded-lg bg-brand-50 p-3 text-sm text-brand-800 dark:bg-brand-500/10 dark:text-brand-200">{{ __('pos.warehouse_auto') }}</div>
+                                @endif
+                                <x-ui.button type="submit" variant="secondary" class="w-full justify-center">{{ __('pos.create_register') }}</x-ui.button>
+                            </form>
+                        </x-ui.card>
+                    </div>
+                @endcan
             </div>
         @else
             <div
@@ -286,6 +300,7 @@
                         </div>
                     </div>
 
+                    @can('pos.sell')
                     <form method="POST" action="{{ route('pos.checkout', $openShift) }}" class="border-t border-slate-100 p-4 dark:border-slate-800">
                         @csrf
                         <input type="hidden" name="items" :value="payload()">
@@ -353,6 +368,7 @@
                             </form>
                         </details>
                     </div>
+                    @endcan
                 </aside>
             </div>
 
