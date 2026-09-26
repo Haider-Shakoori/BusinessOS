@@ -5,17 +5,38 @@
     $settings = app(App\Services\BusinessSettings::class);
     $currency = (string) $settings->get('regional.currency', 'AFN');
     $taxEnabled = (bool) $settings->get('general.tax_enabled', false);
-    $productPayload = $products->map(function ($product) use ($stock, $taxEnabled) {
-        return [
-            'id' => $product->id,
+    $productPayload = $products->flatMap(function ($product) use ($stock, $taxEnabled) {
+        $taxRate = $taxEnabled && $product->tax ? (float) $product->tax->rate : 0;
+
+        if ($product->type->value === 'product' && $product->variants->isNotEmpty()) {
+            return $product->variants->map(function ($variant) use ($product, $stock, $taxRate) {
+                return [
+                    'id' => 'p'.$product->id.'-v'.$variant->id,
+                    'product_id' => $product->id,
+                    'variant_id' => $variant->id,
+                    'name' => $product->name.' — '.$variant->name,
+                    'sku' => $variant->sku ?: $product->sku,
+                    'price' => (float) ($variant->sale_price ?? $product->sale_price),
+                    'type' => 'product',
+                    'stock' => (float) ($stock[$product->id.':'.$variant->id] ?? 0),
+                    'tax_rate' => $taxRate,
+                    'category' => $product->category?->name,
+                ];
+            });
+        }
+
+        return [[
+            'id' => 'p'.$product->id,
+            'product_id' => $product->id,
+            'variant_id' => null,
             'name' => $product->name,
             'sku' => $product->sku,
             'price' => (float) $product->sale_price,
             'type' => $product->type->value,
-            'stock' => $product->type->value === 'service' ? null : (float) ($stock[$product->id] ?? 0),
-            'tax_rate' => $taxEnabled && $product->tax ? (float) $product->tax->rate : 0,
+            'stock' => $product->type->value === 'service' ? null : (float) ($stock[$product->id.':0'] ?? 0),
+            'tax_rate' => $taxRate,
             'category' => $product->category?->name,
-        ];
+        ]];
     })->values();
 @endphp
 
@@ -219,7 +240,7 @@
                         return Number(value || 0).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' ' + this.currency;
                     },
                     payload() {
-                        return JSON.stringify(this.cart.map(i => ({product_id: i.id, quantity: i.quantity})));
+                        return JSON.stringify(this.cart.map(i => ({product_id: i.product_id, product_variant_id: i.variant_id, quantity: i.quantity})));
                     }
                 }"
                 class="grid min-h-[calc(100vh-105px)] gap-4 xl:grid-cols-[minmax(0,1fr)_440px]"
