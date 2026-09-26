@@ -92,17 +92,30 @@ class AttendanceDeviceController extends Controller
 
     public function mapEmployee(Request $request, AttendanceDevice $attendanceDevice): RedirectResponse
     {
+        $employeeId = (int) $request->input('employee_id');
+        $existing = AttendanceDeviceEmployee::query()
+            ->where('attendance_device_id', $attendanceDevice->id)
+            ->where('employee_id', $employeeId)
+            ->first();
+
         $data = $request->validate([
             'employee_id' => ['required', Rule::exists('employees', 'id')->where('business_id', app(BusinessContext::class)->currentId())],
-            'device_user_id' => ['required', 'string', 'max:100'],
+            'device_user_id' => [
+                'required',
+                'string',
+                'max:100',
+                Rule::unique('attendance_device_employees', 'device_user_id')
+                    ->where('attendance_device_id', $attendanceDevice->id)
+                    ->ignore($existing?->id),
+            ],
         ]);
 
         AttendanceDeviceEmployee::updateOrCreate(
             [
                 'attendance_device_id' => $attendanceDevice->id,
-                'device_user_id' => $data['device_user_id'],
+                'employee_id' => $data['employee_id'],
             ],
-            ['employee_id' => $data['employee_id']],
+            ['device_user_id' => $data['device_user_id']],
         );
 
         return back()->with('status', __('attendance.mapping_saved'));
