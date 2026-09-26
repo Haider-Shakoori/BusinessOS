@@ -82,7 +82,11 @@ class FinalProductUiTest extends TestCase
         $items = collect(config('navigation.items'))->keyBy('key');
 
         $this->assertSame('Professional Plan', config('product.plan_label'));
-        $this->assertSame(3, $items['notifications']['badge']);
+        $this->assertSame('system.notifications.index', $items['notifications']['route']);
+        $this->assertSame('system.search.index', $items['global-search']['route']);
+        $this->assertSame('system.activity.index', $items['activity-log']['route']);
+        $this->assertSame('system.users-roles.index', $items['users-roles']['route']);
+        $this->assertSame('system.modules.index', $items['modules']['route']);
         $this->assertSame('chart-line', $items['sales']['icon']);
         $this->assertSame('documents', $items['quotations']['icon']);
         $this->assertSame('clipboard-document-list', $items['invoices']['icon']);
