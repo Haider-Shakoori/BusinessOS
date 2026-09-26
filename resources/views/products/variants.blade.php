@@ -13,7 +13,9 @@
     ]"
 >
     <x-slot:actions>
-        <x-ui.button href="{{ route('products.edit', $product) }}" variant="secondary" icon="pencil-square">{{ __('actions.edit') }}</x-ui.button>
+        @can('products.manage')
+            <x-ui.button href="{{ route('products.edit', $product) }}" variant="secondary" icon="pencil-square">{{ __('actions.edit') }}</x-ui.button>
+        @endcan
         <x-ui.button href="{{ route('products.index') }}" variant="secondary">{{ __('products.title') }}</x-ui.button>
     </x-slot:actions>
 
