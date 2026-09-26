@@ -440,12 +440,11 @@ class AccountingIntegrationReportsTest extends TestCase
             'debit_account_id' => $debit->id,
             'credit_account_id' => $credit->id,
             'amount' => '10.0000',
-        ])->assertServerError();
+        ])->assertSessionHasErrors('entry_date');
 
         $this->assertDatabaseMissing('journal_entries', ['number' => 'LOCKED-JOURNAL']);
 
-        $this->expectException(\RuntimeException::class);
-        $this->expectExceptionMessage('accounting period for this date is closed');
+        $this->expectException(\Illuminate\Validation\ValidationException::class);
 
         app(InvoiceService::class)->create(
             $this->invoicePayload($this->customer(), InvoiceStatus::Sent->value, '25.0000'),
