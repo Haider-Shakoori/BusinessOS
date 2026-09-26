@@ -2,6 +2,7 @@
 
 namespace App\Support;
 
+use App\Models\BusinessNotification;
 use App\Services\BusinessContext;
 use App\Services\ModuleManager;
 use Illuminate\Support\Facades\Gate;
@@ -61,8 +62,24 @@ final class Navigation
                 $enabled = true;
             }
 
+            $key = (string) ($definition['key'] ?? '');
+            $badge = $definition['badge'] ?? null;
+
+            if (
+                $key === 'notifications'
+                && $enabled
+                && auth()->check()
+            ) {
+                $unread = BusinessNotification::query()
+                    ->where('user_id', auth()->id())
+                    ->whereNull('read_at')
+                    ->count();
+
+                $badge = $unread > 0 ? min($unread, 99) : null;
+            }
+
             $items[] = [
-                'key' => (string) ($definition['key'] ?? ''),
+                'key' => $key,
                 'label' => __((string) ($definition['label'] ?? '')),
                 'icon' => (string) ($definition['icon'] ?? 'cube'),
                 'route' => $routeAvailable ? $route : null,
@@ -72,7 +89,7 @@ final class Navigation
                 'active_prefixes' => $definition['active_prefixes'] ?? [],
                 'placeholder' => $placeholder,
                 'disabled' => ! $enabled,
-                'badge' => $definition['badge'] ?? null,
+                'badge' => $badge,
             ];
         }
 
