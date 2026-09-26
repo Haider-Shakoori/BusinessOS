@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Settings\AttendanceDeviceRequest;
+use App\Models\AttendanceBridge;
+use App\Models\AttendanceBridgeJob;
 use App\Models\AttendanceDevice;
 use App\Models\AttendanceDeviceEmployee;
 use App\Models\AttendanceLog;
@@ -29,7 +31,8 @@ class AttendanceDeviceController extends Controller
             'business' => $context->current(),
             'brands' => config('attendance.brands', []),
             'connections' => config('attendance.connections', []),
-            'devices' => AttendanceDevice::query()->orderBy('name')->get(),
+            'devices' => AttendanceDevice::query()->with('bridge')->orderBy('name')->get(),
+            'bridges' => AttendanceBridge::query()->orderBy('name')->get(),
             'employees' => $employees,
             'mappings' => AttendanceDeviceEmployee::query()->with(['device', 'employee'])->orderByDesc('id')->get(),
             'recentLogs' => AttendanceLog::query()->with(['device', 'employee'])->latest('occurred_at')->limit(25)->get(),
@@ -39,15 +42,62 @@ class AttendanceDeviceController extends Controller
         ]);
     }
 
-    public function detect(Request $request, AttendanceDeviceDiscoveryService $discovery): JsonResponse
-    {
+    public function detect(
+        Request $request,
+        AttendanceDeviceDiscoveryService $discovery,
+        BusinessContext $context,
+    ): JsonResponse {
         $data = $request->validate([
             'ip' => ['required', 'ip'],
+            'bridge_id' => [
+                'nullable',
+                'integer',
+                Rule::exists('attendance_bridges', 'id')->where('business_id', $context->currentId()),
+            ],
         ]);
 
         try {
+            if ($discovery->requiresLocalBridge($data['ip'])) {
+                $bridges = AttendanceBridge::query()
+                    ->whereNotNull('last_seen_at')
+                    ->where('last_seen_at', '>=', now()->subMinutes(2))
+                    ->orderByDesc('last_seen_at');
+
+                if (! empty($data['bridge_id'])) {
+                    $bridges->whereKey($data['bridge_id']);
+                }
+
+                $bridge = $bridges->first();
+
+                if (! $bridge) {
+                    return response()->json([
+                        'ok' => false,
+                        'message' => __('attendance.bridge.required_for_private_ip'),
+                    ], 422);
+                }
+
+                $job = AttendanceBridgeJob::create([
+                    'business_id' => $context->currentId(),
+                    'attendance_bridge_id' => $bridge->id,
+                    'type' => 'detect',
+                    'status' => 'pending',
+                    'payload' => ['ip' => $data['ip']],
+                    'expires_at' => now()->addMinutes(2),
+                ]);
+
+                return response()->json([
+                    'ok' => true,
+                    'pending' => true,
+                    'job_id' => $job->uuid,
+                    'bridge_id' => $bridge->id,
+                    'bridge_name' => $bridge->name,
+                    'message' => __('attendance.bridge.discovery_queued', ['bridge' => $bridge->name]),
+                ]);
+            }
+
             return response()->json([
                 'ok' => true,
+                'pending' => false,
                 'result' => $discovery->discover($data['ip']),
             ]);
         } catch (\InvalidArgumentException $exception) {
@@ -56,6 +106,23 @@ class AttendanceDeviceController extends Controller
                 'message' => $exception->getMessage(),
             ], 422);
         }
+    }
+
+    public function detectionJob(AttendanceBridgeJob $attendanceBridgeJob): JsonResponse
+    {
+        if ($attendanceBridgeJob->expires_at?->isPast() && ! in_array($attendanceBridgeJob->status, ['completed', 'failed'], true)) {
+            $attendanceBridgeJob->forceFill([
+                'status' => 'expired',
+                'error' => __('attendance.bridge.discovery_expired'),
+            ])->save();
+        }
+
+        return response()->json([
+            'ok' => true,
+            'status' => $attendanceBridgeJob->status,
+            'result' => $attendanceBridgeJob->result,
+            'message' => $attendanceBridgeJob->error,
+        ]);
     }
 
     public function store(AttendanceDeviceRequest $request): RedirectResponse
