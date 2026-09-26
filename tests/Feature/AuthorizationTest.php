@@ -350,8 +350,8 @@ class AuthorizationTest extends TestCase
     {
         $this->registerProtectedRoute('/__perm/settings-manage', 'settings.manage');
 
-        // The catalogue grows with implemented modules. Batch 33 adds
-        // Smart Assistant and multi-business workspace permissions.
+        // The catalogue grows with implemented modules. Batch 34 adds
+        // HR and attendance-backed payroll permissions.
         $expected = [
             'users.view', 'users.manage',
             'settings.view', 'settings.manage',
@@ -376,6 +376,8 @@ class AuthorizationTest extends TestCase
             'assistant.use',
             'businesses.view', 'businesses.manage',
             'modules.view', 'modules.manage',
+            'hr.view', 'hr.manage',
+            'payroll.view', 'payroll.manage', 'payroll.finalize',
             'reports.view',
         ];
         $this->assertSame($expected, Permission::orderBy('id')->pluck('name')->all());
