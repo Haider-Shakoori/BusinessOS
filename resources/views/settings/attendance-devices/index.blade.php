@@ -101,7 +101,11 @@
                                         </div>
                                         <div>
                                             <p class="text-xs font-semibold uppercase tracking-wide text-brand-700 dark:text-brand-300">{{ __('attendance.push_token') }}</p>
-                                            <code class="mt-1 block break-all text-xs text-slate-700 dark:text-slate-200">{{ $device->push_token }}</code>
+                                            @can('settings.manage')
+                                                <code class="mt-1 block break-all text-xs text-slate-700 dark:text-slate-200">{{ $device->push_token }}</code>
+                                            @else
+                                                <span class="mt-1 block text-xs text-slate-500 dark:text-slate-400">••••••••••••••••</span>
+                                            @endcan
                                         </div>
                                         <p class="sm:col-span-2 text-xs text-slate-500 dark:text-slate-400">{{ __('attendance.push_helper') }}</p>
                                     </div>
