@@ -6,6 +6,7 @@ use App\Services\BusinessContext;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Business extends Model
 {
@@ -51,6 +52,11 @@ class Business extends Model
     public function modules(): HasMany
     {
         return $this->hasMany(BusinessModule::class);
+    }
+
+    public function subscription(): HasOne
+    {
+        return $this->hasOne(BusinessSubscription::class);
     }
 
     /**
