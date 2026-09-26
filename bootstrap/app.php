@@ -5,6 +5,7 @@ use App\Http\Middleware\AuthenticateFieldPulseIntegration;
 use App\Http\Middleware\EnsureBusinessSelected;
 use App\Http\Middleware\EnsureModule;
 use App\Http\Middleware\EnsurePermission;
+use App\Http\Middleware\EnsureSuperAdmin;
 use App\Http\Middleware\EnsureTaxEnabled;
 use App\Http\Middleware\ForgetScopedInstances;
 use App\Http\Middleware\SetLocale;
@@ -31,6 +32,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'business-selected' => EnsureBusinessSelected::class,
             'module' => EnsureModule::class,
             'permission' => EnsurePermission::class,
+            'super-admin' => EnsureSuperAdmin::class,
             'tax-enabled' => EnsureTaxEnabled::class,
             'fieldpulse.integration' => AuthenticateFieldPulseIntegration::class,
         ]);
