@@ -268,6 +268,59 @@ class InventoryTransfersReturnsTest extends TestCase
         ])->assertSessionHasErrors('return');
     }
 
+    public function test_cash_sales_return_reduces_expected_shift_cash_and_blocks_full_void(): void
+    {
+        [$user] = $this->owner();
+
+        $warehouse = Warehouse::create(['code' => 'CASH', 'name' => 'Cash Warehouse', 'is_active' => true]);
+        $product = $this->product('Cash Product', 'CASH-PROD');
+
+        StockMovement::create([
+            'warehouse_id' => $warehouse->id,
+            'product_id' => $product->id,
+            'type' => 'opening',
+            'quantity' => 5,
+            'unit_cost' => 4,
+            'occurred_at' => now(),
+        ]);
+
+        $register = PosRegister::create([
+            'warehouse_id' => $warehouse->id,
+            'code' => 'CASH-R',
+            'name' => 'Cash Register',
+            'is_active' => true,
+        ]);
+
+        $this->post('/pos/registers/'.$register->id.'/open-shift', ['opening_cash' => 25])->assertRedirect();
+        $shift = PosShift::firstOrFail();
+
+        $this->post('/pos/shifts/'.$shift->id.'/checkout', [
+            'items' => json_encode([['product_id' => $product->id, 'quantity' => 2]]),
+            'payment_method' => 'cash',
+            'amount_tendered' => 20,
+        ])->assertRedirect();
+
+        $sale = PosSale::with('items')->firstOrFail();
+
+        $this->post('/inventory/returns/sales', [
+            'pos_sale_item_id' => $sale->items->first()->id,
+            'quantity' => 1,
+            'reason' => 'One item returned before shift closing',
+        ])->assertRedirect();
+
+        $this->post('/pos/sales/'.$sale->id.'/void', [
+            'reason' => 'Cannot void after a partial return',
+        ])->assertSessionHasErrors('sale');
+
+        $this->post('/pos/shifts/'.$shift->id.'/close', [
+            'closing_cash' => 35,
+        ])->assertRedirect();
+
+        $shift->refresh();
+        $this->assertSame('35.0000', $shift->expected_cash);
+        $this->assertSame('0.0000', $shift->cash_variance);
+    }
+
     public function test_purchase_return_deducts_stock_and_cannot_exceed_original_quantity(): void
     {
         $this->owner();

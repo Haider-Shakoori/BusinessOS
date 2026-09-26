@@ -337,10 +337,10 @@ Route::middleware(['auth', 'auth.session', 'business-selected', 'module:inventor
         ->middleware('permission:inventory.view');
     Route::post('/inventory/returns/sales', [InventoryReturnController::class, 'storeSales'])
         ->name('inventory.returns.sales.store')
-        ->middleware('permission:inventory.manage');
+        ->middleware(['permission:inventory.manage', 'module:pos', 'permission:pos.manage']);
     Route::post('/inventory/returns/purchases', [InventoryReturnController::class, 'storePurchase'])
         ->name('inventory.returns.purchases.store')
-        ->middleware('permission:inventory.manage');
+        ->middleware(['permission:inventory.manage', 'module:purchasing', 'permission:purchasing.manage']);
 });
 
 Route::middleware(['auth', 'auth.session', 'business-selected', 'module:purchasing'])->group(function () {

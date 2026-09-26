@@ -76,6 +76,7 @@ return [
         'credit_customer_required' => 'Select a customer for a credit sale.',
         'insufficient_stock' => ':product has only :available available in this warehouse.',
         'discount_too_large' => 'The discount cannot exceed the merchandise subtotal.',
+        'sale_has_returns' => 'A sale with completed returns cannot be voided. Process any remaining return quantities instead.',
         'insufficient_tender' => 'The cash tendered is less than the sale total.',
     ],
 ];
