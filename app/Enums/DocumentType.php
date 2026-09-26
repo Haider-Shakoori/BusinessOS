@@ -27,4 +27,8 @@ enum DocumentType: string
     case PosSale = 'pos_sale';
 
     case PayrollRun = 'payroll_run';
+
+    case WarehouseTransfer = 'warehouse_transfer';
+
+    case InventoryReturn = 'inventory_return';
 }
