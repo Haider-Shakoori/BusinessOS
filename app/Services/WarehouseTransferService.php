@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Enums\DocumentType;
 use App\Enums\ProductType;
 use App\Models\Product;
+use App\Models\ProductVariant;
 use App\Models\StockMovement;
 use App\Models\Warehouse;
 use App\Models\WarehouseTransfer;
@@ -22,6 +23,7 @@ class WarehouseTransferService
         Warehouse $source,
         Warehouse $destination,
         Product $product,
+        ?ProductVariant $variant,
         float $quantity,
         ?string $note = null,
     ): WarehouseTransfer {
@@ -37,7 +39,7 @@ class WarehouseTransferService
             throw new RuntimeException(__('operations.transfers.errors.invalid_quantity'));
         }
 
-        return DB::transaction(function () use ($source, $destination, $product, $quantity, $note): WarehouseTransfer {
+        return DB::transaction(function () use ($source, $destination, $product, $variant, $quantity, $note): WarehouseTransfer {
             $transfer = WarehouseTransfer::create([
                 'source_warehouse_id' => $source->id,
                 'destination_warehouse_id' => $destination->id,
@@ -49,6 +51,7 @@ class WarehouseTransferService
 
             $transfer->items()->create([
                 'product_id' => $product->id,
+                'product_variant_id' => $variant?->id,
                 'quantity' => round($quantity, 4),
             ]);
 
@@ -69,10 +72,15 @@ class WarehouseTransferService
             }
 
             foreach ($locked->items as $item) {
-                $available = (float) StockMovement::query()
+                $stockQuery = StockMovement::query()
                     ->where('warehouse_id', $locked->source_warehouse_id)
-                    ->where('product_id', $item->product_id)
-                    ->sum('quantity');
+                    ->where('product_id', $item->product_id);
+
+                $item->product_variant_id === null
+                    ? $stockQuery->whereNull('product_variant_id')
+                    : $stockQuery->where('product_variant_id', $item->product_variant_id);
+
+                $available = (float) $stockQuery->sum('quantity');
 
                 if ($available + 0.00001 < (float) $item->quantity) {
                     throw new RuntimeException(__('operations.transfers.errors.insufficient_stock', [
@@ -81,9 +89,15 @@ class WarehouseTransferService
                     ]));
                 }
 
-                $unitCost = StockMovement::query()
+                $costQuery = StockMovement::query()
                     ->where('warehouse_id', $locked->source_warehouse_id)
-                    ->where('product_id', $item->product_id)
+                    ->where('product_id', $item->product_id);
+
+                $item->product_variant_id === null
+                    ? $costQuery->whereNull('product_variant_id')
+                    : $costQuery->where('product_variant_id', $item->product_variant_id);
+
+                $unitCost = $costQuery
                     ->whereNotNull('unit_cost')
                     ->where('unit_cost', '>', 0)
                     ->latest('occurred_at')
@@ -95,6 +109,7 @@ class WarehouseTransferService
                 StockMovement::create([
                     'warehouse_id' => $locked->source_warehouse_id,
                     'product_id' => $item->product_id,
+                    'product_variant_id' => $item->product_variant_id,
                     'type' => 'transfer_out',
                     'quantity' => -(float) $item->quantity,
                     'unit_cost' => $unitCost,
@@ -130,6 +145,7 @@ class WarehouseTransferService
                 StockMovement::create([
                     'warehouse_id' => $locked->destination_warehouse_id,
                     'product_id' => $item->product_id,
+                    'product_variant_id' => $item->product_variant_id,
                     'type' => 'transfer_in',
                     'quantity' => $item->quantity,
                     'unit_cost' => $item->unit_cost,
