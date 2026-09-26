@@ -224,7 +224,10 @@ def http_probe(ip: str, port: int, scheme: str, path: str) -> dict[str, Any] | N
         "User-Agent": f"BusinessOS-Attendance-Bridge/{VERSION}",
         "Accept": "*/*",
     })
-    opener = urllib.request.build_opener(NoRedirectHandler())
+    handlers = [NoRedirectHandler()]
+    if scheme == "https":
+        handlers.append(urllib.request.HTTPSHandler(context=ssl._create_unverified_context()))
+    opener = urllib.request.build_opener(*handlers)
     try:
         response = opener.open(request, timeout=1.25)
         body = response.read(16384).decode("utf-8", errors="ignore")
