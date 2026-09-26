@@ -7,6 +7,7 @@ use App\Models\PurchaseOrder;
 use App\Models\StockMovement;
 use App\Models\Supplier;
 use App\Models\Warehouse;
+use App\Services\AccountingPostingService;
 use App\Services\BusinessContext;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -46,16 +47,23 @@ class PurchasingController extends Controller
         return back()->with('status', __('operations.purchasing.supplier_created'));
     }
 
-    public function receive(Request $request, PurchaseOrder $purchaseOrder, BusinessContext $context): RedirectResponse
+    public function receive(
+        Request $request,
+        PurchaseOrder $purchaseOrder,
+        BusinessContext $context,
+        AccountingPostingService $accounting,
+    ): RedirectResponse
     {
         $data = $request->validate([
             'warehouse_id' => ['required', Rule::exists('warehouses', 'id')->where('business_id', $context->currentId())],
         ]);
 
-        DB::transaction(function () use ($purchaseOrder, $data): void {
+        DB::transaction(function () use ($purchaseOrder, $data, $accounting): void {
             $order = PurchaseOrder::query()->with('items')->lockForUpdate()->findOrFail($purchaseOrder->id);
 
             if ($order->status === 'received') {
+                $accounting->postPurchaseReceipt($order);
+
                 return;
             }
 
@@ -74,6 +82,7 @@ class PurchasingController extends Controller
             }
 
             $order->update(['status' => 'received']);
+            $accounting->postPurchaseReceipt($order);
         });
 
         return back()->with('status', __('operations.purchasing.order_received'));
