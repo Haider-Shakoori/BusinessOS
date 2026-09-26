@@ -77,6 +77,7 @@ class GlobalSearchController extends Controller
                 Supplier::query()
                     ->where(function ($builder) use ($query): void {
                         $builder->where('name', 'like', "%{$query}%")
+                            ->orWhere('code', 'like', "%{$query}%")
                             ->orWhere('email', 'like', "%{$query}%")
                             ->orWhere('phone', 'like', "%{$query}%");
                     })
@@ -86,7 +87,7 @@ class GlobalSearchController extends Controller
                         'type' => __('system.search.supplier'),
                         'title' => $item->name,
                         'subtitle' => $item->phone ?: $item->email,
-                        'url' => route('purchasing.index'),
+                        'url' => route('suppliers.show', $item),
                         'icon' => 'shopping-cart',
                     ]));
 
