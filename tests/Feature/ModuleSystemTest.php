@@ -260,8 +260,9 @@ class ModuleSystemTest extends TestCase
         // ...but the backend permission still denies access (module != authorization).
         $this->get('/__module/customers')->assertForbidden();
 
-        // Navigation does not expose the restricted item (permission-aware).
-        $this->get('/app')->assertOk()->assertDontSee(__('modules.customers'));
+        // The approved final-product shell keeps its menu blueprint visible,
+        // but visibility never grants backend access.
+        $this->get('/app')->assertOk()->assertSee(__('navigation.customers'));
 
         // Grant the permission: module enabled + permission granted => allowed.
         $membership->assignRole($roles['viewer']);
@@ -273,40 +274,48 @@ class ModuleSystemTest extends TestCase
 
     // --- Verification items 12-14, 20: navigation + multi-business ----------
 
-    public function test_navigation_filters_by_module_and_permission(): void
+    public function test_navigation_blueprint_stays_visible_while_module_state_controls_access(): void
     {
         $user = $this->makeUser();
         [$business] = $this->provision($user, 'Nav Co.', 'owner');
 
         $this->enter($user, $business);
 
-        // Owner, default modules: Customers not provisioned -> hidden.
-        $this->get('/app')->assertOk()->assertDontSee(__('modules.customers'));
+        // Screenshot-authoritative menu: Customers remains visible even while
+        // its module is disabled.
+        $this->get('/app')->assertOk()->assertSee(__('navigation.customers'));
+        $this->assertFalse(app(ModuleManager::class)->isEnabled('customers'));
 
-        // Enable Customers (owner holds customers.view) -> nav shows it.
-        $this->get('/app')->assertOk()->assertDontSee(__('modules.customers'));
+        // Enable Customers: the same row becomes actionable.
         $this->enableModule($business, 'customers');
-        $this->get('/app')->assertOk()->assertSee(__('modules.customers'));
+        $this->rebuildContext();
+        $this->assertTrue(app(ModuleManager::class)->isEnabled('customers'));
+        $this->get('/customers')->assertOk();
+        $this->get('/app')->assertOk()->assertSee(__('navigation.customers'));
 
-        // Disable Customers again -> the item disappears from navigation.
+        // Disable again: shell order stays stable while middleware refuses URL access.
         $this->enableModule($business, 'customers', false);
-        $this->get('/app')->assertOk()->assertDontSee(__('modules.customers'));
+        $this->rebuildContext();
+        $this->assertFalse(app(ModuleManager::class)->isEnabled('customers'));
+        $this->get('/customers')->assertForbidden();
+        $this->get('/app')->assertOk()->assertSee(__('navigation.customers'));
     }
 
-    public function test_navigation_hides_modules_the_user_may_view_but_no_permission(): void
+    public function test_navigation_visibility_never_bypasses_missing_permissions(): void
     {
         $business = $this->makeBusiness('Scope Nav Co.');
-        $roles = $business->provisionDefaultRoles();
+        $business->provisionDefaultRoles();
         $business->provisionDefaultModules();
         $this->enableModule($business, 'customers');
 
-        // A member with no role holds no customers.view -> navigation stays clean even
-        // though the module is enabled for the business.
+        // The row remains in the approved shell, but a member without a role
+        // still cannot open the protected module.
         $member = $this->makeUser('Read-Only');
         $member->memberships()->create(['business_id' => $business->id]);
 
         $this->enter($member, $business);
-        $this->get('/app')->assertOk()->assertDontSee(__('modules.customers'));
+        $this->get('/app')->assertOk()->assertSee(__('navigation.customers'));
+        $this->get('/customers')->assertForbidden();
     }
 
     public function test_mandatory_multi_business_module_switching(): void
@@ -327,10 +336,11 @@ class ModuleSystemTest extends TestCase
         $this->get('/__module/customers')->assertOk();
         $this->get('/app')->assertOk()->assertSee(__('modules.customers'));
 
-        // Switch to Business B: disabled, navigation hidden, middleware blocks.
+        // Switch to Business B: module is disabled. The fixed product menu
+        // remains visible, while middleware blocks actual module access.
         $this->post(route('business.switch'), ['business_id' => $businessB->id])->assertRedirect(route('app.home'));
         $this->get('/__module/customers')->assertForbidden();
-        $this->get('/app')->assertOk()->assertDontSee(__('modules.customers'));
+        $this->get('/app')->assertOk()->assertSee(__('navigation.customers'));
 
         // Switch back to Business A: behavior restored.
         $this->post(route('business.switch'), ['business_id' => $businessA->id])->assertRedirect(route('app.home'));

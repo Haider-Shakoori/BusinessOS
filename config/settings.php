@@ -36,6 +36,8 @@ return [
             'address' => ['default' => null, 'type' => 'string'],
             'phone' => ['default' => null, 'type' => 'string'],
             'email' => ['default' => null, 'type' => 'string'],
+            'industry' => ['default' => null, 'type' => 'string'],
+            'country' => ['default' => null, 'type' => 'string'],
             'tax_enabled' => ['default' => false, 'type' => 'boolean'],
         ],
 
@@ -45,6 +47,10 @@ return [
             'time_format' => ['default' => 'H:i',   'type' => 'string'],
             'locale' => ['default' => null,    'type' => 'string'],
             'currency' => ['default' => 'AFN', 'type' => 'string'],
+        ],
+
+        'ui' => [
+            'appearance' => ['default' => 'light', 'type' => 'string'],
         ],
 
         'numbering' => [

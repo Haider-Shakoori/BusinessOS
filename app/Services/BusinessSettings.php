@@ -49,6 +49,18 @@ class BusinessSettings
     }
 
     /**
+     * Reset the per-request business/settings memoization after BusinessContext
+     * changes inside the same request (first-business onboarding).
+     */
+    public function resetResolvedContext(): void
+    {
+        $this->businessResolved = false;
+        $this->business = null;
+        $this->overridesResolved = false;
+        $this->overrides = collect();
+    }
+
+    /**
      * All supported settings for the current business (config defaults merged
      * with sparse database overrides), keyed by dot notation group.key.
      *

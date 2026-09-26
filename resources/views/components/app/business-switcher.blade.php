@@ -2,6 +2,8 @@
     $context = app(\App\Services\BusinessContext::class);
     $current = $context->current();
     $businesses = $context->businesses();
+    $settings = $current ? app(\App\Services\BusinessSettings::class) : null;
+    $address = $settings?->get('general.address');
 @endphp
 
 @auth
@@ -10,17 +12,18 @@
             align="end"
             width="w-64"
             aria-label="{{ __('business.switch_heading') }}"
-            class="rounded-[7px] p-1 hover:bg-slate-100 dark:hover:bg-slate-700"
+            class="rounded-[7px] border border-slate-200 bg-white px-2 py-1 shadow-sm hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:hover:bg-slate-800"
         >
             <x-slot:trigger>
                 <span class="flex min-w-0 items-center gap-2">
-                    <span class="grid size-8 shrink-0 place-items-center rounded-[7px] bg-slate-100 text-slate-500 dark:bg-slate-700 dark:text-slate-300" aria-hidden="true">
-                        <x-ui.icon name="briefcase" class="size-4" />
+                    <span class="grid size-7 shrink-0 place-items-center rounded-[6px] bg-brand-50 text-brand-600 dark:bg-brand-500/10 dark:text-brand-300" aria-hidden="true">
+                        <x-ui.icon name="building-office" class="size-4" />
                     </span>
-                    <span class="hidden min-w-0 max-w-[10rem] text-start md:block">
-                        <span class="block text-xs text-slate-500 dark:text-slate-400">{{ __('business.switch') }}</span>
-                        <span class="block truncate text-sm font-medium text-slate-700 dark:text-slate-200" title="{{ $current->name }}">{{ $current->name }}</span>
+                    <span class="hidden min-w-0 max-w-[9.5rem] text-start leading-[1.1] lg:block">
+                        <span class="block truncate text-[11px] font-semibold text-slate-800 dark:text-slate-100" title="{{ $current->name }}">{{ $current->name }}</span>
+                        <span class="mt-0.5 block truncate text-[9px] text-slate-500 dark:text-slate-400">{{ $address ?: __('business.current_business') }}</span>
                     </span>
+                    <x-ui.icon name="chevron-down" class="hidden size-3 text-slate-400 lg:block" />
                 </span>
             </x-slot:trigger>
 
@@ -37,7 +40,7 @@
                             title="{{ $business->name }}"
                         >
                             <span class="grid size-6 shrink-0 place-items-center rounded-md bg-slate-100 text-slate-500 dark:bg-slate-700 dark:text-slate-300" aria-hidden="true">
-                                <x-ui.icon name="briefcase" class="size-3.5" />
+                                <x-ui.icon name="building-office" class="size-3.5" />
                             </span>
                             <span class="min-w-0 flex-1 truncate text-start">{{ $business->name }}</span>
                             @if ($business->id === $current->id)
@@ -48,5 +51,12 @@
                 @endforeach
             </x-slot:items>
         </x-ui.dropdown>
+    @else
+        <div class="hidden items-center gap-2 rounded-[7px] border border-slate-200 bg-white px-2.5 py-1.5 lg:flex dark:border-slate-700 dark:bg-slate-900">
+            <span class="grid size-6 place-items-center rounded-[6px] bg-brand-50 text-brand-600 dark:bg-brand-500/10 dark:text-brand-300">
+                <x-ui.icon name="building-office" class="size-3.5" />
+            </span>
+            <span class="text-[10px] font-semibold text-slate-600 dark:text-slate-300">{{ __('business.setup_in_progress') }}</span>
+        </div>
     @endif
 @endauth

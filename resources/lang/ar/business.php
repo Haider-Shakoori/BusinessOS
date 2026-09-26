@@ -30,6 +30,7 @@ return [
     'onboarding_heading' => 'مرحبًا! لننشئ نشاطك التجاري.',
     'onboarding_message' => 'لست عضوًا في أي نشاط تجاري بعد. أنشئ نشاطًا تجاريًا للبدء في استخدام BusinessOS.',
     'no_business' => 'لا يوجد نشاط تجاري محدد',
+    'setup_in_progress' => 'إعداد النشاط التجاري',
 
     'validation' => [
         'name_required' => 'يرجى إدخال اسم النشاط التجاري.',

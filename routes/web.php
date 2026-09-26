@@ -15,6 +15,7 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\TaxController;
 use App\Http\Controllers\UnitController;
+use App\Http\Controllers\WorkspaceController;
 use App\Support\SafeRedirect;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Route;
@@ -51,6 +52,10 @@ require __DIR__.'/auth.php';
  *
  * Hidden navigation is not security: these same guards apply to direct URLs.
  */
+Route::get('/workspace/{section}', [WorkspaceController::class, 'placeholder'])
+    ->middleware(['auth', 'auth.session', 'business-selected'])
+    ->name('workspace.placeholder');
+
 Route::middleware(['auth', 'auth.session', 'business-selected', 'module:settings'])->group(function () {
     Route::get('/settings', [SettingsController::class, 'index'])
         ->name('settings.index')

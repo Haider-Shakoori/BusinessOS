@@ -30,6 +30,7 @@ return [
     'onboarding_heading' => 'خوش آمدید! کسب و کار خود را بسازید.',
     'onboarding_message' => 'شما هنوز عضو هیچ کسب و کاری نیستید. برای شروع کار با BusinessOS یک کسب و کار ایجاد کنید.',
     'no_business' => 'کسب و کاری انتخاب نشده است',
+    'setup_in_progress' => 'راه‌اندازی کسب‌وکار',
 
     'validation' => [
         'name_required' => 'لطفاً نام کسب و کار را وارد کنید.',

@@ -801,15 +801,21 @@ class QuotationTest extends TestCase
         $user = $this->makeUser('Nav User');
         [$business] = $this->provision($user, 'Nav Co.', 'owner');
 
-        // Sales disabled -> no child appears in the sidebar.
+        // Sales disabled: the approved product shell still displays both
+        // rows, but protected routes remain unavailable.
         $this->actIn($user, $business);
-        $this->get('/app')->assertOk()->assertDontSee(__('modules.quotations'))->assertDontSee(__('modules.invoices'));
+        $this->get('/app')->assertOk()
+            ->assertSee(__('navigation.quotations'))
+            ->assertSee(__('navigation.invoices'));
+        $this->get('/quotations')->assertForbidden();
 
-        // Enabled for an owner (holds quotations.view + invoices.view) -> both
-        // entries appear.
+        // Enabling Sales turns the existing rows into real module links.
         $this->enableSales($business);
         $this->rebuildContext();
-        $this->get('/app')->assertOk()->assertSee(__('modules.quotations'))->assertSee(__('modules.invoices'));
+        $this->get('/quotations')->assertOk();
+        $this->get('/app')->assertOk()
+            ->assertSee(__('navigation.quotations'))
+            ->assertSee(__('navigation.invoices'));
     }
 
     // --- Helpers -------------------------------------------------------------

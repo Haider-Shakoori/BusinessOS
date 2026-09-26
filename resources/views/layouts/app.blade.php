@@ -45,7 +45,7 @@
         <x-app.sidebar :items="$navItems" />
         <x-app.mobile-nav :items="$navItems" />
 
-        <div id="app-content" class="flex min-h-screen flex-col transition-[padding-inline-start] duration-200 ease-out lg:ps-[208px] sidebar-collapsed:lg:ps-[68px]">
+        <div id="app-content" class="flex min-h-screen flex-col transition-[padding-inline-start] duration-200 ease-out lg:ps-[200px] sidebar-collapsed:lg:ps-[64px]">
             <x-app.header />
 
             <main id="main-content" tabindex="-1" class="flex-1 bg-[#f5f7fb] dark:bg-slate-950">

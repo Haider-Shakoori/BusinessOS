@@ -12,7 +12,9 @@ return [
     'reports' => 'گزارش‌ها',
     'settings' => 'تنظیمات',
 
-    'search' => 'جستجو…',
+    'search' => 'جستجو در همه‌چیز... (مشتریان، فاکتورها، محصولات و غیره)',
+    'search_shortcut' => 'K',
+    'notification_center' => 'مرکز اعلان‌ها',
     'filters' => 'فیلترها',
     'search_coming_soon' => 'جستجوی سراسری (به زودی)',
     'notifications' => 'اعلان‌ها',

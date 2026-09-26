@@ -233,11 +233,11 @@ class ReportTest extends TestCase
         $this->enter($owner, $business);
 
         $this->get('/reports')->assertForbidden();
-        $this->get('/app')->assertOk()->assertDontSee(__('modules.reports'));
+        $this->get('/app')->assertOk()->assertSee(__('navigation.reports'));
 
         $this->enableReports($business);
         $this->get('/reports')->assertOk();
-        $this->get('/app')->assertOk()->assertSee(__('modules.reports'));
+        $this->get('/app')->assertOk()->assertSee(__('navigation.reports'));
 
         [$noRoleBusiness, $noRoleUser] = $this->provision('No Role Reports', 'missing');
         $this->enableReports($noRoleBusiness);

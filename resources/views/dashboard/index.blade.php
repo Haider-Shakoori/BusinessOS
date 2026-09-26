@@ -3,7 +3,9 @@
 @section('content')
     @php
         $baseCurrency = $dashboard['base_currency'];
-        $money = fn (string $amount): string => $baseCurrency.' '.number_format((float) $amount, 2);
+        $formatter = app(\App\Support\LocalizedFormatter::class);
+        $money = fn (string $amount): string => $formatter->currency($amount, $baseCurrency);
+        $displayDate = fn (?string $date): string => $formatter->date($date);
         $hasMetrics = collect(['sales', 'revenue', 'expenses', 'receivables'])
             ->contains(fn (string $key): bool => (bool) ($visibility[$key] ?? false));
         $hasActivitySources = ($visibility['recent_invoices'] ?? false)
@@ -29,7 +31,7 @@
                     {{ __('dashboard.welcome', ['name' => auth()->user()->name]) }}
                 </p>
                 <p class="mt-1 text-[12px] text-slate-500 dark:text-slate-400">
-                    {{ __('dashboard.period_label', ['from' => $dateFrom, 'to' => $dateTo]) }}
+                    {{ __('dashboard.period_label', ['from' => $displayDate($dateFrom), 'to' => $displayDate($dateTo)]) }}
                 </p>
             </div>
 
@@ -56,7 +58,7 @@
                             </span>
                             <div>
                                 <h2 class="text-[13px] font-semibold text-slate-900 dark:text-white">{{ __('dashboard.period') }}</h2>
-                                <p class="text-[11px] text-slate-500 dark:text-slate-400">{{ __('dashboard.period_label', ['from' => $dateFrom, 'to' => $dateTo]) }}</p>
+                                <p class="text-[11px] text-slate-500 dark:text-slate-400">{{ __('dashboard.period_label', ['from' => $displayDate($dateFrom), 'to' => $displayDate($dateTo)]) }}</p>
                             </div>
                         </div>
 

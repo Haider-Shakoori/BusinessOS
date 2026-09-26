@@ -1,16 +1,7 @@
 <?php
 
 return [
-    /*
-    |--------------------------------------------------------------------------
-    | Navigation Translation Strings (English)
-    |--------------------------------------------------------------------------
-    |
-    | Section labels and navigation item labels used by the sidebar,
-    | mobile navigation, and any future navigation rendering.
-    |
-    */
-
+    'workspace' => 'Workspace',
     'overview' => 'Overview',
     'business' => 'Business',
     'insights' => 'Insights',
@@ -19,8 +10,24 @@ return [
     'dashboard' => 'Dashboard',
     'customers' => 'Customers',
     'sales' => 'Sales',
-    'products' => 'Products',
+    'quotations' => 'Quotations',
+    'invoices' => 'Invoices',
+    'payments' => 'Payments',
     'expenses' => 'Expenses',
+    'products' => 'Products',
+    'inventory' => 'Inventory',
+    'purchasing' => 'Purchasing',
+    'pos' => 'POS',
+    'accounting' => 'Accounting',
+    'manufacturing' => 'Manufacturing',
+    'crm' => 'CRM',
     'reports' => 'Reports',
+    'notifications' => 'Notifications',
+    'global_search' => 'Global Search',
+    'activity_log' => 'Activity Log',
+    'smart_assistant' => 'Smart Assistant',
+    'saas_businesses' => 'SaaS / Businesses',
+    'users_roles' => 'Users & Roles',
+    'modules' => 'Modules',
     'settings' => 'Settings',
 ];

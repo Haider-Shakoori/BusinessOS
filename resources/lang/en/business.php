@@ -33,6 +33,7 @@ return [
     'onboarding_heading' => "Welcome! Let's create your business.",
     'onboarding_message' => 'You are not part of any business yet. Create a business to get started with BusinessOS.',
     'no_business' => 'No business selected',
+    'setup_in_progress' => 'Business setup',
 
     'validation' => [
         'name_required' => 'Please enter a business name.',
