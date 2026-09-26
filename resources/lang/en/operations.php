@@ -218,4 +218,4 @@ return [
             'insufficient_stock' => 'The selected warehouse does not have enough stock to return. Available: :available.',
         ],
     ],
-];\n
+];
