@@ -90,6 +90,28 @@ class LocalizationCompletionTest extends TestCase
         $this->assertNotSame('', $dariCurrency);
     }
 
+    public function test_onboarding_industry_profiles_only_recommend_registered_modules(): void
+    {
+        $registered = array_keys(config('modules.registry', []));
+        $profiles = config('onboarding_industries', []);
+
+        $this->assertNotEmpty($profiles);
+
+        foreach ($profiles as $industry => $profile) {
+            $recommended = $profile['recommended_modules'] ?? [];
+            $this->assertNotEmpty($recommended, $industry.' must recommend at least one module.');
+            $this->assertSame(
+                [],
+                array_values(array_diff($recommended, $registered)),
+                $industry.' recommends an unregistered module.',
+            );
+        }
+
+        $this->assertContains('manufacturing', $profiles['manufacturing']['recommended_modules']);
+        $this->assertNotContains('manufacturing', $profiles['services']['recommended_modules']);
+        $this->assertContains('pos', $profiles['retail_wholesale']['recommended_modules']);
+    }
+
     public function test_final_shell_blades_do_not_introduce_untranslated_user_facing_copy(): void
     {
         $paths = [
