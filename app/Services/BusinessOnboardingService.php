@@ -53,17 +53,19 @@ final class BusinessOnboardingService
         $this->context->switchTo($business->id);
         $this->settings->resetResolvedContext();
 
+        $defaults = config('onboarding.defaults', []);
+
         $this->settings->updateMany([
             'general.address' => $validated['address'] ?? null,
             'general.phone' => $validated['phone'] ?? null,
             'general.email' => $validated['email'] ?? null,
             'general.industry' => $validated['industry'] ?? null,
-            'general.country' => $validated['country'],
+            'general.country' => $validated['country'] ?? ($defaults['country'] ?? null),
             'general.tax_enabled' => (bool) ($validated['tax_enabled'] ?? false),
-            'regional.timezone' => $validated['timezone'],
-            'regional.locale' => $validated['locale'],
-            'regional.currency' => strtoupper($validated['currency']),
-            'ui.appearance' => $validated['appearance'],
+            'regional.timezone' => $validated['timezone'] ?? ($defaults['timezone'] ?? 'UTC'),
+            'regional.locale' => $validated['locale'] ?? ($defaults['locale'] ?? null),
+            'regional.currency' => strtoupper((string) ($validated['currency'] ?? ($defaults['currency'] ?? 'AFN'))),
+            'ui.appearance' => $validated['appearance'] ?? ($defaults['appearance'] ?? 'light'),
         ]);
 
         if ($request->hasFile('logo')) {
