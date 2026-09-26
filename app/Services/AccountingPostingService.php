@@ -143,18 +143,35 @@ class AccountingPostingService
             return null;
         }
 
+        $revision = AccountingPosting::query()
+            ->where('source_type', Supplier::class)
+            ->where('source_id', $supplier->id)
+            ->count() + 1;
+
         return $this->post(
             Supplier::class,
             $supplier->id,
-            'opening-balance',
-            'AUTO-SUP-'.$supplier->code,
+            'opening-balance-'.$revision,
+            'AUTO-SUP-'.$supplier->code.'-'.$revision,
             ($supplier->opening_balance_date ?? $supplier->created_at)->toDateString(),
-            'Supplier opening balance '.$supplier->code,
+            'Supplier opening balance '.$supplier->code.' revision '.$revision,
             [
                 $this->line('3990', 'Opening Balance Equity', 'equity', $amount, '0', $supplier->code),
                 $this->line('2000', 'Accounts Payable', 'liability', '0', $amount, $supplier->code),
             ],
         );
+    }
+
+    public function replaceSupplierOpeningBalance(Supplier $supplier): ?JournalEntry
+    {
+        $this->reverseActiveSource(Supplier::class, $supplier->id, 'Supplier opening balance updated');
+
+        return $this->postSupplierOpeningBalance($supplier);
+    }
+
+    public function reverseSupplierOpeningBalance(Supplier $supplier): ?JournalEntry
+    {
+        return $this->reverseActiveSource(Supplier::class, $supplier->id, 'Supplier opening balance removed');
     }
 
     public function postExpense(Expense $expense): JournalEntry
