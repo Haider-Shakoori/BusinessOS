@@ -1,0 +1,26 @@
+name: Pint Diff Diagnostic
+
+on:
+  push:
+    branches:
+      - feat/batch-36-supplier-ledger-import
+
+permissions:
+  contents: read
+
+jobs:
+  diff:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          coverage: none
+      - run: composer install --no-interaction --prefer-dist --no-progress
+      - name: Show Pint diff
+        run: |
+          ./vendor/bin/pint app/Services/Imports/SupplierImportMapper.php routes/web.php
+          git diff -- app/Services/Imports/SupplierImportMapper.php routes/web.php
+          exit 1
