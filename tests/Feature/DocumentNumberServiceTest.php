@@ -106,6 +106,7 @@ class DocumentNumberServiceTest extends TestCase
         $this->assertSame('PAY', config('numbering.prefixes.payment'));
         $this->assertSame('EXP', config('numbering.prefixes.expense'));
         $this->assertSame('PO', config('numbering.prefixes.purchase_order'));
+        $this->assertSame('POS', config('numbering.prefixes.pos_sale'));
         $this->assertSame(6, config('numbering.padding'));
 
         // Purchasing is now a real Batch 30 module; the generic future
@@ -131,6 +132,7 @@ class DocumentNumberServiceTest extends TestCase
         $this->assertSame('PAY-000001', $this->numbering()->next(DocumentType::Payment));
         $this->assertSame('EXP-000001', $this->numbering()->next(DocumentType::Expense));
         $this->assertSame('PO-000001', $this->numbering()->next(DocumentType::PurchaseOrder));
+        $this->assertSame('POS-000001', $this->numbering()->next(DocumentType::PosSale));
 
         $this->assertDatabaseHas('document_number_sequences', [
             'business_id' => $business->id,
