@@ -160,7 +160,7 @@ class PayrollService
             (int) ($employee->standard_daily_minutes ?: config('payroll.default_standard_daily_minutes', 480)),
         );
 
-        $attendance = $this->attendance->summary($employee, $effectiveStart, $end);
+        $attendance = $this->attendance->summary($employee, $effectiveStart->toDateString(), $end->toDateString());
         $dailyMinutes = collect($attendance['daily_minutes'] ?? []);
         $attendedDates = $dailyMinutes->keys()->flip();
 
