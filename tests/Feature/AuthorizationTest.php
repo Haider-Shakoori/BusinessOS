@@ -350,8 +350,8 @@ class AuthorizationTest extends TestCase
     {
         $this->registerProtectedRoute('/__perm/settings-manage', 'settings.manage');
 
-        // The catalogue grows with implemented modules. Batch 32 adds
-        // notifications, global search, activity audit and module-management permissions.
+        // The catalogue grows with implemented modules. Batch 33 adds
+        // Smart Assistant and multi-business workspace permissions.
         $expected = [
             'users.view', 'users.manage',
             'settings.view', 'settings.manage',
@@ -373,6 +373,8 @@ class AuthorizationTest extends TestCase
             'notifications.view', 'notifications.manage',
             'search.use',
             'activity.view',
+            'assistant.use',
+            'businesses.view', 'businesses.manage',
             'modules.view', 'modules.manage',
             'reports.view',
         ];

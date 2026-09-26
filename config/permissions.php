@@ -99,6 +99,13 @@ return [
         'activity' => [
             'activity.view',
         ],
+        'assistant' => [
+            'assistant.use',
+        ],
+        'businesses' => [
+            'businesses.view',
+            'businesses.manage',
+        ],
         'modules' => [
             'modules.view',
             'modules.manage',

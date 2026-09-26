@@ -85,6 +85,8 @@ class FinalProductUiTest extends TestCase
         $this->assertSame('system.notifications.index', $items['notifications']['route']);
         $this->assertSame('system.search.index', $items['global-search']['route']);
         $this->assertSame('system.activity.index', $items['activity-log']['route']);
+        $this->assertSame('system.assistant.index', $items['smart-assistant']['route']);
+        $this->assertSame('system.businesses.index', $items['saas-businesses']['route']);
         $this->assertSame('system.users-roles.index', $items['users-roles']['route']);
         $this->assertSame('system.modules.index', $items['modules']['route']);
         $this->assertSame('chart-line', $items['sales']['icon']);
