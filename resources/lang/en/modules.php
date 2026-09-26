@@ -12,6 +12,7 @@ return [
     'accounting' => 'Accounting',
     'manufacturing' => 'Manufacturing',
     'crm' => 'CRM',
+    'hr' => 'HR & Payroll',
     'reports' => 'Reports',
     'settings' => 'Settings',
     'categories' => 'Categories',
