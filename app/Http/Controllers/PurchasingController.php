@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use App\Models\PurchaseOrder;
+use App\Models\StockMovement;
 use App\Models\Supplier;
+use App\Models\Warehouse;
 use App\Services\BusinessContext;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -19,6 +21,7 @@ class PurchasingController extends Controller
         return view('purchasing.index', [
             'suppliers' => Supplier::query()->orderBy('name')->get(),
             'products' => Product::query()->orderBy('name')->get(),
+            'warehouses' => Warehouse::query()->orderBy('name')->get(),
             'orders' => PurchaseOrder::query()->with(['supplier', 'items.product'])->latest('id')->limit(50)->get(),
         ]);
     }
@@ -35,6 +38,39 @@ class PurchasingController extends Controller
         Supplier::create($data + ['is_active' => true]);
 
         return back()->with('status', __('operations.purchasing.supplier_created'));
+    }
+
+    public function receive(Request $request, PurchaseOrder $purchaseOrder, BusinessContext $context): RedirectResponse
+    {
+        $data = $request->validate([
+            'warehouse_id' => ['required', Rule::exists('warehouses', 'id')->where('business_id', $context->currentId())],
+        ]);
+
+        DB::transaction(function () use ($purchaseOrder, $data): void {
+            $order = PurchaseOrder::query()->with('items')->lockForUpdate()->findOrFail($purchaseOrder->id);
+
+            if ($order->status === 'received') {
+                return;
+            }
+
+            foreach ($order->items as $item) {
+                StockMovement::create([
+                    'warehouse_id' => $data['warehouse_id'],
+                    'product_id' => $item->product_id,
+                    'type' => 'purchase',
+                    'quantity' => $item->quantity,
+                    'unit_cost' => $item->unit_cost,
+                    'reference_type' => PurchaseOrder::class,
+                    'reference_id' => $order->id,
+                    'note' => $order->number,
+                    'occurred_at' => now(),
+                ]);
+            }
+
+            $order->update(['status' => 'received']);
+        });
+
+        return back()->with('status', __('operations.purchasing.order_received'));
     }
 
     public function storeOrder(Request $request, BusinessContext $context): RedirectResponse
