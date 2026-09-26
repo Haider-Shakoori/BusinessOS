@@ -34,6 +34,7 @@ return [
     'push_endpoint' => 'Push endpoint',
     'push_token' => 'Device token',
     'push_helper' => 'Use this endpoint/token in a supported device, ADMS gateway, or local vendor bridge. Keep the token secret.',
+    'leave_blank_to_keep' => 'Leave blank to keep the existing secret.',
     'status' => 'Status',
     'last_seen' => 'Last seen',
     'last_sync' => 'Last sync',
