@@ -67,11 +67,28 @@
             <x-slot:header><h2 class="font-semibold text-slate-900 dark:text-white">{{ __('operations.manufacturing.orders') }}</h2></x-slot:header>
             <div class="overflow-x-auto">
                 <x-ui.table>
-                    <x-slot:head><tr><x-ui.th>{{ __('operations.manufacturing.number') }}</x-ui.th><x-ui.th>{{ __('operations.manufacturing.product') }}</x-ui.th><x-ui.th>{{ __('operations.manufacturing.planned_quantity') }}</x-ui.th><x-ui.th>{{ __('operations.manufacturing.status') }}</x-ui.th></tr></x-slot:head>
+                    <x-slot:head><tr><x-ui.th>{{ __('operations.manufacturing.number') }}</x-ui.th><x-ui.th>{{ __('operations.manufacturing.product') }}</x-ui.th><x-ui.th>{{ __('operations.manufacturing.planned_quantity') }}</x-ui.th><x-ui.th>{{ __('operations.manufacturing.status') }}</x-ui.th><x-ui.th></x-ui.th></tr></x-slot:head>
                     @forelse($orders as $order)
-                        <tr><x-ui.td>{{ $order->number }}</x-ui.td><x-ui.td>{{ $order->product?->name }}</x-ui.td><x-ui.td>{{ $order->planned_quantity }}</x-ui.td><x-ui.td>{{ __('operations.manufacturing.'.$order->status) }}</x-ui.td></tr>
+                        <tr>
+                            <x-ui.td>{{ $order->number }}</x-ui.td>
+                            <x-ui.td>{{ $order->product?->name }}</x-ui.td>
+                            <x-ui.td>{{ $order->planned_quantity }}</x-ui.td>
+                            <x-ui.td>{{ __('operations.manufacturing.'.$order->status) }}</x-ui.td>
+                            <x-ui.td>
+                                @if($order->status !== 'completed' && $warehouses->isNotEmpty())
+                                    <form method="POST" action="{{ route('manufacturing.orders.complete', $order) }}" class="flex flex-wrap items-center gap-2">
+                                        @csrf
+                                        <select name="warehouse_id" class="rounded-md border-slate-300 text-xs dark:border-slate-700 dark:bg-slate-900" required>
+                                            @foreach($warehouses as $warehouse)<option value="{{ $warehouse->id }}">{{ $warehouse->name }}</option>@endforeach
+                                        </select>
+                                        <input name="actual_quantity" type="number" step="0.0001" min="0.0001" value="{{ $order->planned_quantity }}" class="w-24 rounded-md border-slate-300 text-xs dark:border-slate-700 dark:bg-slate-900" required>
+                                        <x-ui.button type="submit" size="sm" variant="secondary">{{ __('operations.manufacturing.complete') }}</x-ui.button>
+                                    </form>
+                                @endif
+                            </x-ui.td>
+                        </tr>
                     @empty
-                        <tr><x-ui.td colspan="4">{{ __('operations.manufacturing.no_orders') }}</x-ui.td></tr>
+                        <tr><x-ui.td colspan="5">{{ __('operations.manufacturing.no_orders') }}</x-ui.td></tr>
                     @endforelse
                 </x-ui.table>
             </div>
