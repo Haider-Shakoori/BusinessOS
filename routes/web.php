@@ -28,6 +28,7 @@ use App\Http\Controllers\PurchasingController;
 use App\Http\Controllers\QuotationController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\SmartAssistantController;
 use App\Http\Controllers\TaxController;
 use App\Http\Controllers\UnitController;
@@ -344,6 +345,81 @@ Route::middleware(['auth', 'auth.session', 'business-selected', 'module:inventor
 });
 
 Route::middleware(['auth', 'auth.session', 'business-selected', 'module:purchasing'])->group(function () {
+    Route::get('/suppliers', [SupplierController::class, 'index'])
+        ->name('suppliers.index')
+        ->middleware('permission:purchasing.view');
+
+    Route::get('/suppliers/import', [ImportController::class, 'show'])
+        ->name('suppliers.import')
+        ->defaults('type', 'suppliers')
+        ->middleware('permission:purchasing.manage');
+
+    Route::get('/suppliers/import/template', [ImportController::class, 'template'])
+        ->name('suppliers.import.template')
+        ->defaults('type', 'suppliers')
+        ->middleware('permission:purchasing.manage');
+
+    Route::post('/suppliers/import', [ImportController::class, 'preview'])
+        ->name('suppliers.import.preview')
+        ->defaults('type', 'suppliers')
+        ->middleware('permission:purchasing.manage');
+
+    Route::get('/suppliers/import/preview/{token}', [ImportController::class, 'confirm'])
+        ->name('suppliers.import.confirm')
+        ->defaults('type', 'suppliers')
+        ->middleware('permission:purchasing.manage');
+
+    Route::post('/suppliers/import/preview/{token}', [ImportController::class, 'execute'])
+        ->name('suppliers.import.execute')
+        ->defaults('type', 'suppliers')
+        ->middleware('permission:purchasing.manage');
+
+    Route::delete('/suppliers/import/preview/{token}', [ImportController::class, 'cancel'])
+        ->name('suppliers.import.cancel')
+        ->defaults('type', 'suppliers')
+        ->middleware('permission:purchasing.manage');
+
+    Route::post('/suppliers', [SupplierController::class, 'store'])
+        ->name('suppliers.store')
+        ->middleware('permission:purchasing.manage');
+
+    Route::get('/suppliers/{supplier}', [SupplierController::class, 'show'])
+        ->name('suppliers.show')
+        ->middleware('permission:purchasing.view');
+
+    Route::get('/suppliers/{supplier}/ledger', [SupplierController::class, 'ledger'])
+        ->name('suppliers.ledger')
+        ->middleware('permission:purchasing.view');
+
+    Route::get('/suppliers/{supplier}/statement', [SupplierController::class, 'statement'])
+        ->name('suppliers.statement')
+        ->middleware('permission:purchasing.view');
+
+    Route::get('/suppliers/{supplier}/statement/pdf', [SupplierController::class, 'statementPdf'])
+        ->name('suppliers.statement.pdf')
+        ->middleware('permission:purchasing.view');
+
+    Route::get('/suppliers/{supplier}/edit', [SupplierController::class, 'edit'])
+        ->name('suppliers.edit')
+        ->middleware('permission:purchasing.manage');
+
+    Route::patch('/suppliers/{supplier}', [SupplierController::class, 'update'])
+        ->name('suppliers.update')
+        ->middleware('permission:purchasing.manage');
+
+    Route::delete('/suppliers/{supplier}', [SupplierController::class, 'destroy'])
+        ->name('suppliers.destroy')
+        ->middleware('permission:purchasing.manage');
+
+    Route::post('/suppliers/{supplier}/payments', [SupplierController::class, 'recordPayment'])
+        ->name('suppliers.payments.store')
+        ->middleware('permission:purchasing.manage');
+
+    Route::post('/suppliers/{supplier}/payments/{payment}/reverse', [SupplierController::class, 'reversePayment'])
+        ->name('suppliers.payments.reverse')
+        ->middleware('permission:purchasing.manage');
+
+
     Route::get('/purchasing', [PurchasingController::class, 'index'])
         ->name('purchasing.index')
         ->middleware('permission:purchasing.view');
