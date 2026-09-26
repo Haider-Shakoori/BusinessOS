@@ -52,7 +52,7 @@ return new class extends Migration
             $table->timestamps();
 
             $table->unique(['business_id', 'number']);
-            $table->index(['business_id', 'period_start', 'period_end'], 'payroll_run_period_idx');
+            $table->unique(['business_id', 'period_start', 'period_end'], 'payroll_run_period_unique');
         });
 
         Schema::create('payroll_adjustments', function (Blueprint $table) {
