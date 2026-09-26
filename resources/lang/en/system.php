@@ -15,6 +15,7 @@ return [
         'role_updated' => 'Member role updated.',
         'members' => 'Business members',
         'no_members' => 'No members found.',
+        'last_owner_required' => 'The business must always keep at least one Owner.',
         'password_required_for_new_user' => 'A password is required when creating a new user.',
     ],
     'roles' => [
