@@ -16,7 +16,6 @@ class FieldPulseOrder extends Model
             'subtotal' => 'decimal:4',
             'discount_total' => 'decimal:4',
             'total' => 'decimal:4',
-            'within_geofence' => 'boolean',
             'payload' => 'array',
         ];
     }
