@@ -58,6 +58,7 @@ class FinalProductUiTest extends TestCase
                 'Accounting',
                 'Manufacturing',
                 'CRM',
+                'HR & Payroll',
                 'Reports',
                 'Notifications',
                 'Global Search',
@@ -99,6 +100,7 @@ class FinalProductUiTest extends TestCase
         $this->assertSame('ledger', $items['accounting']['icon']);
         $this->assertSame('factory', $items['manufacturing']['icon']);
         $this->assertSame('contact-card', $items['crm']['icon']);
+        $this->assertSame('user-group', $items['hr-payroll']['icon']);
         $this->assertSame('history', $items['activity-log']['icon']);
         $this->assertSame('light-bulb', $items['smart-assistant']['icon']);
         $this->assertSame('saas', $items['saas-businesses']['icon']);
