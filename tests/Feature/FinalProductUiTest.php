@@ -202,6 +202,55 @@ class FinalProductUiTest extends TestCase
         $membership = $user->memberships()->where('business_id', $business->id)->firstOrFail();
         $this->assertTrue($membership->roles()->where('slug', 'owner')->exists());
         $this->assertSame('fa', session(config('localization.session_key')));
+
+        $response = $this->actingAs($user)->get('/app');
+
+        $response->assertOk();
+        $this->assertMatchesRegularExpression(
+            '/var workspaceTheme = [\'"]dark[\'"];/',
+            (string) $response->getContent(),
+        );
+    }
+
+    public function test_application_shell_keeps_theme_and_mobile_controls_available(): void
+    {
+        $header = file_get_contents(
+            resource_path('views/components/app/header.blade.php'),
+        );
+        $mobileNav = file_get_contents(
+            resource_path('views/components/app/mobile-nav.blade.php'),
+        );
+        $businessSwitcher = file_get_contents(
+            resource_path('views/components/app/business-switcher.blade.php'),
+        );
+        $localeSwitcher = file_get_contents(
+            resource_path('views/components/app/locale-switcher.blade.php'),
+        );
+
+        $this->assertStringContainsString(
+            'x-if="dark"><x-ui.icon name="sun"',
+            $header,
+        );
+        $this->assertStringContainsString(
+            'x-if="!dark"><x-ui.icon name="moon"',
+            $header,
+        );
+        $this->assertStringContainsString(
+            '<x-app.business-switcher :show-label-on-mobile="true" />',
+            $mobileNav,
+        );
+        $this->assertStringContainsString(
+            '<x-app.locale-switcher :show-label-on-mobile="true" />',
+            $mobileNav,
+        );
+        $this->assertStringContainsString(
+            "'showLabelOnMobile' => false",
+            $businessSwitcher,
+        );
+        $this->assertStringContainsString(
+            "'showLabelOnMobile' => false",
+            $localeSwitcher,
+        );
     }
 
     public function test_dari_and_arabic_are_rtl_and_dari_is_presented_as_dari(): void

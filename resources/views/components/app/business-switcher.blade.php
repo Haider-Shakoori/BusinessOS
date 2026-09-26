@@ -1,3 +1,7 @@
+@props([
+    'showLabelOnMobile' => false,
+])
+
 @php
     $context = app(\App\Services\BusinessContext::class);
     $current = $context->current();
@@ -19,11 +23,11 @@
                     <span class="grid size-7 shrink-0 place-items-center rounded-[6px] bg-brand-50 text-brand-600 dark:bg-brand-500/10 dark:text-brand-300" aria-hidden="true">
                         <x-ui.icon name="building-office" class="size-4" />
                     </span>
-                    <span class="hidden min-w-0 max-w-[9.5rem] text-start leading-[1.1] lg:block">
+                    <span class="{{ $showLabelOnMobile ? 'block' : 'hidden lg:block' }} min-w-0 max-w-[9.5rem] text-start leading-[1.1]">
                         <span class="block truncate text-[11px] font-semibold text-slate-800 dark:text-slate-100" title="{{ $current->name }}">{{ $current->name }}</span>
                         <span class="mt-0.5 block truncate text-[9px] text-slate-500 dark:text-slate-400">{{ $address ?: __('business.current_business') }}</span>
                     </span>
-                    <x-ui.icon name="chevron-down" class="hidden size-3 text-slate-400 lg:block" />
+                    <x-ui.icon name="chevron-down" class="{{ $showLabelOnMobile ? 'block' : 'hidden lg:block' }} size-3 text-slate-400" />
                 </span>
             </x-slot:trigger>
 

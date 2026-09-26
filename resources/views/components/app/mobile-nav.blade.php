@@ -45,7 +45,16 @@
         </nav>
 
         <div class="shrink-0 border-t border-white/10 p-4" x-data="{ collapsed: false }">
-            <div class="[&_*]:!text-slate-200">
+            <div class="mb-3 grid gap-2">
+                <div class="[&>div]:w-full">
+                    <x-app.business-switcher :show-label-on-mobile="true" />
+                </div>
+                <div class="[&>div]:w-full">
+                    <x-app.locale-switcher :show-label-on-mobile="true" />
+                </div>
+            </div>
+
+            <div class="border-t border-white/10 pt-3 [&_*]:!text-slate-200">
                 <x-app.account />
             </div>
         </div>
