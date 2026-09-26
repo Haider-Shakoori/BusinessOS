@@ -25,8 +25,10 @@ class InventoryReturnController extends Controller
     {
         $sales = collect();
         $purchases = collect();
+        $canSalesReturn = $modules->isEnabled('pos') && Gate::allows('pos.manage');
+        $canPurchaseReturn = $modules->isEnabled('purchasing') && Gate::allows('purchasing.manage');
 
-        if ($modules->isEnabled('pos') && Gate::allows('pos.view')) {
+        if ($canSalesReturn) {
             $sales = PosSale::query()
                 ->where('status', 'completed')
                 ->with(['items.product', 'register'])
@@ -35,7 +37,7 @@ class InventoryReturnController extends Controller
                 ->get();
         }
 
-        if ($modules->isEnabled('purchasing') && Gate::allows('purchasing.view')) {
+        if ($canPurchaseReturn) {
             $purchases = PurchaseOrder::query()
                 ->where('status', 'received')
                 ->with(['items.product', 'supplier'])
@@ -48,6 +50,8 @@ class InventoryReturnController extends Controller
             'sales' => $sales,
             'purchases' => $purchases,
             'warehouses' => Warehouse::query()->where('is_active', true)->orderBy('name')->get(),
+            'canSalesReturn' => $canSalesReturn,
+            'canPurchaseReturn' => $canPurchaseReturn,
             'returns' => InventoryReturn::query()
                 ->with(['warehouse', 'items.product', 'processor'])
                 ->latest('processed_at')
