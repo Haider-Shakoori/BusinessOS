@@ -12,7 +12,6 @@ use App\Models\Expense;
 use App\Models\InventoryReturn;
 use App\Models\Invoice;
 use App\Models\JournalEntry;
-use App\Models\JournalLine;
 use App\Models\Payment;
 use App\Models\Product;
 use App\Models\PurchaseOrder;
