@@ -8,6 +8,7 @@ return [
     'expenses' => 'Expenses',
     'inventory' => 'Inventory',
     'purchasing' => 'Purchasing',
+    'pos' => 'POS',
     'accounting' => 'Accounting',
     'manufacturing' => 'Manufacturing',
     'crm' => 'CRM',
