@@ -77,6 +77,31 @@ class FinalProductUiTest extends TestCase
             ->assertSee('Your workspace is ready!');
     }
 
+    public function test_sidebar_visual_metadata_matches_the_final_menu_reference(): void
+    {
+        $items = collect(config('navigation.items'))->keyBy('key');
+
+        $this->assertSame('Professional Plan', config('product.plan_label'));
+        $this->assertSame(3, $items['notifications']['badge']);
+        $this->assertSame('chart-line', $items['sales']['icon']);
+        $this->assertSame('documents', $items['quotations']['icon']);
+        $this->assertSame('clipboard-document-list', $items['invoices']['icon']);
+        $this->assertSame('payment-card', $items['payments']['icon']);
+        $this->assertSame('receipt-list', $items['expenses']['icon']);
+        $this->assertSame('gift', $items['products']['icon']);
+        $this->assertSame('building-storefront', $items['pos']['icon']);
+        $this->assertSame('ledger', $items['accounting']['icon']);
+        $this->assertSame('factory', $items['manufacturing']['icon']);
+        $this->assertSame('contact-card', $items['crm']['icon']);
+        $this->assertSame('history', $items['activity-log']['icon']);
+        $this->assertSame('light-bulb', $items['smart-assistant']['icon']);
+        $this->assertSame('saas', $items['saas-businesses']['icon']);
+        $this->assertSame('module-grid', $items['modules']['icon']);
+        $this->assertTrue($items['sales']['expandable']);
+        $this->assertTrue($items['accounting']['expandable']);
+        $this->assertTrue($items['crm']['expandable']);
+    }
+
     public function test_first_business_onboarding_persists_company_modules_preferences_and_logo(): void
     {
         $user = $this->user();
