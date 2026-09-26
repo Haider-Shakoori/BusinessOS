@@ -27,6 +27,8 @@ return [
         'purchase_order' => 'PO',
         'pos_sale' => 'POS',
         'payroll_run' => 'PRL',
+        'warehouse_transfer' => 'TRF',
+        'inventory_return' => 'RET',
     ],
 
     'padding' => 6,
