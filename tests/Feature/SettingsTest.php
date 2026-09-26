@@ -424,7 +424,7 @@ class SettingsTest extends TestCase
         $this->assertSame(config('app.locale'), app()->getLocale());
     }
 
-    public function test_fieldpulse_integration_settings_are_business_scoped_and_require_a_mapping_key(): void
+    public function test_fieldpulse_mapping_is_business_scoped_but_activation_is_platform_managed(): void
     {
         $user = $this->makeUser('Integration Owner');
         [$businessA] = $this->provision($user, 'Integration A', 'owner');
@@ -433,19 +433,12 @@ class SettingsTest extends TestCase
         $this->actIn($user, $businessA);
 
         $this->patch('/settings', [
-            'fieldpulse.enabled' => '1',
-            'fieldpulse.organization_key' => '',
-        ])->assertSessionHasErrors(['fieldpulse.organization_key']);
-
-        $this->patch('/settings', [
-            'fieldpulse.enabled' => '1',
             'fieldpulse.organization_key' => 'business-a-fieldpulse',
         ])->assertRedirect(route('settings.index'));
 
         $integrationA = FieldPulseIntegration::query()
             ->where('business_id', $businessA->id)
             ->firstOrFail();
-        $this->assertTrue($integrationA->enabled);
         $this->assertSame(
             'business-a-fieldpulse',
             $integrationA->organization_key,
@@ -455,6 +448,8 @@ class SettingsTest extends TestCase
         $this->get('/settings')
             ->assertOk()
             ->assertSee('FieldPulse integration')
+            ->assertSee('Platform activation')
+            ->assertDontSee('Enable FieldPulse integration')
             ->assertDontSee('business-a-fieldpulse');
 
         $this->patch('/settings', [
@@ -470,7 +465,6 @@ class SettingsTest extends TestCase
         $this->assertDatabaseHas('field_pulse_integrations', [
             'business_id' => $businessA->id,
             'organization_key' => 'business-a-fieldpulse',
-            'enabled' => 1,
         ]);
         $this->assertDatabaseHas('field_pulse_integrations', [
             'business_id' => $businessB->id,
