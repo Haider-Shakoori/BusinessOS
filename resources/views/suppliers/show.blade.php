@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<x-app.page icon="truck" :title="$supplier->name" :subtitle="$supplier->code ?: __('suppliers.details')">
+<x-app.page icon="users" :title="$supplier->name" :subtitle="$supplier->code ?: __('suppliers.details')">
     <x-slot:actions>
         <div class="flex flex-wrap gap-2">
             <x-ui.button href="{{ route('suppliers.ledger', $supplier) }}" variant="secondary">{{ __('suppliers.ledger_link') }}</x-ui.button>
