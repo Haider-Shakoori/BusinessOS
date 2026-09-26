@@ -350,9 +350,8 @@ class AuthorizationTest extends TestCase
     {
         $this->registerProtectedRoute('/__perm/settings-manage', 'settings.manage');
 
-        // Batch 11 added catalog permissions (categories/units/taxes), Batch 12
-        // products, Batch 14 quotations, Batch 15 invoices, Batch 16 payments,
-        // Batch 17 expenses, and Batch 23 reports — 24 keys total.
+        // The catalogue grows with implemented modules. Batch 30 adds
+        // inventory, purchasing, accounting, CRM and manufacturing permissions.
         $expected = [
             'users.view', 'users.manage',
             'settings.view', 'settings.manage',
@@ -365,6 +364,11 @@ class AuthorizationTest extends TestCase
             'invoices.view', 'invoices.manage',
             'payments.view', 'payments.create', 'payments.reverse',
             'expenses.view', 'expenses.manage',
+            'inventory.view', 'inventory.manage',
+            'purchasing.view', 'purchasing.manage',
+            'accounting.view', 'accounting.manage',
+            'crm.view', 'crm.manage',
+            'manufacturing.view', 'manufacturing.manage',
             'reports.view',
         ];
         $this->assertSame($expected, Permission::orderBy('id')->pluck('name')->all());
