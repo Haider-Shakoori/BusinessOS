@@ -44,11 +44,11 @@ class InventoryController extends Controller
         return back()->with('status', __('operations.inventory.warehouse_created'));
     }
 
-    public function storeMovement(Request $request): RedirectResponse
+    public function storeMovement(Request $request, BusinessContext $context): RedirectResponse
     {
         $data = $request->validate([
-            'warehouse_id' => ['required', Rule::exists('warehouses', 'id')],
-            'product_id' => ['required', Rule::exists('products', 'id')],
+            'warehouse_id' => ['required', Rule::exists('warehouses', 'id')->where('business_id', $context->currentId())],
+            'product_id' => ['required', Rule::exists('products', 'id')->where('business_id', $context->currentId())],
             'type' => ['required', Rule::in(['opening', 'purchase', 'sale', 'adjustment', 'production_in', 'production_out'])],
             'quantity' => ['required', 'numeric', 'not_in:0'],
             'unit_cost' => ['nullable', 'numeric', 'min:0'],
