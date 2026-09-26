@@ -103,4 +103,9 @@ class Payment extends Model
     {
         return $this->belongsTo(User::class, 'reversed_by');
     }
+
+    public function supplier(): BelongsTo
+    {
+        return $this->belongsTo(Supplier::class, 'party_id')->withTrashed();
+    }
 }
