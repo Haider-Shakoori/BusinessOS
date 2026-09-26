@@ -683,7 +683,7 @@ class FieldPulseIntegrationService
     {
         $uuid = trim((string) ($data['fieldpulse_uuid'] ?? ''));
 
-        if (! Str::isUuid($uuid)) {
+        if (Str::isUuid($uuid) === false) {
             throw new InvalidArgumentException(
                 'FieldPulse entity UUID is required.',
             );
