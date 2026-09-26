@@ -478,5 +478,4 @@ class SettingsTest extends TestCase
             'enabled' => 1,
         ]);
     }
-
 }
