@@ -4,9 +4,14 @@
 <x-app.page icon="saas" :title="__('businesses.title')" :subtitle="__('businesses.subtitle')">
     <div class="mb-5 flex flex-wrap items-center justify-between gap-3">
         <p class="text-sm text-slate-500 dark:text-slate-400">{{ trans_choice('businesses.count', $memberships->count(), ['count' => $memberships->count()]) }}</p>
-        @can('businesses.manage')
-            <x-ui.button :href="route('business.create')" icon="plus">{{ __('businesses.create') }}</x-ui.button>
-        @endcan
+        <div class="flex flex-wrap gap-2">
+            @if(auth()->user()?->is_super_admin)
+                <x-ui.button :href="route('platform.saas.index')" variant="secondary" icon="saas">{{ __('saas.platform_console') }}</x-ui.button>
+            @endif
+            @can('businesses.manage')
+                <x-ui.button :href="route('business.create')" icon="plus">{{ __('businesses.create') }}</x-ui.button>
+            @endcan
+        </div>
     </div>
 
     <div class="grid gap-5 xl:grid-cols-2">
