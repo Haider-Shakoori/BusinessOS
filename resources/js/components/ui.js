@@ -298,8 +298,8 @@ document.addEventListener('alpine:init', () => {
     }));
 
     /**
-     * Dev/demo theme toggle. The real application header toggle arrives in
-     * Batch 3 (Application Shell & Navigation).
+     * Application theme toggle. The workspace preference provides the initial
+     * theme; a device-local override is stored after the user toggles it.
      */
     Alpine.data('themeSwitcher', () => ({
         get dark() {
@@ -308,7 +308,12 @@ document.addEventListener('alpine:init', () => {
         toggle() {
             const dark = !this.dark;
             document.documentElement.classList.toggle('dark', dark);
-            localStorage.setItem('bos-theme', dark ? 'dark' : 'light');
+
+            try {
+                localStorage.setItem('bos-theme', dark ? 'dark' : 'light');
+            } catch {
+                // Keep the in-memory theme even when storage is unavailable.
+            }
         },
     }));
 
