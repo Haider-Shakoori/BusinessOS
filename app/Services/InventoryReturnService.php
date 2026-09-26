@@ -77,6 +77,7 @@ class InventoryReturnService
 
             $return->items()->create([
                 'product_id' => $lockedItem->product_id,
+                'product_variant_id' => $lockedItem->product_variant_id,
                 'source_item_type' => PosSaleItem::class,
                 'source_item_id' => $lockedItem->id,
                 'quantity' => $quantity,
@@ -92,6 +93,7 @@ class InventoryReturnService
                 StockMovement::create([
                     'warehouse_id' => $return->warehouse_id,
                     'product_id' => $lockedItem->product_id,
+                    'product_variant_id' => $lockedItem->product_variant_id,
                     'type' => 'sales_return',
                     'quantity' => $quantity,
                     'unit_cost' => $unitCost > 0 ? $unitCost : null,
@@ -135,10 +137,15 @@ class InventoryReturnService
 
             $this->assertReturnableQuantity(PurchaseOrderItem::class, $lockedItem->id, (float) $lockedItem->quantity, $quantity);
 
-            $available = (float) StockMovement::query()
+            $stockQuery = StockMovement::query()
                 ->where('warehouse_id', $warehouse->id)
-                ->where('product_id', $lockedItem->product_id)
-                ->sum('quantity');
+                ->where('product_id', $lockedItem->product_id);
+
+            $lockedItem->product_variant_id === null
+                ? $stockQuery->whereNull('product_variant_id')
+                : $stockQuery->where('product_variant_id', $lockedItem->product_variant_id);
+
+            $available = (float) $stockQuery->sum('quantity');
 
             if ($available + 0.00001 < $quantity) {
                 throw new RuntimeException(__('operations.returns.errors.insufficient_stock', [
@@ -165,6 +172,7 @@ class InventoryReturnService
 
             $return->items()->create([
                 'product_id' => $lockedItem->product_id,
+                'product_variant_id' => $lockedItem->product_variant_id,
                 'source_item_type' => PurchaseOrderItem::class,
                 'source_item_id' => $lockedItem->id,
                 'quantity' => $quantity,
@@ -179,6 +187,7 @@ class InventoryReturnService
             StockMovement::create([
                 'warehouse_id' => $warehouse->id,
                 'product_id' => $lockedItem->product_id,
+                'product_variant_id' => $lockedItem->product_variant_id,
                 'type' => 'purchase_return',
                 'quantity' => -$quantity,
                 'unit_cost' => $lockedItem->unit_cost,
