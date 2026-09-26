@@ -40,10 +40,15 @@ class ProductController extends Controller
 
         $products = Product::query()
             ->with(['category', 'unit', 'tax'])
+            ->withCount('variants')
             ->when($searchTerm !== '', function ($query) use ($searchTerm) {
                 $query->where(function ($query) use ($searchTerm) {
                     $query->where('name', 'like', "%{$searchTerm}%")
-                        ->orWhere('sku', 'like', "%{$searchTerm}%");
+                        ->orWhere('sku', 'like', "%{$searchTerm}%")
+                        ->orWhereHas('variants', function ($variantQuery) use ($searchTerm): void {
+                            $variantQuery->where('name', 'like', "%{$searchTerm}%")
+                                ->orWhere('sku', 'like', "%{$searchTerm}%");
+                        });
                 });
             })
             ->when($typeFilter !== null, function ($query) use ($typeFilter) {

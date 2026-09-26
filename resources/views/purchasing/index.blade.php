@@ -38,6 +38,14 @@
                 <x-ui.select name="product_id" :label="__('operations.purchasing.product')" required>
                     @foreach($products as $product)<option value="{{ $product->id }}">{{ $product->name }}</option>@endforeach
                 </x-ui.select>
+                <x-ui.select name="product_variant_id" :label="__('products.variants.select')">
+                    <option value="">{{ __('products.variants.no_variant') }}</option>
+                    @foreach($products as $product)
+                        @foreach($product->variants as $variant)
+                            <option value="{{ $variant->id }}">{{ $product->name }} — {{ $variant->name }} @if($variant->sku) ({{ $variant->sku }}) @endif</option>
+                        @endforeach
+                    @endforeach
+                </x-ui.select>
                 <x-ui.input name="quantity" type="number" step="0.0001" min="0.0001" :label="__('operations.purchasing.quantity')" required />
                 <x-ui.input name="unit_cost" type="number" step="0.0001" min="0" :label="__('operations.purchasing.unit_cost')" required />
                 <x-ui.input name="notes" :label="__('operations.purchasing.notes')" />
@@ -63,11 +71,18 @@
             <x-slot:header><h2 class="font-semibold text-slate-900 dark:text-white">{{ __('operations.purchasing.purchase_orders') }}</h2></x-slot:header>
             <div class="overflow-x-auto">
                 <x-ui.table>
-                    <x-slot:head><tr><x-ui.th>{{ __('operations.purchasing.number') }}</x-ui.th><x-ui.th>{{ __('operations.purchasing.supplier') }}</x-ui.th><x-ui.th>{{ __('operations.purchasing.status') }}</x-ui.th><x-ui.th>{{ __('operations.purchasing.total') }}</x-ui.th><x-ui.th></x-ui.th></tr></x-slot:head>
+                    <x-slot:head><tr><x-ui.th>{{ __('operations.purchasing.number') }}</x-ui.th><x-ui.th>{{ __('operations.purchasing.supplier') }}</x-ui.th><x-ui.th>{{ __('operations.purchasing.product') }}</x-ui.th><x-ui.th>{{ __('operations.purchasing.status') }}</x-ui.th><x-ui.th>{{ __('operations.purchasing.total') }}</x-ui.th><x-ui.th></x-ui.th></tr></x-slot:head>
                     @forelse($orders as $order)
                         <tr>
                             <x-ui.td>{{ $order->number }}</x-ui.td>
                             <x-ui.td>{{ $order->supplier?->name }}</x-ui.td>
+                            <x-ui.td>
+                                @php($purchaseItem = $order->items->first())
+                                {{ $purchaseItem?->product?->name }}
+                                @if($purchaseItem?->variant)
+                                    <span class="text-slate-500">— {{ $purchaseItem->variant->name }}</span>
+                                @endif
+                            </x-ui.td>
                             <x-ui.td>{{ ucfirst($order->status) }}</x-ui.td>
                             <x-ui.td>{{ $order->total }}</x-ui.td>
                             <x-ui.td>
@@ -83,7 +98,7 @@
                             </x-ui.td>
                         </tr>
                     @empty
-                        <tr><x-ui.td colspan="5">{{ __('operations.purchasing.no_orders') }}</x-ui.td></tr>
+                        <tr><x-ui.td colspan="6">{{ __('operations.purchasing.no_orders') }}</x-ui.td></tr>
                     @endforelse
                 </x-ui.table>
             </div>

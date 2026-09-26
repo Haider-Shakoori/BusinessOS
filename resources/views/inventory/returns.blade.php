@@ -54,7 +54,7 @@
                         <x-ui.select name="purchase_order_item_id" :label="__('operations.returns.purchase_item')" required>
                             @foreach($purchases as $purchase)
                                 @foreach($purchase->items as $item)
-                                    <option value="{{ $item->id }}">{{ $purchase->number }} — {{ $item->product?->name }} — {{ $item->quantity }}</option>
+                                    <option value="{{ $item->id }}">{{ $purchase->number }} — {{ $item->product?->name }} @if($item->variant)— {{ $item->variant->name }} @endif — {{ $item->quantity }}</option>
                                 @endforeach
                             @endforeach
                         </x-ui.select>
@@ -97,7 +97,7 @@
                     <tr>
                         <x-ui.td>{{ $return->number }}</x-ui.td>
                         <x-ui.td><x-ui.badge tone="{{ $return->type === 'sales' ? 'success' : 'warning' }}">{{ __('operations.returns.'.$return->type) }}</x-ui.badge></x-ui.td>
-                        <x-ui.td>{{ $item?->product?->name }}</x-ui.td>
+                        <x-ui.td>{{ $item?->product?->name }} @if($item?->variant)<span class="text-slate-500">— {{ $item->variant->name }}</span>@endif</x-ui.td>
                         <x-ui.td>{{ $item?->quantity }}</x-ui.td>
                         <x-ui.td>{{ $return->warehouse?->name }}</x-ui.td>
                         <x-ui.td>{{ $return->total }}</x-ui.td>

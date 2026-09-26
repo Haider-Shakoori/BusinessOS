@@ -56,15 +56,18 @@ class PosController extends Controller
             }
 
             $products = Product::query()
-                ->with(['category', 'tax'])
+                ->with(['category', 'tax', 'variants' => fn ($query) => $query->where('is_active', true)->orderBy('name')])
                 ->orderBy('name')
                 ->get();
 
             $stock = StockMovement::query()
                 ->where('warehouse_id', $selectedRegister->warehouse_id)
-                ->selectRaw('product_id, SUM(quantity) as quantity')
-                ->groupBy('product_id')
-                ->pluck('quantity', 'product_id');
+                ->selectRaw('product_id, product_variant_id, SUM(quantity) as quantity')
+                ->groupBy('product_id', 'product_variant_id')
+                ->get()
+                ->mapWithKeys(fn ($row) => [
+                    $row->product_id.':'.($row->product_variant_id ?? 0) => (float) $row->quantity,
+                ]);
         }
 
         return view('pos.index', [

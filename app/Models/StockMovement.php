@@ -11,7 +11,7 @@ class StockMovement extends Model
     use BelongsToBusiness;
 
     protected $fillable = [
-        'warehouse_id', 'product_id', 'type', 'quantity', 'unit_cost',
+        'warehouse_id', 'product_id', 'product_variant_id', 'type', 'quantity', 'unit_cost',
         'reference_type', 'reference_id', 'note', 'occurred_at',
     ];
 
@@ -32,5 +32,10 @@ class StockMovement extends Model
     public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);
+    }
+
+    public function variant(): BelongsTo
+    {
+        return $this->belongsTo(ProductVariant::class, 'product_variant_id')->withTrashed();
     }
 }

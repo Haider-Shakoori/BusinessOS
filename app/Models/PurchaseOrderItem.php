@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class PurchaseOrderItem extends Model
 {
-    protected $fillable = ['product_id', 'description', 'quantity', 'unit_cost', 'line_total'];
+    protected $fillable = ['product_id', 'product_variant_id', 'description', 'quantity', 'unit_cost', 'line_total'];
 
     protected function casts(): array
     {
@@ -26,5 +26,10 @@ class PurchaseOrderItem extends Model
     public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);
+    }
+
+    public function variant(): BelongsTo
+    {
+        return $this->belongsTo(ProductVariant::class, 'product_variant_id')->withTrashed();
     }
 }

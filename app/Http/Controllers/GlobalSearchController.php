@@ -43,19 +43,35 @@ class GlobalSearchController extends Controller
 
             if ($modules->isEnabled('products') && Gate::allows('products.view')) {
                 Product::query()
+                    ->with(['variants' => function ($variantQuery) use ($query): void {
+                        $variantQuery->where(function ($builder) use ($query): void {
+                            $builder->where('name', 'like', "%{$query}%")
+                                ->orWhere('sku', 'like', "%{$query}%");
+                        });
+                    }])
                     ->where(function ($builder) use ($query): void {
                         $builder->where('name', 'like', "%{$query}%")
-                            ->orWhere('sku', 'like', "%{$query}%");
+                            ->orWhere('sku', 'like', "%{$query}%")
+                            ->orWhereHas('variants', function ($variantQuery) use ($query): void {
+                                $variantQuery->where('name', 'like', "%{$query}%")
+                                    ->orWhere('sku', 'like', "%{$query}%");
+                            });
                     })
                     ->limit(8)
                     ->get()
-                    ->each(fn ($item) => $results->push([
-                        'type' => __('navigation.products'),
-                        'title' => $item->name,
-                        'subtitle' => $item->sku,
-                        'url' => route('products.show', $item),
-                        'icon' => 'gift',
-                    ]));
+                    ->each(function ($item) use ($results): void {
+                        $variant = $item->variants->first();
+
+                        $results->push([
+                            'type' => __('navigation.products'),
+                            'title' => $variant ? $item->name.' — '.$variant->name : $item->name,
+                            'subtitle' => $variant?->sku ?: $item->sku,
+                            'url' => $variant
+                                ? route('products.variants.index', $item)
+                                : route('products.index', ['search' => $item->sku ?: $item->name]),
+                            'icon' => 'gift',
+                        ]);
+                    });
             }
 
             if ($modules->isEnabled('sales') && Gate::allows('invoices.view')) {
