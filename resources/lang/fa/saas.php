@@ -35,5 +35,6 @@ return [
     'products' => 'محصولات',
     'enabled_modules' => 'ماژول‌های فعال',
     'usage' => 'مصرف',
+    'limit_reached' => 'حد :resource در پلن SaaS فعلی تکمیل شده است.',
     'platform_console' => 'کنسول پلتفرم',
 ];
