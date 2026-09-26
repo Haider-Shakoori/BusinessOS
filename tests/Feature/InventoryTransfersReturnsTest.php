@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\Business;
 use App\Models\BusinessModule;
+use App\Models\InventoryReturn;
 use App\Models\JournalEntry;
 use App\Models\PosRegister;
 use App\Models\PosSale;
@@ -254,7 +255,7 @@ class InventoryTransfersReturnsTest extends TestCase
             (float) StockMovement::where('warehouse_id', $warehouse->id)->where('product_id', $product->id)->sum('quantity'),
         );
 
-        $journal = JournalEntry::query()->where('source_type', \App\Models\InventoryReturn::class)->with('lines')->firstOrFail();
+        $journal = JournalEntry::query()->where('source_type', InventoryReturn::class)->with('lines')->firstOrFail();
         $this->assertEquals(
             $journal->lines->sum(fn ($line) => (float) $line->debit),
             $journal->lines->sum(fn ($line) => (float) $line->credit),
