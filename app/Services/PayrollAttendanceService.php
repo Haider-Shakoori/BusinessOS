@@ -10,9 +10,7 @@ use Illuminate\Support\Collection;
 
 class PayrollAttendanceService
 {
-    public function __construct(private readonly BusinessSettings $settings)
-    {
-    }
+    public function __construct(private readonly BusinessSettings $settings) {}
 
     /**
      * Attendance is the payroll time source. Salary, deduction and overtime
