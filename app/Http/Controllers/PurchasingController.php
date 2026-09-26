@@ -52,8 +52,7 @@ class PurchasingController extends Controller
         PurchaseOrder $purchaseOrder,
         BusinessContext $context,
         AccountingPostingService $accounting,
-    ): RedirectResponse
-    {
+    ): RedirectResponse {
         $data = $request->validate([
             'warehouse_id' => ['required', Rule::exists('warehouses', 'id')->where('business_id', $context->currentId())],
         ]);
