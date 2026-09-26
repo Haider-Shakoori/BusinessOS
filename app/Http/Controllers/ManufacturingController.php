@@ -114,7 +114,7 @@ class ManufacturingController extends Controller
     {
         $data = $request->validate([
             'bom_id' => ['nullable', Rule::exists('boms', 'id')->where('business_id', $context->currentId())],
-            'product_id' => ['required', Rule::exists('products', 'id')],
+            'product_id' => ['required', Rule::exists('products', 'id')->where('business_id', $context->currentId())],
             'number' => ['required', 'string', 'max:80', Rule::unique('production_orders', 'number')->where('business_id', $context->currentId())],
             'planned_quantity' => ['required', 'numeric', 'gt:0'],
             'start_date' => ['nullable', 'date'],
