@@ -26,10 +26,10 @@ class ManufacturingController extends Controller
     public function storeBom(Request $request, BusinessContext $context): RedirectResponse
     {
         $data = $request->validate([
-            'product_id' => ['required', Rule::exists('products', 'id')],
+            'product_id' => ['required', Rule::exists('products', 'id')->where('business_id', $context->currentId())],
             'code' => ['required', 'string', 'max:80', Rule::unique('boms', 'code')->where('business_id', $context->currentId())],
             'version' => ['required', 'string', 'max:30'],
-            'material_product_id' => ['required', 'different:product_id', Rule::exists('products', 'id')],
+            'material_product_id' => ['required', 'different:product_id', Rule::exists('products', 'id')->where('business_id', $context->currentId())],
             'quantity' => ['required', 'numeric', 'gt:0'],
             'wastage_percent' => ['nullable', 'numeric', 'min:0', 'max:100'],
             'notes' => ['nullable', 'string', 'max:2000'],
@@ -57,7 +57,7 @@ class ManufacturingController extends Controller
     public function storeOrder(Request $request, BusinessContext $context): RedirectResponse
     {
         $data = $request->validate([
-            'bom_id' => ['nullable', Rule::exists('boms', 'id')],
+            'bom_id' => ['nullable', Rule::exists('boms', 'id')->where('business_id', $context->currentId())],
             'product_id' => ['required', Rule::exists('products', 'id')],
             'number' => ['required', 'string', 'max:80', Rule::unique('production_orders', 'number')->where('business_id', $context->currentId())],
             'planned_quantity' => ['required', 'numeric', 'gt:0'],
