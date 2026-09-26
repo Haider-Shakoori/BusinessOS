@@ -35,7 +35,13 @@ class PurchasingController extends Controller
             'address' => ['nullable', 'string', 'max:2000'],
         ]);
 
-        Supplier::create($data + ['is_active' => true]);
+        $supplier = Supplier::create($data + ['is_active' => true]);
+
+        if (empty($supplier->code)) {
+            $supplier->update([
+                'code' => 'SUP-'.str_pad((string) $supplier->id, 6, '0', STR_PAD_LEFT),
+            ]);
+        }
 
         return back()->with('status', __('operations.purchasing.supplier_created'));
     }
