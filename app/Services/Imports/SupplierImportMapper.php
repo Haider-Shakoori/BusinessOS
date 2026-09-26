@@ -54,6 +54,7 @@ final class SupplierImportMapper extends ImportMapper
             } elseif (isset($this->seenCodes[$code])) {
                 $errors[] = __('suppliers.validation.code_duplicate_file');
             } elseif (Supplier::withoutGlobalScope('business')
+                ->withTrashed()
                 ->where('business_id', $businessId)
                 ->where('code', $code)
                 ->exists()) {
