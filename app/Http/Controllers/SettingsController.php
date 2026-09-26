@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Settings\UpdateSettingsRequest;
+use App\Models\AttendanceDevice;
 use App\Models\ExchangeRate;
 use App\Services\BusinessContext;
 use App\Services\BusinessSettings;
@@ -53,6 +54,9 @@ class SettingsController extends Controller
             'currency_history_locked' => $currencies->hasFinancialHistory(),
             'document_themes' => $themes->themes('invoice'),
             'document_logo_url' => $themes->logoUrl(),
+            'attendance_devices_count' => AttendanceDevice::query()->count(),
+            'attendance_brands' => config('attendance.brands', []),
+            'attendance_sync_intervals' => config('settings.options.attendance_sync_intervals', []),
         ]);
     }
 

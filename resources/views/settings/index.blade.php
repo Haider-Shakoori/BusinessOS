@@ -152,6 +152,80 @@
 
             <x-ui.card>
                 <x-slot:header>
+                    <div class="flex flex-wrap items-start justify-between gap-3">
+                        <div>
+                            <h2 class="text-base font-semibold text-slate-900 dark:text-white">{{ __('attendance.settings_title') }}</h2>
+                            <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">{{ __('attendance.settings_helper') }}</p>
+                        </div>
+                        <x-ui.badge tone="brand">{{ __('attendance.devices_count', ['count' => $attendance_devices_count]) }}</x-ui.badge>
+                    </div>
+                </x-slot:header>
+
+                <div class="grid gap-x-5 gap-y-4 sm:grid-cols-2">
+                    <div class="sm:col-span-2">
+                        <input type="hidden" name="attendance.enabled" value="0">
+                        <x-ui.toggle
+                            name="attendance.enabled"
+                            :label="__('attendance.enabled')"
+                            :description="__('attendance.enabled_helper')"
+                            :checked="(bool) ($values['attendance.enabled'] ?? false)"
+                            :disabled="! $editable"
+                        />
+                    </div>
+
+                    <div>
+                        <x-ui.select
+                            name="attendance.auto_sync_minutes"
+                            :label="__('attendance.auto_sync')"
+                            :value="$values['attendance.auto_sync_minutes'] ?? 5"
+                            :disabled="! $editable"
+                        >
+                            @foreach ($attendance_sync_intervals as $minutes => $label)
+                                <option value="{{ $minutes }}" @selected((int) ($values['attendance.auto_sync_minutes'] ?? 5) === (int) $minutes)>{{ $label }}</option>
+                            @endforeach
+                        </x-ui.select>
+                    </div>
+
+                    <div>
+                        <x-ui.input
+                            name="attendance.payroll_source_display"
+                            :label="__('attendance.payroll_source')"
+                            :value="__('attendance.payroll_attendance')"
+                            :helper="__('attendance.payroll_helper')"
+                            disabled
+                        />
+                        <input type="hidden" name="attendance.payroll_source" value="attendance">
+                    </div>
+
+                    <div class="sm:col-span-2">
+                        <input type="hidden" name="attendance.require_employee_mapping" value="0">
+                        <x-ui.toggle
+                            name="attendance.require_employee_mapping"
+                            :label="__('attendance.mapping_required')"
+                            :description="__('attendance.mapping_required_helper')"
+                            :checked="(bool) ($values['attendance.require_employee_mapping'] ?? true)"
+                            :disabled="! $editable"
+                        />
+                    </div>
+
+                    <div class="sm:col-span-2 rounded-[8px] border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800/50">
+                        <p class="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">{{ __('attendance.supported_brands') }}</p>
+                        <div class="mt-2 flex flex-wrap gap-2">
+                            @foreach ($attendance_brands as $brand)
+                                <x-ui.badge tone="neutral">{{ $brand['label'] }}</x-ui.badge>
+                            @endforeach
+                        </div>
+                        <div class="mt-4">
+                            <x-ui.button href="{{ route('settings.attendance-devices.index') }}" variant="secondary" icon="clock">
+                                {{ __('attendance.manage_devices') }}
+                            </x-ui.button>
+                        </div>
+                    </div>
+                </div>
+            </x-ui.card>
+
+            <x-ui.card>
+                <x-slot:header>
                     <div>
                         <h2 class="text-base font-semibold text-slate-900 dark:text-white">{{ __('settings.documents') }}</h2>
                         <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">{{ __('settings.documents_helper') }}</p>

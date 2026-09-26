@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AttendanceDeviceController;
 use App\Http\Controllers\BusinessController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CurrencySettingsController;
@@ -88,6 +89,40 @@ Route::middleware(['auth', 'auth.session', 'business-selected', 'module:settings
 
     Route::delete('/settings/exchange-rates/{exchangeRate}', [CurrencySettingsController::class, 'destroyRate'])
         ->name('settings.exchange-rates.destroy')
+        ->middleware('permission:settings.manage');
+
+    /*
+     * Batch 27 — attendance device registry. Device credentials are encrypted
+     * at rest, every device is tenant-scoped, and only settings managers may
+     * add, change, test or remove a device. Employee/device mappings are kept
+     * here as the bridge between machine user IDs and payroll employees.
+     */
+    Route::get('/settings/attendance-devices', [AttendanceDeviceController::class, 'index'])
+        ->name('settings.attendance-devices.index')
+        ->middleware('permission:settings.view');
+
+    Route::post('/settings/attendance-devices', [AttendanceDeviceController::class, 'store'])
+        ->name('settings.attendance-devices.store')
+        ->middleware('permission:settings.manage');
+
+    Route::patch('/settings/attendance-devices/{attendanceDevice}', [AttendanceDeviceController::class, 'update'])
+        ->name('settings.attendance-devices.update')
+        ->middleware('permission:settings.manage');
+
+    Route::delete('/settings/attendance-devices/{attendanceDevice}', [AttendanceDeviceController::class, 'destroy'])
+        ->name('settings.attendance-devices.destroy')
+        ->middleware('permission:settings.manage');
+
+    Route::post('/settings/attendance-devices/{attendanceDevice}/test', [AttendanceDeviceController::class, 'testConnection'])
+        ->name('settings.attendance-devices.test')
+        ->middleware('permission:settings.manage');
+
+    Route::post('/settings/attendance-employees', [AttendanceDeviceController::class, 'storeEmployee'])
+        ->name('settings.attendance-employees.store')
+        ->middleware('permission:settings.manage');
+
+    Route::post('/settings/attendance-devices/{attendanceDevice}/map-employee', [AttendanceDeviceController::class, 'mapEmployee'])
+        ->name('settings.attendance-devices.map-employee')
         ->middleware('permission:settings.manage');
 });
 

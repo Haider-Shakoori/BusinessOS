@@ -53,6 +53,13 @@ return [
             'appearance' => ['default' => 'light', 'type' => 'string'],
         ],
 
+        'attendance' => [
+            'enabled' => ['default' => false, 'type' => 'boolean'],
+            'payroll_source' => ['default' => 'attendance', 'type' => 'string'],
+            'auto_sync_minutes' => ['default' => 5, 'type' => 'integer'],
+            'require_employee_mapping' => ['default' => true, 'type' => 'boolean'],
+        ],
+
         'numbering' => [
             'quotation_prefix' => ['default' => null, 'type' => 'string'],
             'invoice_prefix' => ['default' => null, 'type' => 'string'],
@@ -96,6 +103,15 @@ return [
         'time_formats' => [
             'H:i' => 'H:i',
             'g:i A' => 'g:i A',
+        ],
+
+        'attendance_sync_intervals' => [
+            1 => '1 minute',
+            5 => '5 minutes',
+            10 => '10 minutes',
+            15 => '15 minutes',
+            30 => '30 minutes',
+            60 => '60 minutes',
         ],
     ],
 ];
