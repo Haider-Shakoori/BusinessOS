@@ -153,6 +153,43 @@ class TransfersAndReturnsTest extends TestCase
         $this->assertSame(1, StockMovement::where('type', 'transfer_in')->count());
     }
 
+    public function test_transfer_dispatch_refuses_insufficient_stock_atomically(): void
+    {
+        $user = $this->user();
+        $business = $this->business($user);
+        $this->actIn($user, $business);
+
+        $source = Warehouse::create(['code' => 'LOW', 'name' => 'Low Stock', 'is_active' => true]);
+        $destination = Warehouse::create(['code' => 'DEST', 'name' => 'Destination', 'is_active' => true]);
+        $product = $this->product('Scarce Stock', 'SCARCE-001');
+
+        StockMovement::create([
+            'warehouse_id' => $source->id,
+            'product_id' => $product->id,
+            'type' => 'opening',
+            'quantity' => '2.0000',
+            'unit_cost' => '5.0000',
+            'occurred_at' => now(),
+        ]);
+
+        $this->post('/inventory/transfers', [
+            'source_warehouse_id' => $source->id,
+            'destination_warehouse_id' => $destination->id,
+            'product_id' => $product->id,
+            'quantity' => '3.0000',
+        ])->assertRedirect();
+
+        $transfer = WarehouseTransfer::firstOrFail();
+
+        $this->post('/inventory/transfers/'.$transfer->id.'/dispatch')
+            ->assertSessionHasErrors('transfer');
+
+        $transfer->refresh();
+        $this->assertSame('draft', $transfer->status);
+        $this->assertSame(0, StockMovement::where('type', 'transfer_out')->count());
+        $this->assertSame(2.0, (float) StockMovement::where('warehouse_id', $source->id)->sum('quantity'));
+    }
+
     public function test_purchase_return_reduces_stock_and_prevents_over_return(): void
     {
         $user = $this->user();
@@ -269,6 +306,10 @@ class TransfersAndReturnsTest extends TestCase
             'quantity' => '2.0000',
             'reason' => 'Over return',
         ])->assertSessionHasErrors('return');
+
+        $this->post('/pos/sales/'.$sale->id.'/void', [
+            'reason' => 'Should not double reverse',
+        ])->assertSessionHasErrors('sale');
 
         $this->post('/pos/shifts/'.$shift->id.'/close', [
             'closing_cash' => '200.0000',
