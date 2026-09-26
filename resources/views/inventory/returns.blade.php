@@ -18,7 +18,7 @@
     @endif
 
     <div class="grid gap-5 xl:grid-cols-2">
-        @can('pos.manage')
+        @if($canSalesReturn)
             <x-ui.card>
                 <x-slot:header>
                     <h2 class="font-semibold text-slate-900 dark:text-white">{{ __('operations.returns.sales_return') }}</h2>
@@ -41,9 +41,9 @@
                     </div>
                 </form>
             </x-ui.card>
-        @endcan
+        @endif
 
-        @can('purchasing.manage')
+        @if($canPurchaseReturn)
             <x-ui.card>
                 <x-slot:header>
                     <h2 class="font-semibold text-slate-900 dark:text-white">{{ __('operations.returns.purchase_return') }}</h2>
@@ -71,7 +71,7 @@
                     </div>
                 </form>
             </x-ui.card>
-        @endcan
+        @endif
     </div>
 
     <x-ui.card class="mt-5">
