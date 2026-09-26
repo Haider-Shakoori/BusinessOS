@@ -21,6 +21,7 @@ return [
     'accounting' => 'حسابداری',
     'manufacturing' => 'تولید',
     'crm' => 'مدیریت ارتباط با مشتری',
+    'hr_payroll' => 'منابع بشری و معاشات',
     'reports' => 'گزارش‌ها',
     'notifications' => 'اعلان‌ها',
     'global_search' => 'جستجوی سراسری',

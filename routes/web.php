@@ -13,6 +13,7 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\ExportController;
 use App\Http\Controllers\GlobalSearchController;
+use App\Http\Controllers\HrPayrollController;
 use App\Http\Controllers\ImportController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\InvoiceController;
@@ -222,6 +223,51 @@ Route::middleware(['auth', 'auth.session', 'business-selected', 'module:settings
     Route::post('/settings/attendance-devices/{attendanceDevice}/map-employee', [AttendanceDeviceController::class, 'mapEmployee'])
         ->name('settings.attendance-devices.map-employee')
         ->middleware('permission:settings.manage');
+});
+
+/*
+ * Batch 34 — HR & Payroll.
+ *
+ * HR employee profiles, approved leave and payroll adjustments share the same
+ * business context as attendance. Payroll generation reads normalized
+ * attendance records and finalization posts a balanced journal entry.
+ */
+Route::middleware(['auth', 'auth.session', 'business-selected', 'module:hr'])->group(function () {
+    Route::get('/hr', [HrPayrollController::class, 'index'])
+        ->name('hr.index')
+        ->middleware('permission:hr.view');
+
+    Route::post('/hr/employees', [HrPayrollController::class, 'storeEmployee'])
+        ->name('hr.employees.store')
+        ->middleware('permission:hr.manage');
+
+    Route::patch('/hr/employees/{employee}', [HrPayrollController::class, 'updateEmployee'])
+        ->name('hr.employees.update')
+        ->middleware('permission:hr.manage');
+
+    Route::post('/hr/leaves', [HrPayrollController::class, 'storeLeave'])
+        ->name('hr.leaves.store')
+        ->middleware('permission:hr.manage');
+
+    Route::post('/hr/payroll-adjustments', [HrPayrollController::class, 'storeAdjustment'])
+        ->name('hr.adjustments.store')
+        ->middleware('permission:payroll.manage');
+
+    Route::post('/hr/payroll-runs', [HrPayrollController::class, 'generate'])
+        ->name('hr.payroll.generate')
+        ->middleware('permission:payroll.manage');
+
+    Route::get('/hr/payroll-runs/{payrollRun}', [HrPayrollController::class, 'show'])
+        ->name('hr.payroll.show')
+        ->middleware('permission:payroll.view');
+
+    Route::post('/hr/payroll-runs/{payrollRun}/finalize', [HrPayrollController::class, 'finalize'])
+        ->name('hr.payroll.finalize')
+        ->middleware('permission:payroll.finalize');
+
+    Route::get('/hr/payroll-runs/{payrollRun}/payslip/{employee}', [HrPayrollController::class, 'payslip'])
+        ->name('hr.payroll.payslip')
+        ->middleware('permission:payroll.view');
 });
 
 /*

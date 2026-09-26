@@ -110,6 +110,15 @@ return [
             'modules.view',
             'modules.manage',
         ],
+        'hr' => [
+            'hr.view',
+            'hr.manage',
+        ],
+        'payroll' => [
+            'payroll.view',
+            'payroll.manage',
+            'payroll.finalize',
+        ],
         'reports' => [
             'reports.view',
         ],

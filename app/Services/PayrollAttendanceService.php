@@ -17,7 +17,7 @@ class PayrollAttendanceService
      * formulas remain payroll policy; this service supplies one normalized,
      * auditable set of time metrics so payroll cannot diverge from the machine.
      *
-     * @return array<string, int|string|null>
+     * @return array<string, mixed>
      */
     public function summary(Employee $employee, CarbonInterface|string $from, CarbonInterface|string $to): array
     {
@@ -35,21 +35,30 @@ class PayrollAttendanceService
 
         $workedMinutes = 0;
         $missingCheckoutDays = 0;
+        $dailyMinutes = [];
 
         foreach ($days as $dayLogs) {
             /** @var Collection<int, AttendanceLog> $dayLogs */
-            if ($dayLogs->count() < 2) {
+            $ordered = $dayLogs->values();
+
+            if ($ordered->count() % 2 !== 0) {
                 $missingCheckoutDays++;
-
-                continue;
             }
 
-            $first = $dayLogs->first()->occurred_at;
-            $last = $dayLogs->last()->occurred_at;
+            $minutes = 0;
 
-            if ($last->greaterThan($first)) {
-                $workedMinutes += (int) floor($first->diffInMinutes($last));
+            for ($index = 0; $index + 1 < $ordered->count(); $index += 2) {
+                $checkIn = $ordered[$index]->occurred_at;
+                $checkOut = $ordered[$index + 1]->occurred_at;
+
+                if ($checkOut->greaterThan($checkIn)) {
+                    $minutes += (int) floor($checkIn->diffInMinutes($checkOut));
+                }
             }
+
+            $date = $ordered->first()->occurred_at->timezone($timezone)->toDateString();
+            $dailyMinutes[$date] = $minutes;
+            $workedMinutes += $minutes;
         }
 
         return [
@@ -60,6 +69,8 @@ class PayrollAttendanceService
             'attended_days' => $days->count(),
             'punch_count' => $logs->count(),
             'worked_minutes' => $workedMinutes,
+            'daily_minutes' => $dailyMinutes,
+            'attended_dates' => array_keys($dailyMinutes),
             'missing_checkout_days' => $missingCheckoutDays,
             'first_punch_at' => $logs->first()?->occurred_at?->toIso8601String(),
             'last_punch_at' => $logs->last()?->occurred_at?->toIso8601String(),

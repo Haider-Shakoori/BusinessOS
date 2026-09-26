@@ -21,6 +21,7 @@ return [
     'accounting' => 'المحاسبة',
     'manufacturing' => 'التصنيع',
     'crm' => 'إدارة العملاء',
+    'hr_payroll' => 'الموارد البشرية والرواتب',
     'reports' => 'التقارير',
     'notifications' => 'الإشعارات',
     'global_search' => 'البحث الشامل',

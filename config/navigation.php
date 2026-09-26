@@ -128,6 +128,14 @@ return [
             'permission' => 'crm.view',
         ],
         [
+            'key' => 'hr-payroll',
+            'label' => 'navigation.hr_payroll',
+            'icon' => 'user-group',
+            'route' => 'hr.index',
+            'module' => 'hr',
+            'permission' => 'hr.view',
+        ],
+        [
             'key' => 'reports',
             'label' => 'navigation.reports',
             'icon' => 'chart-bar',

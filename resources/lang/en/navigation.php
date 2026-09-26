@@ -21,6 +21,7 @@ return [
     'accounting' => 'Accounting',
     'manufacturing' => 'Manufacturing',
     'crm' => 'CRM',
+    'hr_payroll' => 'HR & Payroll',
     'reports' => 'Reports',
     'notifications' => 'Notifications',
     'global_search' => 'Global Search',

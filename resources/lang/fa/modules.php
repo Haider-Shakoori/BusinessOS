@@ -12,6 +12,7 @@ return [
     'accounting' => 'حسابداری',
     'manufacturing' => 'تولید',
     'crm' => 'CRM',
+    'hr' => 'منابع بشری و معاشات',
     'reports' => 'گزارش‌ها',
     'settings' => 'تنظیمات',
     'categories' => 'دسته‌بندی‌ها',
