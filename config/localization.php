@@ -20,8 +20,8 @@ return [
         ],
         'fa' => [
             'direction' => 'rtl',
-            'label' => 'Persian',
-            'native' => 'فارسی',
+            'label' => 'Dari',
+            'native' => 'دری',
         ],
         'ar' => [
             'direction' => 'rtl',
