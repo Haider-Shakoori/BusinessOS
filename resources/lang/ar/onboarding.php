@@ -48,9 +48,20 @@ return [
         'customers' => 'إدارة بيانات العملاء وعلاقاتهم', 'sales' => 'عروض الأسعار والفواتير وطلبات البيع', 'products' => 'إدارة المنتجات والخدمات', 'inventory' => 'متابعة مستويات المخزون والمستودعات',
         'expenses' => 'تسجيل المصروفات وإدارتها', 'reports' => 'رؤى وتحليلات النشاط', 'smart_assistant' => 'مساعدة وأتمتة بالذكاء الاصطناعي', 'notifications' => 'تلقي التحديثات والتنبيهات المهمة',
     ],
-    'countries' => ['afghanistan' => 'أفغانستان'],
+    'countries' => [
+        'afghanistan' => 'أفغانستان',
+        'united_arab_emirates' => 'الإمارات العربية المتحدة',
+        'united_states' => 'الولايات المتحدة',
+        'canada' => 'كندا',
+    ],
     'industries' => ['retail_wholesale' => 'التجزئة والجملة', 'services' => 'الخدمات', 'manufacturing' => 'التصنيع', 'distribution' => 'التوزيع', 'restaurant' => 'مطعم', 'pharmacy' => 'صيدلية', 'other' => 'أخرى'],
-    'timezones' => ['kabul' => '(GMT+04:30) كابول', 'utc' => '(GMT+00:00) UTC'],
+    'timezones' => [
+        'kabul' => '(GMT+04:30) كابول',
+        'dubai' => '(GMT+04:00) Dubai',
+        'new_york' => '(GMT-05:00) New York',
+        'toronto' => '(GMT-05:00) Toronto',
+        'utc' => '(GMT+00:00) UTC',
+    ],
     'validation' => [
         'country_required' => 'اختر الدولة أو المنطقة.', 'currency_required' => 'اختر العملة الأساسية.', 'currency_invalid' => 'العملة الأساسية المحددة غير متاحة.',
         'timezone_required' => 'اختر المنطقة الزمنية.', 'locale_required' => 'اختر اللغة.', 'logo_invalid' => 'يجب أن يكون الشعار PNG أو JPG أو JPEG أو WebP.', 'logo_max' => 'يجب ألا يتجاوز حجم الشعار 2 ميغابايت.',
