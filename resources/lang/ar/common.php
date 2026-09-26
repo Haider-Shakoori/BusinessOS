@@ -12,7 +12,9 @@ return [
     'reports' => 'التقارير',
     'settings' => 'الإعدادات',
 
-    'search' => 'بحث…',
+    'search' => 'ابحث في كل شيء... (العملاء، الفواتير، المنتجات وغيرها)',
+    'search_shortcut' => 'K',
+    'notification_center' => 'مركز الإشعارات',
     'filters' => 'المرشحات',
     'search_coming_soon' => 'بحث شامل (قريباً)',
     'notifications' => 'الإشعارات',
