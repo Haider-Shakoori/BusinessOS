@@ -8,6 +8,7 @@ return [
     'expenses' => 'هزینه‌ها',
     'inventory' => 'موجودی',
     'purchasing' => 'خریداری',
+    'pos' => 'POS',
     'accounting' => 'حسابداری',
     'manufacturing' => 'تولید',
     'crm' => 'CRM',
