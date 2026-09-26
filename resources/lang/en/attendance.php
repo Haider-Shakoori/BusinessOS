@@ -10,7 +10,7 @@ return [
     'payroll_source' => 'Payroll time source',
     'payroll_attendance' => 'Attendance records',
     'payroll_helper' => 'Payroll worked-time metrics use attendance records so payroll and attendance cannot drift apart.',
-    'auto_sync' => 'Automatic sync interval',
+    'auto_sync' => 'Device poll / health-check interval',
     'mapping_required' => 'Require employee mapping',
     'mapping_required_helper' => 'Unmapped device user IDs are retained for audit but are not included in an employee payroll summary.',
     'devices_count' => ':count device(s) configured',
@@ -85,6 +85,7 @@ return [
         'disabled' => 'Device integration is disabled.',
         'invalid_connection' => 'The selected connection type is not configured.',
         'push_ready' => 'Push endpoint is ready and waiting for the device.',
+        'push_stale' => 'No recent push has been received from this device.'
         'host_port_required' => 'Host and port are required for this connection type.',
         'tcp_failed' => 'TCP connection failed: :error',
         'tcp_ok' => 'TCP connection succeeded.',
