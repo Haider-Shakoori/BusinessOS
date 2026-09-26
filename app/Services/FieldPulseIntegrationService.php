@@ -43,7 +43,7 @@ class FieldPulseIntegrationService
         $accepted = 0;
 
         foreach ($events as $event) {
-            if (! is_array($event)) {
+            if (is_array($event) === false) {
                 $results[] = [
                     'accepted' => false,
                     'status' => 'rejected',
@@ -61,7 +61,7 @@ class FieldPulseIntegrationService
             $results[] = $result;
 
             if ($result['accepted']) {
-                $accepted++;
+                $accepted += 1;
             }
         }
 
@@ -328,7 +328,7 @@ class FieldPulseIntegrationService
             $data['businessos_id'] ?? null,
         );
 
-        if (! $customer) {
+        if ($customer === null) {
             $link = FieldPulseEntityLink::query()
                 ->where('business_id', $business->id)
                 ->where('entity_type', 'customer')
@@ -538,7 +538,7 @@ class FieldPulseIntegrationService
 
         if (
             $externalId === null
-            || ! str_starts_with($externalId, 'customer:')
+            || str_starts_with($externalId, 'customer:') === false
         ) {
             return null;
         }
@@ -649,9 +649,9 @@ class FieldPulseIntegrationService
         );
 
         if (
-            ! is_array($decoded)
-            || ! is_string($decoded['updated_at'] ?? null)
-            || ! is_numeric($decoded['id'] ?? null)
+            is_array($decoded) === false
+            || is_string($decoded['updated_at'] ?? null) === false
+            || is_numeric($decoded['id'] ?? null) === false
         ) {
             throw new InvalidArgumentException(
                 'FieldPulse cursor is invalid.',
