@@ -15,6 +15,7 @@ return [
         'role_updated' => 'نقش عضو به‌روزرسانی شد.',
         'members' => 'اعضای کاروبار',
         'no_members' => 'عضوی یافت نشد.',
+        'last_owner_required' => 'این کاروبار باید همیشه حداقل یک مالک داشته باشد.',
         'password_required_for_new_user' => 'برای ایجاد کاربر جدید رمز عبور لازم است.',
     ],
     'roles' => [
