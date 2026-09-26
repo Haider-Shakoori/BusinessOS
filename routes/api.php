@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AttendanceBridgeApiController;
 use App\Http\Controllers\AttendancePushController;
+use App\Http\Controllers\FieldPulseIntegrationApiController;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/attendance/push/{attendanceDevice}', [AttendancePushController::class, 'store'])
@@ -16,4 +17,16 @@ Route::prefix('/attendance/bridge/{bridge}')
         Route::post('/jobs/{job}/result', [AttendanceBridgeApiController::class, 'jobResult'])->name('attendance.bridge.jobs.result');
         Route::get('/devices', [AttendanceBridgeApiController::class, 'devices'])->name('attendance.bridge.devices');
         Route::post('/devices/{device}/records', [AttendanceBridgeApiController::class, 'records'])->name('attendance.bridge.records');
+    });
+
+
+Route::prefix('/fieldpulse/v1')
+    ->middleware(['fieldpulse.integration', 'throttle:240,1'])
+    ->group(function () {
+        Route::get('/health', [FieldPulseIntegrationApiController::class, 'health'])
+            ->name('fieldpulse.integration.health');
+        Route::get('/master-data', [FieldPulseIntegrationApiController::class, 'masterData'])
+            ->name('fieldpulse.integration.master-data');
+        Route::post('/events', [FieldPulseIntegrationApiController::class, 'events'])
+            ->name('fieldpulse.integration.events');
     });
