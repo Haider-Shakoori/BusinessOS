@@ -51,6 +51,7 @@ final class BusinessOnboardingService
         });
 
         $this->context->switchTo($business->id);
+        $this->settings->resetResolvedContext();
 
         $this->settings->updateMany([
             'general.address' => $validated['address'] ?? null,
