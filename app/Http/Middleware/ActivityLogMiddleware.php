@@ -26,6 +26,10 @@ class ActivityLogMiddleware
         try {
             $businessId = app(BusinessContext::class)->currentId();
 
+            if ($businessId === null) {
+                return $response;
+            }
+
             ActivityLog::create([
                 'business_id' => $businessId,
                 'user_id' => $request->user()->id,
