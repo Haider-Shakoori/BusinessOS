@@ -162,6 +162,15 @@ class SaasPlatformTest extends TestCase
 
         $this->actIn($owner->fresh(), $business);
         $this->get('/app')->assertForbidden();
+
+        $business->subscription()->update([
+            'status' => 'active',
+            'trial_ends_at' => null,
+            'current_period_ends_at' => now()->subMinute(),
+        ]);
+
+        $this->actIn($owner->fresh(), $business);
+        $this->get('/app')->assertForbidden();
     }
 
     public function test_usage_limits_count_members_products_and_enabled_modules(): void
