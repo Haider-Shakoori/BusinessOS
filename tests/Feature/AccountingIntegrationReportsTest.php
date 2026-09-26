@@ -9,6 +9,7 @@ use App\Models\Business;
 use App\Models\BusinessModule;
 use App\Models\Customer;
 use App\Models\Expense;
+use App\Models\FiscalPeriod;
 use App\Models\InventoryReturn;
 use App\Models\Invoice;
 use App\Models\JournalEntry;
@@ -413,6 +414,62 @@ class AccountingIntegrationReportsTest extends TestCase
         $this->assertSame('0.0000', $ledger['opening_balance']);
         $this->assertSame('100.0000', $ledger['closing_balance']);
         $this->assertCount(1, $ledger['lines']);
+    }
+
+    public function test_closed_fiscal_period_blocks_manual_and_automatic_postings(): void
+    {
+        $user = $this->user();
+        $business = $this->business($user);
+        $this->actIn($user, $business);
+
+        $period = app(\App\Services\FiscalPeriodService::class)->create(
+            'September 2026',
+            '2026-09-01',
+            '2026-09-30',
+        );
+        app(\App\Services\FiscalPeriodService::class)->close($period, $user->id, 'Month-end close');
+
+        $this->assertSame('closed', $period->fresh()->status);
+
+        $debit = Account::create(['code' => 'LOCK-DR', 'name' => 'Lock Debit', 'type' => 'asset', 'is_active' => true]);
+        $credit = Account::create(['code' => 'LOCK-CR', 'name' => 'Lock Credit', 'type' => 'equity', 'is_active' => true]);
+
+        $this->post('/accounting/journals', [
+            'number' => 'LOCKED-JOURNAL',
+            'entry_date' => '2026-09-15',
+            'debit_account_id' => $debit->id,
+            'credit_account_id' => $credit->id,
+            'amount' => '10.0000',
+        ])->assertServerError();
+
+        $this->assertDatabaseMissing('journal_entries', ['number' => 'LOCKED-JOURNAL']);
+
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('accounting period for this date is closed');
+
+        app(InvoiceService::class)->create(
+            $this->invoicePayload($this->customer(), InvoiceStatus::Sent->value, '25.0000'),
+            $user->id,
+        );
+    }
+
+    public function test_fiscal_periods_cannot_overlap_and_reopen_allows_posting_again(): void
+    {
+        $user = $this->user();
+        $business = $this->business($user);
+        $this->actIn($user, $business);
+        $service = app(\App\Services\FiscalPeriodService::class);
+
+        $period = $service->create('FY 2026', '2026-01-01', '2026-12-31');
+        $service->close($period, $user->id);
+        $service->reopen($period);
+
+        $this->assertSame('open', $period->fresh()->status);
+        $service->assertPostingAllowed('2026-09-15');
+
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('cannot overlap');
+        $service->create('Overlapping period', '2026-09-01', '2027-08-31');
     }
 
     public function test_historical_backfill_is_idempotent(): void
