@@ -146,14 +146,14 @@ class PosController extends Controller
             ]));
     }
 
-    public function checkout(Request $request, PosShift $posShift, PosService $pos): RedirectResponse
+    public function checkout(Request $request, PosShift $posShift, PosService $pos, BusinessContext $context): RedirectResponse
     {
         $data = $request->validate([
             'items' => ['required', 'string'],
             'payment_method' => ['required', Rule::in(['cash', 'card', 'mobile', 'credit'])],
             'discount_amount' => ['nullable', 'numeric', 'min:0'],
             'amount_tendered' => ['nullable', 'numeric', 'min:0'],
-            'customer_id' => ['nullable', 'integer'],
+            'customer_id' => ['nullable', 'integer', Rule::exists('customers', 'id')->where('business_id', $context->currentId())],
         ]);
 
         $items = json_decode($data['items'], true);
@@ -173,7 +173,7 @@ class PosController extends Controller
                 isset($data['customer_id']) ? (int) $data['customer_id'] : null,
             );
         } catch (RuntimeException $exception) {
-            return back()->withErrors(['cart' => $exception->getMessage())->withInput();
+            return back()->withErrors(['cart' => $exception->getMessage()])->withInput();
         }
 
         return redirect()
