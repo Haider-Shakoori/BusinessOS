@@ -9,6 +9,7 @@ return [
     'register_name' => 'اسم الصندوق',
     'register_code' => 'رمز الصندوق',
     'warehouse' => 'المستودع',
+    'warehouse_auto' => 'لا يوجد مستودع بعد. سينشئ BusinessOS المستودع الرئيسي تلقائياً.',
     'create_register' => 'إنشاء صندوق',
     'setup_title' => 'أنشئ أول صندوق POS',
     'setup_help' => 'يرتبط كل صندوق بمستودع واحد لتحديث المخزون الصحيح مع كل عملية بيع.',
