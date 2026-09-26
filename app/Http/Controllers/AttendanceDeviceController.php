@@ -9,6 +9,7 @@ use App\Models\AttendanceLog;
 use App\Models\Employee;
 use App\Services\AttendanceDeviceConnectionService;
 use App\Services\BusinessContext;
+use App\Services\PayrollAttendanceService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -16,16 +17,23 @@ use Illuminate\View\View;
 
 class AttendanceDeviceController extends Controller
 {
-    public function index(BusinessContext $context): View
+    public function index(BusinessContext $context, PayrollAttendanceService $payrollAttendance): View
     {
+        $employees = Employee::query()->orderBy('name')->get();
+        $periodStart = now()->startOfMonth();
+        $periodEnd = now()->endOfMonth();
+
         return view('settings.attendance-devices.index', [
             'business' => $context->current(),
             'brands' => config('attendance.brands', []),
             'connections' => config('attendance.connections', []),
             'devices' => AttendanceDevice::query()->orderBy('name')->get(),
-            'employees' => Employee::query()->orderBy('name')->get(),
+            'employees' => $employees,
             'mappings' => AttendanceDeviceEmployee::query()->with(['device', 'employee'])->orderByDesc('id')->get(),
             'recentLogs' => AttendanceLog::query()->with(['device', 'employee'])->latest('occurred_at')->limit(25)->get(),
+            'payrollSummaries' => $employees->map(fn (Employee $employee): array => $payrollAttendance->summary($employee, $periodStart, $periodEnd)),
+            'payrollPeriodStart' => $periodStart,
+            'payrollPeriodEnd' => $periodEnd,
         ]);
     }
 
