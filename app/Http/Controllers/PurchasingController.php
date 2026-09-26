@@ -40,11 +40,11 @@ class PurchasingController extends Controller
     public function storeOrder(Request $request, BusinessContext $context): RedirectResponse
     {
         $data = $request->validate([
-            'supplier_id' => ['required', Rule::exists('suppliers', 'id')],
+            'supplier_id' => ['required', Rule::exists('suppliers', 'id')->where('business_id', $context->currentId())],
             'number' => ['required', 'string', 'max:80', Rule::unique('purchase_orders', 'number')->where('business_id', $context->currentId())],
             'order_date' => ['required', 'date'],
             'expected_date' => ['nullable', 'date', 'after_or_equal:order_date'],
-            'product_id' => ['required', Rule::exists('products', 'id')],
+            'product_id' => ['required', Rule::exists('products', 'id')->where('business_id', $context->currentId())],
             'quantity' => ['required', 'numeric', 'gt:0'],
             'unit_cost' => ['required', 'numeric', 'min:0'],
             'notes' => ['nullable', 'string', 'max:2000'],
