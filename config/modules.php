@@ -177,6 +177,13 @@ return [
             'permission' => 'crm.view',
             'navigation' => ['group' => 'business', 'order' => 10, 'route' => 'crm.index'],
         ],
+        'hr' => [
+            'key' => 'hr',
+            'label' => 'modules.hr',
+            'icon' => 'user-group',
+            'permission' => 'hr.view',
+            'navigation' => ['group' => 'business', 'order' => 11, 'route' => 'hr.index'],
+        ],
         'reports' => [
             'key' => 'reports',
             'label' => 'modules.reports',
