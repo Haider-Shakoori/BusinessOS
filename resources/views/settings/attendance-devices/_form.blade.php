@@ -37,7 +37,7 @@
     <x-ui.input name="timezone" :label="__('attendance.fields.timezone')" :value="old('timezone', $device->timezone ?? config('app.timezone'))" dir="ltr" maxlength="255" />
 
     <x-ui.input name="username" :label="__('attendance.fields.username')" :value="old('username', $device->username ?? null)" autocomplete="off" maxlength="255" />
-    <x-ui.input name="password" type="password" :label="__('attendance.fields.password')" :helper="$editing ? __('common.leave_blank_to_keep') : null" autocomplete="new-password" maxlength="1000" />
+    <x-ui.input name="password" type="password" :label="__('attendance.fields.password')" :helper="$editing ? __('attendance.leave_blank_to_keep') : null" autocomplete="new-password" maxlength="1000" />
 
     <div class="sm:col-span-2">
         <x-ui.input name="api_key" type="password" :label="__('attendance.fields.api_key')" :helper="$editing ? __('common.leave_blank_to_keep') : null" autocomplete="new-password" maxlength="2000" />
