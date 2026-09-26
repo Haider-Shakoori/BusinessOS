@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AttendanceBridgeController;
 use App\Http\Controllers\AttendanceDeviceController;
 use App\Http\Controllers\BusinessController;
 use App\Http\Controllers\CategoryController;
@@ -103,6 +104,22 @@ Route::middleware(['auth', 'auth.session', 'business-selected', 'module:settings
 
     Route::post('/settings/attendance-devices/detect', [AttendanceDeviceController::class, 'detect'])
         ->name('settings.attendance-devices.detect')
+        ->middleware('permission:settings.manage');
+
+    Route::get('/settings/attendance-device-discovery/{attendanceBridgeJob}', [AttendanceDeviceController::class, 'detectionJob'])
+        ->name('settings.attendance-devices.discovery-job')
+        ->middleware('permission:settings.manage');
+
+    Route::post('/settings/attendance-bridges', [AttendanceBridgeController::class, 'store'])
+        ->name('settings.attendance-bridges.store')
+        ->middleware('permission:settings.manage');
+
+    Route::post('/settings/attendance-bridges/{attendanceBridge}/regenerate-token', [AttendanceBridgeController::class, 'regenerateToken'])
+        ->name('settings.attendance-bridges.regenerate-token')
+        ->middleware('permission:settings.manage');
+
+    Route::delete('/settings/attendance-bridges/{attendanceBridge}', [AttendanceBridgeController::class, 'destroy'])
+        ->name('settings.attendance-bridges.destroy')
         ->middleware('permission:settings.manage');
 
     Route::post('/settings/attendance-devices', [AttendanceDeviceController::class, 'store'])
