@@ -113,9 +113,6 @@
                                 @foreach($role->permissions->take(12) as $permission)<x-ui.badge tone="neutral">{{ $permission->name }}</x-ui.badge>@endforeach
                                 @if($role->permissions->count() > 12)<x-ui.badge tone="neutral">+{{ $role->permissions->count() - 12 }}</x-ui.badge>@endif
                             </div>
-                        @can('users.manage')
-                        @else
-                        @endcan
                         @else
                             @can('users.manage')
                             <form method="POST" action="{{ route('system.users-roles.roles.update', $role) }}" class="mt-4 space-y-3">
