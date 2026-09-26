@@ -9,6 +9,7 @@ return [
     'register_name' => 'نام صندوق',
     'register_code' => 'کد صندوق',
     'warehouse' => 'گدام',
+    'warehouse_auto' => 'هنوز گدامی وجود ندارد. BusinessOS به‌صورت خودکار گدام اصلی را ایجاد می‌کند.',
     'create_register' => 'ایجاد صندوق',
     'setup_title' => 'اولین صندوق POS را ایجاد کنید',
     'setup_help' => 'هر صندوق به یک گدام وصل است تا فروش از موجودی درست کسر شود.',
