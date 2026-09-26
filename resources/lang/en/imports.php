@@ -5,6 +5,8 @@ return [
     'import_customers_subtitle' => 'Create customers in bulk from a CSV file. Each row becomes a new customer — nothing is updated.',
     'import_products' => 'Import products',
     'import_products_subtitle' => 'Create products and services in bulk from a CSV file. Each row becomes a new item — nothing is updated.',
+    'import_suppliers' => 'Import Suppliers',
+    'import_suppliers_subtitle' => 'Import supplier records, opening payables and contact details from a validated CSV file.',
 
     'upload_title' => 'Upload a CSV file',
     'upload' => 'Upload CSV',
