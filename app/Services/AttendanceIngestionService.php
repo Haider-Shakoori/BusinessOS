@@ -60,7 +60,8 @@ class AttendanceIngestionService
                 continue;
             }
 
-            AttendanceLog::withoutGlobalScope('business')->create([
+            $log = new AttendanceLog();
+            $log->forceFill([
                 'business_id' => $device->business_id,
                 'attendance_device_id' => $device->id,
                 'employee_id' => $mapping?->employee_id,
@@ -72,6 +73,7 @@ class AttendanceIngestionService
                 'raw_payload' => $record,
                 'received_at' => now(),
             ]);
+            $log->save();
 
             $accepted++;
 
