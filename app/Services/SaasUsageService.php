@@ -6,6 +6,7 @@ use App\Models\Business;
 use App\Models\BusinessSubscription;
 use App\Models\Product;
 use App\Models\SaasPlan;
+use Illuminate\Support\Facades\Schema;
 
 class SaasUsageService
 {
@@ -31,6 +32,14 @@ class SaasUsageService
      */
     public function limits(Business $business): array
     {
+        if (! Schema::hasTable('business_subscriptions') || ! Schema::hasTable('saas_plans')) {
+            return [
+                'members' => null,
+                'products' => null,
+                'enabled_modules' => null,
+            ];
+        }
+
         $subscription = $business->subscription()
             ->with('plan')
             ->first();
@@ -46,6 +55,10 @@ class SaasUsageService
 
     public function isOperational(Business $business): bool
     {
+        if (! Schema::hasTable('business_subscriptions')) {
+            return true;
+        }
+
         $subscription = $business->subscription()->first();
 
         if (! $subscription) {
@@ -77,11 +90,19 @@ class SaasUsageService
 
     public function subscription(Business $business): ?BusinessSubscription
     {
+        if (! Schema::hasTable('business_subscriptions')) {
+            return null;
+        }
+
         return $business->subscription()->with('plan')->first();
     }
 
     public function provisionDefaultSubscription(Business $business): ?BusinessSubscription
     {
+        if (! Schema::hasTable('business_subscriptions') || ! Schema::hasTable('saas_plans')) {
+            return null;
+        }
+
         $plan = SaasPlan::query()
             ->where('is_active', true)
             ->where('is_default', true)
