@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Account;
 use App\Models\JournalEntry;
+use App\Services\AccountingReportService;
 use App\Services\BusinessContext;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -18,6 +19,37 @@ class AccountingController extends Controller
         return view('accounting.index', [
             'accounts' => Account::query()->orderBy('code')->get(),
             'entries' => JournalEntry::query()->with('lines.account')->latest('entry_date')->latest('id')->limit(50)->get(),
+        ]);
+    }
+
+    public function reports(
+        Request $request,
+        BusinessContext $context,
+        AccountingReportService $reports,
+    ): View {
+        $data = $request->validate([
+            'date_from' => ['nullable', 'date'],
+            'date_to' => ['nullable', 'date', 'after_or_equal:date_from'],
+            'account_id' => [
+                'nullable',
+                'integer',
+                Rule::exists('accounts', 'id')->where('business_id', $context->currentId()),
+            ],
+        ]);
+
+        $account = isset($data['account_id'])
+            ? Account::query()->findOrFail($data['account_id'])
+            : Account::query()->orderBy('code')->first();
+
+        return view('accounting.reports', [
+            'accounts' => Account::query()->orderBy('code')->get(),
+            'trialBalance' => $reports->trialBalance($data['date_to'] ?? null),
+            'profitLoss' => $reports->profitAndLoss($data['date_from'] ?? null, $data['date_to'] ?? null),
+            'balanceSheet' => $reports->balanceSheet($data['date_to'] ?? null),
+            'ledger' => $account ? $reports->generalLedger($account, $data['date_from'] ?? null, $data['date_to'] ?? null) : null,
+            'dateFrom' => $data['date_from'] ?? null,
+            'dateTo' => $data['date_to'] ?? null,
+            'accountId' => $account?->id,
         ]);
     }
 
