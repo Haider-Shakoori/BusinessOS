@@ -2,7 +2,6 @@
 
 namespace Tests\Feature;
 
-use App\Models\Account;
 use App\Models\AttendanceDevice;
 use App\Models\AttendanceLog;
 use App\Models\Business;
