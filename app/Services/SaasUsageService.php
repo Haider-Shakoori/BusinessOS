@@ -69,9 +69,23 @@ class SaasUsageService
             return false;
         }
 
-        return $subscription->status !== 'trialing'
-            || $subscription->trial_ends_at === null
-            || $subscription->trial_ends_at->isFuture();
+        if (
+            $subscription->status === 'trialing'
+            && $subscription->trial_ends_at !== null
+            && ! $subscription->trial_ends_at->isFuture()
+        ) {
+            return false;
+        }
+
+        if (
+            $subscription->status === 'active'
+            && $subscription->current_period_ends_at !== null
+            && ! $subscription->current_period_ends_at->isFuture()
+        ) {
+            return false;
+        }
+
+        return true;
     }
 
     public function canAdd(Business $business, string $resource, int $amount = 1): bool
