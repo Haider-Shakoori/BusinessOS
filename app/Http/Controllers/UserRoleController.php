@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Business;
 use App\Models\BusinessMembership;
 use App\Models\Permission;
 use App\Models\Role;
@@ -14,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
 class UserRoleController extends Controller
@@ -72,7 +72,9 @@ class UserRoleController extends Controller
 
             if (! $user) {
                 if (blank($data['password'] ?? null)) {
-                    abort(422, __('system.users.password_required_for_new_user'));
+                    throw ValidationException::withMessages([
+                        'password' => __('system.users.password_required_for_new_user'),
+                    ]);
                 }
 
                 $user = User::create([
