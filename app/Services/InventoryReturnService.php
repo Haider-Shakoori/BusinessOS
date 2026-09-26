@@ -10,6 +10,7 @@ use App\Models\InventoryReturnItem;
 use App\Models\JournalEntry;
 use App\Models\PosSale;
 use App\Models\PosSaleItem;
+use App\Models\Product;
 use App\Models\PurchaseOrder;
 use App\Models\PurchaseOrderItem;
 use App\Models\StockMovement;
