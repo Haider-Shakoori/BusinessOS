@@ -416,6 +416,38 @@ class AccountingIntegrationReportsTest extends TestCase
         $this->assertCount(1, $ledger['lines']);
     }
 
+    public function test_accounting_page_exposes_fiscal_period_management(): void
+    {
+        $user = $this->user();
+        $business = $this->business($user);
+        $this->actIn($user, $business);
+
+        $this->get('/accounting')
+            ->assertOk()
+            ->assertSee(__('operations.accounting.fiscal_periods'))
+            ->assertSee(route('accounting.fiscal-periods.store'));
+
+        $this->post('/accounting/fiscal-periods', [
+            'name' => 'October 2026',
+            'start_date' => '2026-10-01',
+            'end_date' => '2026-10-31',
+        ])->assertRedirect();
+
+        $period = FiscalPeriod::firstOrFail();
+        $this->assertSame('open', $period->status);
+
+        $this->post('/accounting/fiscal-periods/'.$period->id.'/close', [
+            'note' => 'Month-end complete',
+        ])->assertRedirect();
+
+        $this->assertSame('closed', $period->fresh()->status);
+
+        $this->post('/accounting/fiscal-periods/'.$period->id.'/reopen')
+            ->assertRedirect();
+
+        $this->assertSame('open', $period->fresh()->status);
+    }
+
     public function test_closed_fiscal_period_blocks_manual_and_automatic_postings(): void
     {
         $user = $this->user();
