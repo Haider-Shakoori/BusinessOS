@@ -44,7 +44,6 @@ return [
             'route' => 'quotations.index',
             'module' => 'sales',
             'permission' => 'quotations.view',
-            'depth' => 1,
         ],
         [
             'key' => 'invoices',
@@ -53,7 +52,6 @@ return [
             'route' => 'invoices.index',
             'module' => 'sales',
             'permission' => 'invoices.view',
-            'depth' => 1,
         ],
         [
             'key' => 'payments',
@@ -62,7 +60,6 @@ return [
             'route' => 'payments.index',
             'module' => 'sales',
             'permission' => 'payments.view',
-            'depth' => 1,
         ],
         [
             'key' => 'expenses',
