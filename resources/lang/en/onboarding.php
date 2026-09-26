@@ -128,7 +128,12 @@ return [
         'smart_assistant' => 'AI-powered help and automation',
         'notifications' => 'Get important updates and alerts',
     ],
-    'countries' => ['afghanistan' => 'Afghanistan'],
+    'countries' => [
+        'afghanistan' => 'Afghanistan',
+        'united_arab_emirates' => 'United Arab Emirates',
+        'united_states' => 'United States',
+        'canada' => 'Canada',
+    ],
     'industries' => [
         'retail_wholesale' => 'Retail & Wholesale',
         'services' => 'Services',
