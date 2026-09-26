@@ -82,6 +82,8 @@ return [
         'deleted' => 'Variant removed.',
         'base' => 'Base product',
         'select' => 'Variant',
+        'required_for_stock' => 'Select a variant for this product before changing stock.',
+        'invalid_selection' => 'The selected variant does not belong to this product or is inactive.',
         'no_variant' => 'No variant / base product',
     ],
 
