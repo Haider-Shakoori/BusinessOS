@@ -39,7 +39,6 @@ class FieldPulseIntegrationApiTest extends TestCase
         FieldPulseIntegration::create([
             'business_id' => $businessA->id,
             'organization_key' => 'alpha-fieldpulse',
-            'enabled' => true,
         ]);
         FieldPulseIntegration::create([
             'business_id' => $businessB->id,
@@ -63,13 +62,17 @@ class FieldPulseIntegrationApiTest extends TestCase
             ->assertJsonPath('connected', true)
             ->assertJsonPath('business.id', $businessA->id);
 
-        FieldPulseIntegration::query()
-            ->where('business_id', $businessA->id)
-            ->update(['enabled' => false]);
+        config(['fieldpulse.enabled' => false]);
 
         $this->withHeaders($this->headers('alpha-fieldpulse'))
             ->getJson('/api/fieldpulse/v1/health')
-            ->assertStatus(403);
+            ->assertStatus(503);
+
+        config(['fieldpulse.enabled' => true]);
+
+        $this->withHeaders($this->headers('alpha-fieldpulse'))
+            ->getJson('/api/fieldpulse/v1/health')
+            ->assertOk();
     }
 
     public function test_master_data_is_business_scoped_cursor_paged_and_exposes_default_prices(): void
