@@ -9,6 +9,7 @@ use App\Models\Supplier;
 use App\Models\Warehouse;
 use App\Services\AccountingPostingService;
 use App\Services\BusinessContext;
+use App\Services\ProductVariantService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -21,9 +22,9 @@ class PurchasingController extends Controller
     {
         return view('purchasing.index', [
             'suppliers' => Supplier::query()->orderBy('name')->get(),
-            'products' => Product::query()->orderBy('name')->get(),
+            'products' => Product::query()->with(['variants' => fn ($query) => $query->where('is_active', true)->orderBy('name')])->orderBy('name')->get(),
             'warehouses' => Warehouse::query()->orderBy('name')->get(),
-            'orders' => PurchaseOrder::query()->with(['supplier', 'items.product'])->latest('id')->limit(50)->get(),
+            'orders' => PurchaseOrder::query()->with(['supplier', 'items.product', 'items.variant'])->latest('id')->limit(50)->get(),
         ]);
     }
 
@@ -70,6 +71,7 @@ class PurchasingController extends Controller
                 StockMovement::create([
                     'warehouse_id' => $data['warehouse_id'],
                     'product_id' => $item->product_id,
+                    'product_variant_id' => $item->product_variant_id,
                     'type' => 'purchase',
                     'quantity' => $item->quantity,
                     'unit_cost' => $item->unit_cost,
@@ -87,7 +89,7 @@ class PurchasingController extends Controller
         return back()->with('status', __('operations.purchasing.order_received'));
     }
 
-    public function storeOrder(Request $request, BusinessContext $context): RedirectResponse
+    public function storeOrder(Request $request, BusinessContext $context, ProductVariantService $variants): RedirectResponse
     {
         $data = $request->validate([
             'supplier_id' => ['required', Rule::exists('suppliers', 'id')->where('business_id', $context->currentId())],
@@ -95,12 +97,24 @@ class PurchasingController extends Controller
             'order_date' => ['required', 'date'],
             'expected_date' => ['nullable', 'date', 'after_or_equal:order_date'],
             'product_id' => ['required', Rule::exists('products', 'id')->where('business_id', $context->currentId())],
+            'product_variant_id' => ['nullable', 'integer', Rule::exists('product_variants', 'id')->where('business_id', $context->currentId())],
             'quantity' => ['required', 'numeric', 'gt:0'],
             'unit_cost' => ['required', 'numeric', 'min:0'],
             'notes' => ['nullable', 'string', 'max:2000'],
         ]);
 
-        DB::transaction(function () use ($data): void {
+        $product = Product::findOrFail($data['product_id']);
+
+        try {
+            $variant = $variants->resolve(
+                $product,
+                isset($data['product_variant_id']) ? (int) $data['product_variant_id'] : null,
+            );
+        } catch (\RuntimeException $exception) {
+            return back()->withErrors(['product_variant_id' => $exception->getMessage()])->withInput();
+        }
+
+        DB::transaction(function () use ($data, $variant): void {
             $lineTotal = round((float) $data['quantity'] * (float) $data['unit_cost'], 4);
 
             $order = PurchaseOrder::create([
@@ -116,6 +130,7 @@ class PurchasingController extends Controller
 
             $order->items()->create([
                 'product_id' => $data['product_id'],
+                'product_variant_id' => $variant?->id,
                 'quantity' => $data['quantity'],
                 'unit_cost' => $data['unit_cost'],
                 'line_total' => $lineTotal,
