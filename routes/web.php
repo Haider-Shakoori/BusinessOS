@@ -101,6 +101,10 @@ Route::middleware(['auth', 'auth.session', 'business-selected', 'module:settings
         ->name('settings.attendance-devices.index')
         ->middleware('permission:settings.view');
 
+    Route::post('/settings/attendance-devices/detect', [AttendanceDeviceController::class, 'detect'])
+        ->name('settings.attendance-devices.detect')
+        ->middleware('permission:settings.manage');
+
     Route::post('/settings/attendance-devices', [AttendanceDeviceController::class, 'store'])
         ->name('settings.attendance-devices.store')
         ->middleware('permission:settings.manage');
