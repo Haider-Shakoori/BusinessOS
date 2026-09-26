@@ -6,6 +6,7 @@ use App\Enums\DocumentType;
 use App\Enums\ProductType;
 use App\Models\Account;
 use App\Models\Customer;
+use App\Models\InventoryReturn;
 use App\Models\JournalEntry;
 use App\Models\PosRegister;
 use App\Models\PosSale;
@@ -72,7 +73,16 @@ class PosService
                 ->where('payment_method', 'cash')
                 ->sum('total');
 
-            $expected = round((float) $locked->opening_cash + (float) $cashSales, 4);
+            $cashReturns = InventoryReturn::query()
+                ->join('pos_sales', 'inventory_returns.source_id', '=', 'pos_sales.id')
+                ->where('inventory_returns.type', 'sales')
+                ->where('inventory_returns.status', 'completed')
+                ->where('inventory_returns.source_type', PosSale::class)
+                ->where('pos_sales.pos_shift_id', $locked->id)
+                ->where('pos_sales.payment_method', 'cash')
+                ->sum('inventory_returns.total');
+
+            $expected = round((float) $locked->opening_cash + (float) $cashSales - (float) $cashReturns, 4);
             $variance = round($closingCash - $expected, 4);
 
             $locked->update([
@@ -307,6 +317,15 @@ class PosService
 
             if ($locked->status === 'voided') {
                 return $locked;
+            }
+
+            if (InventoryReturn::query()
+                ->where('type', 'sales')
+                ->where('source_type', PosSale::class)
+                ->where('source_id', $locked->id)
+                ->where('status', 'completed')
+                ->exists()) {
+                throw new RuntimeException(__('pos.errors.sale_has_returns'));
             }
 
             $netSales = round((float) $locked->subtotal - (float) $locked->discount_amount, 4);
