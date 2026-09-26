@@ -7,6 +7,7 @@ return [
     'products' => 'Products',
     'expenses' => 'Expenses',
     'inventory' => 'Inventory',
+    'suppliers' => 'Suppliers',
     'purchasing' => 'Purchasing',
     'pos' => 'POS',
     'accounting' => 'Accounting',
