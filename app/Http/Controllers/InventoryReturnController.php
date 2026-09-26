@@ -29,7 +29,7 @@ class InventoryReturnController extends Controller
         if ($modules->isEnabled('pos') && Gate::allows('pos.view')) {
             $sales = PosSale::query()
                 ->where('status', 'completed')
-                ->with(['items.product', 'register'])
+                ->with(['items.product', 'items.variant', 'register'])
                 ->latest('completed_at')
                 ->limit(50)
                 ->get();
@@ -38,7 +38,7 @@ class InventoryReturnController extends Controller
         if ($modules->isEnabled('purchasing') && Gate::allows('purchasing.view')) {
             $purchases = PurchaseOrder::query()
                 ->where('status', 'received')
-                ->with(['items.product', 'supplier'])
+                ->with(['items.product', 'items.variant', 'supplier'])
                 ->latest('id')
                 ->limit(50)
                 ->get();
@@ -49,7 +49,7 @@ class InventoryReturnController extends Controller
             'purchases' => $purchases,
             'warehouses' => Warehouse::query()->where('is_active', true)->orderBy('name')->get(),
             'returns' => InventoryReturn::query()
-                ->with(['warehouse', 'items.product', 'processor'])
+                ->with(['warehouse', 'items.product', 'items.variant', 'processor'])
                 ->latest('processed_at')
                 ->limit(100)
                 ->get(),
