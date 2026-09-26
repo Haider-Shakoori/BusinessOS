@@ -133,6 +133,35 @@ class InventoryReturnService
 
             $this->assertReturnableQuantity(PurchaseOrderItem::class, $lockedItem->id, (float) $lockedItem->quantity, $quantity);
 
+            $receivedIntoWarehouse = (float) StockMovement::query()
+                ->where('warehouse_id', $warehouse->id)
+                ->where('product_id', $lockedItem->product_id)
+                ->where('type', 'purchase')
+                ->where('reference_type', PurchaseOrder::class)
+                ->where('reference_id', $lockedOrder->id)
+                ->sum('quantity');
+
+            if ($receivedIntoWarehouse <= 0) {
+                throw new RuntimeException(__('operations.returns.errors.wrong_purchase_warehouse'));
+            }
+
+            $alreadyReturnedFromWarehouse = (float) InventoryReturnItem::query()
+                ->where('source_item_type', PurchaseOrderItem::class)
+                ->where('source_item_id', $lockedItem->id)
+                ->whereHas('inventoryReturn', fn ($query) => $query
+                    ->where('status', 'completed')
+                    ->where('type', 'purchase')
+                    ->where('warehouse_id', $warehouse->id))
+                ->sum('quantity');
+
+            if ($quantity > ($receivedIntoWarehouse - $alreadyReturnedFromWarehouse) + 0.00001) {
+                throw new RuntimeException(__('operations.returns.errors.exceeds_original', [
+                    'remaining' => number_format(max(0, $receivedIntoWarehouse - $alreadyReturnedFromWarehouse), 4, '.', ''),
+                ]));
+            }
+
+            Product::query()->whereKey($lockedItem->product_id)->lockForUpdate()->firstOrFail();
+
             $available = (float) StockMovement::query()
                 ->where('warehouse_id', $warehouse->id)
                 ->where('product_id', $lockedItem->product_id)
