@@ -99,10 +99,10 @@ class LandedCostAllocationTest extends TestCase
 
         $this->assertSame(
             '20.0000',
-            (string) StockMovement::query()
+            \App\Support\Decimal::normalize((string) StockMovement::query()
                 ->where('reference_type', GoodsReceipt::class)
                 ->where('reference_id', $receipt->id)
-                ->sum('quantity'),
+                ->sum('quantity')),
         );
     }
 
