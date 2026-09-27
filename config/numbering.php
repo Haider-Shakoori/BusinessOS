@@ -26,6 +26,8 @@ return [
         'expense' => 'EXP',
         'purchase_order' => 'PO',
         'purchase_requisition' => 'PRQ',
+        'request_for_quotation' => 'RFQ',
+        'supplier_quotation' => 'SQT',
         'pos_sale' => 'POS',
         'payroll_run' => 'PRL',
         'warehouse_transfer' => 'TRF',

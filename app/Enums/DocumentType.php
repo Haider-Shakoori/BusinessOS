@@ -26,6 +26,10 @@ enum DocumentType: string
 
     case PurchaseRequisition = 'purchase_requisition';
 
+    case RequestForQuotation = 'request_for_quotation';
+
+    case SupplierQuotation = 'supplier_quotation';
+
     case PosSale = 'pos_sale';
 
     case PayrollRun = 'payroll_run';
