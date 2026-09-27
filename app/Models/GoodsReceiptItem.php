@@ -11,6 +11,7 @@ class GoodsReceiptItem extends Model
         'purchase_order_item_id',
         'product_id',
         'product_variant_id',
+        'stock_movement_id',
         'quantity',
         'unit_cost',
         'line_total',
@@ -33,6 +34,11 @@ class GoodsReceiptItem extends Model
     public function purchaseOrderItem(): BelongsTo
     {
         return $this->belongsTo(PurchaseOrderItem::class);
+    }
+
+    public function stockMovement(): BelongsTo
+    {
+        return $this->belongsTo(StockMovement::class);
     }
 
     public function product(): BelongsTo

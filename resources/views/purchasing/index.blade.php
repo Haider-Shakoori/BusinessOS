@@ -6,6 +6,7 @@
         <div class="flex flex-wrap gap-2">
             <x-ui.button href="{{ route('purchasing.requisitions.index') }}" variant="secondary" icon="document-text">{{ __('operations.purchasing.requisitions') }}</x-ui.button>
             <x-ui.button href="{{ route('purchasing.supplier-invoices.index') }}" variant="secondary" icon="document-text">{{ __('operations.purchasing.supplier_invoices') }}</x-ui.button>
+            <x-ui.button href="{{ route('purchasing.landed-costs.index') }}" variant="secondary" icon="banknotes">{{ __('operations.purchasing.landed_costs') }}</x-ui.button>
             <x-ui.button href="{{ route('suppliers.index') }}" variant="secondary" icon="users">{{ __('suppliers.title') }}</x-ui.button>
         </div>
     </x-slot:actions>
