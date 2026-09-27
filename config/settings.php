@@ -73,6 +73,7 @@ return [
             'payroll_run_prefix' => ['default' => null, 'type' => 'string'],
             'warehouse_transfer_prefix' => ['default' => null, 'type' => 'string'],
             'inventory_return_prefix' => ['default' => null, 'type' => 'string'],
+            'goods_receipt_prefix' => ['default' => null, 'type' => 'string'],
             'padding' => ['default' => null, 'type' => 'integer'],
         ],
 
