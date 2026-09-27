@@ -44,6 +44,11 @@ class PurchaseRequisition extends Model
         return $this->hasMany(PurchaseRequisitionItem::class);
     }
 
+    public function rfqs(): HasMany
+    {
+        return $this->hasMany(PurchaseRfq::class);
+    }
+
     public function requester(): BelongsTo
     {
         return $this->belongsTo(User::class, 'requested_by');
