@@ -29,11 +29,19 @@ class SupplierInvoiceController extends Controller
             ->limit(100)
             ->get();
 
+        $availableByOrder = $orders->mapWithKeys(fn (PurchaseOrder $order): array => [
+            $order->id => $service->availableQuantities($order),
+        ]);
+
+        $orders = $orders
+            ->filter(fn (PurchaseOrder $order): bool => $availableByOrder
+                ->get($order->id, collect())
+                ->contains(fn ($quantity): bool => \App\Support\Decimal::gt((string) $quantity, '0')))
+            ->values();
+
         return view('purchasing.supplier-invoices', [
             'orders' => $orders,
-            'availableByOrder' => $orders->mapWithKeys(fn (PurchaseOrder $order): array => [
-                $order->id => $service->availableQuantities($order),
-            ]),
+            'availableByOrder' => $availableByOrder,
             'invoices' => SupplierInvoice::query()
                 ->with([
                     'purchaseOrder',
