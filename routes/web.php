@@ -492,6 +492,9 @@ Route::middleware(['auth', 'auth.session', 'business-selected', 'module:accounti
     Route::post('/accounting/fiscal-periods/{fiscalPeriod}/reopen', [AccountingController::class, 'reopenFiscalPeriod'])
         ->name('accounting.fiscal-periods.reopen')
         ->middleware('permission:accounting.manage');
+    Route::post('/accounting/fiscal-years/close', [AccountingController::class, 'closeFiscalYear'])
+        ->name('accounting.fiscal-years.close')
+        ->middleware('permission:accounting.manage');
     Route::get('/accounting/banking', [BankingController::class, 'index'])
         ->name('accounting.banking.index')
         ->middleware('permission:accounting.view');

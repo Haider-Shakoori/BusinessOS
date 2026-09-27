@@ -6,11 +6,13 @@ use App\Models\Account;
 use App\Models\AccountingBudget;
 use App\Models\CostCenter;
 use App\Models\FiscalPeriod;
+use App\Models\FiscalYearClose;
 use App\Models\JournalEntry;
 use App\Services\AccountingReportService;
 use App\Services\BudgetVarianceService;
 use App\Services\BusinessContext;
 use App\Services\FiscalPeriodService;
+use App\Services\FiscalYearCloseService;
 use App\Services\FxRevaluationService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -26,6 +28,7 @@ class AccountingController extends Controller
             'accounts' => Account::query()->orderBy('code')->get(),
             'entries' => JournalEntry::query()->with('lines.account')->latest('entry_date')->latest('id')->limit(50)->get(),
             'fiscalPeriods' => FiscalPeriod::query()->latest('start_date')->get(),
+            'fiscalYearCloses' => FiscalYearClose::query()->with(['retainedEarningsAccount', 'closedBy'])->latest('end_date')->get(),
             'costCenters' => CostCenter::query()->orderBy('code')->get(),
             'budgets' => AccountingBudget::query()->with(['lines.account', 'lines.costCenter'])->latest('start_date')->get(),
         ]);
@@ -197,6 +200,26 @@ class AccountingController extends Controller
         $count = $revaluations->revalueOpenReceivables($data['revaluation_date']);
 
         return back()->with('status', __('operations.accounting.fx_revaluation_posted', ['count' => $count]));
+    }
+
+    public function closeFiscalYear(Request $request, FiscalYearCloseService $service): RedirectResponse
+    {
+        $data = $request->validate([
+            'name' => ['required', 'string', 'max:120'],
+            'start_date' => ['required', 'date'],
+            'end_date' => ['required', 'date', 'after_or_equal:start_date'],
+            'note' => ['nullable', 'string', 'max:2000'],
+        ]);
+
+        $service->close(
+            $data['name'],
+            $data['start_date'],
+            $data['end_date'],
+            (int) $request->user()->id,
+            $data['note'] ?? null,
+        );
+
+        return back()->with('status', 'Fiscal year closed and current earnings transferred to retained earnings.');
     }
 
     public function storeFiscalPeriod(Request $request, FiscalPeriodService $periods): RedirectResponse

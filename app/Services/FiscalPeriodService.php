@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\FiscalPeriod;
+use App\Models\FiscalYearClose;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
@@ -74,6 +75,17 @@ class FiscalPeriodService
     {
         return DB::transaction(function () use ($period): FiscalPeriod {
             $locked = FiscalPeriod::query()->lockForUpdate()->findOrFail($period->id);
+
+            $closedYear = FiscalYearClose::query()
+                ->whereDate('start_date', '<=', $locked->end_date)
+                ->whereDate('end_date', '>=', $locked->start_date)
+                ->exists();
+
+            if ($closedYear) {
+                throw ValidationException::withMessages([
+                    'fiscal_period' => 'A period inside a closed fiscal year cannot be reopened.',
+                ]);
+            }
 
             $locked->update([
                 'status' => 'open',

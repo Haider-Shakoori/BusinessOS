@@ -210,6 +210,49 @@
         </x-ui.card>
     </div>
 
+    <div class="mt-5">
+        <x-ui.card>
+            <x-slot:header>
+                <div>
+                    <h2 class="font-semibold text-slate-900 dark:text-white">{{ __('operations.accounting.fiscal_year_close') }}</h2>
+                    <p class="mt-1 text-sm text-slate-500">{{ __('operations.accounting.fiscal_year_close_help') }}</p>
+                </div>
+            </x-slot:header>
+
+            <form method="POST" action="{{ route('accounting.fiscal-years.close') }}" class="grid gap-4 md:grid-cols-5">
+                @csrf
+                <x-ui.input name="name" :label="__('operations.accounting.fiscal_year_name')" required />
+                <x-ui.input name="start_date" type="date" :label="__('operations.accounting.start_date')" required />
+                <x-ui.input name="end_date" type="date" :label="__('operations.accounting.end_date')" required />
+                <x-ui.input name="note" :label="__('operations.accounting.close_note')" />
+                <div class="flex items-end"><x-ui.button type="submit">{{ __('operations.accounting.close_fiscal_year') }}</x-ui.button></div>
+            </form>
+
+            @if($fiscalYearCloses->isNotEmpty())
+                <div class="mt-5 overflow-x-auto">
+                    <x-ui.table>
+                        <x-slot:head><tr>
+                            <x-ui.th>{{ __('operations.accounting.fiscal_year_name') }}</x-ui.th>
+                            <x-ui.th>{{ __('operations.accounting.period_range') }}</x-ui.th>
+                            <x-ui.th>{{ __('operations.accounting.net_income') }}</x-ui.th>
+                            <x-ui.th>{{ __('operations.accounting.retained_earnings') }}</x-ui.th>
+                            <x-ui.th>{{ __('operations.accounting.closed_by') }}</x-ui.th>
+                        </tr></x-slot:head>
+                        @foreach($fiscalYearCloses as $year)
+                            <tr>
+                                <x-ui.td>{{ $year->name }}</x-ui.td>
+                                <x-ui.td>{{ $year->start_date?->format('Y-m-d') }} — {{ $year->end_date?->format('Y-m-d') }}</x-ui.td>
+                                <x-ui.td>{{ $year->net_income }}</x-ui.td>
+                                <x-ui.td>{{ $year->retainedEarningsAccount?->code }} — {{ $year->retainedEarningsAccount?->name }}</x-ui.td>
+                                <x-ui.td>{{ $year->closedBy?->name }}</x-ui.td>
+                            </tr>
+                        @endforeach
+                    </x-ui.table>
+                </div>
+            @endif
+        </x-ui.card>
+    </div>
+
     <div class="mt-5 grid gap-5 xl:grid-cols-2">
         <x-ui.card>
             <x-slot:header><h2 class="font-semibold text-slate-900 dark:text-white">{{ __('operations.accounting.chart') }}</h2></x-slot:header>
