@@ -91,6 +91,11 @@ class Payment extends Model
         return $this->hasMany(PaymentAllocation::class);
     }
 
+    public function supplierAllocations(): HasMany
+    {
+        return $this->hasMany(SupplierPaymentAllocation::class);
+    }
+
     /**
      * The authenticated user who recorded the payment. Users are never
      * removed, so no withTrashed() is needed (mirrors Invoice::createdBy).
