@@ -28,9 +28,18 @@ class ConsolidatedAccountingController extends Controller
             ->values()
             ->all();
 
+        $manageableBusinessIds = BusinessMembership::query()
+            ->where('user_id', $request->user()->id)
+            ->whereIn('business_id', $selectedIds)
+            ->get()
+            ->filter(fn (BusinessMembership $membership): bool => $membership->hasPermission('accounting.manage'))
+            ->pluck('business_id');
+
         return view('accounting.consolidated', [
             'availableBusinesses' => $available,
             'selectedIds' => $selectedIds,
+            'canManageConsolidation' => count($selectedIds) >= 2
+                && $manageableBusinessIds->count() === collect($selectedIds)->unique()->count(),
             'dateFrom' => $data['date_from'] ?? null,
             'dateTo' => $data['date_to'] ?? null,
             'report' => $reports->report($selectedIds, $data['date_from'] ?? null, $data['date_to'] ?? null),
