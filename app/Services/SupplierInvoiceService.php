@@ -54,6 +54,7 @@ class SupplierInvoiceService
                 ->filter(fn (array $item): bool => Decimal::gt((string) $item['quantity'], '0'))
                 ->mapWithKeys(fn (array $item): array => [(int) $item['purchase_order_item_id'] => $item]);
 
+            $received = $this->receivedQuantities($order);
             $available = $this->availableQuantities($order);
 
             if ($inputs->isEmpty()) {
@@ -122,6 +123,8 @@ class SupplierInvoiceService
                     'product_id' => $orderItem->product_id,
                     'product_variant_id' => $orderItem->product_variant_id,
                     'quantity' => $quantity,
+                    'received_quantity_snapshot' => $received->get($orderItem->id, '0.0000'),
+                    'available_quantity_snapshot' => $available->get($orderItem->id, '0.0000'),
                     'unit_cost' => $unitCost,
                     'line_total' => $lineTotal,
                     'po_unit_cost' => $orderItem->unit_cost,
