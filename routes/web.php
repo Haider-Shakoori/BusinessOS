@@ -454,6 +454,15 @@ Route::middleware(['auth', 'auth.session', 'business-selected', 'module:accounti
     Route::post('/accounting/cost-centers', [AccountingController::class, 'storeCostCenter'])
         ->name('accounting.cost-centers.store')
         ->middleware('permission:accounting.manage');
+    Route::post('/accounting/budgets', [AccountingController::class, 'storeBudget'])
+        ->name('accounting.budgets.store')
+        ->middleware('permission:accounting.manage');
+    Route::post('/accounting/budgets/{accountingBudget}/lines', [AccountingController::class, 'storeBudgetLine'])
+        ->name('accounting.budgets.lines.store')
+        ->middleware('permission:accounting.manage');
+    Route::get('/accounting/budgets/{accountingBudget}/report', [AccountingController::class, 'budgetReport'])
+        ->name('accounting.budgets.report')
+        ->middleware('permission:accounting.view');
     Route::post('/accounting/journals', [AccountingController::class, 'storeJournal'])
         ->name('accounting.journals.store')
         ->middleware('permission:accounting.manage');
