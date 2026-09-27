@@ -56,6 +56,57 @@
         <x-ui.card>
             <x-slot:header>
                 <div>
+                    <h2 class="font-semibold text-slate-900 dark:text-white">{{ __('operations.accounting.budgets') }}</h2>
+                    <p class="mt-1 text-sm text-slate-500">{{ __('operations.accounting.budgets_help') }}</p>
+                </div>
+            </x-slot:header>
+            <form method="POST" action="{{ route('accounting.budgets.store') }}" class="grid gap-4 md:grid-cols-3 xl:grid-cols-6">
+                @csrf
+                <x-ui.input name="name" :label="__('operations.accounting.budget_name')" required />
+                <x-ui.input name="start_date" type="date" :label="__('operations.accounting.start_date')" required />
+                <x-ui.input name="end_date" type="date" :label="__('operations.accounting.end_date')" required />
+                <x-ui.select name="account_id" :label="__('operations.accounting.account')" required>
+                    @foreach($accounts as $account)<option value="{{ $account->id }}">{{ $account->code }} — {{ $account->name }}</option>@endforeach
+                </x-ui.select>
+                <x-ui.select name="cost_center_id" :label="__('operations.accounting.cost_center')">
+                    <option value="">{{ __('operations.accounting.all_cost_centers') }}</option>
+                    @foreach($costCenters as $costCenter)<option value="{{ $costCenter->id }}">{{ $costCenter->code }} — {{ $costCenter->name }}</option>@endforeach
+                </x-ui.select>
+                <x-ui.input name="amount" type="number" step="0.0001" min="0" :label="__('operations.accounting.budget_amount')" required />
+                <div class="xl:col-span-6 flex justify-end"><x-ui.button type="submit" icon="plus">{{ __('operations.accounting.create_budget') }}</x-ui.button></div>
+            </form>
+
+            @if($budgets->isNotEmpty())
+                <div class="mt-5 space-y-4">
+                    @foreach($budgets as $budget)
+                        <div class="rounded-lg border border-slate-200 p-4 dark:border-slate-700">
+                            <div class="flex flex-wrap items-center justify-between gap-3">
+                                <div><div class="font-semibold text-slate-900 dark:text-white">{{ $budget->name }}</div><div class="text-sm text-slate-500">{{ $budget->start_date->format('Y-m-d') }} — {{ $budget->end_date->format('Y-m-d') }}</div></div>
+                                <x-ui.button href="{{ route('accounting.budgets.report', $budget) }}" variant="secondary">{{ __('operations.accounting.view_variance') }}</x-ui.button>
+                            </div>
+                            <form method="POST" action="{{ route('accounting.budgets.lines.store', $budget) }}" class="mt-4 grid gap-3 md:grid-cols-4">
+                                @csrf
+                                <x-ui.select name="account_id" :label="__('operations.accounting.account')" required>
+                                    @foreach($accounts as $account)<option value="{{ $account->id }}">{{ $account->code }} — {{ $account->name }}</option>@endforeach
+                                </x-ui.select>
+                                <x-ui.select name="cost_center_id" :label="__('operations.accounting.cost_center')">
+                                    <option value="">{{ __('operations.accounting.all_cost_centers') }}</option>
+                                    @foreach($costCenters as $costCenter)<option value="{{ $costCenter->id }}">{{ $costCenter->code }} — {{ $costCenter->name }}</option>@endforeach
+                                </x-ui.select>
+                                <x-ui.input name="amount" type="number" step="0.0001" min="0" :label="__('operations.accounting.budget_amount')" required />
+                                <div class="flex items-end"><x-ui.button type="submit">{{ __('operations.accounting.save_budget_line') }}</x-ui.button></div>
+                            </form>
+                        </div>
+                    @endforeach
+                </div>
+            @endif
+        </x-ui.card>
+    </div>
+
+    <div class="mt-5">
+        <x-ui.card>
+            <x-slot:header>
+                <div>
                     <h2 class="font-semibold text-slate-900 dark:text-white">{{ __('operations.accounting.cost_centers') }}</h2>
                     <p class="mt-1 text-sm text-slate-500">{{ __('operations.accounting.cost_centers_help') }}</p>
                 </div>
