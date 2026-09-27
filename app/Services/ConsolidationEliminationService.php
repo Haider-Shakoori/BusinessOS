@@ -38,7 +38,7 @@ class ConsolidationEliminationService
                 $credits = Decimal::add($credits, $credit);
             }
 
-            if (Decimal::cmp($debits, $credits) !== 0) {
+            if (! Decimal::eq($debits, $credits)) {
                 throw ValidationException::withMessages(['lines' => 'Consolidation elimination debits and credits must balance.']);
             }
 
