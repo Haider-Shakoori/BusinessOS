@@ -9,6 +9,7 @@ use App\Http\Controllers\AttendanceDeviceController;
 use App\Http\Controllers\BankingController;
 use App\Http\Controllers\BusinessController;
 use App\Http\Controllers\BusinessWorkspaceController;
+use App\Http\Controllers\ConsolidatedAccountingController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CrmController;
 use App\Http\Controllers\CurrencySettingsController;
@@ -448,6 +449,9 @@ Route::middleware(['auth', 'auth.session', 'business-selected', 'module:purchasi
 Route::middleware(['auth', 'auth.session', 'business-selected', 'module:accounting'])->group(function () {
     Route::get('/accounting/aging', [AgingReportController::class, 'index'])
         ->name('accounting.aging.index')
+        ->middleware('permission:accounting.view');
+    Route::get('/accounting/combined', [ConsolidatedAccountingController::class, 'index'])
+        ->name('accounting.combined.index')
         ->middleware('permission:accounting.view');
     Route::post('/accounting/credit-notes/invoices/{invoice}', [AccountAdjustmentNoteController::class, 'customerCredit'])
         ->name('accounting.credit-notes.store')
