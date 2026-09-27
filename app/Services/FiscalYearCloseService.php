@@ -13,11 +13,15 @@ use Illuminate\Validation\ValidationException;
 
 class FiscalYearCloseService
 {
+    public function __construct(private readonly FinancialCloseReadinessService $readiness) {}
+
     public function close(string $name, string $startDate, string $endDate, int $userId, ?string $note = null): FiscalYearClose
     {
         if ($startDate > $endDate) {
             throw ValidationException::withMessages(['end_date' => 'Fiscal year end date must be on or after the start date.']);
         }
+
+        $this->readiness->assertNoStructuralBlockers($startDate, $endDate);
 
         return DB::transaction(function () use ($name, $startDate, $endDate, $userId, $note): FiscalYearClose {
             if (FiscalYearClose::query()
