@@ -141,25 +141,23 @@ class ConsolidatedAccountingReportService
         $consolidated['total_liabilities'] = Decimal::add($combined['total_liabilities'], $adjustments['liability']);
         $consolidated['total_equity'] = Decimal::add($combined['total_equity'], $adjustments['equity']);
         $currentEarningsAdjustment = '0.0000';
+        $groupEarningsFrom = $rows->pluck('earnings_from')->filter()->max();
+
         foreach ($eliminations as $elimination) {
-            foreach ($rows as $row) {
-                $earningsFrom = $row['earnings_from'];
-                if ($earningsFrom !== null && $elimination->effective_date->toDateString() < $earningsFrom) {
+            if ($groupEarningsFrom !== null && $elimination->effective_date->toDateString() < $groupEarningsFrom) {
+                continue;
+            }
+
+            foreach ($elimination->lines as $line) {
+                if (! in_array($line->statement_type, ['income', 'expense'], true)) {
                     continue;
                 }
 
-                foreach ($elimination->lines as $line) {
-                    if (! in_array($line->statement_type, ['income', 'expense'], true)) {
-                        continue;
-                    }
-
-                    $normal = $line->statement_type === 'expense'
-                        ? Decimal::sub((string) $line->debit, (string) $line->credit)
-                        : Decimal::sub((string) $line->credit, (string) $line->debit);
-                    $profitEffect = $line->statement_type === 'income' ? $normal : Decimal::sub('0', $normal);
-                    $currentEarningsAdjustment = Decimal::add($currentEarningsAdjustment, $profitEffect);
-                    break;
-                }
+                $normal = $line->statement_type === 'expense'
+                    ? Decimal::sub((string) $line->debit, (string) $line->credit)
+                    : Decimal::sub((string) $line->credit, (string) $line->debit);
+                $profitEffect = $line->statement_type === 'income' ? $normal : Decimal::sub('0', $normal);
+                $currentEarningsAdjustment = Decimal::add($currentEarningsAdjustment, $profitEffect);
             }
         }
 
