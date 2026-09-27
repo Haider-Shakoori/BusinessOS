@@ -10,7 +10,7 @@ class AccountAdjustmentNote extends Model
 {
     use BelongsToBusiness;
 
-    protected $fillable = ['type', 'invoice_id', 'purchase_order_id', 'note_date', 'amount', 'base_amount', 'currency_code', 'reason', 'status'];
+    protected $fillable = ['type', 'invoice_id', 'purchase_order_id', 'note_date', 'amount', 'base_amount', 'currency_code', 'reason', 'status', 'created_by'];
 
     protected function casts(): array
     {
