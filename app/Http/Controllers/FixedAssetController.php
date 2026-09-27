@@ -99,7 +99,7 @@ class FixedAssetController extends Controller
             'acquisition_date' => ['required', 'date'],
             'in_service_date' => ['required', 'date', 'after_or_equal:acquisition_date'],
             'acquisition_cost' => ['required', 'numeric', 'gt:0'],
-            'salvage_value' => ['nullable', 'numeric', 'gte:0'],
+            'salvage_value' => ['nullable', 'numeric', 'gte:0', 'lte:acquisition_cost'],
             'useful_life_months' => ['required', 'integer', 'min:1', 'max:1200'],
             'depreciation_method' => ['required', Rule::in(['straight_line', 'declining_balance'])],
             'payment_method' => ['required', Rule::in(['cash', 'bank_transfer', 'card', 'other'])],
