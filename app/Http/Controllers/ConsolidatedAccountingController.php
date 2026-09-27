@@ -36,6 +36,7 @@ class ConsolidatedAccountingController extends Controller
             'report' => $reports->report($selectedIds, $data['date_from'] ?? null, $data['date_to'] ?? null),
         ]);
     }
+
     public function storeElimination(
         Request $request,
         ConsolidatedAccountingReportService $reports,
@@ -64,17 +65,21 @@ class ConsolidatedAccountingController extends Controller
 
     public function reverseElimination(
         Request $request,
-        ConsolidationElimination $consolidationElimination,
+        int $consolidationElimination,
         ConsolidatedAccountingReportService $reports,
         ConsolidationEliminationService $eliminations,
     ): RedirectResponse {
-        $businessIds = collect(explode(':', $consolidationElimination->group_key))
+        $elimination = ConsolidationElimination::query()
+            ->withoutGlobalScope('business')
+            ->findOrFail($consolidationElimination);
+
+        $businessIds = collect(explode(':', $elimination->group_key))
             ->map(fn ($id): int => (int) $id)
             ->all();
 
         $this->assertCanManageEveryBusiness($request, $businessIds);
         $reports->report($businessIds);
-        $eliminations->reverse($consolidationElimination, (int) $request->user()->id);
+        $eliminations->reverse($elimination, (int) $request->user()->id);
 
         return back()->with('status', 'Intercompany elimination reversed.');
     }
@@ -95,5 +100,4 @@ class ConsolidatedAccountingController extends Controller
             }
         }
     }
-
 }
