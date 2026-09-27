@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Account;
 use App\Models\AccountAdjustmentNote;
+use App\Models\InventoryReturn;
 use App\Models\Invoice;
 use App\Models\JournalEntry;
 use App\Models\PurchaseOrder;
@@ -63,7 +64,13 @@ class AccountAdjustmentNoteService
             $amount = Decimal::normalize($amount);
             $existing = Decimal::normalize((string) AccountAdjustmentNote::query()
                 ->where('type', 'supplier_debit')->where('purchase_order_id', $locked->id)->where('status', 'posted')->sum('base_amount'));
-            if (Decimal::gt(Decimal::add($existing, $amount), (string) $locked->total)) {
+            $returns = Decimal::normalize((string) InventoryReturn::query()
+                ->where('type', 'purchase')
+                ->where('source_type', PurchaseOrder::class)
+                ->where('source_id', $locked->id)
+                ->where('status', 'completed')
+                ->sum('total'));
+            if (Decimal::gt(Decimal::add(Decimal::add($existing, $returns), $amount), (string) $locked->total)) {
                 throw ValidationException::withMessages(['amount' => 'Debit notes cannot exceed the purchase order total.']);
             }
 
