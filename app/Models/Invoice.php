@@ -86,7 +86,6 @@ class Invoice extends Model
             'amount_paid' => 'decimal:4',
             'amount_due' => 'decimal:4',
             'base_amount' => 'decimal:4',
-            'exchange_rate' => 'decimal:8',
         ];
     }
 
