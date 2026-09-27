@@ -10,6 +10,7 @@ use App\Models\Invoice;
 use App\Models\Payment;
 use App\Models\PaymentAllocation;
 use App\Models\PurchaseOrder;
+use App\Models\SupplierInvoice;
 use App\Support\Decimal;
 use Carbon\CarbonImmutable;
 
@@ -76,9 +77,11 @@ class AgingReportService
         $rows = [];
         $totals = $this->emptyBuckets();
         $date = CarbonImmutable::parse($asOf);
+        $documents = collect();
 
-        $orders = PurchaseOrder::query()
+        $legacyOrders = PurchaseOrder::query()
             ->with('supplier')
+            ->where('ap_recognition', 'receipt')
             ->whereIn('status', ['partially_received', 'received'])
             ->whereDate('order_date', '<=', $asOf)
             ->orderBy('supplier_id')
@@ -86,7 +89,85 @@ class AgingReportService
             ->orderBy('id')
             ->get();
 
-        foreach ($orders->groupBy('supplier_id') as $supplierId => $supplierOrders) {
+        foreach ($legacyOrders as $order) {
+            $receiptQuery = GoodsReceipt::query()
+                ->where('purchase_order_id', $order->id)
+                ->where('status', 'posted')
+                ->whereDate('receipt_date', '<=', $asOf);
+
+            $hasReceipts = (clone $receiptQuery)->exists();
+            $purchased = $hasReceipts
+                ? Decimal::normalize((string) (clone $receiptQuery)->sum('total'))
+                : ($order->status === 'received' ? Decimal::normalize((string) $order->total) : '0.0000');
+
+            if (! Decimal::gt($purchased, '0')) {
+                continue;
+            }
+
+            $returns = Decimal::normalize((string) InventoryReturn::query()
+                ->where('type', 'purchase')
+                ->where('source_type', PurchaseOrder::class)
+                ->where('source_id', $order->id)
+                ->where('status', 'completed')
+                ->whereDate('processed_at', '<=', $asOf)
+                ->sum('total'));
+
+            $debitNotes = Decimal::normalize((string) AccountAdjustmentNote::query()
+                ->where('type', 'supplier_debit')
+                ->where('purchase_order_id', $order->id)
+                ->where('status', 'posted')
+                ->whereDate('note_date', '<=', $asOf)
+                ->sum('base_amount'));
+
+            $amount = Decimal::sub(Decimal::sub($purchased, $returns), $debitNotes);
+
+            if (! Decimal::gt($amount, '0')) {
+                continue;
+            }
+
+            $documentDate = $order->order_date->toDateString();
+            $dueDate = ($order->expected_date ?? $order->order_date)->toDateString();
+
+            $documents->push([
+                'supplier_id' => $order->supplier_id,
+                'party' => $order->supplier?->name ?? '—',
+                'document' => $order->number,
+                'document_date' => $documentDate,
+                'due_date' => $dueDate,
+                'amount' => $amount,
+                'sort_date' => $documentDate,
+                'sort_id' => $order->id,
+            ]);
+        }
+
+        $supplierInvoices = SupplierInvoice::query()
+            ->with('supplier')
+            ->where('status', 'approved')
+            ->whereDate('approved_at', '<=', $asOf)
+            ->whereDate('invoice_date', '<=', $asOf)
+            ->whereHas('purchaseOrder', fn ($query) => $query->where('ap_recognition', 'invoice'))
+            ->orderBy('supplier_id')
+            ->orderBy('invoice_date')
+            ->orderBy('id')
+            ->get();
+
+        foreach ($supplierInvoices as $invoice) {
+            $documentDate = $invoice->invoice_date->toDateString();
+            $dueDate = ($invoice->due_date ?? $invoice->invoice_date)->toDateString();
+
+            $documents->push([
+                'supplier_id' => $invoice->supplier_id,
+                'party' => $invoice->supplier?->name ?? '—',
+                'document' => $invoice->number,
+                'document_date' => $documentDate,
+                'due_date' => $dueDate,
+                'amount' => Decimal::normalize((string) $invoice->total),
+                'sort_date' => $documentDate,
+                'sort_id' => $invoice->id,
+            ]);
+        }
+
+        foreach ($documents->groupBy('supplier_id') as $supplierId => $supplierDocuments) {
             $remainingPayments = Decimal::normalize((string) Payment::query()
                 ->where('party_type', 'supplier')
                 ->where('party_id', $supplierId)
@@ -97,58 +178,34 @@ class AgingReportService
                 })
                 ->sum('base_amount'));
 
-            foreach ($supplierOrders as $order) {
-                $receiptQuery = GoodsReceipt::query()
-                    ->where('purchase_order_id', $order->id)
-                    ->where('status', 'posted')
-                    ->whereDate('receipt_date', '<=', $asOf);
+            $supplierDocuments = $supplierDocuments
+                ->sortBy(fn (array $document): string => $document['sort_date'].'-'.str_pad((string) $document['sort_id'], 12, '0', STR_PAD_LEFT))
+                ->values();
 
-                $hasReceipts = (clone $receiptQuery)->exists();
-                $purchased = $hasReceipts
-                    ? Decimal::normalize((string) (clone $receiptQuery)->sum('total'))
-                    : ($order->status === 'received' ? Decimal::normalize((string) $order->total) : '0.0000');
+            foreach ($supplierDocuments as $document) {
+                $amount = $document['amount'];
 
-                if (! Decimal::gt($purchased, '0')) {
-                    continue;
-                }
-
-                $returns = Decimal::normalize((string) InventoryReturn::query()
-                    ->where('type', 'purchase')
-                    ->where('source_type', PurchaseOrder::class)
-                    ->where('source_id', $order->id)
-                    ->where('status', 'completed')
-                    ->whereDate('processed_at', '<=', $asOf)
-                    ->sum('total'));
-
-                $debitNotes = Decimal::normalize((string) AccountAdjustmentNote::query()
-                    ->where('type', 'supplier_debit')
-                    ->where('purchase_order_id', $order->id)
-                    ->where('status', 'posted')
-                    ->whereDate('note_date', '<=', $asOf)
-                    ->sum('base_amount'));
-
-                $amount = Decimal::sub(Decimal::sub($purchased, $returns), $debitNotes);
                 if (Decimal::gt($remainingPayments, '0')) {
                     $applied = Decimal::gt($remainingPayments, $amount) ? $amount : $remainingPayments;
                     $amount = Decimal::sub($amount, $applied);
                     $remainingPayments = Decimal::sub($remainingPayments, $applied);
                 }
 
-                if (Decimal::gt($amount, '0') === false) {
+                if (! Decimal::gt($amount, '0')) {
                     continue;
                 }
 
-                $dueDate = CarbonImmutable::parse(($order->expected_date ?? $order->order_date)->toDateString());
+                $dueDate = CarbonImmutable::parse($document['due_date']);
                 $days = max(0, $dueDate->diffInDays($date, false));
                 $bucket = $this->bucket($days);
                 $totals[$bucket] = Decimal::add($totals[$bucket], $amount);
                 $totals['total'] = Decimal::add($totals['total'], $amount);
 
                 $rows[] = [
-                    'party' => $order->supplier?->name ?? '—',
-                    'document' => $order->number,
-                    'document_date' => $order->order_date->toDateString(),
-                    'due_date' => $dueDate->toDateString(),
+                    'party' => $document['party'],
+                    'document' => $document['document'],
+                    'document_date' => $document['document_date'],
+                    'due_date' => $document['due_date'],
                     'days_overdue' => $days,
                     'bucket' => $bucket,
                     'amount' => $amount,
