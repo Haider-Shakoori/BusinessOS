@@ -248,6 +248,8 @@ class AccountingPostingService
         string $description,
         array $lines,
     ): JournalEntry {
+        app(FiscalPeriodService::class)->assertPostingAllowed($date);
+
         return DB::transaction(function () use ($sourceType, $sourceId, $eventKey, $number, $date, $description, $lines): JournalEntry {
             $existing = AccountingPosting::query()
                 ->where('source_type', $sourceType)
@@ -327,10 +329,12 @@ class AccountingPostingService
 
             $original = $posting->journalEntry;
             $number = mb_substr('REV-'.$original->number, 0, 80);
+            $reversalDate = now()->toDateString();
+            app(FiscalPeriodService::class)->assertPostingAllowed($reversalDate);
 
             $reversal = JournalEntry::create([
                 'number' => $number,
-                'entry_date' => now()->toDateString(),
+                'entry_date' => $reversalDate,
                 'status' => 'posted',
                 'description' => $reason.' — reversal of '.$original->number,
                 'source_type' => 'reversal:'.$sourceType,

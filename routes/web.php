@@ -454,6 +454,15 @@ Route::middleware(['auth', 'auth.session', 'business-selected', 'module:accounti
     Route::post('/accounting/journals', [AccountingController::class, 'storeJournal'])
         ->name('accounting.journals.store')
         ->middleware('permission:accounting.manage');
+    Route::post('/accounting/fiscal-periods', [AccountingController::class, 'storeFiscalPeriod'])
+        ->name('accounting.fiscal-periods.store')
+        ->middleware('permission:accounting.manage');
+    Route::post('/accounting/fiscal-periods/{fiscalPeriod}/close', [AccountingController::class, 'closeFiscalPeriod'])
+        ->name('accounting.fiscal-periods.close')
+        ->middleware('permission:accounting.manage');
+    Route::post('/accounting/fiscal-periods/{fiscalPeriod}/reopen', [AccountingController::class, 'reopenFiscalPeriod'])
+        ->name('accounting.fiscal-periods.reopen')
+        ->middleware('permission:accounting.manage');
 });
 
 Route::middleware(['auth', 'auth.session', 'business-selected', 'module:crm'])->group(function () {
