@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\AccountAdjustmentNote;
 use App\Models\InventoryReturn;
 use App\Models\Payment;
 use App\Models\PurchaseOrder;
@@ -38,6 +39,18 @@ final class SupplierLedgerService
             ->sum('total'));
     }
 
+
+    public function totalDebitNotes(Supplier $supplier): string
+    {
+        $orderIds = $supplier->purchaseOrders()->pluck('id');
+
+        return Decimal::normalize((string) AccountAdjustmentNote::query()
+            ->where('type', 'supplier_debit')
+            ->where('status', 'posted')
+            ->whereIn('purchase_order_id', $orderIds)
+            ->sum('base_amount'));
+    }
+
     public function totalPaid(Supplier $supplier): string
     {
         return Decimal::normalize((string) Payment::query()
@@ -54,7 +67,7 @@ final class SupplierLedgerService
                 Decimal::add($this->openingBalance($supplier), $this->totalPurchased($supplier)),
                 $this->totalReturned($supplier),
             ),
-            $this->totalPaid($supplier),
+            Decimal::add($this->totalPaid($supplier), $this->totalDebitNotes($supplier)),
         );
     }
 
