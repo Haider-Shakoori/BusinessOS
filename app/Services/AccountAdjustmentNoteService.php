@@ -61,6 +61,12 @@ class AccountAdjustmentNoteService
                 throw ValidationException::withMessages(['purchase_order_id' => 'Only received purchase orders can receive a debit note.']);
             }
 
+            if ($locked->ap_recognition === 'invoice') {
+                throw ValidationException::withMessages([
+                    'purchase_order_id' => 'Invoice-recognition purchase orders require supplier-invoice adjustments rather than PO debit notes.',
+                ]);
+            }
+
             $amount = Decimal::normalize($amount);
             $existing = Decimal::normalize((string) AccountAdjustmentNote::query()
                 ->where('type', 'supplier_debit')->where('purchase_order_id', $locked->id)->where('status', 'posted')->sum('base_amount'));
