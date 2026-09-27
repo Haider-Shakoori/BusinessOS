@@ -8,6 +8,7 @@ use App\Models\InventoryReturn;
 use App\Models\Payment;
 use App\Models\PurchaseOrder;
 use App\Models\Supplier;
+use App\Models\SupplierInvoice;
 use App\Support\Decimal;
 
 final class SupplierLedgerService
@@ -19,34 +20,41 @@ final class SupplierLedgerService
 
     public function totalPurchased(Supplier $supplier): string
     {
-        $orderIds = $supplier->purchaseOrders()->pluck('id');
-
-        if ($orderIds->isEmpty()) {
-            return '0.0000';
-        }
+        $legacyOrderIds = $supplier->purchaseOrders()
+            ->where('ap_recognition', 'receipt')
+            ->pluck('id');
 
         $receiptOrderIds = GoodsReceipt::query()
-            ->whereIn('purchase_order_id', $orderIds)
+            ->whereIn('purchase_order_id', $legacyOrderIds)
             ->where('status', 'posted')
             ->distinct()
             ->pluck('purchase_order_id');
 
         $receiptTotal = Decimal::normalize((string) GoodsReceipt::query()
-            ->whereIn('purchase_order_id', $orderIds)
+            ->whereIn('purchase_order_id', $legacyOrderIds)
             ->where('status', 'posted')
             ->sum('total'));
 
         $legacyTotal = Decimal::normalize((string) $supplier->purchaseOrders()
+            ->where('ap_recognition', 'receipt')
             ->where('status', 'received')
             ->when($receiptOrderIds->isNotEmpty(), fn ($query) => $query->whereNotIn('id', $receiptOrderIds))
             ->sum('total'));
 
-        return Decimal::add($receiptTotal, $legacyTotal);
+        $invoiceTotal = Decimal::normalize((string) SupplierInvoice::query()
+            ->where('supplier_id', $supplier->id)
+            ->where('status', 'approved')
+            ->whereHas('purchaseOrder', fn ($query) => $query->where('ap_recognition', 'invoice'))
+            ->sum('total'));
+
+        return Decimal::add(Decimal::add($receiptTotal, $legacyTotal), $invoiceTotal);
     }
 
     public function totalReturned(Supplier $supplier): string
     {
-        $orderIds = $supplier->purchaseOrders()->pluck('id');
+        $orderIds = $supplier->purchaseOrders()
+            ->where('ap_recognition', 'receipt')
+            ->pluck('id');
 
         if ($orderIds->isEmpty()) {
             return '0.0000';
@@ -62,7 +70,9 @@ final class SupplierLedgerService
 
     public function totalDebitNotes(Supplier $supplier): string
     {
-        $orderIds = $supplier->purchaseOrders()->pluck('id');
+        $orderIds = $supplier->purchaseOrders()
+            ->where('ap_recognition', 'receipt')
+            ->pluck('id');
 
         return Decimal::normalize((string) AccountAdjustmentNote::query()
             ->where('type', 'supplier_debit')
@@ -236,12 +246,15 @@ final class SupplierLedgerService
         $orders = $supplier->purchaseOrders()
             ->orderBy('order_date')
             ->orderBy('id')
-            ->get(['id', 'number', 'status', 'order_date', 'total', 'notes']);
+            ->get(['id', 'number', 'status', 'ap_recognition', 'order_date', 'total', 'notes']);
 
-        $orderIds = $orders->pluck('id');
+        $legacyOrders = $orders->where('ap_recognition', 'receipt');
+        $invoiceOrders = $orders->where('ap_recognition', 'invoice');
+        $legacyOrderIds = $legacyOrders->pluck('id');
+        $invoiceOrderIds = $invoiceOrders->pluck('id');
 
         $receipts = GoodsReceipt::query()
-            ->whereIn('purchase_order_id', $orderIds)
+            ->whereIn('purchase_order_id', $legacyOrderIds)
             ->where('status', 'posted')
             ->with('purchaseOrder:id,number')
             ->orderBy('receipt_date')
@@ -264,7 +277,7 @@ final class SupplierLedgerService
 
         $receiptOrderIds = $receipts->pluck('purchase_order_id')->unique();
 
-        foreach ($orders->where('status', 'received')->whereNotIn('id', $receiptOrderIds) as $order) {
+        foreach ($legacyOrders->where('status', 'received')->whereNotIn('id', $receiptOrderIds) as $order) {
             $entries[] = [
                 'date' => $order->order_date?->format('Y-m-d'),
                 'type' => 'purchase',
@@ -278,12 +291,33 @@ final class SupplierLedgerService
             ];
         }
 
-        if ($orderIds->isNotEmpty()) {
+        if ($invoiceOrderIds->isNotEmpty()) {
+            foreach (SupplierInvoice::query()
+                ->whereIn('purchase_order_id', $invoiceOrderIds)
+                ->where('status', 'approved')
+                ->orderBy('invoice_date')
+                ->orderBy('id')
+                ->get() as $invoice) {
+                $entries[] = [
+                    'date' => $invoice->invoice_date?->format('Y-m-d'),
+                    'type' => 'purchase',
+                    'reference' => (string) $invoice->number,
+                    'description' => $invoice->supplier_invoice_number,
+                    'debit' => '0.0000',
+                    'credit' => Decimal::normalize((string) $invoice->total),
+                    'balance' => '0.0000',
+                    'reversed' => false,
+                    'sort' => $sort++,
+                ];
+            }
+        }
+
+        if ($legacyOrderIds->isNotEmpty()) {
             foreach (InventoryReturn::query()
                 ->where('type', 'purchase')
                 ->where('status', 'completed')
                 ->where('source_type', PurchaseOrder::class)
-                ->whereIn('source_id', $orderIds)
+                ->whereIn('source_id', $legacyOrderIds)
                 ->orderBy('processed_at')
                 ->orderBy('id')
                 ->get() as $return) {
@@ -301,11 +335,11 @@ final class SupplierLedgerService
             }
         }
 
-        if ($orderIds->isNotEmpty()) {
+        if ($legacyOrderIds->isNotEmpty()) {
             foreach (AccountAdjustmentNote::query()
                 ->where('type', 'supplier_debit')
                 ->where('status', 'posted')
-                ->whereIn('purchase_order_id', $orderIds)
+                ->whereIn('purchase_order_id', $legacyOrderIds)
                 ->orderBy('note_date')
                 ->orderBy('id')
                 ->get() as $note) {

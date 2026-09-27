@@ -62,6 +62,7 @@ class ProcureToPayReceiptTest extends TestCase
 
         $this->assertSame('PO-000001', $order->number);
         $this->assertSame('ordered', $order->status);
+        $this->assertSame('invoice', $order->ap_recognition);
         $this->assertSame($quote->supplier_id, $order->supplier_id);
         $this->assertSame($quote->id, $order->supplier_quotation_id);
         $this->assertSame($rfq->id, $order->purchase_rfq_id);
@@ -123,11 +124,11 @@ class ProcureToPayReceiptTest extends TestCase
         $this->assertSame('1.0000', $movement->quantity);
 
         $summary = app(SupplierLedgerService::class)->summary($supplier);
-        $this->assertSame('100.0000', $summary['total_purchased']);
-        $this->assertSame('100.0000', $summary['outstanding_balance']);
+        $this->assertSame('0.0000', $summary['total_purchased']);
+        $this->assertSame('0.0000', $summary['outstanding_balance']);
 
         $aging = app(AgingReportService::class)->payables('2026-09-30');
-        $this->assertSame('100.0000', $aging['totals']['total']);
+        $this->assertSame('0.0000', $aging['totals']['total']);
 
         $posting = AccountingPosting::query()
             ->where('source_type', GoodsReceipt::class)
@@ -146,6 +147,11 @@ class ProcureToPayReceiptTest extends TestCase
 
         $this->assertSame('100.0000', $debit);
         $this->assertSame('100.0000', $credit);
+        $this->assertSame(
+            '100.0000',
+            $posting->journalEntry->lines->firstWhere('account.code', 'AUTO-GRNI')->credit,
+        );
+        $this->assertNull($posting->journalEntry->lines->firstWhere('account.code', 'AUTO-AP'));
     }
 
     public function test_over_receipt_is_blocked_and_final_receipt_closes_purchase_order(): void
@@ -184,8 +190,8 @@ class ProcureToPayReceiptTest extends TestCase
 
         $this->assertSame(2, GoodsReceipt::count());
         $this->assertSame('received', $order->fresh()->status);
-        $this->assertSame('310.0000', app(SupplierLedgerService::class)->totalPurchased($supplier));
-        $this->assertSame('310.0000', app(AgingReportService::class)->payables('2026-09-30')['totals']['total']);
+        $this->assertSame('0.0000', app(SupplierLedgerService::class)->totalPurchased($supplier));
+        $this->assertSame('0.0000', app(AgingReportService::class)->payables('2026-09-30')['totals']['total']);
     }
 
     public function test_cross_business_cannot_convert_quote_or_receive_purchase_order(): void

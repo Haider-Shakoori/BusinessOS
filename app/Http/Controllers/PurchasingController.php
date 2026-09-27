@@ -9,6 +9,7 @@ use App\Models\Warehouse;
 use App\Services\BusinessContext;
 use App\Services\GoodsReceiptService;
 use App\Services\ProductVariantService;
+use App\Support\Decimal;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -119,12 +120,13 @@ class PurchasingController extends Controller
         }
 
         DB::transaction(function () use ($data, $variant): void {
-            $lineTotal = round((float) $data['quantity'] * (float) $data['unit_cost'], 4);
+            $lineTotal = Decimal::round(Decimal::mul((string) $data['quantity'], (string) $data['unit_cost']));
 
             $order = PurchaseOrder::create([
                 'supplier_id' => $data['supplier_id'],
                 'number' => $data['number'],
                 'status' => 'draft',
+                'ap_recognition' => 'invoice',
                 'order_date' => $data['order_date'],
                 'expected_date' => $data['expected_date'] ?? null,
                 'subtotal' => $lineTotal,

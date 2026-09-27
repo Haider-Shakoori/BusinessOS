@@ -14,6 +14,7 @@ use App\Models\PurchaseOrder;
 use App\Models\PurchaseOrderItem;
 use App\Models\StockMovement;
 use App\Models\Warehouse;
+use App\Support\Decimal;
 use Illuminate\Support\Facades\DB;
 use RuntimeException;
 
@@ -22,6 +23,7 @@ class InventoryReturnService
     public function __construct(
         private readonly DocumentNumberService $numbers,
         private readonly AccountingPostingService $accounting,
+        private readonly SupplierInvoiceService $supplierInvoices,
     ) {
         //
     }
@@ -133,6 +135,16 @@ class InventoryReturnService
 
             if ($lockedOrder->status !== 'received') {
                 throw new RuntimeException(__('operations.returns.errors.purchase_not_returnable'));
+            }
+
+            if ($lockedOrder->ap_recognition === 'invoice') {
+                $returnable = $this->supplierInvoices
+                    ->availableQuantities($lockedOrder->load('items'))
+                    ->get($lockedItem->id, '0.0000');
+
+                if (Decimal::gt((string) $quantity, (string) $returnable)) {
+                    throw new RuntimeException('Only received quantities not reserved by a submitted or approved supplier invoice can be returned.');
+                }
             }
 
             $this->assertReturnableQuantity(PurchaseOrderItem::class, $lockedItem->id, (float) $lockedItem->quantity, $quantity);

@@ -214,7 +214,7 @@
                         @endif
 
                         @can('accounting.manage')
-                            @if(in_array($order->status, ['partially_received', 'received'], true))
+                            @if($order->ap_recognition === 'receipt' && in_array($order->status, ['partially_received', 'received'], true))
                                 <details class="mt-4">
                                     <summary class="cursor-pointer text-xs font-medium text-slate-500">{{ __('operations.purchasing.post_debit_note') }}</summary>
                                     <form method="POST" action="{{ route('accounting.debit-notes.store', $order) }}" class="mt-2 flex max-w-md items-end gap-2">

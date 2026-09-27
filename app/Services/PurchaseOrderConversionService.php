@@ -51,6 +51,7 @@ class PurchaseOrderConversionService
                 'supplier_quotation_id' => $quote->id,
                 'number' => $this->numbers->next(DocumentType::PurchaseOrder),
                 'status' => 'ordered',
+                'ap_recognition' => 'invoice',
                 'order_date' => $data['order_date'],
                 'expected_date' => $data['expected_date'] ?? null,
                 'subtotal' => $quote->subtotal,

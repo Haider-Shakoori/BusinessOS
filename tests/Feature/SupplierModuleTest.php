@@ -158,6 +158,7 @@ class SupplierModuleTest extends TestCase
         ])->assertRedirect();
 
         $order = PurchaseOrder::with('items')->firstOrFail();
+        $order->update(['ap_recognition' => 'receipt']);
 
         $this->post('/purchasing/orders/'.$order->id.'/receive', [
             'warehouse_id' => $warehouse->id,

@@ -13,7 +13,7 @@ class PurchaseOrder extends Model
 
     protected $fillable = [
         'supplier_id', 'purchase_requisition_id', 'purchase_rfq_id', 'supplier_quotation_id',
-        'number', 'status', 'order_date', 'expected_date',
+        'number', 'status', 'ap_recognition', 'order_date', 'expected_date',
         'subtotal', 'total', 'notes', 'converted_by', 'converted_at',
     ];
 
