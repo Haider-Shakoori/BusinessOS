@@ -41,8 +41,39 @@
                 </x-ui.select>
                 <x-ui.input name="amount" type="number" step="0.0001" min="0.0001" :label="__('operations.accounting.amount')" required />
                 <x-ui.input name="description" :label="__('operations.accounting.description')" />
+                <x-ui.select name="cost_center_id" :label="__('operations.accounting.cost_center')">
+                    <option value="">{{ __('operations.accounting.no_cost_center') }}</option>
+                    @foreach($costCenters as $costCenter)
+                        <option value="{{ $costCenter->id }}">{{ $costCenter->code }} — {{ $costCenter->name }}</option>
+                    @endforeach
+                </x-ui.select>
                 <div class="sm:col-span-2 flex justify-end"><x-ui.button type="submit" icon="check-circle">{{ __('operations.accounting.post_entry') }}</x-ui.button></div>
             </form>
+        </x-ui.card>
+    </div>
+
+    <div class="mt-5">
+        <x-ui.card>
+            <x-slot:header>
+                <div>
+                    <h2 class="font-semibold text-slate-900 dark:text-white">{{ __('operations.accounting.cost_centers') }}</h2>
+                    <p class="mt-1 text-sm text-slate-500">{{ __('operations.accounting.cost_centers_help') }}</p>
+                </div>
+            </x-slot:header>
+            <form method="POST" action="{{ route('accounting.cost-centers.store') }}" class="grid gap-4 md:grid-cols-4">
+                @csrf
+                <x-ui.input name="code" :label="__('operations.accounting.code')" required />
+                <x-ui.input name="name" :label="__('operations.accounting.name')" required />
+                <x-ui.input name="description" :label="__('operations.accounting.description')" />
+                <div class="flex items-end"><x-ui.button type="submit" icon="plus">{{ __('operations.accounting.add_cost_center') }}</x-ui.button></div>
+            </form>
+            @if($costCenters->isNotEmpty())
+                <div class="mt-4 flex flex-wrap gap-2">
+                    @foreach($costCenters as $costCenter)
+                        <span class="rounded-full border border-slate-200 px-3 py-1 text-sm dark:border-slate-700">{{ $costCenter->code }} — {{ $costCenter->name }}</span>
+                    @endforeach
+                </div>
+            @endif
         </x-ui.card>
     </div>
 
