@@ -75,6 +75,7 @@ class ConsolidatedAccountingReportService
                 'business' => $business,
                 'profit_loss' => $profitLoss,
                 'balance_sheet' => $balanceSheet,
+                'earnings_from' => $this->earningsFrom($business->id, $to),
             ];
         });
 
@@ -139,7 +140,30 @@ class ConsolidatedAccountingReportService
         $consolidated['total_assets'] = Decimal::add($combined['total_assets'], $adjustments['asset']);
         $consolidated['total_liabilities'] = Decimal::add($combined['total_liabilities'], $adjustments['liability']);
         $consolidated['total_equity'] = Decimal::add($combined['total_equity'], $adjustments['equity']);
-        $consolidated['current_earnings'] = $consolidated['net_profit'];
+        $currentEarningsAdjustment = '0.0000';
+        foreach ($eliminations as $elimination) {
+            foreach ($rows as $row) {
+                $earningsFrom = $row['earnings_from'];
+                if ($earningsFrom !== null && $elimination->effective_date->toDateString() < $earningsFrom) {
+                    continue;
+                }
+
+                foreach ($elimination->lines as $line) {
+                    if (! in_array($line->statement_type, ['income', 'expense'], true)) {
+                        continue;
+                    }
+
+                    $normal = $line->statement_type === 'expense'
+                        ? Decimal::sub((string) $line->debit, (string) $line->credit)
+                        : Decimal::sub((string) $line->credit, (string) $line->debit);
+                    $profitEffect = $line->statement_type === 'income' ? $normal : Decimal::sub('0', $normal);
+                    $currentEarningsAdjustment = Decimal::add($currentEarningsAdjustment, $profitEffect);
+                    break;
+                }
+            }
+        }
+
+        $consolidated['current_earnings'] = Decimal::add($combined['current_earnings'], $currentEarningsAdjustment);
         $consolidated['total_liabilities_equity'] = Decimal::add(
             Decimal::add($consolidated['total_liabilities'], $consolidated['total_equity']),
             $consolidated['current_earnings'],
@@ -162,6 +186,19 @@ class ConsolidatedAccountingReportService
                 ? 'Consolidated statements after posted intercompany eliminations.'
                 : 'Combined statements before intercompany eliminations.',
         ];
+    }
+
+    private function earningsFrom(int $businessId, ?string $to): ?string
+    {
+        return FiscalYearClose::query()
+            ->withoutGlobalScope('business')
+            ->where('business_id', $businessId)
+            ->when($to !== null, fn ($query) => $query->whereDate('end_date', '<=', $to))
+            ->latest('end_date')
+            ->first()
+            ?->end_date
+            ?->addDay()
+            ->toDateString();
     }
 
     private function profitAndLoss(int $businessId, ?string $from, ?string $to): array
