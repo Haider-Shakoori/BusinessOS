@@ -4,12 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use App\Models\PurchaseOrder;
-use App\Models\StockMovement;
 use App\Models\Supplier;
 use App\Models\Warehouse;
-use App\Services\AccountingPostingService;
 use App\Services\BusinessContext;
 use App\Services\ProductVariantService;
+use App\Services\PurchaseOrderWorkflowService;
+use App\Support\Decimal;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -52,39 +52,19 @@ class PurchasingController extends Controller
         Request $request,
         PurchaseOrder $purchaseOrder,
         BusinessContext $context,
-        AccountingPostingService $accounting,
+        PurchaseOrderWorkflowService $workflow,
     ): RedirectResponse {
         $data = $request->validate([
             'warehouse_id' => ['required', Rule::exists('warehouses', 'id')->where('business_id', $context->currentId())],
         ]);
 
-        DB::transaction(function () use ($purchaseOrder, $data, $accounting): void {
-            $order = PurchaseOrder::query()->with('items')->lockForUpdate()->findOrFail($purchaseOrder->id);
-
-            if ($order->status === 'received') {
-                $accounting->postPurchaseReceipt($order);
-
-                return;
-            }
-
-            foreach ($order->items as $item) {
-                StockMovement::create([
-                    'warehouse_id' => $data['warehouse_id'],
-                    'product_id' => $item->product_id,
-                    'product_variant_id' => $item->product_variant_id,
-                    'type' => 'purchase',
-                    'quantity' => $item->quantity,
-                    'unit_cost' => $item->unit_cost,
-                    'reference_type' => PurchaseOrder::class,
-                    'reference_id' => $order->id,
-                    'note' => $order->number,
-                    'occurred_at' => now(),
-                ]);
-            }
-
-            $order->update(['status' => 'received']);
-            $accounting->postPurchaseReceipt($order);
-        });
+        $warehouse = Warehouse::query()->findOrFail($data['warehouse_id']);
+        $workflow->receiveAllRemaining(
+            $purchaseOrder,
+            $warehouse,
+            now()->toDateString(),
+            (int) $request->user()->id,
+        );
 
         return back()->with('status', __('operations.purchasing.order_received'));
     }
@@ -115,7 +95,7 @@ class PurchasingController extends Controller
         }
 
         DB::transaction(function () use ($data, $variant): void {
-            $lineTotal = round((float) $data['quantity'] * (float) $data['unit_cost'], 4);
+            $lineTotal = Decimal::round(Decimal::mul((string) $data['quantity'], (string) $data['unit_cost']));
 
             $order = PurchaseOrder::create([
                 'supplier_id' => $data['supplier_id'],
@@ -132,6 +112,7 @@ class PurchasingController extends Controller
                 'product_id' => $data['product_id'],
                 'product_variant_id' => $variant?->id,
                 'quantity' => $data['quantity'],
+                'received_quantity' => '0.0000',
                 'unit_cost' => $data['unit_cost'],
                 'line_total' => $lineTotal,
             ]);
