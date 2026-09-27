@@ -96,7 +96,50 @@ class ForeignExchangeSettlementTest extends TestCase
         $this->app->forgetScopedInstances();
 
         Currency::create(['code' => 'AFN', 'name' => 'Afghani', 'symbol' => 'AFN', 'decimals' => 2, 'is_active' => true]);
-        Currency::create(['code' => 'USD', 'name' => 'US Dollar', 'symbol' => ', 'decimals' => 2, 'is_active' => true]);
+        Currency::create(['code' => 'USD', 'name' => 'US Dollar', 'symbol' => ', 'is_active' => true]);
+        BusinessCurrency::create(['business_id' => $business->id, 'currency_code' => 'USD']);
+        Setting::create(['business_id' => $business->id, 'group' => 'regional', 'key' => 'currency', 'value' => 'AFN']);
+        ExchangeRate::create(['currency_code' => 'USD', 'rate' => '70', 'effective_date' => '2026-09-01']);
+        ExchangeRate::create(['currency_code' => 'USD', 'rate' => '65', 'effective_date' => '2026-09-20']);
+
+        $customer = Customer::create(['name' => 'USD Loss Customer']);
+        $invoice = new Invoice;
+        $invoice->forceFill([
+            'customer_id' => $customer->id,
+            'invoice_number' => 'INV-FX-LOSS',
+            'date' => '2026-09-01',
+            'status' => 'sent',
+            'subtotal' => '100',
+            'total' => '100',
+            'amount_paid' => '0',
+            'amount_due' => '100',
+            'currency_code' => 'USD',
+            'exchange_rate' => '70',
+            'base_amount' => '7000',
+            'created_by' => $user->id,
+        ])->save();
+
+        $payment = app(PaymentService::class)->record([
+            'invoice_id' => $invoice->id,
+            'amount' => '100',
+            'payment_date' => '2026-09-20',
+            'payment_method' => 'cash',
+        ], $user->id);
+
+        $posting = AccountingPosting::query()
+            ->where('source_type', Payment::class)
+            ->where('source_id', $payment->id)
+            ->with('journalEntry.lines.account')
+            ->firstOrFail();
+
+        $lines = $posting->journalEntry->lines;
+        $this->assertSame('6500.0000', $lines->firstWhere('account.code', 'AUTO-CASH')->debit);
+        $this->assertSame('7000.0000', $lines->firstWhere('account.code', 'AUTO-AR')->credit);
+        $this->assertSame('500.0000', $lines->firstWhere('account.code', 'AUTO-FX-LOSS')->debit);
+    }
+
+}
+, 'decimals' => 2, 'is_active' => true]);
         BusinessCurrency::create(['business_id' => $business->id, 'currency_code' => 'USD']);
         Setting::create(['business_id' => $business->id, 'group' => 'regional', 'key' => 'currency', 'value' => 'AFN']);
         ExchangeRate::create(['currency_code' => 'USD', 'rate' => '70', 'effective_date' => '2026-09-01']);
