@@ -69,6 +69,7 @@ return [
             'purchase_requisition_prefix' => ['default' => null, 'type' => 'string'],
             'request_for_quotation_prefix' => ['default' => null, 'type' => 'string'],
             'supplier_quotation_prefix' => ['default' => null, 'type' => 'string'],
+            'goods_receipt_prefix' => ['default' => null, 'type' => 'string'],
             'pos_sale_prefix' => ['default' => null, 'type' => 'string'],
             'payroll_run_prefix' => ['default' => null, 'type' => 'string'],
             'warehouse_transfer_prefix' => ['default' => null, 'type' => 'string'],
