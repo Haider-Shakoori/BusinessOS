@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Business;
+use App\Models\BusinessModule;
 use App\Models\FiscalPeriod;
 use App\Models\JournalEntry;
 use App\Models\User;
@@ -128,10 +129,10 @@ class FinancialCloseReadinessTest extends TestCase
             'password' => Hash::make('password'),
         ]);
         $business = Business::create(['name' => 'Readiness Business']);
-        $business->provisionDefaultModules();
         $roles = $business->provisionDefaultRoles();
         $membership = $user->memberships()->create(['business_id' => $business->id]);
         $membership->assignRole($roles['owner']);
+        BusinessModule::create(['business_id' => $business->id, 'module_key' => 'accounting', 'enabled' => true]);
 
         $this->actingAs($user);
         session([config('business.context.session_key') => $business->id]);
