@@ -2,16 +2,6 @@
 
 return [
     'inventory' => [
-        'combined_reporting' => 'Combined financials',
-        'combined_reporting_help' => 'Compare and combine financial statements across businesses you are authorized to view.',
-        'combined_reporting_warning' => 'These are combined statements before intercompany eliminations. Do not treat them as fully consolidated financial statements.',
-        'businesses' => 'Businesses',
-        'business' => 'Business',
-        'refresh_report' => 'Refresh report',
-        'combined_profit_loss' => 'Combined profit & loss',
-        'combined_balance_sheet' => 'Combined balance sheet',
-        'combined_total' => 'Combined total',
-        'total_equity' => 'Total equity',
         'title' => 'Inventory',
         'subtitle' => 'Warehouses, stock balances and auditable stock movements.',
         'warehouse_created' => 'Warehouse created.',
@@ -72,6 +62,16 @@ return [
     'accounting' => [
         'title' => 'Accounting',
         'subtitle' => 'Chart of accounts and balanced double-entry journal records.',
+        'combined_reporting' => 'Combined financials',
+        'combined_reporting_help' => 'Compare and combine financial statements across businesses you are authorized to view.',
+        'combined_reporting_warning' => 'These are combined statements before intercompany eliminations. Do not treat them as fully consolidated financial statements.',
+        'businesses' => 'Businesses',
+        'business' => 'Business',
+        'refresh_report' => 'Refresh report',
+        'combined_profit_loss' => 'Combined profit & loss',
+        'combined_balance_sheet' => 'Combined balance sheet',
+        'combined_total' => 'Combined total',
+        'total_equity' => 'Total equity',
         'account_created' => 'Account created.',
         'journal_created' => 'Journal entry posted.',
         'chart' => 'Chart of accounts',
