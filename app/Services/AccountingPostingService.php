@@ -259,6 +259,7 @@ class AccountingPostingService
                     $amount,
                     '0',
                     $asset->asset_number,
+                    $asset->cost_center_id,
                 ),
                 $this->line(
                     $cash['code'],
@@ -293,6 +294,7 @@ class AccountingPostingService
                     $amount,
                     '0',
                     $asset->asset_number,
+                    $asset->cost_center_id,
                 ),
                 $this->line(
                     $category->accumulated_depreciation_account_code,
@@ -301,6 +303,7 @@ class AccountingPostingService
                     '0',
                     $amount,
                     $asset->asset_number,
+                    $asset->cost_center_id,
                 ),
             ],
         );
@@ -413,6 +416,7 @@ class AccountingPostingService
                     'debit' => $line['debit'],
                     'credit' => $line['credit'],
                     'memo' => $line['memo'],
+                    'cost_center_id' => $line['cost_center_id'] ?? null,
                 ]);
             }
 
@@ -499,7 +503,7 @@ class AccountingPostingService
     }
 
     /**
-     * @return array{account:Account,debit:string,credit:string,memo:?string}
+     * @return array{account:Account,debit:string,credit:string,memo:?string,cost_center_id:?int}
      */
     private function line(
         string $code,
@@ -508,6 +512,7 @@ class AccountingPostingService
         string $debit,
         string $credit,
         ?string $memo = null,
+        ?int $costCenterId = null,
     ): array {
         $account = Account::firstOrCreate(
             ['code' => $code],
@@ -523,6 +528,7 @@ class AccountingPostingService
             'debit' => Decimal::normalize($debit),
             'credit' => Decimal::normalize($credit),
             'memo' => $memo,
+            'cost_center_id' => $costCenterId,
         ];
     }
 
