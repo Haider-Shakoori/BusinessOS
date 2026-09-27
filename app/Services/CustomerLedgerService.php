@@ -194,7 +194,7 @@ final class CustomerLedgerService
         $broughtForward = null;
         $balance = '0.0000';
 
-        if ($dateFrom !== null && ! $rowLevelFilter) {
+        if ($dateFrom !== null && $rowLevelFilter === false) {
             // Period statement: compute the balance brought forward from every
             // entry dated strictly before the period, then list the period rows.
             $visible = [];
@@ -237,10 +237,10 @@ final class CustomerLedgerService
             // date bounds still filter dated entries.
             foreach ($entries as $entry) {
                 $startsPeriod = $entry['date'] === null;
-                if ($dateFrom !== null && ! $startsPeriod && $entry['date'] < $dateFrom) {
+                if ($dateFrom !== null && $startsPeriod === false && $entry['date'] < $dateFrom) {
                     continue;
                 }
-                if ($dateTo !== null && ! $startsPeriod && $entry['date'] > $dateTo) {
+                if ($dateTo !== null && $startsPeriod === false && $entry['date'] > $dateTo) {
                     continue;
                 }
 
@@ -254,7 +254,7 @@ final class CustomerLedgerService
             'rows' => $rows,
             'brought_forward' => $broughtForward,
             'closing_balance' => $balance,
-            'show_running_balance' => ! $rowLevelFilter,
+            'show_running_balance' => $rowLevelFilter === false,
             'has_period_filter' => $dateFrom !== null || $dateTo !== null,
         ];
     }
@@ -373,13 +373,13 @@ final class CustomerLedgerService
                     'currency_code' => $paymentCurrency,
                     'base_debit' => '0.0000',
                     'base_credit' => $paymentBase,
-                    'reversed' => ! $active,
+                    'reversed' => $active === false,
                     'model_type' => 'payment',
                     'model_id' => (int) $payment->id,
                     'sort' => $sort++,
                 ];
 
-                if (! $active) {
+                if ($active === false) {
                     $entries[] = [
                         'date' => $payment->reversed_at?->format('Y-m-d') ?? $paymentDate,
                         'type' => 'reversal',
