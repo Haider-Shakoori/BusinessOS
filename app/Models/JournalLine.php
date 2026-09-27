@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class JournalLine extends Model
 {
@@ -27,5 +28,9 @@ class JournalLine extends Model
     public function costCenter(): BelongsTo
     {
         return $this->belongsTo(CostCenter::class);
+    }
+    public function reconciliationMatch(): HasOne
+    {
+        return $this->hasOne(BankReconciliationMatch::class);
     }
 }
