@@ -52,6 +52,7 @@ class AccountingController extends Controller
             'profitLoss' => $reports->profitAndLoss($data['date_from'] ?? null, $data['date_to'] ?? null),
             'balanceSheet' => $reports->balanceSheet($data['date_to'] ?? null),
             'ledger' => $account ? $reports->generalLedger($account, $data['date_from'] ?? null, $data['date_to'] ?? null) : null,
+            'costCenterSummary' => $reports->costCenterSummary($data['date_from'] ?? null, $data['date_to'] ?? null),
             'dateFrom' => $data['date_from'] ?? null,
             'dateTo' => $data['date_to'] ?? null,
             'accountId' => $account?->id,
