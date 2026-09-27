@@ -153,7 +153,10 @@ class LandedCostAllocationTest extends TestCase
         $amounts = $cost->allocations()->orderBy('goods_receipt_item_id')->pluck('allocated_amount')->all();
 
         $this->assertSame(['0.3333', '0.3333', '0.3334'], $amounts);
-        $this->assertSame('1.0000', (string) $cost->allocations()->sum('allocated_amount'));
+        $this->assertSame(
+            '1.0000',
+            Decimal::normalize((string) $cost->allocations()->sum('allocated_amount')),
+        );
     }
 
     public function test_manual_allocation_must_equal_charge_total(): void
