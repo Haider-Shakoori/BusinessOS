@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Enums\InvoiceStatus;
 use App\Models\Customer;
 use App\Models\Payment;
+use App\Models\PaymentAllocation;
 use App\Support\Decimal;
 use Illuminate\Support\Collection;
 
@@ -79,8 +80,8 @@ final class CustomerLedgerService
 
     /**
      * Sum of active (non-reversed) payment allocations applied to the customer,
-     * expressed in base currency from each payment's permanent base_amount
-     * snapshot (which converts the full amount; the single allocation equals it).
+     * expressed in base currency at each invoice's historical recognition rate.
+     * Settlement-date FX differences belong to realized gain/loss, not AR.
      *
      * Computed from the authoritative allocation records joined through the
      * payment reversal marker — never from a stale UI/cache amount.
@@ -417,7 +418,7 @@ final class CustomerLedgerService
     }
 
 
-    private function allocationBaseAmount($allocation): string
+    private function allocationBaseAmount(PaymentAllocation $allocation): string
     {
         $invoice = $allocation->invoice;
 
