@@ -39,4 +39,6 @@ enum DocumentType: string
     case InventoryReturn = 'inventory_return';
 
     case GoodsReceipt = 'goods_receipt';
+
+    case SupplierInvoice = 'supplier_invoice';
 }
