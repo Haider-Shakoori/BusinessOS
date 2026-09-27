@@ -110,7 +110,7 @@ class GoodsReceiptService
                 $item = $orderItems->get($itemId);
                 $lineTotal = Decimal::round(Decimal::mul($quantity, (string) $item->unit_cost));
 
-                $receipt->items()->create([
+                $receiptItem = $receipt->items()->create([
                     'purchase_order_item_id' => $item->id,
                     'product_id' => $item->product_id,
                     'product_variant_id' => $item->product_variant_id,
@@ -119,7 +119,7 @@ class GoodsReceiptService
                     'line_total' => $lineTotal,
                 ]);
 
-                StockMovement::create([
+                $movement = StockMovement::create([
                     'warehouse_id' => $warehouseId,
                     'product_id' => $item->product_id,
                     'product_variant_id' => $item->product_variant_id,
@@ -131,6 +131,8 @@ class GoodsReceiptService
                     'note' => $receipt->number.' · '.$order->number,
                     'occurred_at' => $receiptDate,
                 ]);
+
+                $receiptItem->update(['stock_movement_id' => $movement->id]);
 
                 $total = Decimal::add($total, $lineTotal);
             }
