@@ -30,6 +30,8 @@ enum DocumentType: string
 
     case SupplierQuotation = 'supplier_quotation';
 
+    case GoodsReceipt = 'goods_receipt';
+
     case PosSale = 'pos_sale';
 
     case PayrollRun = 'payroll_run';
