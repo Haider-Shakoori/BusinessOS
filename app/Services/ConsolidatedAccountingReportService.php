@@ -118,7 +118,13 @@ class ConsolidatedAccountingReportService
         ];
 
         foreach ($eliminations as $elimination) {
+            $inProfitLossWindow = $from === null || $elimination->effective_date->toDateString() >= $from;
+
             foreach ($elimination->lines as $line) {
+                if (in_array($line->statement_type, ['income', 'expense'], true) && ! $inProfitLossWindow) {
+                    continue;
+                }
+
                 $normal = in_array($line->statement_type, ['asset', 'expense'], true)
                     ? Decimal::sub((string) $line->debit, (string) $line->credit)
                     : Decimal::sub((string) $line->credit, (string) $line->debit);
