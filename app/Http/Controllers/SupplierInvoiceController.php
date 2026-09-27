@@ -6,6 +6,7 @@ use App\Models\PurchaseOrder;
 use App\Models\SupplierInvoice;
 use App\Services\BusinessContext;
 use App\Services\SupplierInvoiceService;
+use App\Support\Decimal;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -36,7 +37,7 @@ class SupplierInvoiceController extends Controller
         $orders = $orders
             ->filter(fn (PurchaseOrder $order): bool => $availableByOrder
                 ->get($order->id, collect())
-                ->contains(fn ($quantity): bool => \App\Support\Decimal::gt((string) $quantity, '0')))
+                ->contains(fn ($quantity): bool => Decimal::gt((string) $quantity, '0')))
             ->values();
 
         return view('purchasing.supplier-invoices', [
