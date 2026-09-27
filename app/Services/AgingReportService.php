@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Enums\InvoiceStatus;
 use App\Models\AccountAdjustmentNote;
+use App\Models\GoodsReceipt;
 use App\Models\InventoryReturn;
 use App\Models\Invoice;
 use App\Models\Payment;
@@ -78,7 +79,7 @@ class AgingReportService
 
         $orders = PurchaseOrder::query()
             ->with('supplier')
-            ->where('status', 'received')
+            ->whereIn('status', ['partially_received', 'received'])
             ->whereDate('order_date', '<=', $asOf)
             ->orderBy('supplier_id')
             ->orderBy('order_date')
@@ -97,6 +98,20 @@ class AgingReportService
                 ->sum('base_amount'));
 
             foreach ($supplierOrders as $order) {
+                $receiptQuery = GoodsReceipt::query()
+                    ->where('purchase_order_id', $order->id)
+                    ->where('status', 'posted')
+                    ->whereDate('receipt_date', '<=', $asOf);
+
+                $hasReceipts = (clone $receiptQuery)->exists();
+                $purchased = $hasReceipts
+                    ? Decimal::normalize((string) (clone $receiptQuery)->sum('total'))
+                    : ($order->status === 'received' ? Decimal::normalize((string) $order->total) : '0.0000');
+
+                if (! Decimal::gt($purchased, '0')) {
+                    continue;
+                }
+
                 $returns = Decimal::normalize((string) InventoryReturn::query()
                     ->where('type', 'purchase')
                     ->where('source_type', PurchaseOrder::class)
@@ -112,7 +127,7 @@ class AgingReportService
                     ->whereDate('note_date', '<=', $asOf)
                     ->sum('base_amount'));
 
-                $amount = Decimal::sub(Decimal::sub((string) $order->total, $returns), $debitNotes);
+                $amount = Decimal::sub(Decimal::sub($purchased, $returns), $debitNotes);
                 if (Decimal::gt($remainingPayments, '0')) {
                     $applied = Decimal::gt($remainingPayments, $amount) ? $amount : $remainingPayments;
                     $amount = Decimal::sub($amount, $applied);
