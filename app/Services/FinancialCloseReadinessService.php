@@ -98,7 +98,7 @@ class FinancialCloseReadinessService
                 $debit = $entry->lines->reduce(fn (string $carry, $line): string => Decimal::add($carry, (string) $line->debit), '0.0000');
                 $credit = $entry->lines->reduce(fn (string $carry, $line): string => Decimal::add($carry, (string) $line->credit), '0.0000');
 
-                return Decimal::cmp($debit, $credit) !== 0;
+                return ! Decimal::eq($debit, $credit);
             })
             ->count();
 
