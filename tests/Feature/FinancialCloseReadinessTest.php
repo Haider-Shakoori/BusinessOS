@@ -7,6 +7,8 @@ use App\Models\FiscalPeriod;
 use App\Models\JournalEntry;
 use App\Models\User;
 use App\Services\FinancialCloseReadinessService;
+use App\Services\FiscalYearCloseService;
+use Illuminate\Validation\ValidationException;
 use Database\Seeders\PermissionSeeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -81,6 +83,27 @@ class FinancialCloseReadinessTest extends TestCase
 
         $this->assertFalse($assessment['ready']);
         $this->assertSame('blocker', collect($assessment['checks'])->firstWhere('id', 'journal_integrity')['severity']);
+    }
+
+
+    public function test_fiscal_year_close_cannot_bypass_structural_readiness_blocker(): void
+    {
+        $user = $this->signInOwner();
+        FiscalPeriod::create([
+            'name' => 'FY 2026',
+            'start_date' => '2026-01-01',
+            'end_date' => '2026-12-31',
+            'status' => 'closed',
+            'closed_at' => now(),
+        ]);
+        JournalEntry::create([
+            'number' => 'BROKEN-CLOSE',
+            'entry_date' => '2026-08-01',
+            'status' => 'posted',
+        ]);
+
+        $this->expectException(ValidationException::class);
+        app(FiscalYearCloseService::class)->close('FY 2026', '2026-01-01', '2026-12-31', $user->id);
     }
 
     public function test_readiness_dashboard_is_available_to_accounting_viewer(): void
