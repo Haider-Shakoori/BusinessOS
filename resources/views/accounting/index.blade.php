@@ -63,6 +63,24 @@
         <x-ui.card>
             <x-slot:header>
                 <div>
+                    <h2 class="font-semibold text-slate-900 dark:text-white">{{ __('operations.accounting.fx_revaluation') }}</h2>
+                    <p class="mt-1 text-sm text-slate-500">{{ __('operations.accounting.fx_revaluation_help') }}</p>
+                </div>
+            </x-slot:header>
+            <form method="POST" action="{{ route('accounting.fx-revaluation.store') }}" class="flex flex-col gap-4 sm:flex-row sm:items-end">
+                @csrf
+                <div class="flex-1">
+                    <x-ui.input name="revaluation_date" type="date" :value="now()->toDateString()" :label="__('operations.accounting.revaluation_date')" required />
+                </div>
+                <x-ui.button type="submit" icon="calculator">{{ __('operations.accounting.run_fx_revaluation') }}</x-ui.button>
+            </form>
+        </x-ui.card>
+    </div>
+
+    <div class="mt-5">
+        <x-ui.card>
+            <x-slot:header>
+                <div>
                     <h2 class="font-semibold text-slate-900 dark:text-white">{{ __('operations.accounting.budgets') }}</h2>
                     <p class="mt-1 text-sm text-slate-500">{{ __('operations.accounting.budgets_help') }}</p>
                 </div>
