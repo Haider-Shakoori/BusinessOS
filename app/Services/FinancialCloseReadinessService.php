@@ -33,6 +33,19 @@ class FinancialCloseReadinessService
         ];
     }
 
+
+    public function assertNoStructuralBlockers(string $startDate, string $endDate): void
+    {
+        $assessment = $this->assess($startDate, $endDate);
+        $blockers = collect($assessment['checks'])->where('severity', 'blocker');
+
+        if ($blockers->isNotEmpty()) {
+            throw \Illuminate\Validation\ValidationException::withMessages([
+                'start_date' => $blockers->pluck('message')->implode(' '),
+            ]);
+        }
+    }
+
     private function periodCoverage(string $startDate, string $endDate): array
     {
         $periods = FiscalPeriod::query()
