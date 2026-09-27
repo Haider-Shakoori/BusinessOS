@@ -47,6 +47,7 @@
                     </div>
                 </x-slot:header>
 
+                @if($canManageConsolidation)
                 <form method="POST" action="{{ route('accounting.combined.eliminations.store') }}" class="space-y-4">
                     @csrf
                     @foreach($selectedIds as $businessId)
@@ -73,6 +74,7 @@
                     </div>
                     <div class="flex justify-end"><x-ui.button type="submit">{{ __('operations.accounting.post_elimination') }}</x-ui.button></div>
                 </form>
+                @endif
 
                 @if($report['eliminations']->isNotEmpty())
                     <div class="mt-5 overflow-x-auto">
@@ -91,10 +93,14 @@
                                     <x-ui.td>{{ $elimination->description }}</x-ui.td>
                                     <x-ui.td>{{ $elimination->creator?->name }}</x-ui.td>
                                     <x-ui.td>
-                                        <form method="POST" action="{{ route('accounting.combined.eliminations.reverse', $elimination->id) }}">
-                                            @csrf
-                                            <x-ui.button type="submit" variant="secondary">{{ __('operations.accounting.reverse_elimination') }}</x-ui.button>
-                                        </form>
+                                        @if($canManageConsolidation)
+                                            <form method="POST" action="{{ route('accounting.combined.eliminations.reverse', $elimination->id) }}">
+                                                @csrf
+                                                <x-ui.button type="submit" variant="secondary">{{ __('operations.accounting.reverse_elimination') }}</x-ui.button>
+                                            </form>
+                                        @else
+                                            <span class="text-sm text-slate-400">—</span>
+                                        @endif
                                     </x-ui.td>
                                 </tr>
                             @endforeach
