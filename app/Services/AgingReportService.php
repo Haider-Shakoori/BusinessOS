@@ -12,8 +12,6 @@ use Carbon\CarbonImmutable;
 
 class AgingReportService
 {
-    public function __construct(private readonly CurrencyService $currencies) {}
-
     public function receivables(string $asOf): array
     {
         $rows = [];
@@ -59,44 +57,55 @@ class AgingReportService
             ->with('supplier')
             ->where('status', 'received')
             ->whereDate('order_date', '<=', $asOf)
+            ->orderBy('supplier_id')
+            ->orderBy('order_date')
+            ->orderBy('id')
             ->get();
 
-        foreach ($orders as $order) {
-            $payments = Payment::query()
+        foreach ($orders->groupBy('supplier_id') as $supplierId => $supplierOrders) {
+            $remainingPayments = Decimal::normalize((string) Payment::query()
                 ->where('party_type', 'supplier')
-                ->where('party_id', $order->supplier_id)
+                ->where('party_id', $supplierId)
                 ->whereNull('reversed_at')
                 ->whereDate('payment_date', '<=', $asOf)
-                ->sum('base_amount');
+                ->sum('base_amount'));
 
-            $returns = InventoryReturn::query()
-                ->where('type', 'purchase')
-                ->where('source_type', PurchaseOrder::class)
-                ->where('source_id', $order->id)
-                ->where('status', 'completed')
-                ->whereDate('processed_at', '<=', $asOf)
-                ->sum('total');
+            foreach ($supplierOrders as $order) {
+                $returns = Decimal::normalize((string) InventoryReturn::query()
+                    ->where('type', 'purchase')
+                    ->where('source_type', PurchaseOrder::class)
+                    ->where('source_id', $order->id)
+                    ->where('status', 'completed')
+                    ->whereDate('processed_at', '<=', $asOf)
+                    ->sum('total'));
 
-            $amount = Decimal::sub(Decimal::sub((string) $order->total, (string) $returns), (string) $payments);
-            if (Decimal::gt($amount, '0') === false) {
-                continue;
+                $amount = Decimal::sub((string) $order->total, $returns);
+                if (Decimal::gt($remainingPayments, '0')) {
+                    $applied = Decimal::gt($remainingPayments, $amount) ? $amount : $remainingPayments;
+                    $amount = Decimal::sub($amount, $applied);
+                    $remainingPayments = Decimal::sub($remainingPayments, $applied);
+                }
+
+                if (Decimal::gt($amount, '0') === false) {
+                    continue;
+                }
+
+                $dueDate = CarbonImmutable::parse(($order->expected_date ?? $order->order_date)->toDateString());
+                $days = max(0, $dueDate->diffInDays($date, false));
+                $bucket = $this->bucket($days);
+                $totals[$bucket] = Decimal::add($totals[$bucket], $amount);
+                $totals['total'] = Decimal::add($totals['total'], $amount);
+
+                $rows[] = [
+                    'party' => $order->supplier?->name ?? '—',
+                    'document' => $order->number,
+                    'document_date' => $order->order_date->toDateString(),
+                    'due_date' => $dueDate->toDateString(),
+                    'days_overdue' => $days,
+                    'bucket' => $bucket,
+                    'amount' => $amount,
+                ];
             }
-
-            $dueDate = CarbonImmutable::parse(($order->expected_date ?? $order->order_date)->toDateString());
-            $days = max(0, $dueDate->diffInDays($date, false));
-            $bucket = $this->bucket($days);
-            $totals[$bucket] = Decimal::add($totals[$bucket], $amount);
-            $totals['total'] = Decimal::add($totals['total'], $amount);
-
-            $rows[] = [
-                'party' => $order->supplier?->name ?? '—',
-                'document' => $order->number,
-                'document_date' => $order->order_date->toDateString(),
-                'due_date' => $dueDate->toDateString(),
-                'days_overdue' => $days,
-                'bucket' => $bucket,
-                'amount' => $amount,
-            ];
         }
 
         return ['rows' => collect($rows)->sortByDesc('days_overdue')->values(), 'totals' => $totals];
