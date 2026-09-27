@@ -248,40 +248,43 @@ class AccountingReportService
     {
         $businessId = $this->businessId();
 
-        $query = DB::table('accounts')
-            ->leftJoin('journal_lines', 'journal_lines.account_id', '=', 'accounts.id')
-            ->leftJoin('journal_entries', function ($join) use ($from, $to, $excludeYearClose): void {
-                $join->on('journal_entries.id', '=', 'journal_lines.journal_entry_id')
-                    ->where('journal_entries.status', '=', 'posted');
+        $movements = DB::table('journal_lines')
+            ->join('journal_entries', 'journal_entries.id', '=', 'journal_lines.journal_entry_id')
+            ->where('journal_entries.business_id', $businessId)
+            ->where('journal_entries.status', 'posted');
 
-                if ($from !== null) {
-                    $join->where('journal_entries.entry_date', '>=', $from);
-                }
+        if ($from !== null) {
+            $movements->whereDate('journal_entries.entry_date', '>=', $from);
+        }
 
-                if ($to !== null) {
-                    $join->where('journal_entries.entry_date', '<=', $to);
-                }
+        if ($to !== null) {
+            $movements->whereDate('journal_entries.entry_date', '<=', $to);
+        }
 
-                if ($excludeYearClose) {
-                    $join->where(function ($query): void {
-                        $query->whereNull('journal_entries.source_type')
-                            ->orWhere('journal_entries.source_type', '!=', FiscalYearClose::class);
-                    });
-                }
-            })
+        if ($excludeYearClose) {
+            $movements->where(function ($query): void {
+                $query->whereNull('journal_entries.source_type')
+                    ->orWhere('journal_entries.source_type', '!=', FiscalYearClose::class);
+            });
+        }
+
+        $movements->groupBy('journal_lines.account_id')
+            ->selectRaw('journal_lines.account_id, COALESCE(SUM(journal_lines.debit),0) debit, COALESCE(SUM(journal_lines.credit),0) credit');
+
+        return DB::table('accounts')
+            ->leftJoinSub($movements, 'movements', 'movements.account_id', '=', 'accounts.id')
             ->where('accounts.business_id', $businessId)
-            ->groupBy('accounts.id', 'accounts.code', 'accounts.name', 'accounts.type')
             ->orderBy('accounts.code')
-            ->selectRaw('accounts.id, accounts.code, accounts.name, accounts.type, COALESCE(SUM(CASE WHEN journal_entries.id IS NULL THEN 0 ELSE journal_lines.debit END),0) debit, COALESCE(SUM(CASE WHEN journal_entries.id IS NULL THEN 0 ELSE journal_lines.credit END),0) credit');
-
-        return $query->get()->map(fn ($row): array => [
-            'id' => (int) $row->id,
-            'code' => $row->code,
-            'name' => $row->name,
-            'type' => $row->type,
-            'debit' => Decimal::normalize((string) $row->debit),
-            'credit' => Decimal::normalize((string) $row->credit),
-        ]);
+            ->selectRaw('accounts.id, accounts.code, accounts.name, accounts.type, COALESCE(movements.debit,0) debit, COALESCE(movements.credit,0) credit')
+            ->get()
+            ->map(fn ($row): array => [
+                'id' => (int) $row->id,
+                'code' => $row->code,
+                'name' => $row->name,
+                'type' => $row->type,
+                'debit' => Decimal::normalize((string) $row->debit),
+                'credit' => Decimal::normalize((string) $row->credit),
+            ]);
     }
 
     private function normalBalance(string $type, string $debit, string $credit): string
