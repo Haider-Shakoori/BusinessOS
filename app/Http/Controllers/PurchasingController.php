@@ -78,7 +78,7 @@ class PurchasingController extends Controller
             'notes' => ['nullable', 'string', 'max:2000'],
             'items' => ['nullable', 'array', 'min:1'],
             'items.*.purchase_order_item_id' => ['required_with:items', 'integer'],
-            'items.*.quantity' => ['required_with:items', 'numeric', 'gt:0'],
+            'items.*.quantity' => ['required_with:items', 'numeric', 'gte:0'],
         ]);
 
         $receipts->receive(
