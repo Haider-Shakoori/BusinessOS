@@ -2,16 +2,6 @@
 
 return [
     'inventory' => [
-        'combined_reporting' => 'گزارش مالی ترکیبی',
-        'combined_reporting_help' => 'صورت‌های مالی کسب‌وکارهایی را که اجازه مشاهده آن‌ها را دارید مقایسه و ترکیب کنید.',
-        'combined_reporting_warning' => 'این گزارش‌ها قبل از حذف معاملات بین‌شرکتی ترکیب شده‌اند و صورت مالی تلفیقی نهایی محسوب نمی‌شوند.',
-        'businesses' => 'کسب‌وکارها',
-        'business' => 'کسب‌وکار',
-        'refresh_report' => 'تازه‌سازی گزارش',
-        'combined_profit_loss' => 'سود و زیان ترکیبی',
-        'combined_balance_sheet' => 'ترازنامه ترکیبی',
-        'combined_total' => 'مجموع ترکیبی',
-        'total_equity' => 'کل حقوق صاحبان سهام',
         'title' => 'موجودی',
         'subtitle' => 'گدام‌ها، موجودی و حرکات قابل پیگیری کالا.',
         'warehouse_created' => 'گدام ایجاد شد.',
@@ -72,6 +62,16 @@ return [
     'accounting' => [
         'title' => 'حسابداری',
         'subtitle' => 'چارت حساب‌ها و ثبت‌های دوطرفه متوازن.',
+        'combined_reporting' => 'گزارش مالی ترکیبی',
+        'combined_reporting_help' => 'صورت‌های مالی کسب‌وکارهایی را که اجازه مشاهده آن‌ها را دارید مقایسه و ترکیب کنید.',
+        'combined_reporting_warning' => 'این گزارش‌ها قبل از حذف معاملات بین‌شرکتی ترکیب شده‌اند و صورت مالی تلفیقی نهایی محسوب نمی‌شوند.',
+        'businesses' => 'کسب‌وکارها',
+        'business' => 'کسب‌وکار',
+        'refresh_report' => 'تازه‌سازی گزارش',
+        'combined_profit_loss' => 'سود و زیان ترکیبی',
+        'combined_balance_sheet' => 'ترازنامه ترکیبی',
+        'combined_total' => 'مجموع ترکیبی',
+        'total_equity' => 'کل حقوق صاحبان سهام',
         'account_created' => 'حساب ایجاد شد.',
         'journal_created' => 'ثبت روزنامه انجام شد.',
         'chart' => 'چارت حساب‌ها',
