@@ -113,13 +113,13 @@ class ConsolidatedAccountingReportService
         $rows = $this->accountBalances($businessId, $from, $to, true)
             ->filter(fn (array $row): bool => in_array($row['type'], ['income', 'expense'], true));
 
-        $income = $rows->where('type', 'income')->sum(fn (array $row): string => $row['balance']);
-        $expenses = $rows->where('type', 'expense')->sum(fn (array $row): string => $row['balance']);
+        $income = $this->sumType($rows, 'income');
+        $expenses = $this->sumType($rows, 'expense');
 
         return [
-            'total_income' => Decimal::normalize((string) $income),
-            'total_expenses' => Decimal::normalize((string) $expenses),
-            'net_profit' => Decimal::sub((string) $income, (string) $expenses),
+            'total_income' => $income,
+            'total_expenses' => $expenses,
+            'net_profit' => Decimal::sub($income, $expenses),
         ];
     }
 
