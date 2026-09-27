@@ -106,8 +106,7 @@ class ConsolidationEliminationTest extends TestCase
                 ],
             ]);
 
-        $response->assertRedirect(route('accounting.combined.index'));
-        $response->assertSessionHasErrors('business_ids');
+        $response->assertForbidden();
         $this->assertSame(0, ConsolidationElimination::query()->withoutGlobalScope('business')->count());
     }
 
