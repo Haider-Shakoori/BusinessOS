@@ -84,6 +84,8 @@ class SupplierInvoiceMatchingTest extends TestCase
         $this->assertSame('150.0000', $invoice->po_basis_total);
         $this->assertSame('0.0000', $invoice->price_variance_total);
         $this->assertCount(1, $invoice->items);
+        $this->assertSame('2.5000', $invoice->items->first()->received_quantity_snapshot);
+        $this->assertSame('2.5000', $invoice->items->first()->available_quantity_snapshot);
 
         $this->post(route('purchasing.supplier-invoices.submit', $invoice))
             ->assertRedirect()
