@@ -30,6 +30,7 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PosController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductVariantController;
+use App\Http\Controllers\PurchaseRequisitionController;
 use App\Http\Controllers\PurchasingController;
 use App\Http\Controllers\QuotationController;
 use App\Http\Controllers\ReportController;
@@ -435,6 +436,21 @@ Route::middleware(['auth', 'auth.session', 'business-selected', 'module:purchasi
     Route::get('/purchasing', [PurchasingController::class, 'index'])
         ->name('purchasing.index')
         ->middleware('permission:purchasing.view');
+    Route::get('/purchasing/requisitions', [PurchaseRequisitionController::class, 'index'])
+        ->name('purchasing.requisitions.index')
+        ->middleware('permission:purchasing.view');
+    Route::post('/purchasing/requisitions', [PurchaseRequisitionController::class, 'store'])
+        ->name('purchasing.requisitions.store')
+        ->middleware('permission:purchasing.manage');
+    Route::post('/purchasing/requisitions/{purchaseRequisition}/submit', [PurchaseRequisitionController::class, 'submit'])
+        ->name('purchasing.requisitions.submit')
+        ->middleware('permission:purchasing.manage');
+    Route::post('/purchasing/requisitions/{purchaseRequisition}/approve', [PurchaseRequisitionController::class, 'approve'])
+        ->name('purchasing.requisitions.approve')
+        ->middleware('permission:purchasing.manage');
+    Route::post('/purchasing/requisitions/{purchaseRequisition}/reject', [PurchaseRequisitionController::class, 'reject'])
+        ->name('purchasing.requisitions.reject')
+        ->middleware('permission:purchasing.manage');
     Route::post('/purchasing/suppliers', [PurchasingController::class, 'storeSupplier'])
         ->name('purchasing.suppliers.store')
         ->middleware('permission:purchasing.manage');
