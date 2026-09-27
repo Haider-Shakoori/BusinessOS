@@ -203,7 +203,6 @@ class AccountingController extends Controller
         return back()->with('status', __('operations.accounting.fx_revaluation_posted', ['count' => $count]));
     }
 
-
     public function closeReadiness(Request $request, FinancialCloseReadinessService $readiness): View
     {
         $data = $request->validate([
