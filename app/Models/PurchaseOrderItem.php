@@ -34,6 +34,11 @@ class PurchaseOrderItem extends Model
         return $this->hasMany(GoodsReceiptItem::class);
     }
 
+    public function supplierInvoiceItems(): HasMany
+    {
+        return $this->hasMany(SupplierInvoiceItem::class);
+    }
+
     public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);
