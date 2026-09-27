@@ -61,6 +61,7 @@
                 @can('payments.create')
                     <x-ui.card>
                         <x-slot:header><h2 class="font-semibold text-slate-900 dark:text-white">{{ __('suppliers.record_payment') }}</h2></x-slot:header>
+                        <p class="mb-4 text-sm text-slate-500">{{ __('suppliers.payment_auto_allocate_help') }}</p>
                         <form method="POST" action="{{ route('suppliers.payments.store', $supplier) }}" class="grid gap-4 md:grid-cols-3">
                             @csrf
                             <x-ui.input name="amount" type="number" step="0.0001" min="0.0001" :label="__('suppliers.payment_amount')" required />
@@ -77,6 +78,49 @@
                     </x-ui.card>
                 @endcan
             @endcan
+
+            <x-ui.card>
+                <x-slot:header>
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                        <h2 class="font-semibold text-slate-900 dark:text-white">{{ __('suppliers.recent_invoices') }}</h2>
+                        <x-ui.button href="{{ route('purchasing.supplier-invoices.index') }}" size="sm" variant="secondary">
+                            {{ __('suppliers.view_supplier_invoices') }}
+                        </x-ui.button>
+                    </div>
+                </x-slot:header>
+                <div class="overflow-x-auto">
+                    <x-ui.table>
+                        <x-slot:head>
+                            <tr>
+                                <x-ui.th>{{ __('suppliers.invoice_number') }}</x-ui.th>
+                                <x-ui.th>{{ __('operations.purchasing.invoice_date') }}</x-ui.th>
+                                <x-ui.th>{{ __('suppliers.settlement_status') }}</x-ui.th>
+                                <x-ui.th numeric>{{ __('operations.purchasing.invoice_total') }}</x-ui.th>
+                                <x-ui.th numeric>{{ __('suppliers.invoice_due') }}</x-ui.th>
+                            </tr>
+                        </x-slot:head>
+                        @forelse($supplier->supplierInvoices as $invoice)
+                            <tr>
+                                <x-ui.td>{{ $invoice->number }}</x-ui.td>
+                                <x-ui.td>{{ $invoice->invoice_date?->format('Y-m-d') }}</x-ui.td>
+                                <x-ui.td>
+                                    @if($invoice->status === 'approved')
+                                        <x-ui.badge :tone="$invoice->settlement_status === 'paid' ? 'success' : ($invoice->settlement_status === 'partially_paid' ? 'warning' : 'neutral')">
+                                            {{ __('operations.purchasing.settlement_status_'.$invoice->settlement_status) }}
+                                        </x-ui.badge>
+                                    @else
+                                        {{ __('operations.purchasing.supplier_invoice_status_'.$invoice->status) }}
+                                    @endif
+                                </x-ui.td>
+                                <x-ui.td numeric>{{ $baseCurrency }} {{ number_format((float) $invoice->total, 4) }}</x-ui.td>
+                                <x-ui.td numeric>{{ $baseCurrency }} {{ number_format((float) $invoice->amount_due, 4) }}</x-ui.td>
+                            </tr>
+                        @empty
+                            <tr><x-ui.td colspan="5">{{ __('suppliers.no_invoices') }}</x-ui.td></tr>
+                        @endforelse
+                    </x-ui.table>
+                </div>
+            </x-ui.card>
 
             <x-ui.card>
                 <x-slot:header><h2 class="font-semibold text-slate-900 dark:text-white">{{ __('suppliers.recent_purchases') }}</h2></x-slot:header>
