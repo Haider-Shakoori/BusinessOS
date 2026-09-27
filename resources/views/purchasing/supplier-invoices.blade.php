@@ -19,7 +19,7 @@
 
     @if ($errors->any())
         <div class="mb-5">
-            <x-ui.alert type="error">
+            <x-ui.alert type="danger">
                 <ul class="list-disc space-y-1 ps-5">
                     @foreach($errors->all() as $error)
                         <li>{{ $error }}</li>
