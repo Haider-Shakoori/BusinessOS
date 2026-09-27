@@ -106,6 +106,7 @@ class AccountingController extends Controller
 
         return back()->with('status', __('operations.accounting.journal_created'));
     }
+
     public function storeFiscalPeriod(Request $request, FiscalPeriodService $periods): RedirectResponse
     {
         $data = $request->validate([
@@ -133,5 +134,4 @@ class AccountingController extends Controller
 
         return back()->with('status', __('operations.accounting.fiscal_period_reopened'));
     }
-
 }
