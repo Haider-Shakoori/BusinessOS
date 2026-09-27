@@ -453,6 +453,13 @@ Route::middleware(['auth', 'auth.session', 'business-selected', 'module:accounti
     Route::get('/accounting/combined', [ConsolidatedAccountingController::class, 'index'])
         ->name('accounting.combined.index')
         ->middleware('permission:accounting.view');
+
+    Route::post('/accounting/combined/eliminations', [ConsolidatedAccountingController::class, 'storeElimination'])
+        ->name('accounting.combined.eliminations.store')
+        ->middleware('permission:accounting.manage');
+    Route::post('/accounting/combined/eliminations/{consolidationElimination}/reverse', [ConsolidatedAccountingController::class, 'reverseElimination'])
+        ->name('accounting.combined.eliminations.reverse')
+        ->middleware('permission:accounting.manage');
     Route::post('/accounting/credit-notes/invoices/{invoice}', [AccountAdjustmentNoteController::class, 'customerCredit'])
         ->name('accounting.credit-notes.store')
         ->middleware('permission:accounting.manage');

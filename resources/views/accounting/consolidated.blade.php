@@ -38,6 +38,87 @@
             </form>
         </x-ui.card>
 
+        @if(count($selectedIds) >= 2)
+            <x-ui.card class="mt-5">
+                <x-slot:header>
+                    <div>
+                        <h2 class="font-semibold text-slate-900 dark:text-white">{{ __('operations.accounting.intercompany_eliminations') }}</h2>
+                        <p class="mt-1 text-sm text-slate-500">{{ __('operations.accounting.intercompany_eliminations_help') }}</p>
+                    </div>
+                </x-slot:header>
+
+                @if($canManageConsolidation)
+                <form method="POST" action="{{ route('accounting.combined.eliminations.store') }}" class="space-y-4">
+                    @csrf
+                    @foreach($selectedIds as $businessId)
+                        <input type="hidden" name="business_ids[]" value="{{ $businessId }}">
+                    @endforeach
+                    <div class="grid gap-4 md:grid-cols-3">
+                        <x-ui.input name="reference" :label="__('operations.accounting.elimination_reference')" required />
+                        <x-ui.input name="effective_date" type="date" :label="__('operations.accounting.effective_date')" required />
+                        <x-ui.input name="description" :label="__('operations.accounting.description')" required />
+                    </div>
+                    <div class="grid gap-3 lg:grid-cols-2">
+                        @foreach([0, 1] as $line)
+                            <div class="grid gap-3 rounded-lg border border-slate-200 p-3 sm:grid-cols-4 dark:border-slate-700">
+                                <x-ui.select name="lines[{{ $line }}][statement_type]" :label="__('operations.accounting.statement_type')" required>
+                                    @foreach(['asset', 'liability', 'equity', 'income', 'expense'] as $type)
+                                        <option value="{{ $type }}">{{ __('operations.accounting.'.$type) }}</option>
+                                    @endforeach
+                                </x-ui.select>
+                                <x-ui.input name="lines[{{ $line }}][debit]" type="number" step="0.0001" min="0" value="0" :label="__('operations.accounting.debit')" />
+                                <x-ui.input name="lines[{{ $line }}][credit]" type="number" step="0.0001" min="0" value="0" :label="__('operations.accounting.credit')" />
+                                <x-ui.input name="lines[{{ $line }}][memo]" :label="__('operations.accounting.note')" />
+                            </div>
+                        @endforeach
+                    </div>
+                    <div class="flex justify-end"><x-ui.button type="submit">{{ __('operations.accounting.post_elimination') }}</x-ui.button></div>
+                </form>
+                @endif
+
+                @if($report['eliminations']->isNotEmpty())
+                    <div class="mt-5 overflow-x-auto">
+                        <x-ui.table :caption="__('operations.accounting.elimination_history')">
+                            <x-slot:head><tr>
+                                <x-ui.th>{{ __('operations.accounting.elimination_reference') }}</x-ui.th>
+                                <x-ui.th>{{ __('operations.accounting.effective_date') }}</x-ui.th>
+                                <x-ui.th>{{ __('operations.accounting.description') }}</x-ui.th>
+                                <x-ui.th>{{ __('operations.accounting.created_by') }}</x-ui.th>
+                                <x-ui.th>{{ __('operations.accounting.actions') }}</x-ui.th>
+                            </tr></x-slot:head>
+                            @foreach($report['eliminations'] as $elimination)
+                                <tr>
+                                    <x-ui.td>{{ $elimination->reference }}</x-ui.td>
+                                    <x-ui.td>{{ $elimination->effective_date?->format('Y-m-d') }}</x-ui.td>
+                                    <x-ui.td>{{ $elimination->description }}</x-ui.td>
+                                    <x-ui.td>{{ $elimination->creator?->name }}</x-ui.td>
+                                    <x-ui.td>
+                                        @if($canManageConsolidation)
+                                            <form method="POST" action="{{ route('accounting.combined.eliminations.reverse', $elimination->id) }}">
+                                                @csrf
+                                                <x-ui.button type="submit" variant="secondary">{{ __('operations.accounting.reverse_elimination') }}</x-ui.button>
+                                            </form>
+                                        @else
+                                            <span class="text-sm text-slate-400">—</span>
+                                        @endif
+                                    </x-ui.td>
+                                </tr>
+                            @endforeach
+                        </x-ui.table>
+                    </div>
+                @endif
+            </x-ui.card>
+        @endif
+
+        @if($report['is_consolidated'])
+            <div class="mt-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+                <x-ui.stat-card :title="__('operations.accounting.consolidated_income')" :value="$money($report['consolidated']['total_income'])" icon="arrow-trending-up" tone="success" />
+                <x-ui.stat-card :title="__('operations.accounting.consolidated_expenses')" :value="$money($report['consolidated']['total_expenses'])" icon="arrow-trending-down" tone="danger" />
+                <x-ui.stat-card :title="__('operations.accounting.consolidated_profit')" :value="$money($report['consolidated']['net_profit'])" icon="chart-bar" tone="brand" />
+                <x-ui.stat-card :title="__('operations.accounting.consolidated_assets')" :value="$money($report['consolidated']['total_assets'])" icon="banknotes" />
+            </div>
+        @endif
+
         <div class="mt-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
             <x-ui.stat-card :title="__('operations.accounting.total_income')" :value="$money($report['combined']['total_income'])" icon="arrow-trending-up" tone="success" />
             <x-ui.stat-card :title="__('operations.accounting.total_expenses')" :value="$money($report['combined']['total_expenses'])" icon="arrow-trending-down" tone="danger" />

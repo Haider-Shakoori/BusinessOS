@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Business;
 use App\Models\BusinessMembership;
+use App\Models\ConsolidationElimination;
 use App\Models\FiscalYearClose;
 use App\Support\Decimal;
 use Illuminate\Support\Collection;
@@ -74,6 +75,7 @@ class ConsolidatedAccountingReportService
                 'business' => $business,
                 'profit_loss' => $profitLoss,
                 'balance_sheet' => $balanceSheet,
+                'earnings_from' => $this->earningsFrom($business->id, $to),
             ];
         });
 
@@ -98,14 +100,103 @@ class ConsolidatedAccountingReportService
             }
         }
 
+        $groupKey = app(ConsolidationEliminationService::class)->groupKey($selectedIds->all());
+        $eliminations = ConsolidationElimination::query()
+            ->withoutGlobalScope('business')
+            ->with(['lines', 'creator'])
+            ->where('group_key', $groupKey)
+            ->where('status', 'posted')
+            ->when($to !== null, fn ($query) => $query->whereDate('effective_date', '<=', $to))
+            ->orderBy('effective_date')
+            ->get();
+
+        $adjustments = [
+            'asset' => '0.0000',
+            'liability' => '0.0000',
+            'equity' => '0.0000',
+            'income' => '0.0000',
+            'expense' => '0.0000',
+        ];
+
+        foreach ($eliminations as $elimination) {
+            $inProfitLossWindow = $from === null || $elimination->effective_date->toDateString() >= $from;
+
+            foreach ($elimination->lines as $line) {
+                if (in_array($line->statement_type, ['income', 'expense'], true) && ! $inProfitLossWindow) {
+                    continue;
+                }
+
+                $normal = in_array($line->statement_type, ['asset', 'expense'], true)
+                    ? Decimal::sub((string) $line->debit, (string) $line->credit)
+                    : Decimal::sub((string) $line->credit, (string) $line->debit);
+                $adjustments[$line->statement_type] = Decimal::add($adjustments[$line->statement_type], $normal);
+            }
+        }
+
+        $consolidated = $combined;
+        $consolidated['total_income'] = Decimal::add($combined['total_income'], $adjustments['income']);
+        $consolidated['total_expenses'] = Decimal::add($combined['total_expenses'], $adjustments['expense']);
+        $consolidated['net_profit'] = Decimal::sub($consolidated['total_income'], $consolidated['total_expenses']);
+        $consolidated['total_assets'] = Decimal::add($combined['total_assets'], $adjustments['asset']);
+        $consolidated['total_liabilities'] = Decimal::add($combined['total_liabilities'], $adjustments['liability']);
+        $consolidated['total_equity'] = Decimal::add($combined['total_equity'], $adjustments['equity']);
+        $currentEarningsAdjustment = '0.0000';
+        $groupEarningsFrom = $rows->pluck('earnings_from')->filter()->max();
+
+        foreach ($eliminations as $elimination) {
+            if ($groupEarningsFrom !== null && $elimination->effective_date->toDateString() < $groupEarningsFrom) {
+                continue;
+            }
+
+            foreach ($elimination->lines as $line) {
+                if (! in_array($line->statement_type, ['income', 'expense'], true)) {
+                    continue;
+                }
+
+                $normal = $line->statement_type === 'expense'
+                    ? Decimal::sub((string) $line->debit, (string) $line->credit)
+                    : Decimal::sub((string) $line->credit, (string) $line->debit);
+                $profitEffect = $line->statement_type === 'income' ? $normal : Decimal::sub('0', $normal);
+                $currentEarningsAdjustment = Decimal::add($currentEarningsAdjustment, $profitEffect);
+            }
+        }
+
+        $consolidated['current_earnings'] = Decimal::add($combined['current_earnings'], $currentEarningsAdjustment);
+        $consolidated['total_liabilities_equity'] = Decimal::add(
+            Decimal::add($consolidated['total_liabilities'], $consolidated['total_equity']),
+            $consolidated['current_earnings'],
+        );
+        $consolidated['difference'] = Decimal::sub(
+            $consolidated['total_assets'],
+            $consolidated['total_liabilities_equity'],
+        );
+
         return [
             'businesses' => $businesses,
             'rows' => $rows,
             'currency' => $currencyMap->first() ?? config('settings.definitions.regional.currency.default', 'AFN'),
             'combined' => $combined,
-            'is_consolidated' => false,
-            'note' => 'Combined statements before intercompany eliminations.',
+            'consolidated' => $consolidated,
+            'eliminations' => $eliminations,
+            'group_key' => $groupKey,
+            'is_consolidated' => $eliminations->isNotEmpty(),
+            'note' => $eliminations->isNotEmpty()
+                ? 'Consolidated statements after posted intercompany eliminations.'
+                : 'Combined statements before intercompany eliminations.',
         ];
+    }
+
+    private function earningsFrom(int $businessId, ?string $to): ?string
+    {
+        return FiscalYearClose::query()
+            ->withoutGlobalScope('business')
+            ->where('business_id', $businessId)
+            ->when($to !== null, fn ($query) => $query->whereDate('end_date', '<=', $to))
+            ->latest('end_date')
+            ->first()
+            ?->end_date
+            ?->addDay()
+            ->toDateString();
     }
 
     private function profitAndLoss(int $businessId, ?string $from, ?string $to): array
