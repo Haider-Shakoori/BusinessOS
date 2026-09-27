@@ -39,6 +39,7 @@ use App\Http\Controllers\SaasAdminController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\SmartAssistantController;
 use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\SupplierInvoiceController;
 use App\Http\Controllers\TaxController;
 use App\Http\Controllers\UnitController;
 use App\Http\Controllers\UserRoleController;
@@ -478,6 +479,21 @@ Route::middleware(['auth', 'auth.session', 'business-selected', 'module:purchasi
         ->middleware('permission:purchasing.manage');
     Route::post('/purchasing/orders/{purchaseOrder}/receive', [PurchasingController::class, 'receive'])
         ->name('purchasing.orders.receive')
+        ->middleware('permission:purchasing.manage');
+    Route::get('/purchasing/supplier-invoices', [SupplierInvoiceController::class, 'index'])
+        ->name('purchasing.supplier-invoices.index')
+        ->middleware('permission:purchasing.view');
+    Route::post('/purchasing/supplier-invoices', [SupplierInvoiceController::class, 'store'])
+        ->name('purchasing.supplier-invoices.store')
+        ->middleware('permission:purchasing.manage');
+    Route::post('/purchasing/supplier-invoices/{supplierInvoice}/submit', [SupplierInvoiceController::class, 'submit'])
+        ->name('purchasing.supplier-invoices.submit')
+        ->middleware('permission:purchasing.manage');
+    Route::post('/purchasing/supplier-invoices/{supplierInvoice}/approve', [SupplierInvoiceController::class, 'approve'])
+        ->name('purchasing.supplier-invoices.approve')
+        ->middleware('permission:purchasing.manage');
+    Route::post('/purchasing/supplier-invoices/{supplierInvoice}/reject', [SupplierInvoiceController::class, 'reject'])
+        ->name('purchasing.supplier-invoices.reject')
         ->middleware('permission:purchasing.manage');
 });
 

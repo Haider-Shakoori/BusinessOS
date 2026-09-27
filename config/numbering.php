@@ -33,6 +33,7 @@ return [
         'warehouse_transfer' => 'TRF',
         'inventory_return' => 'RET',
         'goods_receipt' => 'GRN',
+        'supplier_invoice' => 'SINV',
     ],
 
     'padding' => 6,
