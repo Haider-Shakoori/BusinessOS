@@ -1103,7 +1103,7 @@ Route::middleware(['auth', 'auth.session', 'business-selected', 'module:reports'
  * it in the session, and redirects back. No database, no auth.
  */
 Route::get('/locale/{locale}', function (string $locale) {
-    if (! in_array($locale, config('app.supported_locales', []))) {
+    if (in_array($locale, config('app.supported_locales', []), true) === false) {
         abort(400, 'Unsupported locale.');
     }
 
