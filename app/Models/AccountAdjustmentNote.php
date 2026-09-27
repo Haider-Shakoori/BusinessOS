@@ -17,7 +17,18 @@ class AccountAdjustmentNote extends Model
         return ['note_date' => 'date', 'amount' => 'decimal:4', 'base_amount' => 'decimal:4'];
     }
 
-    public function invoice(): BelongsTo { return $this->belongsTo(Invoice::class); }
-    public function purchaseOrder(): BelongsTo { return $this->belongsTo(PurchaseOrder::class); }
-    public function journalEntry(): BelongsTo { return $this->belongsTo(JournalEntry::class); }
+    public function invoice(): BelongsTo
+    {
+        return $this->belongsTo(Invoice::class);
+    }
+
+    public function purchaseOrder(): BelongsTo
+    {
+        return $this->belongsTo(PurchaseOrder::class);
+    }
+
+    public function journalEntry(): BelongsTo
+    {
+        return $this->belongsTo(JournalEntry::class);
+    }
 }
