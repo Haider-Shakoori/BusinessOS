@@ -3,9 +3,14 @@
 @section('content')
 <x-app.page icon="shopping-cart" :title="__('operations.purchasing.requisitions')" :subtitle="__('operations.purchasing.requisitions_help')">
     <x-slot:actions>
-        <x-ui.button href="{{ route('purchasing.index') }}" variant="secondary" icon="arrow-left">
-            {{ __('operations.purchasing.purchase_orders') }}
-        </x-ui.button>
+        <div class="flex flex-wrap gap-2">
+            <x-ui.button href="{{ route('purchasing.rfqs.index') }}" variant="secondary" icon="document-text">
+                {{ __('operations.purchasing.rfqs') }}
+            </x-ui.button>
+            <x-ui.button href="{{ route('purchasing.index') }}" variant="secondary" icon="arrow-left">
+                {{ __('operations.purchasing.purchase_orders') }}
+            </x-ui.button>
+        </div>
     </x-slot:actions>
 
     @if (session('status'))
