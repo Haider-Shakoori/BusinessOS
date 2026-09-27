@@ -86,7 +86,6 @@ class FinancialCloseReadinessTest extends TestCase
         $this->assertSame('blocker', collect($assessment['checks'])->firstWhere('id', 'journal_integrity')['severity']);
     }
 
-
     public function test_fiscal_year_close_cannot_bypass_structural_readiness_blocker(): void
     {
         $user = $this->signInOwner();
