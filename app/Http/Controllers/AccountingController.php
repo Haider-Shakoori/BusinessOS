@@ -202,7 +202,6 @@ class AccountingController extends Controller
         return back()->with('status', __('operations.accounting.fx_revaluation_posted', ['count' => $count]));
     }
 
-
     public function closeFiscalYear(Request $request, FiscalYearCloseService $service): RedirectResponse
     {
         $data = $request->validate([
