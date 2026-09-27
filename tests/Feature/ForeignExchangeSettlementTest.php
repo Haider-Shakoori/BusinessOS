@@ -12,6 +12,7 @@ use App\Models\Invoice;
 use App\Models\Payment;
 use App\Models\Setting;
 use App\Models\User;
+use App\Services\CustomerLedgerService;
 use App\Services\PaymentService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -83,7 +84,9 @@ class ForeignExchangeSettlementTest extends TestCase
         $this->assertSame('7500.0000', $lines->firstWhere('account.code', 'AUTO-CASH')->debit);
         $this->assertSame('7000.0000', $lines->firstWhere('account.code', 'AUTO-AR')->credit);
         $this->assertSame('500.0000', $lines->firstWhere('account.code', 'AUTO-FX-GAIN')->credit);
+        $this->assertSame('0.0000', app(CustomerLedgerService::class)->outstandingBalance($customer));
     }
+
     public function test_customer_payment_posts_realized_fx_loss_when_settlement_rate_falls(): void
     {
         $user = User::create(['name' => 'FX Loss Owner', 'email' => Str::random(12).'@example.test', 'password' => Hash::make('password')]);
@@ -137,5 +140,4 @@ class ForeignExchangeSettlementTest extends TestCase
         $this->assertSame('7000.0000', $lines->firstWhere('account.code', 'AUTO-AR')->credit);
         $this->assertSame('500.0000', $lines->firstWhere('account.code', 'AUTO-FX-LOSS')->debit);
     }
-
 }
