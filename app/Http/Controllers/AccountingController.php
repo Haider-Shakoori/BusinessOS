@@ -188,7 +188,6 @@ class AccountingController extends Controller
         return back()->with('status', __('operations.accounting.cost_center_created'));
     }
 
-
     public function revalueForeignReceivables(Request $request, FxRevaluationService $revaluations): RedirectResponse
     {
         $data = $request->validate([
