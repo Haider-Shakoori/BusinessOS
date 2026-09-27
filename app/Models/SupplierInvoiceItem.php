@@ -12,6 +12,8 @@ class SupplierInvoiceItem extends Model
         'product_id',
         'product_variant_id',
         'quantity',
+        'received_quantity_snapshot',
+        'available_quantity_snapshot',
         'unit_cost',
         'line_total',
         'po_unit_cost',
@@ -23,6 +25,8 @@ class SupplierInvoiceItem extends Model
     {
         return [
             'quantity' => 'decimal:4',
+            'received_quantity_snapshot' => 'decimal:4',
+            'available_quantity_snapshot' => 'decimal:4',
             'unit_cost' => 'decimal:4',
             'line_total' => 'decimal:4',
             'po_unit_cost' => 'decimal:4',
