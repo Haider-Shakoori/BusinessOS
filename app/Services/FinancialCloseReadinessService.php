@@ -33,7 +33,6 @@ class FinancialCloseReadinessService
         ];
     }
 
-
     public function assertNoStructuralBlockers(string $startDate, string $endDate): void
     {
         $assessment = $this->assess($startDate, $endDate);
