@@ -15,6 +15,7 @@ use App\Models\Supplier;
 use App\Models\User;
 use App\Models\Warehouse;
 use App\Services\LandedCostService;
+use App\Support\Decimal;
 use Database\Seeders\PermissionSeeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -99,7 +100,7 @@ class LandedCostAllocationTest extends TestCase
 
         $this->assertSame(
             '20.0000',
-            \App\Support\Decimal::normalize((string) StockMovement::query()
+            Decimal::normalize((string) StockMovement::query()
                 ->where('reference_type', GoodsReceipt::class)
                 ->where('reference_id', $receipt->id)
                 ->sum('quantity')),
@@ -340,10 +341,10 @@ class LandedCostAllocationTest extends TestCase
                 'sale_price' => '0',
             ]);
 
-            $lineTotal = AppSupportDecimal::round(
-                AppSupportDecimal::mul($line['quantity'], $line['unit_cost']),
+            $lineTotal = Decimal::round(
+                Decimal::mul($line['quantity'], $line['unit_cost']),
             );
-            $total = AppSupportDecimal::add($total, $lineTotal);
+            $total = Decimal::add($total, $lineTotal);
 
             $order->items()->create([
                 'product_id' => $product->id,
