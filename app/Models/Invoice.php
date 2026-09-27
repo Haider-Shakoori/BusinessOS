@@ -65,6 +65,7 @@ class Invoice extends Model
     protected $fillable = [
         'customer_id',
         'date',
+        'due_date',
         'status',
         'discount_type',
         'discount_amount',
@@ -78,6 +79,7 @@ class Invoice extends Model
     {
         return [
             'date' => 'date',
+            'due_date' => 'date',
             'status' => InvoiceStatus::class,
             'subtotal' => 'decimal:4',
             'discount_amount' => 'decimal:4',
