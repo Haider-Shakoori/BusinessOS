@@ -19,6 +19,7 @@ class SupplierInvoiceService
     public function __construct(
         private readonly DocumentNumberService $numbers,
         private readonly AccountingPostingService $accounting,
+        private readonly SupplierInvoiceSettlementService $settlements,
     ) {
         //
     }
@@ -222,7 +223,7 @@ class SupplierInvoiceService
             $invoice = $invoice->refresh();
             $this->accounting->postSupplierInvoice($invoice);
 
-            return $invoice;
+            return $this->settlements->reconcile($invoice);
         });
     }
 

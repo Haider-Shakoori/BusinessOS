@@ -11,6 +11,8 @@ use App\Models\Payment;
 use App\Models\PaymentAllocation;
 use App\Models\PurchaseOrder;
 use App\Models\SupplierInvoice;
+use App\Models\SupplierInvoiceAdjustment;
+use App\Models\SupplierPaymentAllocation;
 use App\Support\Decimal;
 use Carbon\CarbonImmutable;
 
@@ -135,6 +137,7 @@ class AgingReportService
                 'document_date' => $documentDate,
                 'due_date' => $dueDate,
                 'amount' => $amount,
+                'mode' => 'legacy',
                 'sort_date' => $documentDate,
                 'sort_id' => $order->id,
             ]);
@@ -155,20 +158,63 @@ class AgingReportService
             $documentDate = $invoice->invoice_date->toDateString();
             $dueDate = ($invoice->due_date ?? $invoice->invoice_date)->toDateString();
 
+            $credit = Decimal::normalize((string) SupplierInvoiceAdjustment::query()
+                ->where('supplier_invoice_id', $invoice->id)
+                ->where('type', 'credit')
+                ->whereDate('note_date', '<=', $asOf)
+                ->where(function ($query) use ($asOf): void {
+                    $query->whereNull('reversed_at')
+                        ->orWhereDate('reversed_at', '>', $asOf);
+                })
+                ->sum('amount'));
+
+            $debit = Decimal::normalize((string) SupplierInvoiceAdjustment::query()
+                ->where('supplier_invoice_id', $invoice->id)
+                ->where('type', 'debit')
+                ->whereDate('note_date', '<=', $asOf)
+                ->where(function ($query) use ($asOf): void {
+                    $query->whereNull('reversed_at')
+                        ->orWhereDate('reversed_at', '>', $asOf);
+                })
+                ->sum('amount'));
+
+            $allocated = Decimal::normalize((string) SupplierPaymentAllocation::query()
+                ->join('payments', 'payments.id', '=', 'supplier_payment_allocations.payment_id')
+                ->where('supplier_payment_allocations.supplier_invoice_id', $invoice->id)
+                ->whereDate('payments.payment_date', '<=', $asOf)
+                ->where(function ($query) use ($asOf): void {
+                    $query->whereNull('payments.reversed_at')
+                        ->orWhereDate('payments.reversed_at', '>', $asOf);
+                })
+                ->sum('supplier_payment_allocations.amount'));
+
+            $amount = Decimal::sub(
+                Decimal::sub(
+                    Decimal::add((string) $invoice->total, $debit),
+                    $credit,
+                ),
+                $allocated,
+            );
+
+            if (Decimal::lt($amount, '0')) {
+                $amount = '0.0000';
+            }
+
             $documents->push([
                 'supplier_id' => $invoice->supplier_id,
                 'party' => $invoice->supplier?->name ?? '—',
                 'document' => $invoice->number,
                 'document_date' => $documentDate,
                 'due_date' => $dueDate,
-                'amount' => Decimal::normalize((string) $invoice->total),
+                'amount' => $amount,
+                'mode' => 'invoice',
                 'sort_date' => $documentDate,
                 'sort_id' => $invoice->id,
             ]);
         }
 
         foreach ($documents->groupBy('supplier_id') as $supplierId => $supplierDocuments) {
-            $remainingPayments = Decimal::normalize((string) Payment::query()
+            $paymentTotal = Decimal::normalize((string) Payment::query()
                 ->where('party_type', 'supplier')
                 ->where('party_id', $supplierId)
                 ->whereDate('payment_date', '<=', $asOf)
@@ -177,6 +223,23 @@ class AgingReportService
                         ->orWhereDate('reversed_at', '>', $asOf);
                 })
                 ->sum('base_amount'));
+
+            $allocatedTotal = Decimal::normalize((string) SupplierPaymentAllocation::query()
+                ->join('payments', 'payments.id', '=', 'supplier_payment_allocations.payment_id')
+                ->where('payments.party_type', 'supplier')
+                ->where('payments.party_id', $supplierId)
+                ->whereDate('payments.payment_date', '<=', $asOf)
+                ->where(function ($query) use ($asOf): void {
+                    $query->whereNull('payments.reversed_at')
+                        ->orWhereDate('payments.reversed_at', '>', $asOf);
+                })
+                ->sum('supplier_payment_allocations.amount'));
+
+            $remainingPayments = Decimal::sub($paymentTotal, $allocatedTotal);
+
+            if (Decimal::lt($remainingPayments, '0')) {
+                $remainingPayments = '0.0000';
+            }
 
             $supplierDocuments = $supplierDocuments
                 ->sortBy(fn (array $document): string => $document['sort_date'].'-'.str_pad((string) $document['sort_id'], 12, '0', STR_PAD_LEFT))

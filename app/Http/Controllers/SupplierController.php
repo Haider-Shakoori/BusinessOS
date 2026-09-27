@@ -95,6 +95,7 @@ class SupplierController extends Controller
         return view('suppliers.show', [
             'supplier' => $supplier->load([
                 'purchaseOrders' => fn ($query) => $query->latest('order_date')->latest('id')->limit(10),
+                'supplierInvoices' => fn ($query) => $query->latest('invoice_date')->latest('id')->limit(10),
                 'payments' => fn ($query) => $query->latest('payment_date')->latest('id')->limit(10),
             ]),
             'summary' => $this->ledger->summary($supplier),
@@ -143,7 +144,7 @@ class SupplierController extends Controller
     {
         $data = $request->validate([
             'search' => ['nullable', 'string', 'max:100'],
-            'type' => ['nullable', Rule::in(['purchase', 'return', 'payment'])],
+            'type' => ['nullable', Rule::in(['purchase', 'return', 'payment', 'invoice_credit', 'invoice_debit', 'adjustment_reversal'])],
             'date_from' => ['nullable', 'date'],
             'date_to' => ['nullable', 'date', 'after_or_equal:date_from'],
         ]);

@@ -24,6 +24,11 @@ class SupplierInvoice extends Model
         'total',
         'po_basis_total',
         'price_variance_total',
+        'amount_paid',
+        'credit_total',
+        'debit_total',
+        'amount_due',
+        'settlement_status',
         'notes',
         'created_by',
         'submitted_by',
@@ -47,6 +52,10 @@ class SupplierInvoice extends Model
             'total' => 'decimal:4',
             'po_basis_total' => 'decimal:4',
             'price_variance_total' => 'decimal:4',
+            'amount_paid' => 'decimal:4',
+            'credit_total' => 'decimal:4',
+            'debit_total' => 'decimal:4',
+            'amount_due' => 'decimal:4',
             'submitted_at' => 'datetime',
             'approved_at' => 'datetime',
             'rejected_at' => 'datetime',
@@ -67,6 +76,16 @@ class SupplierInvoice extends Model
     public function items(): HasMany
     {
         return $this->hasMany(SupplierInvoiceItem::class);
+    }
+
+    public function paymentAllocations(): HasMany
+    {
+        return $this->hasMany(SupplierPaymentAllocation::class);
+    }
+
+    public function adjustments(): HasMany
+    {
+        return $this->hasMany(SupplierInvoiceAdjustment::class);
     }
 
     public function creator(): BelongsTo

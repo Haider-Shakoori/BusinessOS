@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\PaymentMethod;
 use App\Models\PurchaseOrder;
 use App\Models\SupplierInvoice;
+use App\Models\SupplierInvoiceAdjustment;
 use App\Services\BusinessContext;
+use App\Services\PaymentService;
 use App\Services\SupplierInvoiceService;
+use App\Services\SupplierInvoiceSettlementService;
 use App\Support\Decimal;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -54,11 +58,15 @@ class SupplierInvoiceController extends Controller
                     'approver',
                     'rejector',
                     'matchOverrider',
+                    'paymentAllocations.payment',
+                    'adjustments.creator',
+                    'adjustments.reverser',
                 ])
                 ->latest('invoice_date')
                 ->latest('id')
                 ->limit(100)
                 ->get(),
+            'paymentMethods' => PaymentMethod::cases(),
         ]);
     }
 
@@ -134,5 +142,75 @@ class SupplierInvoiceController extends Controller
         );
 
         return back()->with('status', __('operations.purchasing.supplier_invoice_rejected'));
+    }
+
+    public function pay(
+        Request $request,
+        SupplierInvoice $supplierInvoice,
+        PaymentService $payments,
+    ): RedirectResponse {
+        $data = $request->validate([
+            'amount' => ['required', 'numeric', 'gt:0', 'max:999999999999.9999', 'decimal:0,4'],
+            'payment_method' => ['required', Rule::in(array_column(PaymentMethod::cases(), 'value'))],
+            'payment_date' => ['required', 'date'],
+            'reference' => ['nullable', 'string', 'max:100'],
+            'notes' => ['nullable', 'string', 'max:2000'],
+        ]);
+
+        $payments->recordSupplierInvoice(
+            $supplierInvoice,
+            $data,
+            (int) $request->user()->id,
+        );
+
+        return back()->with('status', __('operations.purchasing.supplier_invoice_payment_recorded'));
+    }
+
+    public function adjust(
+        Request $request,
+        SupplierInvoice $supplierInvoice,
+        SupplierInvoiceSettlementService $settlements,
+    ): RedirectResponse {
+        $data = $request->validate([
+            'type' => ['required', Rule::in(['credit', 'debit'])],
+            'amount' => ['required', 'numeric', 'gt:0', 'max:999999999999.9999', 'decimal:0,4'],
+            'note_date' => ['required', 'date'],
+            'reason' => ['nullable', 'string', 'max:2000'],
+        ]);
+
+        $settlements->createAdjustment(
+            $supplierInvoice,
+            $data['type'],
+            (string) $data['amount'],
+            $data['note_date'],
+            $data['reason'] ?? null,
+            (int) $request->user()->id,
+        );
+
+        return back()->with('status', __('operations.purchasing.supplier_invoice_adjustment_posted'));
+    }
+
+    public function reverseAdjustment(
+        Request $request,
+        SupplierInvoice $supplierInvoice,
+        SupplierInvoiceAdjustment $supplierInvoiceAdjustment,
+        SupplierInvoiceSettlementService $settlements,
+    ): RedirectResponse {
+        abort_unless(
+            (int) $supplierInvoiceAdjustment->supplier_invoice_id === (int) $supplierInvoice->id,
+            404,
+        );
+
+        $data = $request->validate([
+            'reversal_reason' => ['nullable', 'string', 'max:1000'],
+        ]);
+
+        $settlements->reverseAdjustment(
+            $supplierInvoiceAdjustment,
+            (int) $request->user()->id,
+            $data['reversal_reason'] ?? null,
+        );
+
+        return back()->with('status', __('operations.purchasing.supplier_invoice_adjustment_reversed'));
     }
 }

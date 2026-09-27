@@ -9,6 +9,7 @@ use App\Models\Payment;
 use App\Models\PurchaseOrder;
 use App\Models\Supplier;
 use App\Models\SupplierInvoice;
+use App\Models\SupplierInvoiceAdjustment;
 use App\Support\Decimal;
 
 final class SupplierLedgerService
@@ -81,6 +82,24 @@ final class SupplierLedgerService
             ->sum('base_amount'));
     }
 
+    public function totalInvoiceCredits(Supplier $supplier): string
+    {
+        return Decimal::normalize((string) SupplierInvoiceAdjustment::query()
+            ->where('supplier_id', $supplier->id)
+            ->where('type', 'credit')
+            ->whereNull('reversed_at')
+            ->sum('amount'));
+    }
+
+    public function totalInvoiceDebits(Supplier $supplier): string
+    {
+        return Decimal::normalize((string) SupplierInvoiceAdjustment::query()
+            ->where('supplier_id', $supplier->id)
+            ->where('type', 'debit')
+            ->whereNull('reversed_at')
+            ->sum('amount'));
+    }
+
     public function totalPaid(Supplier $supplier): string
     {
         return Decimal::normalize((string) Payment::query()
@@ -92,12 +111,17 @@ final class SupplierLedgerService
 
     public function outstandingBalance(Supplier $supplier): string
     {
+        $gross = Decimal::add(
+            Decimal::add($this->openingBalance($supplier), $this->totalPurchased($supplier)),
+            $this->totalInvoiceDebits($supplier),
+        );
+
         return Decimal::sub(
-            Decimal::sub(
-                Decimal::add($this->openingBalance($supplier), $this->totalPurchased($supplier)),
-                $this->totalReturned($supplier),
+            Decimal::sub($gross, $this->totalReturned($supplier)),
+            Decimal::add(
+                Decimal::add($this->totalPaid($supplier), $this->totalDebitNotes($supplier)),
+                $this->totalInvoiceCredits($supplier),
             ),
-            Decimal::add($this->totalPaid($supplier), $this->totalDebitNotes($supplier)),
         );
     }
 
@@ -111,6 +135,8 @@ final class SupplierLedgerService
         $returned = $this->totalReturned($supplier);
         $paid = $this->totalPaid($supplier);
         $debitNotes = $this->totalDebitNotes($supplier);
+        $invoiceCredits = $this->totalInvoiceCredits($supplier);
+        $invoiceDebits = $this->totalInvoiceDebits($supplier);
 
         return [
             'opening_balance' => $opening,
@@ -118,7 +144,9 @@ final class SupplierLedgerService
             'total_returned' => $returned,
             'total_paid' => $paid,
             'total_debit_notes' => $debitNotes,
-            'outstanding_balance' => Decimal::sub(Decimal::sub(Decimal::add($opening, $purchased), $returned), Decimal::add($paid, $debitNotes)),
+            'total_invoice_credits' => $invoiceCredits,
+            'total_invoice_debits' => $invoiceDebits,
+            'outstanding_balance' => $this->outstandingBalance($supplier),
         ];
     }
 
@@ -305,6 +333,41 @@ final class SupplierLedgerService
                     'description' => $invoice->supplier_invoice_number,
                     'debit' => '0.0000',
                     'credit' => Decimal::normalize((string) $invoice->total),
+                    'balance' => '0.0000',
+                    'reversed' => false,
+                    'sort' => $sort++,
+                ];
+            }
+        }
+
+        foreach (SupplierInvoiceAdjustment::query()
+            ->where('supplier_id', $supplier->id)
+            ->orderBy('note_date')
+            ->orderBy('id')
+            ->get() as $adjustment) {
+            $amount = Decimal::normalize((string) $adjustment->amount);
+            $isCredit = $adjustment->type === 'credit';
+
+            $entries[] = [
+                'date' => $adjustment->note_date?->format('Y-m-d'),
+                'type' => $isCredit ? 'invoice_credit' : 'invoice_debit',
+                'reference' => (string) $adjustment->number,
+                'description' => $adjustment->reason,
+                'debit' => $isCredit ? $amount : '0.0000',
+                'credit' => $isCredit ? '0.0000' : $amount,
+                'balance' => '0.0000',
+                'reversed' => $adjustment->reversed_at !== null,
+                'sort' => $sort++,
+            ];
+
+            if ($adjustment->reversed_at !== null) {
+                $entries[] = [
+                    'date' => $adjustment->reversed_at->format('Y-m-d'),
+                    'type' => 'adjustment_reversal',
+                    'reference' => (string) $adjustment->number,
+                    'description' => $adjustment->reversal_reason,
+                    'debit' => $isCredit ? '0.0000' : $amount,
+                    'credit' => $isCredit ? $amount : '0.0000',
                     'balance' => '0.0000',
                     'reversed' => false,
                     'sort' => $sort++,

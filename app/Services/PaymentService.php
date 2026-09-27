@@ -9,6 +9,7 @@ use App\Models\Invoice;
 use App\Models\Payment;
 use App\Models\PaymentAllocation;
 use App\Models\Supplier;
+use App\Models\SupplierInvoice;
 use App\Support\Decimal;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
@@ -50,6 +51,7 @@ class PaymentService
         private readonly CurrencyService $currencies,
         private readonly SupplierLedgerService $supplierLedger,
         private readonly AccountingPostingService $accounting,
+        private readonly SupplierInvoiceSettlementService $supplierSettlements,
     ) {
         //
     }
@@ -164,9 +166,74 @@ class PaymentService
                 'created_by' => $createdBy,
             ])->save();
 
+            $this->supplierSettlements->autoAllocate($payment, $locked, $amount);
             $this->accounting->postPayment($payment);
 
-            return $payment->fresh(['supplier', 'createdBy']);
+            return $payment->fresh(['supplier', 'createdBy', 'supplierAllocations.supplierInvoice']);
+        });
+    }
+
+    /**
+     * Record a supplier payment against one approved supplier invoice.
+     *
+     * @param  array{amount:string|int|float,payment_method:string,payment_date:string,reference?:string|null,notes?:string|null}  $validated
+     */
+    public function recordSupplierInvoice(SupplierInvoice $supplierInvoice, array $validated, int $createdBy): Payment
+    {
+        return DB::transaction(function () use ($supplierInvoice, $validated, $createdBy): Payment {
+            $invoice = SupplierInvoice::query()
+                ->with(['supplier', 'purchaseOrder'])
+                ->lockForUpdate()
+                ->findOrFail($supplierInvoice->id);
+
+            if ($invoice->status !== 'approved' || $invoice->purchaseOrder?->ap_recognition !== 'invoice') {
+                throw ValidationException::withMessages([
+                    'supplier_invoice' => 'Only approved supplier invoices can receive allocated payments.',
+                ]);
+            }
+
+            $invoice = $this->supplierSettlements->reconcile($invoice);
+            $amount = Decimal::normalize((string) $validated['amount']);
+
+            if (! Decimal::gt($amount, '0') || Decimal::gt($amount, (string) $invoice->amount_due)) {
+                throw ValidationException::withMessages([
+                    'amount' => 'Supplier payment exceeds the invoice outstanding balance.',
+                ]);
+            }
+
+            $supplier = Supplier::query()->lockForUpdate()->findOrFail($invoice->supplier_id);
+            $supplierDue = $this->supplierLedger->outstandingBalance($supplier);
+
+            if (Decimal::gt($amount, $supplierDue)) {
+                throw ValidationException::withMessages([
+                    'amount' => __('suppliers.validation.payment_exceeds_balance'),
+                ]);
+            }
+
+            $currency = $this->currencies->baseCurrency();
+
+            $payment = new Payment;
+            $payment->forceFill([
+                'payment_number' => $this->numbers->next(DocumentType::Payment),
+                'paymentable_type' => SupplierInvoice::class,
+                'paymentable_id' => $invoice->id,
+                'party_type' => 'supplier',
+                'party_id' => $supplier->id,
+                'payment_date' => $validated['payment_date'],
+                'amount' => $amount,
+                'currency_code' => $currency,
+                'exchange_rate' => '1.00000000',
+                'base_amount' => $amount,
+                'payment_method' => $validated['payment_method'],
+                'reference' => $validated['reference'] ?? null,
+                'notes' => $validated['notes'] ?? null,
+                'created_by' => $createdBy,
+            ])->save();
+
+            $this->supplierSettlements->allocate($payment, $invoice, $amount);
+            $this->accounting->postPayment($payment);
+
+            return $payment->fresh(['supplier', 'createdBy', 'supplierAllocations.supplierInvoice']);
         });
     }
 
@@ -201,6 +268,7 @@ class PaymentService
                 ])->save();
 
                 $this->accounting->reversePayment($locked, $reason);
+                $this->supplierSettlements->reconcilePaymentInvoices($locked);
 
                 return;
             }

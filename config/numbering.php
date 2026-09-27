@@ -34,6 +34,8 @@ return [
         'inventory_return' => 'RET',
         'goods_receipt' => 'GRN',
         'supplier_invoice' => 'SINV',
+        'supplier_credit_note' => 'SCN',
+        'supplier_debit_note' => 'SDN',
     ],
 
     'padding' => 6,

@@ -31,7 +31,7 @@
             <x-ui.input name="search" :label="__('suppliers.ledger_page.search')" :value="$searchTerm" />
             <x-ui.select name="type" :label="__('suppliers.ledger_page.type')">
                 <option value="">{{ __('suppliers.ledger_page.all_types') }}</option>
-                @foreach(['purchase','return','payment'] as $value)
+                @foreach(['purchase','return','payment','invoice_credit','invoice_debit','adjustment_reversal'] as $value)
                     <option value="{{ $value }}" @selected($type === $value)>{{ __('suppliers.ledger_page.types.'.$value) }}</option>
                 @endforeach
             </x-ui.select>

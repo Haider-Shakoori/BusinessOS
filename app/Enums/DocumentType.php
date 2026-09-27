@@ -41,4 +41,8 @@ enum DocumentType: string
     case GoodsReceipt = 'goods_receipt';
 
     case SupplierInvoice = 'supplier_invoice';
+
+    case SupplierCreditNote = 'supplier_credit_note';
+
+    case SupplierDebitNote = 'supplier_debit_note';
 }

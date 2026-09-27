@@ -495,6 +495,15 @@ Route::middleware(['auth', 'auth.session', 'business-selected', 'module:purchasi
     Route::post('/purchasing/supplier-invoices/{supplierInvoice}/reject', [SupplierInvoiceController::class, 'reject'])
         ->name('purchasing.supplier-invoices.reject')
         ->middleware('permission:purchasing.manage');
+    Route::post('/purchasing/supplier-invoices/{supplierInvoice}/pay', [SupplierInvoiceController::class, 'pay'])
+        ->name('purchasing.supplier-invoices.pay')
+        ->middleware(['permission:purchasing.manage', 'permission:payments.create']);
+    Route::post('/purchasing/supplier-invoices/{supplierInvoice}/adjustments', [SupplierInvoiceController::class, 'adjust'])
+        ->name('purchasing.supplier-invoices.adjustments.store')
+        ->middleware(['permission:purchasing.manage', 'permission:accounting.manage']);
+    Route::post('/purchasing/supplier-invoices/{supplierInvoice}/adjustments/{supplierInvoiceAdjustment}/reverse', [SupplierInvoiceController::class, 'reverseAdjustment'])
+        ->name('purchasing.supplier-invoices.adjustments.reverse')
+        ->middleware(['permission:purchasing.manage', 'permission:accounting.manage']);
 });
 
 Route::middleware(['auth', 'auth.session', 'business-selected', 'module:accounting'])->group(function () {
