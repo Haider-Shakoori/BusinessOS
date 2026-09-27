@@ -6,6 +6,7 @@ use App\Traits\BelongsToBusiness;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class SupplierQuotation extends Model
 {
@@ -51,6 +52,11 @@ class SupplierQuotation extends Model
     public function items(): HasMany
     {
         return $this->hasMany(SupplierQuotationItem::class);
+    }
+
+    public function purchaseOrder(): HasOne
+    {
+        return $this->hasOne(PurchaseOrder::class);
     }
 
     public function recorder(): BelongsTo
