@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<x-app.page icon="building-office-2" :title="__('fixed_assets.title')" :subtitle="__('fixed_assets.subtitle')">
+<x-app.page icon="building-office" :title="__('fixed_assets.title')" :subtitle="__('fixed_assets.subtitle')">
     <x-slot:actions>
         <x-ui.button href="{{ route('accounting.index') }}" variant="secondary" icon="ledger">
             {{ __('operations.accounting.title') }}
