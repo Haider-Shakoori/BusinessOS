@@ -64,6 +64,23 @@
             </div>
         @endif
 
+        @can('accounting.manage')
+            @if ($payable)
+                <div class="mb-6">
+                    <x-ui.card>
+                        <x-slot:header><h2 class="font-semibold text-slate-900 dark:text-white">Credit note</h2></x-slot:header>
+                        <form method="POST" action="{{ route('accounting.credit-notes.store', $invoice) }}" class="grid gap-4 sm:grid-cols-4">
+                            @csrf
+                            <x-ui.input name="amount" type="number" step="0.0001" min="0.0001" label="Amount" required />
+                            <x-ui.input name="note_date" type="date" :value="now()->toDateString()" label="Date" required />
+                            <x-ui.input name="reason" label="Reason" />
+                            <div class="flex items-end"><x-ui.button type="submit">Post credit note</x-ui.button></div>
+                        </form>
+                    </x-ui.card>
+                </div>
+            @endif
+        @endcan
+
         <div class="grid gap-6 lg:grid-cols-3">
             <div class="lg:col-span-2">
                 <x-ui.card>
@@ -293,6 +310,12 @@
                             <dt class="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">{{ __('invoices.date') }}</dt>
                             <dd class="mt-1 text-sm text-slate-900 dark:text-slate-100">{{ $invoice->date->format('Y-m-d') }}</dd>
                         </div>
+                        @if ($invoice->due_date)
+                            <div>
+                                <dt class="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">Due date</dt>
+                                <dd class="mt-1 text-sm text-slate-900 dark:text-slate-100">{{ $invoice->due_date->format('Y-m-d') }}</dd>
+                            </div>
+                        @endif
                         <div>
                             <dt class="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">{{ __('currencies.currency') }}</dt>
                             <dd class="mt-1 text-sm font-semibold text-slate-900 dark:text-white" dir="ltr">{{ $invoice->currency_code }}</dd>

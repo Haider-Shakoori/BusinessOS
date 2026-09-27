@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Enums\InvoiceStatus;
+use App\Models\AccountAdjustmentNote;
 use App\Models\Customer;
 use App\Models\Payment;
 use App\Models\PaymentAllocation;
@@ -105,11 +106,20 @@ final class CustomerLedgerService
      * Opening balance + invoiced - paid. A reversed payment therefore increases
      * the outstanding balance again (its credit stops counting).
      */
+    public function totalCredits(Customer $customer): string
+    {
+        return Decimal::normalize((string) AccountAdjustmentNote::query()
+            ->where('type', 'customer_credit')
+            ->where('status', 'posted')
+            ->whereHas('invoice', fn ($query) => $query->where('customer_id', $customer->id))
+            ->sum('base_amount'));
+    }
+
     public function outstandingBalance(Customer $customer): string
     {
         $base = Decimal::add($this->openingBalance($customer), $this->totalInvoiced($customer));
 
-        return Decimal::sub($base, $this->totalPaid($customer));
+        return Decimal::sub($base, Decimal::add($this->totalPaid($customer), $this->totalCredits($customer)));
     }
 
     /**
@@ -127,12 +137,14 @@ final class CustomerLedgerService
         $opening = $this->openingBalance($customer);
         $invoiced = $this->totalInvoiced($customer);
         $paid = $this->totalPaid($customer);
+        $credits = $this->totalCredits($customer);
 
         return [
             'opening_balance' => $opening,
             'total_invoiced' => $invoiced,
             'total_paid' => $paid,
-            'outstanding_balance' => Decimal::sub(Decimal::add($opening, $invoiced), $paid),
+            'total_credits' => $credits,
+            'outstanding_balance' => Decimal::sub(Decimal::add($opening, $invoiced), Decimal::add($paid, $credits)),
         ];
     }
 
@@ -352,6 +364,31 @@ final class CustomerLedgerService
                 'reversed' => false,
                 'model_type' => 'invoice',
                 'model_id' => (int) $invoice->id,
+                'sort' => $sort++,
+            ];
+        }
+
+        foreach (AccountAdjustmentNote::query()
+            ->where('type', 'customer_credit')
+            ->where('status', 'posted')
+            ->whereHas('invoice', fn ($query) => $query->where('customer_id', $customer->id))
+            ->orderBy('note_date')
+            ->orderBy('id')
+            ->get() as $note) {
+            $entries[] = [
+                'date' => $note->note_date?->format('Y-m-d'),
+                'type' => 'credit_note',
+                'reference' => (string) $note->number,
+                'description' => $note->reason,
+                'debit' => '0.0000',
+                'credit' => (string) $note->amount,
+                'balance' => '0.0000',
+                'currency_code' => $note->currency_code,
+                'base_debit' => '0.0000',
+                'base_credit' => Decimal::normalize((string) $note->base_amount),
+                'reversed' => false,
+                'model_type' => 'credit_note',
+                'model_id' => (int) $note->id,
                 'sort' => $sort++,
             ];
         }

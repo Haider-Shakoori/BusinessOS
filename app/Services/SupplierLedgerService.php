@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\AccountAdjustmentNote;
 use App\Models\InventoryReturn;
 use App\Models\Payment;
 use App\Models\PurchaseOrder;
@@ -38,6 +39,17 @@ final class SupplierLedgerService
             ->sum('total'));
     }
 
+    public function totalDebitNotes(Supplier $supplier): string
+    {
+        $orderIds = $supplier->purchaseOrders()->pluck('id');
+
+        return Decimal::normalize((string) AccountAdjustmentNote::query()
+            ->where('type', 'supplier_debit')
+            ->where('status', 'posted')
+            ->whereIn('purchase_order_id', $orderIds)
+            ->sum('base_amount'));
+    }
+
     public function totalPaid(Supplier $supplier): string
     {
         return Decimal::normalize((string) Payment::query()
@@ -54,7 +66,7 @@ final class SupplierLedgerService
                 Decimal::add($this->openingBalance($supplier), $this->totalPurchased($supplier)),
                 $this->totalReturned($supplier),
             ),
-            $this->totalPaid($supplier),
+            Decimal::add($this->totalPaid($supplier), $this->totalDebitNotes($supplier)),
         );
     }
 
@@ -67,13 +79,15 @@ final class SupplierLedgerService
         $purchased = $this->totalPurchased($supplier);
         $returned = $this->totalReturned($supplier);
         $paid = $this->totalPaid($supplier);
+        $debitNotes = $this->totalDebitNotes($supplier);
 
         return [
             'opening_balance' => $opening,
             'total_purchased' => $purchased,
             'total_returned' => $returned,
             'total_paid' => $paid,
-            'outstanding_balance' => Decimal::sub(Decimal::sub(Decimal::add($opening, $purchased), $returned), $paid),
+            'total_debit_notes' => $debitNotes,
+            'outstanding_balance' => Decimal::sub(Decimal::sub(Decimal::add($opening, $purchased), $returned), Decimal::add($paid, $debitNotes)),
         ];
     }
 
@@ -113,7 +127,7 @@ final class SupplierLedgerService
         $balance = '0.0000';
         $rows = [];
 
-        if ($dateFrom !== null && ! $rowLevelFilter) {
+        if ($dateFrom !== null && $rowLevelFilter === false) {
             $visible = [];
             $broughtForward = '0.0000';
 
@@ -173,7 +187,7 @@ final class SupplierLedgerService
             'rows' => $rows,
             'brought_forward' => $broughtForward,
             'closing_balance' => $balance,
-            'show_running_balance' => ! $rowLevelFilter,
+            'show_running_balance' => $rowLevelFilter === false,
         ];
     }
 
@@ -243,6 +257,28 @@ final class SupplierLedgerService
             }
         }
 
+        if ($orderIds->isNotEmpty()) {
+            foreach (AccountAdjustmentNote::query()
+                ->where('type', 'supplier_debit')
+                ->where('status', 'posted')
+                ->whereIn('purchase_order_id', $orderIds)
+                ->orderBy('note_date')
+                ->orderBy('id')
+                ->get() as $note) {
+                $entries[] = [
+                    'date' => $note->note_date?->format('Y-m-d'),
+                    'type' => 'debit_note',
+                    'reference' => (string) $note->number,
+                    'description' => $note->reason,
+                    'debit' => Decimal::normalize((string) $note->base_amount),
+                    'credit' => '0.0000',
+                    'balance' => '0.0000',
+                    'reversed' => false,
+                    'sort' => $sort++,
+                ];
+            }
+        }
+
         foreach (Payment::query()
             ->where('party_type', 'supplier')
             ->where('party_id', $supplier->id)
@@ -260,11 +296,11 @@ final class SupplierLedgerService
                 'debit' => $amount,
                 'credit' => '0.0000',
                 'balance' => '0.0000',
-                'reversed' => ! $active,
+                'reversed' => $active === false,
                 'sort' => $sort++,
             ];
 
-            if (! $active) {
+            if ($active === false) {
                 $entries[] = [
                     'date' => $payment->reversed_at?->format('Y-m-d') ?? $payment->payment_date?->format('Y-m-d'),
                     'type' => 'reversal',

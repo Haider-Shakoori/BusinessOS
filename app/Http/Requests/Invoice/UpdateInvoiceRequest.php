@@ -36,6 +36,7 @@ class UpdateInvoiceRequest extends FormRequest
         $rules = [
             'customer_id' => ['required', 'integer', $this->scopedExists('customers')],
             'date' => ['required', 'date'],
+            'due_date' => ['nullable', 'date', 'after_or_equal:date'],
             'status' => ['required', Rule::in(StoreInvoiceRequest::settableStatuses())],
             'discount_type' => ['nullable', Rule::in(['percentage', 'fixed'])],
             'discount_amount' => ['nullable', 'numeric', 'min:0', 'max:999999999999.9999', 'decimal:0,4'],
