@@ -151,6 +151,17 @@ class LandedCostService
             ])->save();
 
             $this->recalculateReceiptValuation($receipt);
+
+            foreach ($cost->allocations as $allocation) {
+                $receiptItem = GoodsReceiptItem::query()
+                    ->with('stockMovement')
+                    ->findOrFail($allocation->goods_receipt_item_id);
+
+                $allocation->forceFill([
+                    'final_unit_cost' => $receiptItem->stockMovement?->unit_cost ?? $allocation->final_unit_cost,
+                ])->save();
+            }
+
             $this->accounting->postLandedCost($cost->refresh());
 
             return $cost->refresh()->load([
@@ -229,12 +240,6 @@ class LandedCostService
                 ])->save();
             }
 
-            LandedCostAllocation::query()
-                ->where('goods_receipt_item_id', $item->id)
-                ->whereHas('landedCost', fn ($query) => $query->where('status', 'posted'))
-                ->update([
-                    'final_unit_cost' => $effectiveUnitCost,
-                ]);
         }
     }
 
