@@ -10,9 +10,7 @@ use RuntimeException;
 
 class BudgetVarianceService
 {
-    public function __construct(private readonly BusinessContext $context)
-    {
-    }
+    public function __construct(private readonly BusinessContext $context) {}
 
     /**
      * @return Collection<int,array<string,mixed>>
