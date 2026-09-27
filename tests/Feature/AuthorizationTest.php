@@ -350,8 +350,8 @@ class AuthorizationTest extends TestCase
     {
         $this->registerProtectedRoute('/__perm/settings-manage', 'settings.manage');
 
-        // The catalogue grows with implemented modules. Supplier management
-        // adds its own read/manage capabilities under Purchasing.
+        // The catalogue grows with implemented modules. Fixed assets adds
+        // granular view/manage capabilities under Accounting.
         $expected = [
             'users.view', 'users.manage',
             'settings.view', 'settings.manage',
@@ -368,6 +368,7 @@ class AuthorizationTest extends TestCase
             'purchasing.view', 'purchasing.manage',
             'suppliers.view', 'suppliers.manage',
             'accounting.view', 'accounting.manage',
+            'assets.view', 'assets.manage',
             'pos.view', 'pos.sell', 'pos.manage',
             'crm.view', 'crm.manage',
             'manufacturing.view', 'manufacturing.manage',
