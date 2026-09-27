@@ -7,6 +7,7 @@ use App\Models\Account;
 use App\Models\AccountingPosting;
 use App\Models\Business;
 use App\Models\BusinessModule;
+use App\Models\CostCenter;
 use App\Models\Customer;
 use App\Models\Expense;
 use App\Models\FiscalPeriod;
@@ -503,6 +504,57 @@ class AccountingIntegrationReportsTest extends TestCase
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage('cannot overlap');
         $service->create('Overlapping period', '2026-09-01', '2027-08-31');
+    }
+
+    public function test_cost_center_journals_are_tenant_safe_and_report_profitability(): void
+    {
+        $user = $this->user();
+        $business = $this->business($user);
+        $this->actIn($user, $business);
+
+        $this->post('/accounting/cost-centers', [
+            'code' => 'KBL-SALES',
+            'name' => 'Kabul Sales',
+            'description' => 'Kabul sales activity',
+        ])->assertRedirect();
+
+        $center = CostCenter::firstOrFail();
+        $income = Account::create(['code' => 'CC-REV', 'name' => 'CC Revenue', 'type' => 'income', 'is_active' => true]);
+        $cash = Account::create(['code' => 'CC-CASH', 'name' => 'CC Cash', 'type' => 'asset', 'is_active' => true]);
+
+        $this->post('/accounting/journals', [
+            'number' => 'CC-J-1',
+            'entry_date' => '2026-09-27',
+            'debit_account_id' => $cash->id,
+            'credit_account_id' => $income->id,
+            'cost_center_id' => $center->id,
+            'amount' => '125.0000',
+        ])->assertRedirect();
+
+        $entry = JournalEntry::where('number', 'CC-J-1')->with('lines')->firstOrFail();
+        $this->assertTrue($entry->lines->every(fn ($line) => $line->cost_center_id === $center->id));
+
+        $summary = app(AccountingReportService::class)->costCenterSummary('2026-09-01', '2026-09-30')->firstWhere('id', $center->id);
+        $this->assertSame('125.0000', $summary['income']);
+        $this->assertSame('0.0000', $summary['expenses']);
+        $this->assertSame('125.0000', $summary['net_profit']);
+
+        $otherUser = $this->user('Other Owner');
+        $otherBusiness = $this->business($otherUser, 'Other Accounting Co');
+        $this->actIn($otherUser, $otherBusiness);
+        $foreignCenter = CostCenter::create(['code' => 'FOREIGN', 'name' => 'Foreign', 'is_active' => true]);
+
+        $this->actIn($user, $business);
+        $this->post('/accounting/journals', [
+            'number' => 'CC-FORGED',
+            'entry_date' => '2026-09-27',
+            'debit_account_id' => $cash->id,
+            'credit_account_id' => $income->id,
+            'cost_center_id' => $foreignCenter->id,
+            'amount' => '10.0000',
+        ])->assertSessionHasErrors('cost_center_id');
+
+        $this->assertDatabaseMissing('journal_entries', ['number' => 'CC-FORGED']);
     }
 
     public function test_historical_backfill_is_idempotent(): void
