@@ -81,7 +81,6 @@ class ConsolidationEliminationTest extends TestCase
         $this->assertSame('reversed', $elimination->fresh()->status);
     }
 
-
     public function test_http_post_requires_accounting_manage_in_every_selected_business(): void
     {
         $user = User::create(['name' => 'Limited Manager', 'email' => Str::random(12).'@test.local', 'password' => Hash::make('password')]);
