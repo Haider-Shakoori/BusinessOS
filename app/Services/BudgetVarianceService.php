@@ -19,7 +19,7 @@ class BudgetVarianceService
      */
     public function report(AccountingBudget $budget): Collection
     {
-        if (!$this->context->isCurrent($budget)) {
+        if ($this->context->isCurrent($budget) === false) {
             throw new RuntimeException('Budget does not belong to the current business.');
         }
 
