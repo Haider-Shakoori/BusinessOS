@@ -4,7 +4,9 @@ namespace App\Services;
 
 use App\Enums\DocumentType;
 use App\Models\GoodsReceiptItem;
+use App\Models\InventoryReturnItem;
 use App\Models\PurchaseOrder;
+use App\Models\PurchaseOrderItem;
 use App\Models\SupplierInvoice;
 use App\Models\SupplierInvoiceItem;
 use App\Support\Decimal;
@@ -14,8 +16,10 @@ use Illuminate\Validation\ValidationException;
 
 class SupplierInvoiceService
 {
-    public function __construct(private readonly DocumentNumberService $numbers)
-    {
+    public function __construct(
+        private readonly DocumentNumberService $numbers,
+        private readonly AccountingPostingService $accounting,
+    ) {
         //
     }
 
@@ -215,8 +219,10 @@ class SupplierInvoiceService
             }
 
             $invoice->update($updates);
+            $invoice = $invoice->refresh();
+            $this->accounting->postSupplierInvoice($invoice);
 
-            return $invoice->refresh();
+            return $invoice;
         });
     }
 
@@ -297,15 +303,28 @@ class SupplierInvoiceService
             ->groupBy('goods_receipt_items.purchase_order_item_id')
             ->pluck('received_quantity', 'goods_receipt_items.purchase_order_item_id');
 
-        if ($received->isEmpty() && $order->status === 'received') {
-            return $order->items->mapWithKeys(fn ($item): array => [
-                $item->id => Decimal::normalize((string) $item->quantity),
-            ]);
-        }
+        $returned = InventoryReturnItem::query()
+            ->selectRaw('inventory_return_items.source_item_id, SUM(inventory_return_items.quantity) as returned_quantity')
+            ->join('inventory_returns', 'inventory_returns.id', '=', 'inventory_return_items.inventory_return_id')
+            ->where('inventory_returns.type', 'purchase')
+            ->where('inventory_returns.status', 'completed')
+            ->where('inventory_return_items.source_item_type', PurchaseOrderItem::class)
+            ->whereIn('inventory_return_items.source_item_id', $order->items->pluck('id'))
+            ->groupBy('inventory_return_items.source_item_id')
+            ->pluck('returned_quantity', 'inventory_return_items.source_item_id');
 
-        return $order->items->mapWithKeys(fn ($item): array => [
-            $item->id => Decimal::normalize((string) ($received->get($item->id) ?? '0')),
-        ]);
+        $legacyFallback = $received->isEmpty() && $order->status === 'received';
+
+        return $order->items->mapWithKeys(function ($item) use ($received, $returned, $legacyFallback): array {
+            $gross = $legacyFallback
+                ? Decimal::normalize((string) $item->quantity)
+                : Decimal::normalize((string) ($received->get($item->id) ?? '0'));
+            $returnedQuantity = Decimal::normalize((string) ($returned->get($item->id) ?? '0'));
+
+            return [
+                $item->id => Decimal::min(Decimal::sub($gross, $returnedQuantity), '0.0000'),
+            ];
+        });
     }
 
     private function assertQuantitiesStillAvailable(SupplierInvoice $invoice): void
