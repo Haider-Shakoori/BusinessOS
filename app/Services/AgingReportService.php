@@ -89,8 +89,11 @@ class AgingReportService
             $remainingPayments = Decimal::normalize((string) Payment::query()
                 ->where('party_type', 'supplier')
                 ->where('party_id', $supplierId)
-                ->whereNull('reversed_at')
                 ->whereDate('payment_date', '<=', $asOf)
+                ->where(function ($query) use ($asOf): void {
+                    $query->whereNull('reversed_at')
+                        ->orWhereDate('reversed_at', '>', $asOf);
+                })
                 ->sum('base_amount'));
 
             foreach ($supplierOrders as $order) {
