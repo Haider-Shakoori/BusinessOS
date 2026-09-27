@@ -30,6 +30,7 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PosController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductVariantController;
+use App\Http\Controllers\PurchaseOrderWorkflowController;
 use App\Http\Controllers\PurchaseRequisitionController;
 use App\Http\Controllers\PurchasingController;
 use App\Http\Controllers\QuotationController;
@@ -466,6 +467,12 @@ Route::middleware(['auth', 'auth.session', 'business-selected', 'module:purchasi
         ->middleware('permission:purchasing.manage');
     Route::post('/purchasing/rfqs/{purchaseRfq}/quotations/{supplierQuotation}/award', [RfqController::class, 'award'])
         ->name('purchasing.rfqs.quotations.award')
+        ->middleware('permission:purchasing.manage');
+    Route::post('/purchasing/quotations/{supplierQuotation}/convert-to-order', [PurchaseOrderWorkflowController::class, 'convertQuotation'])
+        ->name('purchasing.quotations.convert')
+        ->middleware('permission:purchasing.manage');
+    Route::post('/purchasing/orders/{purchaseOrder}/receipts', [PurchaseOrderWorkflowController::class, 'storeReceipt'])
+        ->name('purchasing.orders.receipts.store')
         ->middleware('permission:purchasing.manage');
     Route::post('/purchasing/suppliers', [PurchasingController::class, 'storeSupplier'])
         ->name('purchasing.suppliers.store')
