@@ -24,6 +24,8 @@ enum DocumentType: string
 
     case PurchaseOrder = 'purchase_order';
 
+    case PurchaseRequisition = 'purchase_requisition';
+
     case PosSale = 'pos_sale';
 
     case PayrollRun = 'payroll_run';
