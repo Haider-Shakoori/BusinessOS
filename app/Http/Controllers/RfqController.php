@@ -7,6 +7,7 @@ use App\Models\PurchaseRfq;
 use App\Models\Supplier;
 use App\Models\SupplierQuotation;
 use App\Services\BusinessContext;
+use App\Services\PurchaseOrderConversionService;
 use App\Services\RfqService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -23,6 +24,7 @@ class RfqController extends Controller
                 'requisition.items.variant',
                 'invitedSuppliers',
                 'quotations.supplier',
+                'quotations.purchaseOrder',
                 'quotations.items.product',
                 'creator',
             ])
@@ -92,5 +94,26 @@ class RfqController extends Controller
         $service->award($purchaseRfq, $supplierQuotation, (int) $request->user()->id);
 
         return back()->with('status', __('operations.purchasing.rfq_awarded'));
+    }
+
+    public function convertToPurchaseOrder(
+        Request $request,
+        PurchaseRfq $purchaseRfq,
+        SupplierQuotation $supplierQuotation,
+        PurchaseOrderConversionService $service,
+    ): RedirectResponse {
+        if ($supplierQuotation->purchase_rfq_id !== $purchaseRfq->id) {
+            abort(404);
+        }
+
+        $data = $request->validate([
+            'order_date' => ['required', 'date'],
+            'expected_date' => ['nullable', 'date', 'after_or_equal:order_date'],
+            'notes' => ['nullable', 'string', 'max:2000'],
+        ]);
+
+        $service->convert($supplierQuotation, $data, (int) $request->user()->id);
+
+        return back()->with('status', __('operations.purchasing.purchase_order_created_from_quote'));
     }
 }
