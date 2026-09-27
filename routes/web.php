@@ -22,6 +22,7 @@ use App\Http\Controllers\HrPayrollController;
 use App\Http\Controllers\ImportController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\InventoryReturnController;
+use App\Http\Controllers\LandedCostController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\ManufacturingController;
 use App\Http\Controllers\ModuleManagementController;
@@ -480,6 +481,18 @@ Route::middleware(['auth', 'auth.session', 'business-selected', 'module:purchasi
     Route::post('/purchasing/orders/{purchaseOrder}/receive', [PurchasingController::class, 'receive'])
         ->name('purchasing.orders.receive')
         ->middleware('permission:purchasing.manage');
+    Route::get('/purchasing/landed-costs', [LandedCostController::class, 'index'])
+        ->name('purchasing.landed-costs.index')
+        ->middleware('permission:purchasing.view');
+    Route::post('/purchasing/landed-costs', [LandedCostController::class, 'store'])
+        ->name('purchasing.landed-costs.store')
+        ->middleware('permission:purchasing.manage');
+    Route::post('/purchasing/landed-costs/{landedCost}/post', [LandedCostController::class, 'post'])
+        ->name('purchasing.landed-costs.post')
+        ->middleware(['permission:purchasing.manage', 'permission:accounting.manage']);
+    Route::post('/purchasing/landed-costs/{landedCost}/reverse', [LandedCostController::class, 'reverse'])
+        ->name('purchasing.landed-costs.reverse')
+        ->middleware(['permission:purchasing.manage', 'permission:accounting.manage']);
     Route::get('/purchasing/supplier-invoices', [SupplierInvoiceController::class, 'index'])
         ->name('purchasing.supplier-invoices.index')
         ->middleware('permission:purchasing.view');
