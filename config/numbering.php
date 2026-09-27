@@ -33,6 +33,7 @@ return [
         'warehouse_transfer' => 'TRF',
         'inventory_return' => 'RET',
         'goods_receipt' => 'GRN',
+        'landed_cost' => 'LCT',
         'supplier_invoice' => 'SINV',
         'supplier_credit_note' => 'SCN',
         'supplier_debit_note' => 'SDN',
