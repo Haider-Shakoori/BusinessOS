@@ -42,18 +42,27 @@ class GoodsReceiptService
             }
 
             $remaining = $this->remainingQuantities($order);
-            $requested = collect($submittedItems)
-                ->mapWithKeys(fn (array $item): array => [(int) $item['purchase_order_item_id'] => (string) $item['quantity']]);
+            $submitted = collect($submittedItems);
 
-            if ($requested->isEmpty()) {
+            if ($submitted->pluck('purchase_order_item_id')->count() !== $submitted->pluck('purchase_order_item_id')->unique()->count()) {
+                throw ValidationException::withMessages([
+                    'items' => 'A purchase order line may only appear once in a goods receipt.',
+                ]);
+            }
+
+            if ($submitted->isEmpty()) {
                 $requested = $remaining
                     ->filter(fn (string $quantity): bool => Decimal::gt($quantity, '0'))
                     ->map(fn (string $quantity): string => $quantity);
+            } else {
+                $requested = $submitted
+                    ->mapWithKeys(fn (array $item): array => [(int) $item['purchase_order_item_id'] => (string) $item['quantity']])
+                    ->filter(fn (string $quantity): bool => Decimal::gt($quantity, '0'));
             }
 
             if ($requested->isEmpty()) {
                 throw ValidationException::withMessages([
-                    'items' => 'There are no remaining purchase order quantities to receive.',
+                    'items' => 'Enter a receipt quantity greater than zero for at least one purchase order line.',
                 ]);
             }
 
