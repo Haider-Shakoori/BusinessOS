@@ -7,6 +7,7 @@ use App\Models\AccountAdjustmentNote;
 use App\Models\InventoryReturn;
 use App\Models\Invoice;
 use App\Models\Payment;
+use App\Models\PaymentAllocation;
 use App\Models\PurchaseOrder;
 use App\Support\Decimal;
 use Carbon\CarbonImmutable;
@@ -21,16 +22,37 @@ class AgingReportService
 
         $invoices = Invoice::query()
             ->with('customer')
-            ->whereIn('status', [InvoiceStatus::Sent->value, InvoiceStatus::PartiallyPaid->value])
+            ->where('status', '!=', InvoiceStatus::Draft->value)
             ->whereDate('date', '<=', $asOf)
-            ->where('amount_due', '>', 0)
             ->get();
 
         foreach ($invoices as $invoice) {
+            $paid = PaymentAllocation::query()
+                ->join('payments', 'payments.id', '=', 'payment_allocations.payment_id')
+                ->where('payment_allocations.invoice_id', $invoice->id)
+                ->whereDate('payments.payment_date', '<=', $asOf)
+                ->where(function ($query) use ($asOf): void {
+                    $query->whereNull('payments.reversed_at')
+                        ->orWhereDate('payments.reversed_at', '>', $asOf);
+                })
+                ->sum('payment_allocations.amount');
+
+            $credits = AccountAdjustmentNote::query()
+                ->where('type', 'customer_credit')
+                ->where('invoice_id', $invoice->id)
+                ->where('status', 'posted')
+                ->whereDate('note_date', '<=', $asOf)
+                ->sum('amount');
+
+            $foreignDue = Decimal::sub(Decimal::sub((string) $invoice->total, (string) $paid), (string) $credits);
+            if (Decimal::gt($foreignDue, '0') === false) {
+                continue;
+            }
+
             $dueDate = CarbonImmutable::parse(($invoice->due_date ?? $invoice->date)->toDateString());
             $days = max(0, $dueDate->diffInDays($date, false));
             $bucket = $this->bucket($days);
-            $amount = Decimal::round(Decimal::mul((string) $invoice->amount_due, (string) ($invoice->exchange_rate ?? '1')));
+            $amount = Decimal::round(Decimal::mul($foreignDue, (string) ($invoice->exchange_rate ?? '1')));
             $totals[$bucket] = Decimal::add($totals[$bucket], $amount);
             $totals['total'] = Decimal::add($totals['total'], $amount);
 
