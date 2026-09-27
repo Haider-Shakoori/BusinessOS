@@ -67,6 +67,7 @@ class ConsolidationEliminationTest extends TestCase
         $this->assertSame('0.0000', $after['consolidated']['total_expenses']);
         $this->assertSame('0.0000', $after['consolidated']['total_assets']);
         $this->assertSame('0.0000', $after['consolidated']['total_liabilities']);
+        $this->assertSame('0.0000', $after['consolidated']['current_earnings']);
         $this->assertSame('0.0000', $after['consolidated']['difference']);
 
         $this->assertSame($journalCount, JournalEntry::query()->withoutGlobalScope('business')->count());
