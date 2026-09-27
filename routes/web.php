@@ -34,6 +34,7 @@ use App\Http\Controllers\PurchaseRequisitionController;
 use App\Http\Controllers\PurchasingController;
 use App\Http\Controllers\QuotationController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\RfqController;
 use App\Http\Controllers\SaasAdminController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\SmartAssistantController;
@@ -450,6 +451,21 @@ Route::middleware(['auth', 'auth.session', 'business-selected', 'module:purchasi
         ->middleware('permission:purchasing.manage');
     Route::post('/purchasing/requisitions/{purchaseRequisition}/reject', [PurchaseRequisitionController::class, 'reject'])
         ->name('purchasing.requisitions.reject')
+        ->middleware('permission:purchasing.manage');
+    Route::get('/purchasing/rfqs', [RfqController::class, 'index'])
+        ->name('purchasing.rfqs.index')
+        ->middleware('permission:purchasing.view');
+    Route::post('/purchasing/rfqs', [RfqController::class, 'store'])
+        ->name('purchasing.rfqs.store')
+        ->middleware('permission:purchasing.manage');
+    Route::post('/purchasing/rfqs/{purchaseRfq}/open', [RfqController::class, 'open'])
+        ->name('purchasing.rfqs.open')
+        ->middleware('permission:purchasing.manage');
+    Route::post('/purchasing/rfqs/{purchaseRfq}/quotations', [RfqController::class, 'storeQuotation'])
+        ->name('purchasing.rfqs.quotations.store')
+        ->middleware('permission:purchasing.manage');
+    Route::post('/purchasing/rfqs/{purchaseRfq}/quotations/{supplierQuotation}/award', [RfqController::class, 'award'])
+        ->name('purchasing.rfqs.quotations.award')
         ->middleware('permission:purchasing.manage');
     Route::post('/purchasing/suppliers', [PurchasingController::class, 'storeSupplier'])
         ->name('purchasing.suppliers.store')
