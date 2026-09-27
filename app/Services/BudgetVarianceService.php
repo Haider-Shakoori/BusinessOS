@@ -50,7 +50,7 @@ class BudgetVarianceService
                 $budgetAmount = Decimal::normalize((string) $line->amount);
                 $variance = Decimal::sub($actual, $budgetAmount);
                 $variancePercent = Decimal::gt($budgetAmount, '0')
-                    ? round(((float) $variance / (float) $budgetAmount) * 100, 2)
+                    ? round((float) $variance / (float) $budgetAmount * 100, 2)
                     : null;
 
                 return [
