@@ -4,6 +4,9 @@
 <x-app.page icon="ledger" :title="__('operations.accounting.title')" :subtitle="__('operations.accounting.subtitle')">
     <x-slot:actions>
         <div class="flex flex-wrap gap-2">
+            <x-ui.button href="{{ route('accounting.banking.index') }}" variant="secondary" icon="banknotes">
+                {{ __('operations.accounting.banking') }}
+            </x-ui.button>
             @can('assets.view')
                 <x-ui.button href="{{ route('assets.index') }}" variant="secondary" icon="building-office">
                     {{ __('fixed_assets.title') }}

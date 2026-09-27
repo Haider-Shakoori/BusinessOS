@@ -4,6 +4,7 @@ use App\Http\Controllers\AccountingController;
 use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\AttendanceBridgeController;
 use App\Http\Controllers\AttendanceDeviceController;
+use App\Http\Controllers\BankingController;
 use App\Http\Controllers\BusinessController;
 use App\Http\Controllers\BusinessWorkspaceController;
 use App\Http\Controllers\CategoryController;
@@ -475,6 +476,27 @@ Route::middleware(['auth', 'auth.session', 'business-selected', 'module:accounti
         ->middleware('permission:accounting.manage');
     Route::post('/accounting/fiscal-periods/{fiscalPeriod}/reopen', [AccountingController::class, 'reopenFiscalPeriod'])
         ->name('accounting.fiscal-periods.reopen')
+        ->middleware('permission:accounting.manage');
+    Route::get('/accounting/banking', [BankingController::class, 'index'])
+        ->name('accounting.banking.index')
+        ->middleware('permission:accounting.view');
+    Route::post('/accounting/banking/accounts', [BankingController::class, 'storeAccount'])
+        ->name('accounting.banking.accounts.store')
+        ->middleware('permission:accounting.manage');
+    Route::post('/accounting/banking/reconciliations', [BankingController::class, 'storeReconciliation'])
+        ->name('accounting.banking.reconciliations.store')
+        ->middleware('permission:accounting.manage');
+    Route::get('/accounting/banking/reconciliations/{bankReconciliation}', [BankingController::class, 'show'])
+        ->name('accounting.banking.reconciliations.show')
+        ->middleware('permission:accounting.view');
+    Route::post('/accounting/banking/reconciliations/{bankReconciliation}/match', [BankingController::class, 'match'])
+        ->name('accounting.banking.reconciliations.match')
+        ->middleware('permission:accounting.manage');
+    Route::post('/accounting/banking/reconciliations/{bankReconciliation}/complete', [BankingController::class, 'complete'])
+        ->name('accounting.banking.reconciliations.complete')
+        ->middleware('permission:accounting.manage');
+    Route::post('/accounting/banking/transfers', [BankingController::class, 'transfer'])
+        ->name('accounting.banking.transfers.store')
         ->middleware('permission:accounting.manage');
 
     Route::get('/accounting/assets', [FixedAssetController::class, 'index'])
@@ -1081,7 +1103,7 @@ Route::middleware(['auth', 'auth.session', 'business-selected', 'module:reports'
  * it in the session, and redirects back. No database, no auth.
  */
 Route::get('/locale/{locale}', function (string $locale) {
-    if (! in_array($locale, config('app.supported_locales', []))) {
+    if (in_array($locale, config('app.supported_locales', []), true) === false) {
         abort(400, 'Unsupported locale.');
     }
 
