@@ -7,6 +7,7 @@ use App\Models\Account;
 use App\Models\AccountingPosting;
 use App\Models\Expense;
 use App\Models\FixedAsset;
+use App\Models\GoodsReceipt;
 use App\Models\InventoryReturn;
 use App\Models\Invoice;
 use App\Models\JournalEntry;
@@ -118,6 +119,24 @@ class AccountingPostingService
             $payment->id,
             $event,
             $reason ?: 'Payment reversed',
+        );
+    }
+
+    public function postGoodsReceipt(GoodsReceipt $receipt): JournalEntry
+    {
+        $amount = Decimal::normalize((string) $receipt->total);
+
+        return $this->post(
+            GoodsReceipt::class,
+            $receipt->id,
+            'posted',
+            'AUTO-'.$receipt->number,
+            $receipt->receipt_date->toDateString(),
+            'Goods receipt '.$receipt->number,
+            [
+                $this->line('AUTO-INVENTORY', 'Inventory', 'asset', $amount, '0', $receipt->number),
+                $this->line('AUTO-AP', 'Accounts Payable', 'liability', '0', $amount, $receipt->number),
+            ],
         );
     }
 
