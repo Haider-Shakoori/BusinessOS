@@ -96,7 +96,7 @@ class ForeignExchangeSettlementTest extends TestCase
         $this->app->forgetScopedInstances();
 
         Currency::create(['code' => 'AFN', 'name' => 'Afghani', 'symbol' => 'AFN', 'decimals' => 2, 'is_active' => true]);
-        Currency::create(['code' => 'USD', 'name' => 'US Dollar', 'symbol' => '
+        Currency::create(['code' => 'USD', 'name' => 'US Dollar', 'symbol' => '$', 'decimals' => 2, 'is_active' => true]);
         BusinessCurrency::create(['business_id' => $business->id, 'currency_code' => 'USD']);
         Setting::create(['business_id' => $business->id, 'group' => 'regional', 'key' => 'currency', 'value' => 'AFN']);
         ExchangeRate::create(['currency_code' => 'USD', 'rate' => '70', 'effective_date' => '2026-09-01']);
