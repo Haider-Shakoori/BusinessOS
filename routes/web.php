@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AccountAdjustmentNoteController;
 use App\Http\Controllers\AccountingController;
 use App\Http\Controllers\AgingReportController;
 use App\Http\Controllers\ActivityLogController;
@@ -448,6 +449,12 @@ Route::middleware(['auth', 'auth.session', 'business-selected', 'module:accounti
     Route::get('/accounting/aging', [AgingReportController::class, 'index'])
         ->name('accounting.aging.index')
         ->middleware('permission:accounting.view');
+    Route::post('/accounting/credit-notes/invoices/{invoice}', [AccountAdjustmentNoteController::class, 'customerCredit'])
+        ->name('accounting.credit-notes.store')
+        ->middleware('permission:accounting.manage');
+    Route::post('/accounting/debit-notes/purchase-orders/{purchaseOrder}', [AccountAdjustmentNoteController::class, 'supplierDebit'])
+        ->name('accounting.debit-notes.store')
+        ->middleware('permission:accounting.manage');
 
     Route::get('/accounting', [AccountingController::class, 'index'])
         ->name('accounting.index')
