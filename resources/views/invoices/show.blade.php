@@ -310,6 +310,12 @@
                             <dt class="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">{{ __('invoices.date') }}</dt>
                             <dd class="mt-1 text-sm text-slate-900 dark:text-slate-100">{{ $invoice->date->format('Y-m-d') }}</dd>
                         </div>
+                        @if ($invoice->due_date)
+                            <div>
+                                <dt class="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">Due date</dt>
+                                <dd class="mt-1 text-sm text-slate-900 dark:text-slate-100">{{ $invoice->due_date->format('Y-m-d') }}</dd>
+                            </div>
+                        @endif
                         <div>
                             <dt class="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">{{ __('currencies.currency') }}</dt>
                             <dd class="mt-1 text-sm font-semibold text-slate-900 dark:text-white" dir="ltr">{{ $invoice->currency_code }}</dd>
