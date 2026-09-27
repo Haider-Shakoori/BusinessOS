@@ -14,7 +14,6 @@ use App\Models\SupplierInvoice;
 use App\Models\User;
 use App\Models\Warehouse;
 use App\Services\AgingReportService;
-use App\Services\PaymentService;
 use App\Services\SupplierInvoiceService;
 use App\Services\SupplierLedgerService;
 use Database\Seeders\PermissionSeeder;
@@ -260,6 +259,19 @@ class SupplierInvoiceAccountingTest extends TestCase
 
         $this->assertSame(0, InventoryReturn::count());
         $this->assertSame('0.0000', app(SupplierLedgerService::class)->outstandingBalance($supplier));
+    }
+
+    public function test_invoice_recognition_po_rejects_legacy_po_level_debit_notes(): void
+    {
+        [$user, $business] = $this->context();
+        $this->actIn($user, $business);
+        [$order] = $this->receivedInvoiceModeOrder();
+
+        $this->post(route('accounting.debit-notes.store', $order), [
+            'amount' => '1.0000',
+            'note_date' => '2026-09-30',
+            'reason' => 'Must be adjusted against supplier invoice instead.',
+        ])->assertSessionHasErrors('purchase_order_id');
     }
 
     public function test_supplier_payment_is_limited_to_approved_invoice_payable(): void
