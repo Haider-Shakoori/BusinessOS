@@ -107,6 +107,7 @@ return [
             'icon' => 'ledger',
             'expandable' => true,
             'route' => 'accounting.index',
+            'active_prefixes' => ['accounting.', 'assets.'],
             'module' => 'accounting',
             'permission' => 'accounting.view',
         ],
