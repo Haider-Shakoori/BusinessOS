@@ -336,6 +336,7 @@ class InvoiceService
         return [
             'customer_id' => $validated['customer_id'],
             'date' => $validated['date'],
+            'due_date' => $validated['due_date'] ?? null,
             'status' => $validated['status'],
             'discount_type' => $validated['discount_type'] ?? null,
             'discount_amount' => $validated['discount_amount'] ?? '0.0000',
