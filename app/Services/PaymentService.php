@@ -85,14 +85,12 @@ class PaymentService
 
             $number = $this->numbers->next(DocumentType::Payment);
 
-            // Batch 19: a payment ALWAYS settles in the invoice's currency. The
-            // snapshot (currency_code, exchange_rate) is copied from the invoice,
-            // and base_amount converts the paid amount at that same rate — a
-            // forged or mismatched currency on the request is impossible (the
-            // field is prohibited in StorePaymentRequest) and the invoice itself
-            // never changes currency after it leaves draft.
+            // Settlement remains in the invoice currency, but uses the rate
+            // effective on the payment date. The invoice keeps its historical
+            // recognition rate; AccountingPostingService compares both snapshots
+            // and posts the realized exchange gain/loss.
             $code = $invoice->currency_code ?? $this->currencies->baseCurrency();
-            $rate = $invoice->exchange_rate ?? '1';
+            $rate = $this->currencies->resolveOrFail($code, $validated['payment_date']);
 
             $payment = new Payment;
             $payment->forceFill([

@@ -11,6 +11,7 @@ use App\Services\AccountingReportService;
 use App\Services\BudgetVarianceService;
 use App\Services\BusinessContext;
 use App\Services\FiscalPeriodService;
+use App\Services\FxRevaluationService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -185,6 +186,17 @@ class AccountingController extends Controller
         CostCenter::create($data + ['is_active' => true]);
 
         return back()->with('status', __('operations.accounting.cost_center_created'));
+    }
+
+    public function revalueForeignReceivables(Request $request, FxRevaluationService $revaluations): RedirectResponse
+    {
+        $data = $request->validate([
+            'revaluation_date' => ['required', 'date'],
+        ]);
+
+        $count = $revaluations->revalueOpenReceivables($data['revaluation_date']);
+
+        return back()->with('status', __('operations.accounting.fx_revaluation_posted', ['count' => $count]));
     }
 
     public function storeFiscalPeriod(Request $request, FiscalPeriodService $periods): RedirectResponse

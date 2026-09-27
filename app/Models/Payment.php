@@ -60,6 +60,7 @@ class Payment extends Model
             'payment_date' => 'date',
             'amount' => 'decimal:4',
             'base_amount' => 'decimal:4',
+            'exchange_rate' => 'decimal:8',
             'reversed_at' => 'datetime',
         ];
     }

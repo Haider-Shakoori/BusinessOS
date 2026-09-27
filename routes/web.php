@@ -468,6 +468,9 @@ Route::middleware(['auth', 'auth.session', 'business-selected', 'module:accounti
     Route::post('/accounting/journals', [AccountingController::class, 'storeJournal'])
         ->name('accounting.journals.store')
         ->middleware('permission:accounting.manage');
+    Route::post('/accounting/fx-revaluation', [AccountingController::class, 'revalueForeignReceivables'])
+        ->name('accounting.fx-revaluation.store')
+        ->middleware('permission:accounting.manage');
     Route::post('/accounting/fiscal-periods', [AccountingController::class, 'storeFiscalPeriod'])
         ->name('accounting.fiscal-periods.store')
         ->middleware('permission:accounting.manage');
