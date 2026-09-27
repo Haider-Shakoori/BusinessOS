@@ -25,6 +25,7 @@ return [
         'payment' => 'PAY',
         'expense' => 'EXP',
         'purchase_order' => 'PO',
+        'purchase_requisition' => 'PRQ',
         'pos_sale' => 'POS',
         'payroll_run' => 'PRL',
         'warehouse_transfer' => 'TRF',
