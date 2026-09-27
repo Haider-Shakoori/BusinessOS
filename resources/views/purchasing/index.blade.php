@@ -81,6 +81,15 @@
                                 {{ $purchaseItem?->product?->name }}
                                 @if($purchaseItem?->variant)
                                     <span class="text-slate-500">— {{ $purchaseItem->variant->name }}</span>
+                                @else
+                                    @can('accounting.manage')
+                                        <form method="POST" action="{{ route('accounting.debit-notes.store', $order) }}" class="flex min-w-72 items-end gap-2">
+                                            @csrf
+                                            <x-ui.input name="amount" type="number" step="0.0001" min="0.0001" label="Debit note" required />
+                                            <input type="hidden" name="note_date" value="{{ now()->toDateString() }}">
+                                            <x-ui.button type="submit" size="sm" variant="secondary">Post</x-ui.button>
+                                        </form>
+                                    @endcan
                                 @endif
                             </x-ui.td>
                             <x-ui.td>{{ ucfirst($order->status) }}</x-ui.td>
