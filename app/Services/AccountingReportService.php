@@ -84,8 +84,13 @@ class AccountingReportService
         $totalLiabilities = $this->sumBalances($liabilities);
         $totalEquity = $this->sumBalances($equity);
 
-        $allTimeProfit = $this->profitAndLoss(null, $to)['net_profit'];
-        $liabilitiesAndEquity = Decimal::add(Decimal::add($totalLiabilities, $totalEquity), $allTimeProfit);
+        $latestClose = FiscalYearClose::query()
+            ->when($to !== null, fn ($query) => $query->whereDate('end_date', '<=', $to))
+            ->latest('end_date')
+            ->first();
+        $earningsFrom = $latestClose?->end_date?->addDay()->toDateString();
+        $currentEarnings = $this->profitAndLoss($earningsFrom, $to)['net_profit'];
+        $liabilitiesAndEquity = Decimal::add(Decimal::add($totalLiabilities, $totalEquity), $currentEarnings);
 
         return [
             'assets' => $assets,
@@ -94,7 +99,7 @@ class AccountingReportService
             'total_assets' => $totalAssets,
             'total_liabilities' => $totalLiabilities,
             'total_equity' => $totalEquity,
-            'current_earnings' => $allTimeProfit,
+            'current_earnings' => $currentEarnings,
             'total_liabilities_equity' => $liabilitiesAndEquity,
             'difference' => Decimal::sub($totalAssets, $liabilitiesAndEquity),
         ];
