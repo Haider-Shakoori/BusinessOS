@@ -20,7 +20,9 @@ class BankingController extends Controller
         $accounts = FinancialAccount::query()->with('account')->orderBy('name')->get();
         $reconciliations = BankReconciliation::query()->with(['financialAccount.account', 'matches'])->latest('statement_date')->get();
 
-        return view('accounting.banking', compact('accounts', 'reconciliations'));
+        $glAccounts = Account::query()->where('type', 'asset')->where('is_active', true)->orderBy('code')->get();
+
+        return view('accounting.banking', compact('accounts', 'reconciliations', 'glAccounts'));
     }
 
     public function storeAccount(Request $request, BusinessContext $context): RedirectResponse
