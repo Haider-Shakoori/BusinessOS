@@ -23,6 +23,7 @@ class RfqController extends Controller
                 'requisition.items.variant',
                 'invitedSuppliers',
                 'quotations.supplier',
+                'quotations.purchaseOrder',
                 'quotations.items.product',
                 'creator',
             ])
