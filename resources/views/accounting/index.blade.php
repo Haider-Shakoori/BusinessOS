@@ -5,7 +5,7 @@
     <x-slot:actions>
         <div class="flex flex-wrap gap-2">
             @can('assets.view')
-                <x-ui.button href="{{ route('assets.index') }}" variant="secondary" icon="building-office-2">
+                <x-ui.button href="{{ route('assets.index') }}" variant="secondary" icon="building-office">
                     {{ __('fixed_assets.title') }}
                 </x-ui.button>
             @endcan
