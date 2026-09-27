@@ -183,6 +183,45 @@ class AccountingReportService
     /**
      * @return Collection<int,array<string,mixed>>
      */
+    public function costCenterSummary(?string $from = null, ?string $to = null): Collection
+    {
+        $businessId = $this->businessId();
+
+        $query = DB::table('cost_centers')
+            ->leftJoin('journal_lines', 'journal_lines.cost_center_id', '=', 'cost_centers.id')
+            ->leftJoin('journal_entries', function ($join) use ($from, $to): void {
+                $join->on('journal_entries.id', '=', 'journal_lines.journal_entry_id')
+                    ->where('journal_entries.status', '=', 'posted');
+
+                if ($from !== null) {
+                    $join->where('journal_entries.entry_date', '>=', $from);
+                }
+
+                if ($to !== null) {
+                    $join->where('journal_entries.entry_date', '<=', $to);
+                }
+            })
+            ->leftJoin('accounts', 'accounts.id', '=', 'journal_lines.account_id')
+            ->where('cost_centers.business_id', $businessId)
+            ->groupBy('cost_centers.id', 'cost_centers.code', 'cost_centers.name')
+            ->orderBy('cost_centers.code')
+            ->selectRaw("cost_centers.id, cost_centers.code, cost_centers.name,
+                COALESCE(SUM(CASE WHEN journal_entries.id IS NOT NULL AND accounts.type = 'income' THEN journal_lines.credit - journal_lines.debit ELSE 0 END),0) income,
+                COALESCE(SUM(CASE WHEN journal_entries.id IS NOT NULL AND accounts.type = 'expense' THEN journal_lines.debit - journal_lines.credit ELSE 0 END),0) expenses");
+
+        return $query->get()->map(fn ($row): array => [
+            'id' => (int) $row->id,
+            'code' => $row->code,
+            'name' => $row->name,
+            'income' => Decimal::normalize((string) $row->income),
+            'expenses' => Decimal::normalize((string) $row->expenses),
+            'net_profit' => Decimal::sub((string) $row->income, (string) $row->expenses),
+        ]);
+    }
+
+    /**
+     * @return Collection<int,array<string,mixed>>
+     */
     private function balancesThrough(?string $to): Collection
     {
         return $this->balanceQuery(null, $to);

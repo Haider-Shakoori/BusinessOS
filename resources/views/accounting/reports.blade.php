@@ -90,6 +90,32 @@
         </x-ui.card>
     </div>
 
+    <div class="mt-5">
+        <x-ui.card>
+            <x-slot:header><h2 class="font-semibold text-slate-900 dark:text-white">{{ __('operations.accounting.cost_center_profitability') }}</h2></x-slot:header>
+            <div class="overflow-x-auto">
+                <x-ui.table>
+                    <x-slot:head><tr>
+                        <x-ui.th>{{ __('operations.accounting.cost_center') }}</x-ui.th>
+                        <x-ui.th>{{ __('operations.accounting.income') }}</x-ui.th>
+                        <x-ui.th>{{ __('operations.accounting.expense') }}</x-ui.th>
+                        <x-ui.th>{{ __('operations.accounting.net_profit') }}</x-ui.th>
+                    </tr></x-slot:head>
+                    @forelse($costCenterSummary as $row)
+                        <tr>
+                            <x-ui.td>{{ $row['code'] }} — {{ $row['name'] }}</x-ui.td>
+                            <x-ui.td>{{ number_format((float) $row['income'], 2) }}</x-ui.td>
+                            <x-ui.td>{{ number_format((float) $row['expenses'], 2) }}</x-ui.td>
+                            <x-ui.td>{{ number_format((float) $row['net_profit'], 2) }}</x-ui.td>
+                        </tr>
+                    @empty
+                        <tr><x-ui.td colspan="4">{{ __('operations.accounting.no_cost_centers') }}</x-ui.td></tr>
+                    @endforelse
+                </x-ui.table>
+            </div>
+        </x-ui.card>
+    </div>
+
     <div class="mt-5 grid gap-5 xl:grid-cols-2">
         <x-ui.card>
             <x-slot:header><h2 class="font-semibold text-slate-900 dark:text-white">{{ __('operations.accounting.balance_sheet') }}</h2></x-slot:header>

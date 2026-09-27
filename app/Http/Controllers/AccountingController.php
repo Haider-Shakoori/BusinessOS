@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Account;
+use App\Models\CostCenter;
 use App\Models\FiscalPeriod;
 use App\Models\JournalEntry;
 use App\Services\AccountingReportService;
@@ -22,6 +23,7 @@ class AccountingController extends Controller
             'accounts' => Account::query()->orderBy('code')->get(),
             'entries' => JournalEntry::query()->with('lines.account')->latest('entry_date')->latest('id')->limit(50)->get(),
             'fiscalPeriods' => FiscalPeriod::query()->latest('start_date')->get(),
+            'costCenters' => CostCenter::query()->orderBy('code')->get(),
         ]);
     }
 
@@ -50,6 +52,7 @@ class AccountingController extends Controller
             'profitLoss' => $reports->profitAndLoss($data['date_from'] ?? null, $data['date_to'] ?? null),
             'balanceSheet' => $reports->balanceSheet($data['date_to'] ?? null),
             'ledger' => $account ? $reports->generalLedger($account, $data['date_from'] ?? null, $data['date_to'] ?? null) : null,
+            'costCenterSummary' => $reports->costCenterSummary($data['date_from'] ?? null, $data['date_to'] ?? null),
             'dateFrom' => $data['date_from'] ?? null,
             'dateTo' => $data['date_to'] ?? null,
             'accountId' => $account?->id,
@@ -79,6 +82,7 @@ class AccountingController extends Controller
             'debit_account_id' => ['required', 'different:credit_account_id', Rule::exists('accounts', 'id')->where('business_id', $context->currentId())],
             'credit_account_id' => ['required', 'different:debit_account_id', Rule::exists('accounts', 'id')->where('business_id', $context->currentId())],
             'amount' => ['required', 'numeric', 'gt:0'],
+            'cost_center_id' => ['nullable', Rule::exists('cost_centers', 'id')->where('business_id', $context->currentId())],
         ]);
 
         $periods->assertPostingAllowed($data['entry_date']);
@@ -93,18 +97,33 @@ class AccountingController extends Controller
 
             $entry->lines()->create([
                 'account_id' => $data['debit_account_id'],
+                'cost_center_id' => $data['cost_center_id'] ?? null,
                 'debit' => $data['amount'],
                 'credit' => 0,
             ]);
 
             $entry->lines()->create([
                 'account_id' => $data['credit_account_id'],
+                'cost_center_id' => $data['cost_center_id'] ?? null,
                 'debit' => 0,
                 'credit' => $data['amount'],
             ]);
         });
 
         return back()->with('status', __('operations.accounting.journal_created'));
+    }
+
+    public function storeCostCenter(Request $request, BusinessContext $context): RedirectResponse
+    {
+        $data = $request->validate([
+            'code' => ['required', 'string', 'max:40', Rule::unique('cost_centers', 'code')->where('business_id', $context->currentId())],
+            'name' => ['required', 'string', 'max:255'],
+            'description' => ['nullable', 'string', 'max:2000'],
+        ]);
+
+        CostCenter::create($data + ['is_active' => true]);
+
+        return back()->with('status', __('operations.accounting.cost_center_created'));
     }
 
     public function storeFiscalPeriod(Request $request, FiscalPeriodService $periods): RedirectResponse

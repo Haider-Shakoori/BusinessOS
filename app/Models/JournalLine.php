@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class JournalLine extends Model
 {
-    protected $fillable = ['account_id', 'debit', 'credit', 'memo'];
+    protected $fillable = ['account_id', 'cost_center_id', 'debit', 'credit', 'memo'];
 
     protected function casts(): array
     {
@@ -22,5 +22,10 @@ class JournalLine extends Model
     public function account(): BelongsTo
     {
         return $this->belongsTo(Account::class);
+    }
+
+    public function costCenter(): BelongsTo
+    {
+        return $this->belongsTo(CostCenter::class);
     }
 }

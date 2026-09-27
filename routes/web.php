@@ -451,6 +451,9 @@ Route::middleware(['auth', 'auth.session', 'business-selected', 'module:accounti
     Route::post('/accounting/accounts', [AccountingController::class, 'storeAccount'])
         ->name('accounting.accounts.store')
         ->middleware('permission:accounting.manage');
+    Route::post('/accounting/cost-centers', [AccountingController::class, 'storeCostCenter'])
+        ->name('accounting.cost-centers.store')
+        ->middleware('permission:accounting.manage');
     Route::post('/accounting/journals', [AccountingController::class, 'storeJournal'])
         ->name('accounting.journals.store')
         ->middleware('permission:accounting.manage');
