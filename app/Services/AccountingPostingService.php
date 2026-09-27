@@ -70,6 +70,34 @@ class AccountingPostingService
             );
         }
 
+        $payment->loadMissing('invoice');
+        $historicalRate = (string) ($payment->invoice?->exchange_rate ?? '1');
+        $carryingAmount = Decimal::round(Decimal::mul((string) $payment->amount, $historicalRate));
+        $lines = [
+            $this->line($cash['code'], $cash['name'], 'asset', $amount, '0', $payment->payment_number),
+            $this->line('AUTO-AR', 'Accounts Receivable', 'asset', '0', $carryingAmount, $payment->payment_number),
+        ];
+
+        if (Decimal::gt($amount, $carryingAmount)) {
+            $lines[] = $this->line(
+                'AUTO-FX-GAIN',
+                'Realized Foreign Exchange Gain',
+                'income',
+                '0',
+                Decimal::sub($amount, $carryingAmount),
+                $payment->payment_number,
+            );
+        } elseif (Decimal::lt($amount, $carryingAmount)) {
+            $lines[] = $this->line(
+                'AUTO-FX-LOSS',
+                'Realized Foreign Exchange Loss',
+                'expense',
+                Decimal::sub($carryingAmount, $amount),
+                '0',
+                $payment->payment_number,
+            );
+        }
+
         return $this->post(
             Payment::class,
             $payment->id,
@@ -77,10 +105,7 @@ class AccountingPostingService
             'AUTO-'.$payment->payment_number,
             $payment->payment_date->toDateString(),
             'Customer payment '.$payment->payment_number,
-            [
-                $this->line($cash['code'], $cash['name'], 'asset', $amount, '0', $payment->payment_number),
-                $this->line('AUTO-AR', 'Accounts Receivable', 'asset', '0', $amount, $payment->payment_number),
-            ],
+            $lines,
         );
     }
 
