@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Account;
+use App\Models\FiscalYearClose;
 use App\Support\Decimal;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -189,7 +190,7 @@ class AccountingReportService
 
         $query = DB::table('cost_centers')
             ->leftJoin('journal_lines', 'journal_lines.cost_center_id', '=', 'cost_centers.id')
-            ->leftJoin('journal_entries', function ($join) use ($from, $to): void {
+            ->leftJoin('journal_entries', function ($join) use ($from, $to, $excludeYearClose): void {
                 $join->on('journal_entries.id', '=', 'journal_lines.journal_entry_id')
                     ->where('journal_entries.status', '=', 'posted');
 
@@ -199,6 +200,13 @@ class AccountingReportService
 
                 if ($to !== null) {
                     $join->where('journal_entries.entry_date', '<=', $to);
+                }
+
+                if ($excludeYearClose) {
+                    $join->where(function ($query): void {
+                        $query->whereNull('journal_entries.source_type')
+                            ->orWhere('journal_entries.source_type', '!=', FiscalYearClose::class);
+                    });
                 }
             })
             ->leftJoin('accounts', 'accounts.id', '=', 'journal_lines.account_id')
@@ -232,13 +240,13 @@ class AccountingReportService
      */
     private function periodBalances(?string $from, ?string $to): Collection
     {
-        return $this->balanceQuery($from, $to);
+        return $this->balanceQuery($from, $to, true);
     }
 
     /**
      * @return Collection<int,array<string,mixed>>
      */
-    private function balanceQuery(?string $from, ?string $to): Collection
+    private function balanceQuery(?string $from, ?string $to, bool $excludeYearClose = false): Collection
     {
         $businessId = $this->businessId();
 
