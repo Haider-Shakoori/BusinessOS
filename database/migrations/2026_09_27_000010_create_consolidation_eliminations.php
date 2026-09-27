@@ -11,6 +11,7 @@ return new class extends Migration
         Schema::create('consolidation_eliminations', function (Blueprint $table) {
             $table->id();
             $table->foreignId('business_id')->constrained()->cascadeOnDelete();
+            $table->string('group_key', 255);
             $table->string('reference', 80);
             $table->date('effective_date');
             $table->string('description');
@@ -20,7 +21,8 @@ return new class extends Migration
             $table->foreignId('reversed_by')->nullable()->constrained('users')->restrictOnDelete();
             $table->timestamps();
 
-            $table->unique(['business_id', 'reference']);
+            $table->unique(['group_key', 'reference']);
+            $table->index(['group_key', 'effective_date', 'status']);
             $table->index(['business_id', 'effective_date', 'status']);
         });
 
