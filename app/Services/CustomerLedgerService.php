@@ -417,7 +417,6 @@ final class CustomerLedgerService
         return $entries;
     }
 
-
     private function allocationBaseAmount(PaymentAllocation $allocation): string
     {
         $invoice = $allocation->invoice;
