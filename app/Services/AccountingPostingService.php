@@ -15,6 +15,7 @@ use App\Models\Payment;
 use App\Models\PurchaseOrder;
 use App\Models\Supplier;
 use App\Models\SupplierInvoice;
+use App\Models\SupplierInvoiceAdjustment;
 use App\Support\Decimal;
 use Illuminate\Support\Facades\DB;
 use RuntimeException;
@@ -190,6 +191,43 @@ class AccountingPostingService
             $invoice->invoice_date->toDateString(),
             'Supplier invoice '.$invoice->number.' · '.$invoice->supplier_invoice_number,
             $lines,
+        );
+    }
+
+    public function postSupplierInvoiceAdjustment(SupplierInvoiceAdjustment $adjustment): JournalEntry
+    {
+        $amount = Decimal::normalize((string) $adjustment->amount);
+
+        $lines = $adjustment->type === 'credit'
+            ? [
+                $this->line('AUTO-AP', 'Accounts Payable', 'liability', $amount, '0', $adjustment->number),
+                $this->line('AUTO-PURCHASE-CREDITS', 'Purchase Credits & Rebates', 'income', '0', $amount, $adjustment->number),
+            ]
+            : [
+                $this->line('AUTO-PURCHASE-ADJ-EXP', 'Purchase Adjustments', 'expense', $amount, '0', $adjustment->number),
+                $this->line('AUTO-AP', 'Accounts Payable', 'liability', '0', $amount, $adjustment->number),
+            ];
+
+        return $this->post(
+            SupplierInvoiceAdjustment::class,
+            $adjustment->id,
+            'posted',
+            'AUTO-'.$adjustment->number,
+            $adjustment->note_date->toDateString(),
+            ucfirst($adjustment->type).' adjustment '.$adjustment->number,
+            $lines,
+        );
+    }
+
+    public function reverseSupplierInvoiceAdjustment(
+        SupplierInvoiceAdjustment $adjustment,
+        string $reason,
+    ): ?JournalEntry {
+        return $this->reverse(
+            SupplierInvoiceAdjustment::class,
+            $adjustment->id,
+            'posted',
+            $reason,
         );
     }
 
