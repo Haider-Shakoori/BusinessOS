@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Enums\InvoiceStatus;
 use App\Models\Account;
+use App\Models\AccountingBudget;
 use App\Models\AccountingPosting;
 use App\Models\Business;
 use App\Models\BusinessModule;
@@ -22,6 +23,7 @@ use App\Models\User;
 use App\Models\Warehouse;
 use App\Services\AccountingPostingService;
 use App\Services\AccountingReportService;
+use App\Services\BudgetVarianceService;
 use App\Services\ExpenseService;
 use App\Services\FiscalPeriodService;
 use App\Services\InvoiceService;
@@ -555,6 +557,65 @@ class AccountingIntegrationReportsTest extends TestCase
         ])->assertSessionHasErrors('cost_center_id');
 
         $this->assertDatabaseMissing('journal_entries', ['number' => 'CC-FORGED']);
+    }
+
+    public function test_budget_variance_uses_posted_actuals_and_cost_center_dimensions(): void
+    {
+        $user = $this->user();
+        $business = $this->business($user);
+        $this->actIn($user, $business);
+
+        $center = CostCenter::create(['code' => 'BUD-KBL', 'name' => 'Budget Kabul', 'is_active' => true]);
+        $expense = Account::create(['code' => 'BUD-EXP', 'name' => 'Budget Expense', 'type' => 'expense', 'is_active' => true]);
+        $cash = Account::create(['code' => 'BUD-CASH', 'name' => 'Budget Cash', 'type' => 'asset', 'is_active' => true]);
+
+        $this->post('/accounting/budgets', [
+            'name' => 'October Operating Budget',
+            'start_date' => '2026-10-01',
+            'end_date' => '2026-10-31',
+            'account_id' => $expense->id,
+            'cost_center_id' => $center->id,
+            'amount' => '1000.0000',
+        ])->assertRedirect();
+
+        $budget = AccountingBudget::firstOrFail();
+
+        $this->post('/accounting/journals', [
+            'number' => 'BUD-ACT-1',
+            'entry_date' => '2026-10-15',
+            'debit_account_id' => $expense->id,
+            'credit_account_id' => $cash->id,
+            'cost_center_id' => $center->id,
+            'amount' => '750.0000',
+        ])->assertRedirect();
+
+        $row = app(BudgetVarianceService::class)->report($budget)->first();
+        $this->assertSame('1000.0000', $row['budget']);
+        $this->assertSame('750.0000', $row['actual']);
+        $this->assertSame('-250.0000', $row['variance']);
+        $this->assertSame(-25.0, $row['variance_percent']);
+
+        $this->get(route('accounting.budgets.report', $budget))
+            ->assertOk()
+            ->assertSee('October Operating Budget')
+            ->assertSee('BUD-EXP');
+
+        $otherUser = $this->user('Budget Other');
+        $otherBusiness = $this->business($otherUser, 'Budget Other Co');
+        $this->actIn($otherUser, $otherBusiness);
+        $foreignCenter = CostCenter::create(['code' => 'OTHER-BUD', 'name' => 'Other Budget', 'is_active' => true]);
+
+        $this->actIn($user, $business);
+        $this->post('/accounting/budgets', [
+            'name' => 'Forged Budget',
+            'start_date' => '2026-11-01',
+            'end_date' => '2026-11-30',
+            'account_id' => $expense->id,
+            'cost_center_id' => $foreignCenter->id,
+            'amount' => '100.0000',
+        ])->assertSessionHasErrors('cost_center_id');
+
+        $this->assertDatabaseMissing('accounting_budgets', ['name' => 'Forged Budget']);
     }
 
     public function test_historical_backfill_is_idempotent(): void
