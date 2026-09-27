@@ -11,6 +11,7 @@ use App\Models\GoodsReceipt;
 use App\Models\InventoryReturn;
 use App\Models\Invoice;
 use App\Models\JournalEntry;
+use App\Models\LandedCost;
 use App\Models\Payment;
 use App\Models\PurchaseOrder;
 use App\Models\Supplier;
@@ -226,6 +227,41 @@ class AccountingPostingService
         return $this->reverse(
             SupplierInvoiceAdjustment::class,
             $adjustment->id,
+            'posted',
+            $reason,
+        );
+    }
+
+    public function postLandedCost(LandedCost $landedCost): JournalEntry
+    {
+        $amount = Decimal::normalize((string) $landedCost->total);
+
+        return $this->post(
+            LandedCost::class,
+            $landedCost->id,
+            'posted',
+            'AUTO-'.$landedCost->number,
+            $landedCost->cost_date->toDateString(),
+            'Landed cost '.$landedCost->number,
+            [
+                $this->line('AUTO-INVENTORY', 'Inventory', 'asset', $amount, '0', $landedCost->number),
+                $this->line(
+                    'AUTO-LANDED-COST-CLEARING',
+                    'Landed Cost Clearing',
+                    'liability',
+                    '0',
+                    $amount,
+                    $landedCost->number,
+                ),
+            ],
+        );
+    }
+
+    public function reverseLandedCost(LandedCost $landedCost, string $reason): ?JournalEntry
+    {
+        return $this->reverse(
+            LandedCost::class,
+            $landedCost->id,
             'posted',
             $reason,
         );
