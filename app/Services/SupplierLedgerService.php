@@ -39,7 +39,6 @@ final class SupplierLedgerService
             ->sum('total'));
     }
 
-
     public function totalDebitNotes(Supplier $supplier): string
     {
         $orderIds = $supplier->purchaseOrders()->pluck('id');
@@ -128,7 +127,7 @@ final class SupplierLedgerService
         $balance = '0.0000';
         $rows = [];
 
-        if ($dateFrom !== null && ! $rowLevelFilter) {
+        if ($dateFrom !== null && $rowLevelFilter === false) {
             $visible = [];
             $broughtForward = '0.0000';
 
@@ -188,7 +187,7 @@ final class SupplierLedgerService
             'rows' => $rows,
             'brought_forward' => $broughtForward,
             'closing_balance' => $balance,
-            'show_running_balance' => ! $rowLevelFilter,
+            'show_running_balance' => $rowLevelFilter === false,
         ];
     }
 
@@ -297,11 +296,11 @@ final class SupplierLedgerService
                 'debit' => $amount,
                 'credit' => '0.0000',
                 'balance' => '0.0000',
-                'reversed' => ! $active,
+                'reversed' => $active === false,
                 'sort' => $sort++,
             ];
 
-            if (! $active) {
+            if ($active === false) {
                 $entries[] = [
                     'date' => $payment->reversed_at?->format('Y-m-d') ?? $payment->payment_date?->format('Y-m-d'),
                     'type' => 'reversal',
