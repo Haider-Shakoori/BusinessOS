@@ -42,14 +42,17 @@ class SupplierInvoiceService
                 ]);
             }
 
-            $inputs = collect($data['items'])
-                ->mapWithKeys(fn (array $item): array => [(int) $item['purchase_order_item_id'] => $item]);
+            $rawInputs = collect($data['items']);
 
-            if ($inputs->keys()->count() !== $inputs->keys()->unique()->count()) {
+            if ($rawInputs->pluck('purchase_order_item_id')->count() !== $rawInputs->pluck('purchase_order_item_id')->unique()->count()) {
                 throw ValidationException::withMessages([
                     'items' => 'A purchase order line may only appear once on a supplier invoice.',
                 ]);
             }
+
+            $inputs = $rawInputs
+                ->filter(fn (array $item): bool => Decimal::gt((string) $item['quantity'], '0'))
+                ->mapWithKeys(fn (array $item): array => [(int) $item['purchase_order_item_id'] => $item]);
 
             $available = $this->availableQuantities($order);
 
