@@ -10,7 +10,7 @@ use App\Models\Invoice;
 use App\Models\JournalEntry;
 use App\Support\Decimal;
 use Carbon\CarbonImmutable;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 class FinancialCloseReadinessService
 {
@@ -39,7 +39,7 @@ class FinancialCloseReadinessService
         $blockers = collect($assessment['checks'])->where('severity', 'blocker');
 
         if ($blockers->isNotEmpty()) {
-            throw \Illuminate\Validation\ValidationException::withMessages([
+            throw ValidationException::withMessages([
                 'start_date' => $blockers->pluck('message')->implode(' '),
             ]);
         }
