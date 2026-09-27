@@ -185,6 +185,11 @@
                                     <x-ui.badge :tone="$invoice->match_status === 'matched' ? 'success' : 'warning'">
                                         {{ __('operations.purchasing.match_status_'.$invoice->match_status) }}
                                     </x-ui.badge>
+                                    @if($invoice->status === 'approved')
+                                        <x-ui.badge :tone="$invoice->settlement_status === 'paid' ? 'success' : ($invoice->settlement_status === 'partially_paid' ? 'warning' : 'neutral')">
+                                            {{ __('operations.purchasing.settlement_status_'.$invoice->settlement_status) }}
+                                        </x-ui.badge>
+                                    @endif
                                 </div>
                                 <p class="mt-1 text-sm text-slate-500">
                                     {{ $invoice->supplier?->name }}
@@ -219,6 +224,27 @@
                             <div class="mt-1 font-semibold text-slate-900 dark:text-white">{{ $invoice->creator?->name ?: '—' }}</div>
                         </div>
                     </div>
+
+                    @if($invoice->status === 'approved')
+                        <div class="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+                            <div class="rounded-lg border border-slate-200 p-3 dark:border-slate-700">
+                                <div class="text-xs text-slate-500">{{ __('operations.purchasing.amount_paid') }}</div>
+                                <div class="mt-1 font-semibold text-slate-900 dark:text-white">{{ $invoice->amount_paid }}</div>
+                            </div>
+                            <div class="rounded-lg border border-slate-200 p-3 dark:border-slate-700">
+                                <div class="text-xs text-slate-500">{{ __('operations.purchasing.credit_total') }}</div>
+                                <div class="mt-1 font-semibold text-slate-900 dark:text-white">{{ $invoice->credit_total }}</div>
+                            </div>
+                            <div class="rounded-lg border border-slate-200 p-3 dark:border-slate-700">
+                                <div class="text-xs text-slate-500">{{ __('operations.purchasing.debit_total') }}</div>
+                                <div class="mt-1 font-semibold text-slate-900 dark:text-white">{{ $invoice->debit_total }}</div>
+                            </div>
+                            <div class="rounded-lg border border-slate-200 p-3 dark:border-slate-700">
+                                <div class="text-xs text-slate-500">{{ __('operations.purchasing.amount_due') }}</div>
+                                <div class="mt-1 font-semibold text-slate-900 dark:text-white">{{ $invoice->amount_due }}</div>
+                            </div>
+                        </div>
+                    @endif
 
                     <div class="mt-4 overflow-x-auto">
                         <x-ui.table>
@@ -266,6 +292,104 @@
                             <div class="font-medium">{{ __('operations.purchasing.rejection_reason') }}</div>
                             <div class="mt-1">{{ $invoice->rejection_reason }}</div>
                         </div>
+                    @endif
+
+                    @if($invoice->status === 'approved')
+                        @if($invoice->adjustments->isNotEmpty())
+                            <div class="mt-4">
+                                <h4 class="mb-2 text-sm font-semibold text-slate-700 dark:text-slate-200">
+                                    {{ __('operations.purchasing.adjustment_history') }}
+                                </h4>
+                                <div class="space-y-2">
+                                    @foreach($invoice->adjustments->sortByDesc('id') as $adjustment)
+                                        <div class="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-slate-200 p-3 text-sm dark:border-slate-700">
+                                            <div>
+                                                <span class="font-medium text-slate-900 dark:text-white">{{ $adjustment->number }}</span>
+                                                <span class="ms-2 text-slate-500">{{ __('operations.purchasing.adjustment_type_'.$adjustment->type) }}</span>
+                                                <span class="ms-2 text-slate-500">{{ $adjustment->note_date?->format('Y-m-d') }}</span>
+                                                @if($adjustment->reason)
+                                                    <div class="mt-1 text-xs text-slate-500">{{ $adjustment->reason }}</div>
+                                                @endif
+                                            </div>
+                                            <div class="flex items-center gap-2">
+                                                <span class="font-semibold text-slate-900 dark:text-white">{{ $adjustment->amount }}</span>
+                                                @if($adjustment->reversed_at)
+                                                    <x-ui.badge tone="neutral">{{ __('operations.purchasing.adjustment_reversed') }}</x-ui.badge>
+                                                @else
+                                                    @can('accounting.manage')
+                                                        <form method="POST" action="{{ route('purchasing.supplier-invoices.adjustments.reverse', [$invoice, $adjustment]) }}" class="flex items-end gap-2">
+                                                            @csrf
+                                                            <input
+                                                                name="reversal_reason"
+                                                                type="text"
+                                                                maxlength="1000"
+                                                                placeholder="{{ __('operations.purchasing.reversal_reason') }}"
+                                                                class="w-48 rounded-lg border-slate-300 text-xs dark:border-slate-700 dark:bg-slate-950"
+                                                            >
+                                                            <x-ui.button type="submit" size="sm" variant="secondary">
+                                                                {{ __('operations.purchasing.reverse') }}
+                                                            </x-ui.button>
+                                                        </form>
+                                                    @endcan
+                                                @endif
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        @endif
+
+                        @can('purchasing.manage')
+                            <div class="mt-4 grid gap-4 xl:grid-cols-2">
+                                @can('payments.create')
+                                    @if((float) $invoice->amount_due > 0)
+                                        <details class="rounded-lg border border-slate-200 p-3 dark:border-slate-700">
+                                            <summary class="cursor-pointer text-sm font-medium text-blue-600 dark:text-blue-400">
+                                                {{ __('operations.purchasing.pay_supplier_invoice') }}
+                                            </summary>
+                                            <form method="POST" action="{{ route('purchasing.supplier-invoices.pay', $invoice) }}" class="mt-3 grid gap-3 md:grid-cols-2">
+                                                @csrf
+                                                <x-ui.input name="amount" type="number" step="0.0001" min="0.0001" :max="$invoice->amount_due" :value="$invoice->amount_due" :label="__('operations.purchasing.payment_amount')" required />
+                                                <x-ui.select name="payment_method" :label="__('operations.purchasing.payment_method')" required>
+                                                    @foreach($paymentMethods as $method)
+                                                        <option value="{{ $method->value }}">{{ __('payments.methods.'.$method->value) }}</option>
+                                                    @endforeach
+                                                </x-ui.select>
+                                                <x-ui.input name="payment_date" type="date" :value="now()->toDateString()" :label="__('operations.purchasing.payment_date')" required />
+                                                <x-ui.input name="reference" :label="__('operations.purchasing.reference')" maxlength="100" />
+                                                <div class="md:col-span-2">
+                                                    <x-ui.input name="notes" :label="__('operations.purchasing.payment_notes')" maxlength="2000" />
+                                                </div>
+                                                <div class="md:col-span-2 flex justify-end">
+                                                    <x-ui.button type="submit" size="sm">{{ __('operations.purchasing.record_payment') }}</x-ui.button>
+                                                </div>
+                                            </form>
+                                        </details>
+                                    @endif
+                                @endcan
+
+                                @can('accounting.manage')
+                                    <details class="rounded-lg border border-slate-200 p-3 dark:border-slate-700">
+                                        <summary class="cursor-pointer text-sm font-medium text-blue-600 dark:text-blue-400">
+                                            {{ __('operations.purchasing.post_adjustment') }}
+                                        </summary>
+                                        <form method="POST" action="{{ route('purchasing.supplier-invoices.adjustments.store', $invoice) }}" class="mt-3 grid gap-3 md:grid-cols-2">
+                                            @csrf
+                                            <x-ui.select name="type" :label="__('operations.purchasing.adjustment_type')" required>
+                                                <option value="credit">{{ __('operations.purchasing.adjustment_type_credit') }}</option>
+                                                <option value="debit">{{ __('operations.purchasing.adjustment_type_debit') }}</option>
+                                            </x-ui.select>
+                                            <x-ui.input name="amount" type="number" step="0.0001" min="0.0001" :label="__('operations.purchasing.adjustment_amount')" required />
+                                            <x-ui.input name="note_date" type="date" :value="now()->toDateString()" :label="__('operations.purchasing.adjustment_date')" required />
+                                            <x-ui.input name="reason" :label="__('operations.purchasing.adjustment_reason')" maxlength="2000" />
+                                            <div class="md:col-span-2 flex justify-end">
+                                                <x-ui.button type="submit" size="sm">{{ __('operations.purchasing.post_adjustment') }}</x-ui.button>
+                                            </div>
+                                        </form>
+                                    </details>
+                                @endcan
+                            </div>
+                        @endcan
                     @endif
 
                     @can('purchasing.manage')
