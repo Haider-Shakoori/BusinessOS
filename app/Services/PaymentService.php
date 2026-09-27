@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Enums\DocumentType;
 use App\Enums\InvoiceStatus;
+use App\Models\AccountAdjustmentNote;
 use App\Models\Invoice;
 use App\Models\Payment;
 use App\Models\PaymentAllocation;
@@ -235,7 +236,8 @@ class PaymentService
     public function reconcileBalance(Invoice $invoice): void
     {
         $paid = $this->activePaid($invoice);
-        $due = Decimal::min(Decimal::sub((string) $invoice->total, $paid), '0');
+        $credits = $this->activeCredits($invoice);
+        $due = Decimal::min(Decimal::sub(Decimal::sub((string) $invoice->total, $paid), $credits), '0');
 
         $invoice->forceFill([
             'amount_paid' => $paid,
@@ -283,10 +285,25 @@ class PaymentService
         return $total;
     }
 
-    /** Closing balance: total minus active payments, clamped at zero. */
+    private function activeCredits(Invoice $invoice): string
+    {
+        return Decimal::normalize((string) AccountAdjustmentNote::query()
+            ->where('type', 'customer_credit')
+            ->where('invoice_id', $invoice->id)
+            ->where('status', 'posted')
+            ->sum('amount'));
+    }
+
+    /** Closing balance: total minus active payments and posted credit notes, clamped at zero. */
     private function balanceDue(Invoice $invoice): string
     {
-        return Decimal::min(Decimal::sub((string) $invoice->total, $this->activePaid($invoice)), '0');
+        return Decimal::min(
+            Decimal::sub(
+                Decimal::sub((string) $invoice->total, $this->activePaid($invoice)),
+                $this->activeCredits($invoice),
+            ),
+            '0',
+        );
     }
 
     /**
