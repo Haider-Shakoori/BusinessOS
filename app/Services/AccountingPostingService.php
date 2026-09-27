@@ -6,6 +6,7 @@ use App\Enums\InvoiceStatus;
 use App\Models\Account;
 use App\Models\AccountingPosting;
 use App\Models\Expense;
+use App\Models\FixedAsset;
 use App\Models\InventoryReturn;
 use App\Models\Invoice;
 use App\Models\JournalEntry;
@@ -234,6 +235,128 @@ class AccountingPostingService
     public function reverseExpense(Expense $expense): ?JournalEntry
     {
         return $this->reverseActiveSource(Expense::class, $expense->id, 'Expense deleted');
+    }
+
+    public function postAssetAcquisition(FixedAsset $asset, string $paymentMethod): JournalEntry
+    {
+        $asset->loadMissing('category');
+        $category = $asset->category;
+        $cash = $this->paymentAccount($paymentMethod);
+        $amount = Decimal::normalize((string) $asset->acquisition_cost);
+
+        return $this->post(
+            FixedAsset::class,
+            $asset->id,
+            'acquisition',
+            'AUTO-ASSET-'.$asset->asset_number,
+            $asset->acquisition_date->toDateString(),
+            'Asset acquisition '.$asset->asset_number.' — '.$asset->name,
+            [
+                $this->line(
+                    $category->asset_account_code,
+                    'Fixed Assets - '.$category->name,
+                    'asset',
+                    $amount,
+                    '0',
+                    $asset->asset_number,
+                ),
+                $this->line(
+                    $cash['code'],
+                    $cash['name'],
+                    'asset',
+                    '0',
+                    $amount,
+                    $asset->asset_number,
+                ),
+            ],
+        );
+    }
+
+    public function postAssetDepreciation(FixedAsset $asset, string $date, string $amount): JournalEntry
+    {
+        $asset->loadMissing('category');
+        $category = $asset->category;
+        $amount = Decimal::normalize($amount);
+
+        return $this->post(
+            FixedAsset::class,
+            $asset->id,
+            'depreciation-'.$date,
+            'AUTO-DEP-'.$asset->asset_number.'-'.$date,
+            $date,
+            'Depreciation '.$asset->asset_number.' through '.$date,
+            [
+                $this->line(
+                    $category->depreciation_expense_account_code,
+                    'Depreciation Expense - '.$category->name,
+                    'expense',
+                    $amount,
+                    '0',
+                    $asset->asset_number,
+                ),
+                $this->line(
+                    $category->accumulated_depreciation_account_code,
+                    'Accumulated Depreciation - '.$category->name,
+                    'asset',
+                    '0',
+                    $amount,
+                    $asset->asset_number,
+                ),
+            ],
+        );
+    }
+
+    public function postAssetDisposal(FixedAsset $asset, string $date, string $proceeds): JournalEntry
+    {
+        $asset->loadMissing('category');
+        $category = $asset->category;
+        $cost = Decimal::normalize((string) $asset->acquisition_cost);
+        $accumulated = Decimal::normalize((string) $asset->accumulated_depreciation);
+        $bookValue = Decimal::normalize((string) $asset->book_value);
+        $proceeds = Decimal::normalize($proceeds);
+        $lines = [];
+
+        if (Decimal::gt($proceeds, '0')) {
+            $lines[] = $this->line('AUTO-CASH', 'Cash', 'asset', $proceeds, '0', $asset->asset_number);
+        }
+
+        if (Decimal::gt($accumulated, '0')) {
+            $lines[] = $this->line(
+                $category->accumulated_depreciation_account_code,
+                'Accumulated Depreciation - '.$category->name,
+                'asset',
+                $accumulated,
+                '0',
+                $asset->asset_number,
+            );
+        }
+
+        if (Decimal::lt($proceeds, $bookValue)) {
+            $loss = Decimal::sub($bookValue, $proceeds);
+            $lines[] = $this->line('AUTO-ASSET-LOSS', 'Loss on Asset Disposal', 'expense', $loss, '0', $asset->asset_number);
+        } elseif (Decimal::gt($proceeds, $bookValue)) {
+            $gain = Decimal::sub($proceeds, $bookValue);
+            $lines[] = $this->line('AUTO-ASSET-GAIN', 'Gain on Asset Disposal', 'income', '0', $gain, $asset->asset_number);
+        }
+
+        $lines[] = $this->line(
+            $category->asset_account_code,
+            'Fixed Assets - '.$category->name,
+            'asset',
+            '0',
+            $cost,
+            $asset->asset_number,
+        );
+
+        return $this->post(
+            FixedAsset::class,
+            $asset->id,
+            'disposal',
+            'AUTO-DISPOSE-'.$asset->asset_number,
+            $date,
+            'Asset disposal '.$asset->asset_number.' — '.$asset->name,
+            $lines,
+        );
     }
 
     /**
