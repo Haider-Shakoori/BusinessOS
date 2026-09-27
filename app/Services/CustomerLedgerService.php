@@ -106,7 +106,6 @@ final class CustomerLedgerService
      * Opening balance + invoiced - paid. A reversed payment therefore increases
      * the outstanding balance again (its credit stops counting).
      */
-
     public function totalCredits(Customer $customer): string
     {
         return Decimal::normalize((string) AccountAdjustmentNote::query()
