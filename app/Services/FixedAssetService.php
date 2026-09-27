@@ -144,7 +144,15 @@ class FixedAssetService
 
     public function dispose(FixedAsset $asset, string $date, string $proceeds, ?string $note = null): FixedAsset
     {
-        $this->depreciateThrough($asset, $date);
+        $disposalDay = CarbonImmutable::parse($date);
+        $depreciationThrough = $disposalDay->isLastOfMonth()
+            ? $disposalDay
+            : $disposalDay->subMonthNoOverflow()->endOfMonth();
+
+        if ($depreciationThrough->gte(CarbonImmutable::parse($asset->in_service_date)->startOfMonth())) {
+            $this->depreciateThrough($asset, $depreciationThrough->toDateString());
+        }
+
         $this->periods->assertPostingAllowed($date);
 
         return DB::transaction(function () use ($asset, $date, $proceeds, $note): FixedAsset {
