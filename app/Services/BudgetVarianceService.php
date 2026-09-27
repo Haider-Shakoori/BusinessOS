@@ -37,7 +37,7 @@ class BudgetVarianceService
                     ->whereBetween('journal_entries.entry_date', [$budget->start_date->toDateString(), $budget->end_date->toDateString()])
                     ->where('journal_lines.account_id', $line->account_id);
 
-                if ($line->cost_center_id !== null) {
+                if (filled($line->cost_center_id)) {
                     $query->where('journal_lines.cost_center_id', $line->cost_center_id);
                 }
 
