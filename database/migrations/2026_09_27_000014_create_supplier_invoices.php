@@ -50,6 +50,8 @@ return new class extends Migration
             $table->foreignId('product_id')->constrained()->restrictOnDelete();
             $table->foreignId('product_variant_id')->nullable()->constrained()->nullOnDelete();
             $table->decimal('quantity', 20, 4);
+            $table->decimal('received_quantity_snapshot', 20, 4);
+            $table->decimal('available_quantity_snapshot', 20, 4);
             $table->decimal('unit_cost', 20, 4);
             $table->decimal('line_total', 20, 4);
             $table->decimal('po_unit_cost', 20, 4);
