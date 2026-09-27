@@ -113,7 +113,6 @@ class AccountingController extends Controller
         return back()->with('status', __('operations.accounting.journal_created'));
     }
 
-
     public function storeCostCenter(Request $request, BusinessContext $context): RedirectResponse
     {
         $data = $request->validate([
