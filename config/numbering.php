@@ -28,6 +28,7 @@ return [
         'purchase_requisition' => 'PRQ',
         'request_for_quotation' => 'RFQ',
         'supplier_quotation' => 'SQT',
+        'goods_receipt' => 'GRN',
         'pos_sale' => 'POS',
         'payroll_run' => 'PRL',
         'warehouse_transfer' => 'TRF',
