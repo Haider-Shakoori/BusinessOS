@@ -22,6 +22,7 @@ use App\Models\Warehouse;
 use App\Services\AccountingPostingService;
 use App\Services\AccountingReportService;
 use App\Services\ExpenseService;
+use App\Services\FiscalPeriodService;
 use App\Services\InvoiceService;
 use App\Services\PaymentService;
 use Database\Seeders\PermissionSeeder;
@@ -29,6 +30,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 use Tests\TestCase;
 
 class AccountingIntegrationReportsTest extends TestCase
@@ -454,12 +456,12 @@ class AccountingIntegrationReportsTest extends TestCase
         $business = $this->business($user);
         $this->actIn($user, $business);
 
-        $period = app(\App\Services\FiscalPeriodService::class)->create(
+        $period = app(FiscalPeriodService::class)->create(
             'September 2026',
             '2026-09-01',
             '2026-09-30',
         );
-        app(\App\Services\FiscalPeriodService::class)->close($period, $user->id, 'Month-end close');
+        app(FiscalPeriodService::class)->close($period, $user->id, 'Month-end close');
 
         $this->assertSame('closed', $period->fresh()->status);
 
@@ -476,7 +478,7 @@ class AccountingIntegrationReportsTest extends TestCase
 
         $this->assertDatabaseMissing('journal_entries', ['number' => 'LOCKED-JOURNAL']);
 
-        $this->expectException(\Illuminate\Validation\ValidationException::class);
+        $this->expectException(ValidationException::class);
 
         app(InvoiceService::class)->create(
             $this->invoicePayload($this->customer(), InvoiceStatus::Sent->value, '25.0000'),
@@ -489,7 +491,7 @@ class AccountingIntegrationReportsTest extends TestCase
         $user = $this->user();
         $business = $this->business($user);
         $this->actIn($user, $business);
-        $service = app(\App\Services\FiscalPeriodService::class);
+        $service = app(FiscalPeriodService::class);
 
         $period = $service->create('FY 2026', '2026-01-01', '2026-12-31');
         $service->close($period, $user->id);
