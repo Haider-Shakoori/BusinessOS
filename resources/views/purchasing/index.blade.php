@@ -3,7 +3,10 @@
 @section('content')
 <x-app.page icon="shopping-cart" :title="__('operations.purchasing.title')" :subtitle="__('operations.purchasing.subtitle')">
     <x-slot:actions>
-        <x-ui.button href="{{ route('suppliers.index') }}" variant="secondary" icon="users">{{ __('suppliers.title') }}</x-ui.button>
+        <div class="flex flex-wrap gap-2">
+            <x-ui.button href="{{ route('purchasing.requisitions.index') }}" variant="secondary" icon="document-text">{{ __('operations.purchasing.requisitions') }}</x-ui.button>
+            <x-ui.button href="{{ route('suppliers.index') }}" variant="secondary" icon="users">{{ __('suppliers.title') }}</x-ui.button>
+        </div>
     </x-slot:actions>
     @can('inventory.view')
         <x-slot:actions>
