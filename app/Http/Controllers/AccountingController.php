@@ -11,6 +11,7 @@ use App\Models\JournalEntry;
 use App\Services\AccountingReportService;
 use App\Services\BudgetVarianceService;
 use App\Services\BusinessContext;
+use App\Services\FinancialCloseReadinessService;
 use App\Services\FiscalPeriodService;
 use App\Services\FiscalYearCloseService;
 use App\Services\FxRevaluationService;
@@ -200,6 +201,20 @@ class AccountingController extends Controller
         $count = $revaluations->revalueOpenReceivables($data['revaluation_date']);
 
         return back()->with('status', __('operations.accounting.fx_revaluation_posted', ['count' => $count]));
+    }
+
+    public function closeReadiness(Request $request, FinancialCloseReadinessService $readiness): View
+    {
+        $data = $request->validate([
+            'start_date' => ['required', 'date'],
+            'end_date' => ['required', 'date', 'after_or_equal:start_date'],
+        ]);
+
+        return view('accounting.close-readiness', [
+            'startDate' => $data['start_date'],
+            'endDate' => $data['end_date'],
+            'assessment' => $readiness->assess($data['start_date'], $data['end_date']),
+        ]);
     }
 
     public function closeFiscalYear(Request $request, FiscalYearCloseService $service): RedirectResponse

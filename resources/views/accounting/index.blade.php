@@ -19,6 +19,9 @@
             <x-ui.button href="{{ route('accounting.reports') }}" variant="secondary" icon="chart-bar">
                 {{ __('operations.accounting.financial_reports') }}
             </x-ui.button>
+            <x-ui.button href="{{ route('accounting.close-readiness', ['start_date' => now()->startOfYear()->toDateString(), 'end_date' => now()->endOfYear()->toDateString()]) }}" variant="secondary" icon="check-circle">
+                {{ __('operations.accounting.close_readiness') }}
+            </x-ui.button>
         </div>
     </x-slot:actions>
     @if (session('status')) <div class="mb-5"><x-ui.alert type="success">{{ session('status') }}</x-ui.alert></div> @endif
