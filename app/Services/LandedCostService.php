@@ -378,10 +378,8 @@ class LandedCostService
         foreach ($unlinked->sortBy('id') as $item) {
             $movement = $movements
                 ->where('product_id', $item->product_id)
-                ->filter(fn (StockMovement $candidate): bool =>
-                    (int) ($candidate->product_variant_id ?? 0) === (int) ($item->product_variant_id ?? 0)
-                    && ! in_array($candidate->id, $usedMovementIds, true)
-                )
+                ->filter(fn (StockMovement $candidate): bool => (int) ($candidate->product_variant_id ?? 0) === (int) ($item->product_variant_id ?? 0)
+                    && ! in_array($candidate->id, $usedMovementIds, true))
                 ->first();
 
             if ($movement === null) {
