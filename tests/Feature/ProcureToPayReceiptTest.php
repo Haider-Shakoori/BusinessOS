@@ -17,6 +17,7 @@ use App\Models\User;
 use App\Models\Warehouse;
 use App\Services\AgingReportService;
 use App\Services\SupplierLedgerService;
+use App\Support\Decimal;
 use Database\Seeders\PermissionSeeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -134,8 +135,17 @@ class ProcureToPayReceiptTest extends TestCase
             ->with('journalEntry.lines.account')
             ->firstOrFail();
 
-        $this->assertSame('100.0000', $posting->journalEntry->lines->sum(fn ($line) => (string) $line->debit));
-        $this->assertSame('100.0000', $posting->journalEntry->lines->sum(fn ($line) => (string) $line->credit));
+        $debit = $posting->journalEntry->lines->reduce(
+            fn (string $carry, $line): string => Decimal::add($carry, (string) $line->debit),
+            '0.0000',
+        );
+        $credit = $posting->journalEntry->lines->reduce(
+            fn (string $carry, $line): string => Decimal::add($carry, (string) $line->credit),
+            '0.0000',
+        );
+
+        $this->assertSame('100.0000', $debit);
+        $this->assertSame('100.0000', $credit);
     }
 
     public function test_over_receipt_is_blocked_and_final_receipt_closes_purchase_order(): void
