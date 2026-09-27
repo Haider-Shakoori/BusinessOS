@@ -12,6 +12,7 @@ use App\Http\Controllers\CrmController;
 use App\Http\Controllers\CurrencySettingsController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\ExpenseController;
+use App\Http\Controllers\FixedAssetController;
 use App\Http\Controllers\ExportController;
 use App\Http\Controllers\GlobalSearchController;
 use App\Http\Controllers\HrPayrollController;
@@ -497,6 +498,28 @@ Route::middleware(['auth', 'auth.session', 'business-selected', 'module:accounti
     Route::post('/accounting/banking/transfers', [BankingController::class, 'transfer'])
         ->name('accounting.banking.transfers.store')
         ->middleware('permission:accounting.manage');
+
+    Route::get('/accounting/assets', [FixedAssetController::class, 'index'])
+        ->name('assets.index')
+        ->middleware('permission:assets.view');
+    Route::get('/accounting/assets/{fixedAsset}', [FixedAssetController::class, 'show'])
+        ->name('assets.show')
+        ->middleware('permission:assets.view');
+    Route::post('/accounting/assets/categories', [FixedAssetController::class, 'storeCategory'])
+        ->name('assets.categories.store')
+        ->middleware('permission:assets.manage');
+    Route::post('/accounting/assets', [FixedAssetController::class, 'store'])
+        ->name('assets.store')
+        ->middleware('permission:assets.manage');
+    Route::post('/accounting/assets/depreciate-all', [FixedAssetController::class, 'depreciateAll'])
+        ->name('assets.depreciate-all')
+        ->middleware('permission:assets.manage');
+    Route::post('/accounting/assets/{fixedAsset}/depreciate', [FixedAssetController::class, 'depreciate'])
+        ->name('assets.depreciate')
+        ->middleware('permission:assets.manage');
+    Route::post('/accounting/assets/{fixedAsset}/dispose', [FixedAssetController::class, 'dispose'])
+        ->name('assets.dispose')
+        ->middleware('permission:assets.manage');
 });
 
 Route::middleware(['auth', 'auth.session', 'business-selected', 'module:crm'])->group(function () {
