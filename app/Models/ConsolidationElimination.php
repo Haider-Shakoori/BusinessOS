@@ -12,6 +12,7 @@ class ConsolidationElimination extends Model
     use BelongsToBusiness;
 
     protected $fillable = [
+        'group_key',
         'reference',
         'effective_date',
         'description',
