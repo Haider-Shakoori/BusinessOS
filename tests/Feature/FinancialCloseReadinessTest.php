@@ -128,6 +128,7 @@ class FinancialCloseReadinessTest extends TestCase
             'password' => Hash::make('password'),
         ]);
         $business = Business::create(['name' => 'Readiness Business']);
+        $business->provisionDefaultModules();
         $roles = $business->provisionDefaultRoles();
         $membership = $user->memberships()->create(['business_id' => $business->id]);
         $membership->assignRole($roles['owner']);
