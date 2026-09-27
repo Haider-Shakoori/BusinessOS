@@ -80,6 +80,37 @@ class ConsolidationEliminationTest extends TestCase
         $this->assertSame('reversed', $elimination->fresh()->status);
     }
 
+
+    public function test_http_post_requires_accounting_manage_in_every_selected_business(): void
+    {
+        $user = User::create(['name' => 'Limited Manager', 'email' => Str::random(12).'@test.local', 'password' => Hash::make('password')]);
+        $a = $this->businessFor($user, 'Managed A');
+        $b = Business::create(['name' => 'View Only B']);
+        $roles = $b->provisionDefaultRoles();
+        $membership = $user->memberships()->create(['business_id' => $b->id]);
+        $membership->assignRole($roles['viewer']);
+
+        $this->actingAs($user);
+        session([config('business.context.session_key') => $a->id]);
+        $this->app->forgetScopedInstances();
+
+        $response = $this->from(route('accounting.combined.index'))
+            ->post(route('accounting.combined.eliminations.store'), [
+                'business_ids' => [$a->id, $b->id],
+                'reference' => 'DENIED',
+                'effective_date' => '2026-12-31',
+                'description' => 'Must not post',
+                'lines' => [
+                    ['statement_type' => 'income', 'debit' => '10', 'credit' => '0'],
+                    ['statement_type' => 'expense', 'debit' => '0', 'credit' => '10'],
+                ],
+            ]);
+
+        $response->assertRedirect(route('accounting.combined.index'));
+        $response->assertSessionHasErrors('business_ids');
+        $this->assertSame(0, ConsolidationElimination::query()->withoutGlobalScope('business')->count());
+    }
+
     public function test_unbalanced_elimination_is_rejected(): void
     {
         $user = User::create(['name' => 'Owner', 'email' => Str::random(12).'@test.local', 'password' => Hash::make('password')]);
