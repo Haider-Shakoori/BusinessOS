@@ -95,6 +95,7 @@ class SupplierController extends Controller
         return view('suppliers.show', [
             'supplier' => $supplier->load([
                 'purchaseOrders' => fn ($query) => $query->latest('order_date')->latest('id')->limit(10),
+                'supplierInvoices' => fn ($query) => $query->latest('invoice_date')->latest('id')->limit(10),
                 'payments' => fn ($query) => $query->latest('payment_date')->latest('id')->limit(10),
             ]),
             'summary' => $this->ledger->summary($supplier),
