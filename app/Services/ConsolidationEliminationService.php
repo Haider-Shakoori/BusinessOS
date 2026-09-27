@@ -11,9 +11,9 @@ class ConsolidationEliminationService
 {
     private const TYPES = ['asset', 'liability', 'equity', 'income', 'expense'];
 
-    public function create(array $data, int $userId): ConsolidationElimination
+    public function create(array $data, array $businessIds, int $userId): ConsolidationElimination
     {
-        return DB::transaction(function () use ($data, $userId): ConsolidationElimination {
+        return DB::transaction(function () use ($data, $businessIds, $userId): ConsolidationElimination {
             $debits = '0.0000';
             $credits = '0.0000';
 
@@ -43,6 +43,7 @@ class ConsolidationEliminationService
             }
 
             $elimination = ConsolidationElimination::create([
+                'group_key' => $this->groupKey($businessIds),
                 'reference' => $data['reference'],
                 'effective_date' => $data['effective_date'],
                 'description' => $data['description'],
@@ -61,6 +62,13 @@ class ConsolidationEliminationService
 
             return $elimination->fresh(['lines', 'creator']);
         });
+    }
+
+    public function groupKey(array $businessIds): string
+    {
+        $ids = collect($businessIds)->map(fn ($id): int => (int) $id)->filter()->unique()->sort()->values();
+
+        return $ids->implode(':');
     }
 
     public function reverse(ConsolidationElimination $elimination, int $userId): ConsolidationElimination
