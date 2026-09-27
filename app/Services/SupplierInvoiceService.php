@@ -277,7 +277,7 @@ class SupplierInvoiceService
             $reservedQuantity = Decimal::normalize((string) ($reserved->get($item->id) ?? '0'));
 
             return [
-                $item->id => Decimal::max(Decimal::sub($receivedQuantity, $reservedQuantity), '0.0000'),
+                $item->id => Decimal::min(Decimal::sub($receivedQuantity, $reservedQuantity), '0.0000'),
             ];
         });
     }
