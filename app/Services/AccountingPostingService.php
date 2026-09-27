@@ -14,6 +14,7 @@ use App\Models\JournalEntry;
 use App\Models\Payment;
 use App\Models\PurchaseOrder;
 use App\Models\Supplier;
+use App\Models\SupplierInvoice;
 use App\Support\Decimal;
 use Illuminate\Support\Facades\DB;
 use RuntimeException;
@@ -124,7 +125,11 @@ class AccountingPostingService
 
     public function postGoodsReceipt(GoodsReceipt $receipt): JournalEntry
     {
+        $receipt->loadMissing('purchaseOrder');
         $amount = Decimal::normalize((string) $receipt->total);
+        $invoiceRecognition = $receipt->purchaseOrder?->ap_recognition === 'invoice';
+        $liabilityCode = $invoiceRecognition ? 'AUTO-GRNI' : 'AUTO-AP';
+        $liabilityName = $invoiceRecognition ? 'Goods Received Not Invoiced' : 'Accounts Payable';
 
         return $this->post(
             GoodsReceipt::class,
@@ -135,8 +140,56 @@ class AccountingPostingService
             'Goods receipt '.$receipt->number,
             [
                 $this->line('AUTO-INVENTORY', 'Inventory', 'asset', $amount, '0', $receipt->number),
-                $this->line('AUTO-AP', 'Accounts Payable', 'liability', '0', $amount, $receipt->number),
+                $this->line($liabilityCode, $liabilityName, 'liability', '0', $amount, $receipt->number),
             ],
+        );
+    }
+
+    public function postSupplierInvoice(SupplierInvoice $invoice): ?JournalEntry
+    {
+        $invoice->loadMissing('purchaseOrder');
+
+        if ($invoice->status !== 'approved' || $invoice->purchaseOrder?->ap_recognition !== 'invoice') {
+            return null;
+        }
+
+        $basis = Decimal::normalize((string) $invoice->po_basis_total);
+        $total = Decimal::normalize((string) $invoice->total);
+        $variance = Decimal::normalize((string) $invoice->price_variance_total);
+        $lines = [
+            $this->line('AUTO-GRNI', 'Goods Received Not Invoiced', 'liability', $basis, '0', $invoice->number),
+        ];
+
+        if (Decimal::gt($variance, '0')) {
+            $lines[] = $this->line(
+                'AUTO-PPV',
+                'Purchase Price Variance',
+                'expense',
+                $variance,
+                '0',
+                $invoice->number,
+            );
+        } elseif (Decimal::lt($variance, '0')) {
+            $lines[] = $this->line(
+                'AUTO-PPV',
+                'Purchase Price Variance',
+                'expense',
+                '0',
+                Decimal::sub('0.0000', $variance),
+                $invoice->number,
+            );
+        }
+
+        $lines[] = $this->line('AUTO-AP', 'Accounts Payable', 'liability', '0', $total, $invoice->number);
+
+        return $this->post(
+            SupplierInvoice::class,
+            $invoice->id,
+            'approved',
+            'AUTO-'.$invoice->number,
+            $invoice->invoice_date->toDateString(),
+            'Supplier invoice '.$invoice->number.' · '.$invoice->supplier_invoice_number,
+            $lines,
         );
     }
 
@@ -165,6 +218,12 @@ class AccountingPostingService
         }
 
         $amount = Decimal::normalize((string) $return->total);
+        $order = $return->source_type === PurchaseOrder::class
+            ? PurchaseOrder::query()->find($return->source_id)
+            : null;
+        $invoiceRecognition = $order?->ap_recognition === 'invoice';
+        $liabilityCode = $invoiceRecognition ? 'AUTO-GRNI' : 'AUTO-AP';
+        $liabilityName = $invoiceRecognition ? 'Goods Received Not Invoiced' : 'Accounts Payable';
 
         return $this->post(
             InventoryReturn::class,
@@ -174,7 +233,7 @@ class AccountingPostingService
             $return->processed_at->toDateString(),
             'Purchase return '.$return->number,
             [
-                $this->line('AUTO-AP', 'Accounts Payable', 'liability', $amount, '0', $return->number),
+                $this->line($liabilityCode, $liabilityName, 'liability', $amount, '0', $return->number),
                 $this->line('AUTO-INVENTORY', 'Inventory', 'asset', '0', $amount, $return->number),
             ],
         );
