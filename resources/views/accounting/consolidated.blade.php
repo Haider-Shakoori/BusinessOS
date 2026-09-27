@@ -42,7 +42,7 @@
             <x-ui.stat-card :title="__('operations.accounting.total_income')" :value="$money($report['combined']['total_income'])" icon="arrow-trending-up" tone="success" />
             <x-ui.stat-card :title="__('operations.accounting.total_expenses')" :value="$money($report['combined']['total_expenses'])" icon="arrow-trending-down" tone="danger" />
             <x-ui.stat-card :title="__('operations.accounting.net_profit')" :value="$money($report['combined']['net_profit'])" icon="chart-bar" tone="brand" />
-            <x-ui.stat-card :title="__('operations.accounting.total_assets')" :value="$money($report['combined']['total_assets'])" icon="building-library" />
+            <x-ui.stat-card :title="__('operations.accounting.total_assets')" :value="$money($report['combined']['total_assets'])" icon="banknotes" />
         </div>
 
         <div class="mt-5 overflow-x-auto">
