@@ -29,6 +29,7 @@ class JournalLine extends Model
     {
         return $this->belongsTo(CostCenter::class);
     }
+
     public function reconciliationMatch(): HasOne
     {
         return $this->hasOne(BankReconciliationMatch::class);
