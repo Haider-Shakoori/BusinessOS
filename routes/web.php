@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AccountingController;
+use App\Http\Controllers\AgingReportController;
 use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\AttendanceBridgeController;
 use App\Http\Controllers\AttendanceDeviceController;
@@ -444,6 +445,10 @@ Route::middleware(['auth', 'auth.session', 'business-selected', 'module:purchasi
 });
 
 Route::middleware(['auth', 'auth.session', 'business-selected', 'module:accounting'])->group(function () {
+    Route::get('/accounting/aging', [AgingReportController::class, 'index'])
+        ->name('accounting.aging.index')
+        ->middleware('permission:accounting.view');
+
     Route::get('/accounting', [AccountingController::class, 'index'])
         ->name('accounting.index')
         ->middleware('permission:accounting.view');
