@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Account;
+use App\Models\AccountingBudget;
 use App\Models\CostCenter;
 use App\Models\FiscalPeriod;
 use App\Models\JournalEntry;
 use App\Services\AccountingReportService;
+use App\Services\BudgetVarianceService;
 use App\Services\BusinessContext;
 use App\Services\FiscalPeriodService;
 use Illuminate\Http\RedirectResponse;
@@ -24,6 +26,7 @@ class AccountingController extends Controller
             'entries' => JournalEntry::query()->with('lines.account')->latest('entry_date')->latest('id')->limit(50)->get(),
             'fiscalPeriods' => FiscalPeriod::query()->latest('start_date')->get(),
             'costCenters' => CostCenter::query()->orderBy('code')->get(),
+            'budgets' => AccountingBudget::query()->with(['lines.account', 'lines.costCenter'])->latest('start_date')->get(),
         ]);
     }
 
@@ -111,6 +114,64 @@ class AccountingController extends Controller
         });
 
         return back()->with('status', __('operations.accounting.journal_created'));
+    }
+
+    public function storeBudget(Request $request, BusinessContext $context): RedirectResponse
+    {
+        $data = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'start_date' => ['required', 'date'],
+            'end_date' => ['required', 'date', 'after_or_equal:start_date'],
+            'account_id' => ['required', Rule::exists('accounts', 'id')->where('business_id', $context->currentId())],
+            'cost_center_id' => ['nullable', Rule::exists('cost_centers', 'id')->where('business_id', $context->currentId())],
+            'amount' => ['required', 'numeric', 'gte:0'],
+            'notes' => ['nullable', 'string', 'max:2000'],
+        ]);
+
+        DB::transaction(function () use ($data): void {
+            $budget = AccountingBudget::create([
+                'name' => $data['name'],
+                'start_date' => $data['start_date'],
+                'end_date' => $data['end_date'],
+                'status' => 'draft',
+            ]);
+            $budget->lines()->create([
+                'account_id' => $data['account_id'],
+                'cost_center_id' => $data['cost_center_id'] ?? null,
+                'amount' => $data['amount'],
+                'notes' => $data['notes'] ?? null,
+            ]);
+        });
+
+        return back()->with('status', __('operations.accounting.budget_created'));
+    }
+
+    public function storeBudgetLine(Request $request, AccountingBudget $accountingBudget, BusinessContext $context): RedirectResponse
+    {
+        $data = $request->validate([
+            'account_id' => ['required', Rule::exists('accounts', 'id')->where('business_id', $context->currentId())],
+            'cost_center_id' => ['nullable', Rule::exists('cost_centers', 'id')->where('business_id', $context->currentId())],
+            'amount' => ['required', 'numeric', 'gte:0'],
+            'notes' => ['nullable', 'string', 'max:2000'],
+        ]);
+
+        $accountingBudget->lines()->updateOrCreate([
+            'account_id' => $data['account_id'],
+            'cost_center_id' => $data['cost_center_id'] ?? null,
+        ], [
+            'amount' => $data['amount'],
+            'notes' => $data['notes'] ?? null,
+        ]);
+
+        return back()->with('status', __('operations.accounting.budget_line_saved'));
+    }
+
+    public function budgetReport(AccountingBudget $accountingBudget, BudgetVarianceService $variances): View
+    {
+        return view('accounting.budget-report', [
+            'budget' => $accountingBudget,
+            'rows' => $variances->report($accountingBudget),
+        ]);
     }
 
     public function storeCostCenter(Request $request, BusinessContext $context): RedirectResponse
