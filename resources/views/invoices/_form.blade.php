@@ -47,6 +47,7 @@
 
     $invoiceCustomerId = old('customer_id', $invoice?->customer_id);
     $invoiceDate = old('date', $invoice?->date?->format('Y-m-d') ?? now()->format('Y-m-d'));
+    $invoiceDueDate = old('due_date', $invoice?->due_date?->format('Y-m-d'));
     $invoiceCurrency = old('currency_code', $invoice?->currency_code ?? $currencyBase);
     $invoiceStatus = old('status', $invoice?->status?->value ?? \App\Enums\InvoiceStatus::Draft->value);
     $invoiceDiscountType = old('discount_type', $invoice?->discount_type);
@@ -99,6 +100,10 @@
 
             <div>
                 <x-ui.input type="date" name="date" :label="__('invoices.date')" :value="$invoiceDate" required />
+            </div>
+
+            <div>
+                <x-ui.input type="date" name="due_date" label="Due date" :value="$invoiceDueDate" />
             </div>
 
             <div>
