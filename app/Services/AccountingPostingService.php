@@ -121,16 +121,17 @@ class AccountingPostingService
         );
     }
 
-    public function postPurchaseReceipt(PurchaseOrder $order): JournalEntry
+    public function postPurchaseReceipt(PurchaseOrder $order, ?string $receiptDate = null): JournalEntry
     {
         $amount = Decimal::normalize((string) $order->total);
+        $postingDate = $receiptDate ?? $order->order_date->toDateString();
 
         return $this->post(
             PurchaseOrder::class,
             $order->id,
             'received',
             'AUTO-'.$order->number,
-            $order->order_date->toDateString(),
+            $postingDate,
             'Purchase receipt '.$order->number,
             [
                 $this->line('AUTO-INVENTORY', 'Inventory', 'asset', $amount, '0', $order->number),
