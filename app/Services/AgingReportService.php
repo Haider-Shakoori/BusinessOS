@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Enums\InvoiceStatus;
+use App\Models\AccountAdjustmentNote;
 use App\Models\InventoryReturn;
 use App\Models\Invoice;
 use App\Models\Payment;
@@ -79,7 +80,14 @@ class AgingReportService
                     ->whereDate('processed_at', '<=', $asOf)
                     ->sum('total'));
 
-                $amount = Decimal::sub((string) $order->total, $returns);
+                $debitNotes = Decimal::normalize((string) AccountAdjustmentNote::query()
+                    ->where('type', 'supplier_debit')
+                    ->where('purchase_order_id', $order->id)
+                    ->where('status', 'posted')
+                    ->whereDate('note_date', '<=', $asOf)
+                    ->sum('base_amount'));
+
+                $amount = Decimal::sub(Decimal::sub((string) $order->total, $returns), $debitNotes);
                 if (Decimal::gt($remainingPayments, '0')) {
                     $applied = Decimal::gt($remainingPayments, $amount) ? $amount : $remainingPayments;
                     $amount = Decimal::sub($amount, $applied);
