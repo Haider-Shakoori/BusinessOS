@@ -74,6 +74,7 @@ return [
             'warehouse_transfer_prefix' => ['default' => null, 'type' => 'string'],
             'inventory_return_prefix' => ['default' => null, 'type' => 'string'],
             'goods_receipt_prefix' => ['default' => null, 'type' => 'string'],
+            'landed_cost_prefix' => ['default' => null, 'type' => 'string'],
             'supplier_invoice_prefix' => ['default' => null, 'type' => 'string'],
             'supplier_credit_note_prefix' => ['default' => null, 'type' => 'string'],
             'supplier_debit_note_prefix' => ['default' => null, 'type' => 'string'],
