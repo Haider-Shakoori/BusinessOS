@@ -35,7 +35,7 @@
 
             @forelse($orders as $order)
                 @php($available = $availableByOrder->get($order->id, collect()))
-                @php($hasAvailable = $available->contains(fn ($qty) => AppSupportDecimal::gt((string) $qty, '0')))
+                @php($hasAvailable = $available->contains(fn ($qty) => (float) $qty > 0))
 
                 @if($hasAvailable)
                     <x-ui.card>
@@ -112,32 +112,38 @@
                                             <x-ui.td>{{ $availableQty }}</x-ui.td>
                                             <x-ui.td>{{ $item->unit_cost }}</x-ui.td>
                                             <x-ui.td>
-                                                <input
-                                                    type="hidden"
-                                                    name="items[{{ $lineIndex }}][purchase_order_item_id]"
-                                                    value="{{ $item->id }}"
-                                                >
-                                                <input
-                                                    name="items[{{ $lineIndex }}][quantity]"
-                                                    type="number"
-                                                    step="0.0001"
-                                                    min="0"
-                                                    max="{{ $availableQty }}"
-                                                    value="{{ $availableQty }}"
-                                                    class="w-36 rounded-lg border-slate-300 text-sm dark:border-slate-700 dark:bg-slate-950"
-                                                    {{ AppSupportDecimal::gt((string) $availableQty, '0') ? '' : 'disabled' }}
-                                                >
+                                                @if((float) $availableQty > 0)
+                                                    <input
+                                                        type="hidden"
+                                                        name="items[{{ $lineIndex }}][purchase_order_item_id]"
+                                                        value="{{ $item->id }}"
+                                                    >
+                                                    <input
+                                                        name="items[{{ $lineIndex }}][quantity]"
+                                                        type="number"
+                                                        step="0.0001"
+                                                        min="0"
+                                                        max="{{ $availableQty }}"
+                                                        value="{{ $availableQty }}"
+                                                        class="w-36 rounded-lg border-slate-300 text-sm dark:border-slate-700 dark:bg-slate-950"
+                                                    >
+                                                @else
+                                                    —
+                                                @endif
                                             </x-ui.td>
                                             <x-ui.td>
-                                                <input
-                                                    name="items[{{ $lineIndex }}][unit_cost]"
-                                                    type="number"
-                                                    step="0.0001"
-                                                    min="0"
-                                                    value="{{ $item->unit_cost }}"
-                                                    class="w-36 rounded-lg border-slate-300 text-sm dark:border-slate-700 dark:bg-slate-950"
-                                                    {{ AppSupportDecimal::gt((string) $availableQty, '0') ? '' : 'disabled' }}
-                                                >
+                                                @if((float) $availableQty > 0)
+                                                    <input
+                                                        name="items[{{ $lineIndex }}][unit_cost]"
+                                                        type="number"
+                                                        step="0.0001"
+                                                        min="0"
+                                                        value="{{ $item->unit_cost }}"
+                                                        class="w-36 rounded-lg border-slate-300 text-sm dark:border-slate-700 dark:bg-slate-950"
+                                                    >
+                                                @else
+                                                    —
+                                                @endif
                                             </x-ui.td>
                                         </tr>
                                     @endforeach
