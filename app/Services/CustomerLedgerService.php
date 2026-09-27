@@ -92,7 +92,7 @@ final class CustomerLedgerService
                 foreach ($payment->allocations as $allocation) {
                     $carry = Decimal::add(
                         $carry,
-                        $this->baseAmount($payment->base_amount, (string) $allocation->amount, $payment->exchange_rate),
+                        $this->allocationBaseAmount($allocation),
                     );
                 }
 
@@ -268,7 +268,7 @@ final class CustomerLedgerService
         $query = Payment::query()
             ->where('party_type', 'customer')
             ->where('party_id', $customer->getKey())
-            ->with('allocations')
+            ->with('allocations.invoice')
             ->orderBy('payment_date')
             ->orderBy('id');
 
@@ -359,9 +359,8 @@ final class CustomerLedgerService
             $active = $payment->reversed_at === null;
             $paymentDate = $payment->payment_date?->format('Y-m-d');
             $paymentCurrency = $payment->currency_code ?? $base;
-            $paymentBase = $this->baseAmount($payment->base_amount, (string) $payment->amount, $payment->exchange_rate);
-
             foreach ($payment->allocations as $allocation) {
+                $paymentBase = $this->allocationBaseAmount($allocation);
                 $entries[] = [
                     'date' => $paymentDate,
                     'type' => 'payment',
@@ -415,6 +414,20 @@ final class CustomerLedgerService
         });
 
         return $entries;
+    }
+
+
+    private function allocationBaseAmount($allocation): string
+    {
+        $invoice = $allocation->invoice;
+
+        if ($invoice !== null) {
+            return Decimal::round(
+                Decimal::mul((string) $allocation->amount, (string) ($invoice->exchange_rate ?? '1')),
+            );
+        }
+
+        return Decimal::normalize((string) $allocation->amount);
     }
 
     /**
