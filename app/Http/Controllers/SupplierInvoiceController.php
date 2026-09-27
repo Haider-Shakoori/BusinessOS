@@ -69,7 +69,7 @@ class SupplierInvoiceController extends Controller
             'notes' => ['nullable', 'string', 'max:2000'],
             'items' => ['required', 'array', 'min:1'],
             'items.*.purchase_order_item_id' => ['required', 'integer'],
-            'items.*.quantity' => ['required', 'numeric', 'gt:0', 'decimal:0,4'],
+            'items.*.quantity' => ['required', 'numeric', 'gte:0', 'decimal:0,4'],
             'items.*.unit_cost' => ['required', 'numeric', 'min:0', 'decimal:0,4'],
         ]);
 
