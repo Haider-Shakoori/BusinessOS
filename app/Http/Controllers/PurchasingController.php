@@ -4,11 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use App\Models\PurchaseOrder;
-use App\Models\StockMovement;
 use App\Models\Supplier;
 use App\Models\Warehouse;
-use App\Services\AccountingPostingService;
 use App\Services\BusinessContext;
+use App\Services\GoodsReceiptService;
 use App\Services\ProductVariantService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -18,13 +17,32 @@ use Illuminate\View\View;
 
 class PurchasingController extends Controller
 {
-    public function index(): View
+    public function index(GoodsReceiptService $receipts): View
     {
+        $orders = PurchaseOrder::query()
+            ->with([
+                'supplier',
+                'requisition',
+                'rfq',
+                'supplierQuotation',
+                'items.product',
+                'items.variant',
+                'goodsReceipts.warehouse',
+                'goodsReceipts.receiver',
+                'goodsReceipts.items',
+            ])
+            ->latest('id')
+            ->limit(50)
+            ->get();
+
         return view('purchasing.index', [
             'suppliers' => Supplier::query()->orderBy('name')->get(),
             'products' => Product::query()->with(['variants' => fn ($query) => $query->where('is_active', true)->orderBy('name')])->orderBy('name')->get(),
             'warehouses' => Warehouse::query()->orderBy('name')->get(),
-            'orders' => PurchaseOrder::query()->with(['supplier', 'items.product', 'items.variant'])->latest('id')->limit(50)->get(),
+            'orders' => $orders,
+            'remainingByOrder' => $orders->mapWithKeys(fn (PurchaseOrder $order): array => [
+                $order->id => $receipts->remainingQuantities($order),
+            ]),
         ]);
     }
 
@@ -52,39 +70,25 @@ class PurchasingController extends Controller
         Request $request,
         PurchaseOrder $purchaseOrder,
         BusinessContext $context,
-        AccountingPostingService $accounting,
+        GoodsReceiptService $receipts,
     ): RedirectResponse {
         $data = $request->validate([
             'warehouse_id' => ['required', Rule::exists('warehouses', 'id')->where('business_id', $context->currentId())],
+            'receipt_date' => ['nullable', 'date'],
+            'notes' => ['nullable', 'string', 'max:2000'],
+            'items' => ['nullable', 'array', 'min:1'],
+            'items.*.purchase_order_item_id' => ['required_with:items', 'integer'],
+            'items.*.quantity' => ['required_with:items', 'numeric', 'gte:0'],
         ]);
 
-        DB::transaction(function () use ($purchaseOrder, $data, $accounting): void {
-            $order = PurchaseOrder::query()->with('items')->lockForUpdate()->findOrFail($purchaseOrder->id);
-
-            if ($order->status === 'received') {
-                $accounting->postPurchaseReceipt($order);
-
-                return;
-            }
-
-            foreach ($order->items as $item) {
-                StockMovement::create([
-                    'warehouse_id' => $data['warehouse_id'],
-                    'product_id' => $item->product_id,
-                    'product_variant_id' => $item->product_variant_id,
-                    'type' => 'purchase',
-                    'quantity' => $item->quantity,
-                    'unit_cost' => $item->unit_cost,
-                    'reference_type' => PurchaseOrder::class,
-                    'reference_id' => $order->id,
-                    'note' => $order->number,
-                    'occurred_at' => now(),
-                ]);
-            }
-
-            $order->update(['status' => 'received']);
-            $accounting->postPurchaseReceipt($order);
-        });
+        $receipts->receive(
+            $purchaseOrder,
+            (int) $data['warehouse_id'],
+            $data['items'] ?? [],
+            (int) $request->user()->id,
+            $data['receipt_date'] ?? now()->toDateString(),
+            $data['notes'] ?? null,
+        );
 
         return back()->with('status', __('operations.purchasing.order_received'));
     }

@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class PurchaseOrderItem extends Model
 {
-    protected $fillable = ['product_id', 'product_variant_id', 'description', 'quantity', 'unit_cost', 'line_total'];
+    protected $fillable = ['supplier_quotation_item_id', 'product_id', 'product_variant_id', 'description', 'quantity', 'unit_cost', 'line_total'];
 
     protected function casts(): array
     {
@@ -21,6 +22,16 @@ class PurchaseOrderItem extends Model
     public function purchaseOrder(): BelongsTo
     {
         return $this->belongsTo(PurchaseOrder::class);
+    }
+
+    public function supplierQuotationItem(): BelongsTo
+    {
+        return $this->belongsTo(SupplierQuotationItem::class);
+    }
+
+    public function goodsReceiptItems(): HasMany
+    {
+        return $this->hasMany(GoodsReceiptItem::class);
     }
 
     public function product(): BelongsTo

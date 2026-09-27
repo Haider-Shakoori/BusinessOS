@@ -7,6 +7,7 @@ use App\Models\Bom;
 use App\Models\Business;
 use App\Models\BusinessModule;
 use App\Models\CrmLead;
+use App\Models\GoodsReceipt;
 use App\Models\JournalEntry;
 use App\Models\Product;
 use App\Models\ProductionOrder;
@@ -153,9 +154,10 @@ class CoreOperationalModulesTest extends TestCase
 
         $this->post('/purchasing/orders/'.$order->id.'/receive', [
             'warehouse_id' => $warehouse->id,
-        ])->assertRedirect();
+        ])->assertSessionHasErrors('status');
 
-        $this->assertSame(1, StockMovement::query()->where('reference_type', PurchaseOrder::class)->count());
+        $this->assertSame(1, StockMovement::query()->where('reference_type', GoodsReceipt::class)->count());
+        $this->assertSame(1, GoodsReceipt::query()->where('purchase_order_id', $order->id)->count());
     }
 
     public function test_accounting_posts_balanced_double_entry(): void

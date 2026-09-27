@@ -32,6 +32,7 @@ return [
         'payroll_run' => 'PRL',
         'warehouse_transfer' => 'TRF',
         'inventory_return' => 'RET',
+        'goods_receipt' => 'GRN',
     ],
 
     'padding' => 6,

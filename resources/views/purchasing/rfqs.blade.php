@@ -197,6 +197,28 @@
                                                     @csrf
                                                     <x-ui.button type="submit" size="sm" variant="secondary">{{ __('operations.purchasing.select_supplier') }}</x-ui.button>
                                                 </form>
+                                            @elseif($quote->status === 'selected')
+                                                @if($quote->purchaseOrder)
+                                                    <div class="text-xs text-slate-500">
+                                                        {{ __('operations.purchasing.purchase_order') }}:
+                                                        <span class="font-medium text-slate-900 dark:text-white">{{ $quote->purchaseOrder->number }}</span>
+                                                    </div>
+                                                @elseif($rfq->status === 'awarded')
+                                                    <details class="min-w-64">
+                                                        <summary class="cursor-pointer text-sm font-medium text-blue-600 dark:text-blue-400">
+                                                            {{ __('operations.purchasing.create_purchase_order') }}
+                                                        </summary>
+                                                        <form method="POST" action="{{ route('purchasing.rfqs.quotations.purchase-order', [$rfq, $quote]) }}" class="mt-2 space-y-2 rounded-lg border border-slate-200 p-3 dark:border-slate-700">
+                                                            @csrf
+                                                            <x-ui.input name="order_date" type="date" :label="__('operations.purchasing.order_date')" :value="now()->toDateString()" required />
+                                                            <x-ui.input name="expected_date" type="date" :label="__('operations.purchasing.expected_date')" />
+                                                            <x-ui.input name="notes" :label="__('operations.purchasing.notes')" />
+                                                            <div class="flex justify-end">
+                                                                <x-ui.button type="submit" size="sm">{{ __('operations.purchasing.create_purchase_order') }}</x-ui.button>
+                                                            </div>
+                                                        </form>
+                                                    </details>
+                                                @endif
                                             @endif
                                         @endcan
                                     </x-ui.td>

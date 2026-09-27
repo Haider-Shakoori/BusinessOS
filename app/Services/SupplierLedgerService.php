@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\AccountAdjustmentNote;
+use App\Models\GoodsReceipt;
 use App\Models\InventoryReturn;
 use App\Models\Payment;
 use App\Models\PurchaseOrder;
@@ -18,9 +19,29 @@ final class SupplierLedgerService
 
     public function totalPurchased(Supplier $supplier): string
     {
-        return Decimal::normalize((string) $supplier->purchaseOrders()
-            ->where('status', 'received')
+        $orderIds = $supplier->purchaseOrders()->pluck('id');
+
+        if ($orderIds->isEmpty()) {
+            return '0.0000';
+        }
+
+        $receiptOrderIds = GoodsReceipt::query()
+            ->whereIn('purchase_order_id', $orderIds)
+            ->where('status', 'posted')
+            ->distinct()
+            ->pluck('purchase_order_id');
+
+        $receiptTotal = Decimal::normalize((string) GoodsReceipt::query()
+            ->whereIn('purchase_order_id', $orderIds)
+            ->where('status', 'posted')
             ->sum('total'));
+
+        $legacyTotal = Decimal::normalize((string) $supplier->purchaseOrders()
+            ->where('status', 'received')
+            ->when($receiptOrderIds->isNotEmpty(), fn ($query) => $query->whereNotIn('id', $receiptOrderIds))
+            ->sum('total'));
+
+        return Decimal::add($receiptTotal, $legacyTotal);
     }
 
     public function totalReturned(Supplier $supplier): string
@@ -213,12 +234,37 @@ final class SupplierLedgerService
         ];
 
         $orders = $supplier->purchaseOrders()
-            ->where('status', 'received')
             ->orderBy('order_date')
             ->orderBy('id')
-            ->get(['id', 'number', 'order_date', 'total', 'notes']);
+            ->get(['id', 'number', 'status', 'order_date', 'total', 'notes']);
 
-        foreach ($orders as $order) {
+        $orderIds = $orders->pluck('id');
+
+        $receipts = GoodsReceipt::query()
+            ->whereIn('purchase_order_id', $orderIds)
+            ->where('status', 'posted')
+            ->with('purchaseOrder:id,number')
+            ->orderBy('receipt_date')
+            ->orderBy('id')
+            ->get();
+
+        foreach ($receipts as $receipt) {
+            $entries[] = [
+                'date' => $receipt->receipt_date?->format('Y-m-d'),
+                'type' => 'purchase',
+                'reference' => (string) $receipt->number,
+                'description' => $receipt->purchaseOrder?->number,
+                'debit' => '0.0000',
+                'credit' => Decimal::normalize((string) $receipt->total),
+                'balance' => '0.0000',
+                'reversed' => false,
+                'sort' => $sort++,
+            ];
+        }
+
+        $receiptOrderIds = $receipts->pluck('purchase_order_id')->unique();
+
+        foreach ($orders->where('status', 'received')->whereNotIn('id', $receiptOrderIds) as $order) {
             $entries[] = [
                 'date' => $order->order_date?->format('Y-m-d'),
                 'type' => 'purchase',
@@ -231,8 +277,6 @@ final class SupplierLedgerService
                 'sort' => $sort++,
             ];
         }
-
-        $orderIds = $orders->pluck('id');
 
         if ($orderIds->isNotEmpty()) {
             foreach (InventoryReturn::query()

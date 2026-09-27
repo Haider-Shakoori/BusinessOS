@@ -37,4 +37,6 @@ enum DocumentType: string
     case WarehouseTransfer = 'warehouse_transfer';
 
     case InventoryReturn = 'inventory_return';
+
+    case GoodsReceipt = 'goods_receipt';
 }

@@ -12,6 +12,7 @@ use App\Models\CostCenter;
 use App\Models\Customer;
 use App\Models\Expense;
 use App\Models\FiscalPeriod;
+use App\Models\GoodsReceipt;
 use App\Models\InventoryReturn;
 use App\Models\Invoice;
 use App\Models\JournalEntry;
@@ -312,10 +313,12 @@ class AccountingIntegrationReportsTest extends TestCase
             'warehouse_id' => $warehouse->id,
         ])->assertRedirect();
 
+        $receipt = GoodsReceipt::query()->where('purchase_order_id', $order->id)->firstOrFail();
+
         $purchasePosting = AccountingPosting::query()
-            ->where('source_type', PurchaseOrder::class)
-            ->where('source_id', $order->id)
-            ->where('event_key', 'received')
+            ->where('source_type', GoodsReceipt::class)
+            ->where('source_id', $receipt->id)
+            ->where('event_key', 'posted')
             ->with('journalEntry.lines.account')
             ->firstOrFail();
 

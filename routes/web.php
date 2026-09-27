@@ -467,6 +467,9 @@ Route::middleware(['auth', 'auth.session', 'business-selected', 'module:purchasi
     Route::post('/purchasing/rfqs/{purchaseRfq}/quotations/{supplierQuotation}/award', [RfqController::class, 'award'])
         ->name('purchasing.rfqs.quotations.award')
         ->middleware('permission:purchasing.manage');
+    Route::post('/purchasing/rfqs/{purchaseRfq}/quotations/{supplierQuotation}/purchase-order', [RfqController::class, 'convertToPurchaseOrder'])
+        ->name('purchasing.rfqs.quotations.purchase-order')
+        ->middleware('permission:purchasing.manage');
     Route::post('/purchasing/suppliers', [PurchasingController::class, 'storeSupplier'])
         ->name('purchasing.suppliers.store')
         ->middleware('permission:purchasing.manage');
