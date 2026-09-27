@@ -3,9 +3,16 @@
 @section('content')
 <x-app.page icon="ledger" :title="__('operations.accounting.title')" :subtitle="__('operations.accounting.subtitle')">
     <x-slot:actions>
-        <x-ui.button href="{{ route('accounting.reports') }}" variant="secondary" icon="chart-bar">
-            {{ __('operations.accounting.financial_reports') }}
-        </x-ui.button>
+        <div class="flex flex-wrap gap-2">
+            @can('assets.view')
+                <x-ui.button href="{{ route('assets.index') }}" variant="secondary" icon="building-office">
+                    {{ __('fixed_assets.title') }}
+                </x-ui.button>
+            @endcan
+            <x-ui.button href="{{ route('accounting.reports') }}" variant="secondary" icon="chart-bar">
+                {{ __('operations.accounting.financial_reports') }}
+            </x-ui.button>
+        </div>
     </x-slot:actions>
     @if (session('status')) <div class="mb-5"><x-ui.alert type="success">{{ session('status') }}</x-ui.alert></div> @endif
 

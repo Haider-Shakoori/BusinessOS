@@ -80,6 +80,10 @@ return [
             'accounting.view',
             'accounting.manage',
         ],
+        'assets' => [
+            'assets.view',
+            'assets.manage',
+        ],
         'pos' => [
             'pos.view',
             'pos.sell',
