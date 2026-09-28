@@ -65,7 +65,7 @@ class InventoryValuationService
             ];
         }
 
-        $value = Decimal::max($value, '0.0000');
+        $value = Decimal::min($value, '0.0000');
         $averageUnitCost = Decimal::mulDiv($value, '1', $quantity);
 
         if (! $complete && $lastKnownCost !== null) {
