@@ -38,6 +38,8 @@ enum DocumentType: string
 
     case InventoryReturn = 'inventory_return';
 
+    case InventoryCount = 'inventory_count';
+
     case GoodsReceipt = 'goods_receipt';
 
     case LandedCost = 'landed_cost';

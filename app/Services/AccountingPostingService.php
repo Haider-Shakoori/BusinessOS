@@ -8,6 +8,7 @@ use App\Models\AccountingPosting;
 use App\Models\Expense;
 use App\Models\FixedAsset;
 use App\Models\GoodsReceipt;
+use App\Models\InventoryCount;
 use App\Models\InventoryReturn;
 use App\Models\Invoice;
 use App\Models\JournalEntry;
@@ -264,6 +265,66 @@ class AccountingPostingService
             $landedCost->id,
             'posted',
             $reason,
+        );
+    }
+
+    public function postInventoryCount(InventoryCount $count): ?JournalEntry
+    {
+        $positive = Decimal::normalize((string) $count->total_positive_variance_value);
+        $negative = Decimal::normalize((string) $count->total_negative_variance_value);
+
+        if (Decimal::isZero($positive) && Decimal::isZero($negative)) {
+            return null;
+        }
+
+        $lines = [];
+
+        if (Decimal::gt($positive, '0')) {
+            $lines[] = $this->line(
+                'AUTO-INVENTORY',
+                'Inventory',
+                'asset',
+                $positive,
+                '0',
+                $count->number,
+            );
+            $lines[] = $this->line(
+                'AUTO-INVENTORY-GAIN',
+                'Inventory Count Gain',
+                'income',
+                '0',
+                $positive,
+                $count->number,
+            );
+        }
+
+        if (Decimal::gt($negative, '0')) {
+            $lines[] = $this->line(
+                'AUTO-INVENTORY-SHRINKAGE',
+                'Inventory Shrinkage',
+                'expense',
+                $negative,
+                '0',
+                $count->number,
+            );
+            $lines[] = $this->line(
+                'AUTO-INVENTORY',
+                'Inventory',
+                'asset',
+                '0',
+                $negative,
+                $count->number,
+            );
+        }
+
+        return $this->post(
+            InventoryCount::class,
+            $count->id,
+            'posted',
+            'AUTO-'.$count->number,
+            $count->count_date->toDateString(),
+            'Inventory stock count '.$count->number,
+            $lines,
         );
     }
 
