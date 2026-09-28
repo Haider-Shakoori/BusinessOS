@@ -18,7 +18,7 @@ class InventoryController extends Controller
 {
     public function index(InventoryValuationService $valuation): View
     {
-        $warehouses = Warehouse::query()->orderBy('name')->get();
+        $warehouses = Warehouse::query()->where('is_active', true)->orderByDesc('is_default')->orderBy('name')->get();
         $products = Product::query()->with(['variants' => fn ($query) => $query->where('is_active', true)->orderBy('name')])->orderBy('name')->get();
         $movements = StockMovement::query()
             ->with(['warehouse', 'product', 'variant'])
@@ -66,7 +66,7 @@ class InventoryController extends Controller
         InventoryValuationService $valuation,
     ): RedirectResponse {
         $data = $request->validate([
-            'warehouse_id' => ['required', Rule::exists('warehouses', 'id')->where('business_id', $context->currentId())],
+            'warehouse_id' => ['required', Rule::exists('warehouses', 'id')->where('business_id', $context->currentId())->where('is_active', true)],
             'product_id' => ['required', Rule::exists('products', 'id')->where('business_id', $context->currentId())],
             'product_variant_id' => ['nullable', 'integer', Rule::exists('product_variants', 'id')->where('business_id', $context->currentId())],
             'type' => ['required', Rule::in(['opening', 'purchase', 'sale', 'adjustment', 'production_in', 'production_out'])],

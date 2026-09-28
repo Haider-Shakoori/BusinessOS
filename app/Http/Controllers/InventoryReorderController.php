@@ -31,7 +31,7 @@ class InventoryReorderController extends Controller
             : $baseRows;
 
         return view('inventory.reorder.index', [
-            'warehouses' => Warehouse::query()->where('is_active', true)->orderBy('name')->get(),
+            'warehouses' => Warehouse::query()->where('is_active', true)->orderByDesc('is_default')->orderBy('name')->get(),
             'products' => Product::query()
                 ->where('type', ProductType::Product->value)
                 ->with(['variants' => fn ($query) => $query->where('is_active', true)->orderBy('name')])

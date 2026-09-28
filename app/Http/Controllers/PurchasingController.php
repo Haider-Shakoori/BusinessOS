@@ -39,7 +39,7 @@ class PurchasingController extends Controller
         return view('purchasing.index', [
             'suppliers' => Supplier::query()->orderBy('name')->get(),
             'products' => Product::query()->with(['variants' => fn ($query) => $query->where('is_active', true)->orderBy('name')])->orderBy('name')->get(),
-            'warehouses' => Warehouse::query()->orderBy('name')->get(),
+            'warehouses' => Warehouse::query()->where('is_active', true)->orderByDesc('is_default')->orderBy('name')->get(),
             'orders' => $orders,
             'remainingByOrder' => $orders->mapWithKeys(fn (PurchaseOrder $order): array => [
                 $order->id => $receipts->remainingQuantities($order),

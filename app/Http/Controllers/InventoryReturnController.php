@@ -47,7 +47,7 @@ class InventoryReturnController extends Controller
         return view('inventory.returns', [
             'sales' => $sales,
             'purchases' => $purchases,
-            'warehouses' => Warehouse::query()->where('is_active', true)->orderBy('name')->get(),
+            'warehouses' => Warehouse::query()->where('is_active', true)->orderByDesc('is_default')->orderBy('name')->get(),
             'returns' => InventoryReturn::query()
                 ->with(['warehouse', 'items.product', 'items.variant', 'processor'])
                 ->latest('processed_at')

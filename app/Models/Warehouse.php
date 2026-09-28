@@ -12,11 +12,11 @@ class Warehouse extends Model
     use BelongsToBusiness;
     use SoftDeletes;
 
-    protected $fillable = ['code', 'name', 'is_active'];
+    protected $fillable = ['code', 'name', 'is_active', 'is_default'];
 
     protected function casts(): array
     {
-        return ['is_active' => 'boolean'];
+        return ['is_active' => 'boolean', 'is_default' => 'boolean'];
     }
 
     public function stockMovements(): HasMany
