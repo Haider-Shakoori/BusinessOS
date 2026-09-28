@@ -5,6 +5,7 @@
     <x-slot:actions>
         <div class="flex flex-wrap gap-2">
             <x-ui.button href="{{ route('inventory.counts.index') }}" variant="secondary">{{ __('operations.stock_counts.title') }}</x-ui.button>
+            <x-ui.button href="{{ route('inventory.reorder.index') }}" variant="secondary">{{ __('operations.reorder.title') }}</x-ui.button>
             <x-ui.button href="{{ route('inventory.transfers.index') }}" variant="secondary">{{ __('operations.transfers.title') }}</x-ui.button>
             <x-ui.button href="{{ route('inventory.returns.index') }}" variant="secondary">{{ __('operations.returns.title') }}</x-ui.button>
         </div>
