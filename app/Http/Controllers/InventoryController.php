@@ -102,7 +102,7 @@ class InventoryController extends Controller
                 ])->withInput();
             }
 
-            if (!array_key_exists('unit_cost', $data) || $data['unit_cost'] === null || $data['unit_cost'] === '') {
+            if (! array_key_exists('unit_cost', $data) || $data['unit_cost'] === null || $data['unit_cost'] === '') {
                 $data['unit_cost'] = $snapshot['average_unit_cost'];
             }
         }
