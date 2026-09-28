@@ -84,4 +84,30 @@ class InventoryValuationService
     {
         return $this->snapshot($warehouseId, $productId, $variantId)['average_unit_cost'];
     }
+
+    public function issueUnitCost(int $warehouseId, int $productId, ?int $variantId = null): string
+    {
+        $snapshot = $this->snapshot($warehouseId, $productId, $variantId);
+
+        if (Decimal::gt($snapshot['average_unit_cost'], '0')) {
+            return $snapshot['average_unit_cost'];
+        }
+
+        $query = StockMovement::query()
+            ->where('warehouse_id', $warehouseId)
+            ->where('product_id', $productId)
+            ->whereNotNull('unit_cost')
+            ->where('unit_cost', '>', 0);
+
+        $variantId === null
+            ? $query->whereNull('product_variant_id')
+            : $query->where('product_variant_id', $variantId);
+
+        $cost = $query
+            ->latest('occurred_at')
+            ->latest('id')
+            ->value('unit_cost');
+
+        return Decimal::normalize((string) ($cost ?? '0'));
+    }
 }

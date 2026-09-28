@@ -8,11 +8,14 @@ use App\Models\ProductionOrder;
 use App\Models\StockMovement;
 use App\Models\Warehouse;
 use App\Services\BusinessContext;
+use App\Services\BusinessSettings;
+use App\Services\InventoryValuationService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
+use RuntimeException;
 
 class ManufacturingController extends Controller
 {
@@ -57,55 +60,94 @@ class ManufacturingController extends Controller
         return back()->with('status', __('operations.manufacturing.bom_created'));
     }
 
-    public function complete(Request $request, ProductionOrder $productionOrder, BusinessContext $context): RedirectResponse
-    {
+    public function complete(
+        Request $request,
+        ProductionOrder $productionOrder,
+        BusinessContext $context,
+        BusinessSettings $settings,
+        InventoryValuationService $valuation,
+    ): RedirectResponse {
         $data = $request->validate([
-            'warehouse_id' => ['required', Rule::exists('warehouses', 'id')->where('business_id', $context->currentId())],
+            'warehouse_id' => [
+                'required',
+                Rule::exists('warehouses', 'id')
+                    ->where('business_id', $context->currentId())
+                    ->where('is_active', true),
+            ],
             'actual_quantity' => ['required', 'numeric', 'gt:0'],
         ]);
 
-        DB::transaction(function () use ($productionOrder, $data): void {
-            $order = ProductionOrder::query()->with('bom.items')->lockForUpdate()->findOrFail($productionOrder->id);
+        try {
+            DB::transaction(function () use ($productionOrder, $data, $settings, $valuation): void {
+                $order = ProductionOrder::query()
+                    ->with('bom.items')
+                    ->lockForUpdate()
+                    ->findOrFail($productionOrder->id);
 
-            if ($order->status === 'completed') {
-                return;
-            }
-
-            if ($order->bom) {
-                foreach ($order->bom->items as $item) {
-                    $factor = 1 + ((float) $item->wastage_percent / 100);
-                    $consumption = round((float) $item->quantity * (float) $data['actual_quantity'] * $factor, 4);
-
-                    StockMovement::create([
-                        'warehouse_id' => $data['warehouse_id'],
-                        'product_id' => $item->material_product_id,
-                        'type' => 'production_out',
-                        'quantity' => -$consumption,
-                        'reference_type' => ProductionOrder::class,
-                        'reference_id' => $order->id,
-                        'note' => $order->number,
-                        'occurred_at' => now(),
-                    ]);
+                if ($order->status === 'completed') {
+                    return;
                 }
-            }
 
-            StockMovement::create([
-                'warehouse_id' => $data['warehouse_id'],
-                'product_id' => $order->product_id,
-                'type' => 'production_in',
-                'quantity' => $data['actual_quantity'],
-                'reference_type' => ProductionOrder::class,
-                'reference_id' => $order->id,
-                'note' => $order->number,
-                'occurred_at' => now(),
-            ]);
+                $allowNegativeStock = (bool) $settings->get('inventory.allow_negative_stock', false);
 
-            $order->update([
-                'status' => 'completed',
-                'actual_quantity' => $data['actual_quantity'],
-                'completed_at' => now(),
-            ]);
-        });
+                if ($order->bom) {
+                    foreach ($order->bom->items as $item) {
+                        $factor = 1 + ((float) $item->wastage_percent / 100);
+                        $consumption = round(
+                            (float) $item->quantity * (float) $data['actual_quantity'] * $factor,
+                            4,
+                        );
+                        $snapshot = $valuation->snapshot(
+                            (int) $data['warehouse_id'],
+                            (int) $item->material_product_id,
+                        );
+
+                        if (! $allowNegativeStock
+                            && (float) $snapshot['quantity'] + 0.00001 < $consumption) {
+                            throw new RuntimeException(__('operations.inventory.insufficient_stock', [
+                                'available' => $snapshot['quantity'],
+                            ]));
+                        }
+
+                        $unitCost = $valuation->issueUnitCost(
+                            (int) $data['warehouse_id'],
+                            (int) $item->material_product_id,
+                        );
+
+                        StockMovement::create([
+                            'warehouse_id' => $data['warehouse_id'],
+                            'product_id' => $item->material_product_id,
+                            'type' => 'production_out',
+                            'quantity' => -$consumption,
+                            'unit_cost' => (float) $unitCost > 0 ? $unitCost : null,
+                            'reference_type' => ProductionOrder::class,
+                            'reference_id' => $order->id,
+                            'note' => $order->number,
+                            'occurred_at' => now(),
+                        ]);
+                    }
+                }
+
+                StockMovement::create([
+                    'warehouse_id' => $data['warehouse_id'],
+                    'product_id' => $order->product_id,
+                    'type' => 'production_in',
+                    'quantity' => $data['actual_quantity'],
+                    'reference_type' => ProductionOrder::class,
+                    'reference_id' => $order->id,
+                    'note' => $order->number,
+                    'occurred_at' => now(),
+                ]);
+
+                $order->update([
+                    'status' => 'completed',
+                    'actual_quantity' => $data['actual_quantity'],
+                    'completed_at' => now(),
+                ]);
+            });
+        } catch (RuntimeException $exception) {
+            return back()->withErrors(['stock' => $exception->getMessage()])->withInput();
+        }
 
         return back()->with('status', __('operations.manufacturing.order_completed'));
     }

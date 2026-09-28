@@ -152,6 +152,26 @@
 
             <x-ui.card>
                 <x-slot:header>
+                    <div>
+                        <h2 class="text-base font-semibold text-slate-900 dark:text-white">{{ __('settings.inventory') }}</h2>
+                        <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">{{ __('settings.inventory_helper') }}</p>
+                    </div>
+                </x-slot:header>
+
+                <div>
+                    <input type="hidden" name="inventory.allow_negative_stock" value="0">
+                    <x-ui.toggle
+                        name="inventory.allow_negative_stock"
+                        :label="__('settings.allow_negative_stock')"
+                        :description="__('settings.allow_negative_stock_helper')"
+                        :checked="(bool) ($values['inventory.allow_negative_stock'] ?? false)"
+                        :disabled="! $editable"
+                    />
+                </div>
+            </x-ui.card>
+
+            <x-ui.card>
+                <x-slot:header>
                     <div class="flex flex-wrap items-start justify-between gap-3">
                         <div>
                             <h2 class="text-base font-semibold text-slate-900 dark:text-white">{{ __('attendance.settings_title') }}</h2>

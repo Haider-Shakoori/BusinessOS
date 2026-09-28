@@ -14,6 +14,10 @@ return [
     'email' => 'Contact email',
     'tax_enabled' => 'Enable taxes',
     'tax_enabled_helper' => 'Turns on tax management for this business. Tax definitions you create are kept while this is off.',
+    'inventory' => 'Inventory',
+    'inventory_helper' => 'Control stock availability rules for inventory transactions.',
+    'allow_negative_stock' => 'Allow negative stock',
+    'allow_negative_stock_helper' => 'When enabled, outbound transactions may take stock below zero. Leave this off for strict stock control.',
     'documents' => 'Document appearance',
     'documents_helper' => 'Brand printed documents with a safe, code-defined theme. Custom text is stored as plain text and never executed.',
     'invoice_theme' => 'Invoice theme',
@@ -61,6 +65,7 @@ return [
     'save_rate' => 'Save rate',
     'save' => 'Save settings',
     'validation' => [
+        'allow_negative_stock_invalid' => 'The negative-stock setting must be a boolean value.',
         'name_required' => 'The business name is required.',
         'name_max' => 'The business name may not be longer than 255 characters.',
         'address_max' => 'The address may not be longer than 500 characters.',

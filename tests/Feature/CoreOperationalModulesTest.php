@@ -284,6 +284,15 @@ class CoreOperationalModulesTest extends TestCase
         $finished = $this->product('Finished Good', 'FG-001');
         $warehouse = Warehouse::create(['code' => 'PROD', 'name' => 'Production Warehouse', 'is_active' => true]);
 
+        StockMovement::create([
+            'warehouse_id' => $warehouse->id,
+            'product_id' => $raw->id,
+            'type' => 'opening',
+            'quantity' => '30.0000',
+            'unit_cost' => '3.0000',
+            'occurred_at' => now(),
+        ]);
+
         $this->post('/manufacturing/boms', [
             'product_id' => $finished->id,
             'code' => 'BOM-FG-001',
