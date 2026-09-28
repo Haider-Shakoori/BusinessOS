@@ -64,8 +64,7 @@ class InventoryController extends Controller
         BusinessContext $context,
         ProductVariantService $variants,
         InventoryValuationService $valuation,
-    ): RedirectResponse
-    {
+    ): RedirectResponse {
         $data = $request->validate([
             'warehouse_id' => ['required', Rule::exists('warehouses', 'id')->where('business_id', $context->currentId())],
             'product_id' => ['required', Rule::exists('products', 'id')->where('business_id', $context->currentId())],
@@ -103,7 +102,7 @@ class InventoryController extends Controller
                 ])->withInput();
             }
 
-            if (! array_key_exists('unit_cost', $data) || $data['unit_cost'] === null || $data['unit_cost'] === '') {
+            if (!array_key_exists('unit_cost', $data) || $data['unit_cost'] === null || $data['unit_cost'] === '') {
                 $data['unit_cost'] = $snapshot['average_unit_cost'];
             }
         }
