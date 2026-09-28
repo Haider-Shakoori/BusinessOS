@@ -46,6 +46,7 @@ use App\Http\Controllers\SupplierInvoiceController;
 use App\Http\Controllers\TaxController;
 use App\Http\Controllers\UnitController;
 use App\Http\Controllers\UserRoleController;
+use App\Http\Controllers\WarehouseController;
 use App\Http\Controllers\WarehouseTransferController;
 use App\Http\Controllers\WorkspaceController;
 use App\Support\SafeRedirect;
@@ -348,8 +349,23 @@ Route::middleware(['auth', 'auth.session', 'business-selected', 'module:inventor
     Route::get('/inventory', [InventoryController::class, 'index'])
         ->name('inventory.index')
         ->middleware('permission:inventory.view');
-    Route::post('/inventory/warehouses', [InventoryController::class, 'storeWarehouse'])
+    Route::get('/inventory/warehouses', [WarehouseController::class, 'index'])
+        ->name('inventory.warehouses.index')
+        ->middleware('permission:inventory.view');
+    Route::post('/inventory/warehouses', [WarehouseController::class, 'store'])
         ->name('inventory.warehouses.store')
+        ->middleware('permission:inventory.manage');
+    Route::put('/inventory/warehouses/{warehouse}', [WarehouseController::class, 'update'])
+        ->name('inventory.warehouses.update')
+        ->middleware('permission:inventory.manage');
+    Route::post('/inventory/warehouses/{warehouse}/default', [WarehouseController::class, 'setDefault'])
+        ->name('inventory.warehouses.default')
+        ->middleware('permission:inventory.manage');
+    Route::patch('/inventory/warehouses/{warehouse}/active', [WarehouseController::class, 'setActive'])
+        ->name('inventory.warehouses.active')
+        ->middleware('permission:inventory.manage');
+    Route::delete('/inventory/warehouses/{warehouse}', [WarehouseController::class, 'destroy'])
+        ->name('inventory.warehouses.destroy')
         ->middleware('permission:inventory.manage');
     Route::post('/inventory/movements', [InventoryController::class, 'storeMovement'])
         ->name('inventory.movements.store')

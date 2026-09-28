@@ -20,7 +20,7 @@ class InventoryCountController extends Controller
     public function index(): View
     {
         return view('inventory.counts.index', [
-            'warehouses' => Warehouse::query()->where('is_active', true)->orderBy('name')->get(),
+            'warehouses' => Warehouse::query()->where('is_active', true)->orderByDesc('is_default')->orderBy('name')->get(),
             'counts' => InventoryCount::query()
                 ->with(['warehouse', 'creator'])
                 ->withCount('items')

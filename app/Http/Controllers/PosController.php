@@ -11,6 +11,7 @@ use App\Models\StockMovement;
 use App\Models\Warehouse;
 use App\Services\BusinessContext;
 use App\Services\PosService;
+use App\Services\WarehouseService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -77,7 +78,7 @@ class PosController extends Controller
             'registerOpenShift' => $registerOpenShift,
             'products' => $products,
             'stock' => $stock,
-            'warehouses' => Warehouse::query()->where('is_active', true)->orderBy('name')->get(),
+            'warehouses' => Warehouse::query()->where('is_active', true)->orderByDesc('is_default')->orderBy('name')->get(),
             'customers' => Customer::query()->orderBy('name')->get(),
             'recentSales' => PosSale::query()
                 ->with(['cashier', 'register'])
@@ -87,10 +88,10 @@ class PosController extends Controller
         ]);
     }
 
-    public function storeRegister(Request $request, BusinessContext $context): RedirectResponse
+    public function storeRegister(Request $request, BusinessContext $context, WarehouseService $warehouses): RedirectResponse
     {
         $data = $request->validate([
-            'warehouse_id' => ['nullable', Rule::exists('warehouses', 'id')->where('business_id', $context->currentId())],
+            'warehouse_id' => ['nullable', Rule::exists('warehouses', 'id')->where('business_id', $context->currentId())->where('is_active', true)],
             'code' => [
                 'required',
                 'string',
@@ -103,17 +104,7 @@ class PosController extends Controller
         $warehouseId = $data['warehouse_id'] ?? null;
 
         if ($warehouseId === null) {
-            $warehouse = Warehouse::query()->where('is_active', true)->orderBy('id')->first();
-
-            if ($warehouse === null) {
-                $warehouse = Warehouse::create([
-                    'code' => 'MAIN',
-                    'name' => 'Main Warehouse',
-                    'is_active' => true,
-                ]);
-            }
-
-            $warehouseId = $warehouse->id;
+            $warehouseId = $warehouses->defaultOrCreate()->id;
         }
 
         $register = PosRegister::create([

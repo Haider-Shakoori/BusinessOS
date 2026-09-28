@@ -19,7 +19,7 @@ class WarehouseTransferController extends Controller
     public function index(): View
     {
         return view('inventory.transfers', [
-            'warehouses' => Warehouse::query()->where('is_active', true)->orderBy('name')->get(),
+            'warehouses' => Warehouse::query()->where('is_active', true)->orderByDesc('is_default')->orderBy('name')->get(),
             'products' => Product::query()->orderBy('name')->get(),
             'transfers' => WarehouseTransfer::query()
                 ->with(['sourceWarehouse', 'destinationWarehouse', 'items.product', 'items.variant'])

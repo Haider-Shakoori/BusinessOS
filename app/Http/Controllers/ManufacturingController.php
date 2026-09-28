@@ -21,7 +21,7 @@ class ManufacturingController extends Controller
         return view('manufacturing.index', [
             'products' => Product::query()->orderBy('name')->get(),
             'boms' => Bom::query()->with(['product', 'items.material'])->latest('id')->get(),
-            'warehouses' => Warehouse::query()->orderBy('name')->get(),
+            'warehouses' => Warehouse::query()->where('is_active', true)->orderByDesc('is_default')->orderBy('name')->get(),
             'orders' => ProductionOrder::query()->with(['product', 'bom'])->latest('id')->limit(50)->get(),
         ]);
     }

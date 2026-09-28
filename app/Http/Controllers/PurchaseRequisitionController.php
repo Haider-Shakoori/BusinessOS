@@ -17,7 +17,7 @@ class PurchaseRequisitionController extends Controller
     public function index(): View
     {
         return view('purchasing.requisitions', [
-            'warehouses' => Warehouse::query()->where('is_active', true)->orderBy('name')->get(),
+            'warehouses' => Warehouse::query()->where('is_active', true)->orderByDesc('is_default')->orderBy('name')->get(),
             'products' => Product::query()
                 ->with(['variants' => fn ($query) => $query->where('is_active', true)->orderBy('name')])
                 ->orderBy('name')
