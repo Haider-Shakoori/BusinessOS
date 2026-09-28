@@ -13,9 +13,10 @@
         <div class="mb-5"><x-ui.alert type="danger">{{ $errors->first() }}</x-ui.alert></div>
     @endif
 
-    <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+    <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
         <x-ui.card><div class="text-sm text-slate-500">{{ __('operations.reorder.out_of_stock') }}</div><div class="mt-2 text-2xl font-semibold text-slate-900 dark:text-white">{{ $summary['out_of_stock'] }}</div></x-ui.card>
         <x-ui.card><div class="text-sm text-slate-500">{{ __('operations.reorder.low') }}</div><div class="mt-2 text-2xl font-semibold text-slate-900 dark:text-white">{{ $summary['low'] }}</div></x-ui.card>
+        <x-ui.card><div class="text-sm text-slate-500">{{ __('operations.reorder.replenishing') }}</div><div class="mt-2 text-2xl font-semibold text-slate-900 dark:text-white">{{ $summary['replenishing'] }}</div></x-ui.card>
         <x-ui.card><div class="text-sm text-slate-500">{{ __('operations.reorder.ok') }}</div><div class="mt-2 text-2xl font-semibold text-slate-900 dark:text-white">{{ $summary['ok'] }}</div></x-ui.card>
         <x-ui.card><div class="text-sm text-slate-500">{{ __('operations.reorder.inactive') }}</div><div class="mt-2 text-2xl font-semibold text-slate-900 dark:text-white">{{ $summary['inactive'] }}</div></x-ui.card>
     </div>
@@ -73,7 +74,7 @@
             </x-ui.select>
             <x-ui.select name="status" :label="__('operations.reorder.status_filter')">
                 <option value="">{{ __('operations.reorder.all_statuses') }}</option>
-                @foreach(['out_of_stock','low','ok','inactive'] as $status)
+                @foreach(['out_of_stock','low','replenishing','ok','inactive'] as $status)
                     <option value="{{ $status }}" @selected(($filters['status'] ?? null) === $status)>{{ __('operations.reorder.'.$status) }}</option>
                 @endforeach
             </x-ui.select>
@@ -83,13 +84,27 @@
             </div>
         </form>
 
+        @can('inventory.manage')
+            @can('purchasing.manage')
+                <form id="replenishment-pr-form" method="POST" action="{{ route('inventory.reorder.requisition') }}" class="mb-4 flex flex-wrap items-end justify-end gap-3">
+                    @csrf
+                    <x-ui.input name="needed_by" type="date" :label="__('operations.reorder.needed_by')" />
+                    <x-ui.button type="submit" icon="shopping-cart">{{ __('operations.reorder.create_requisition') }}</x-ui.button>
+                </form>
+                <p class="-mt-2 mb-4 text-xs text-slate-500">{{ __('operations.reorder.requisition_help') }}</p>
+            @endcan
+        @endcan
+
         <div class="overflow-x-auto">
             <x-ui.table>
                 <x-slot:head>
                     <tr>
+                        @can('purchasing.manage')<x-ui.th></x-ui.th>@endcan
                         <x-ui.th>{{ __('operations.reorder.warehouse') }}</x-ui.th>
                         <x-ui.th>{{ __('operations.reorder.product') }}</x-ui.th>
                         <x-ui.th>{{ __('operations.reorder.current_stock') }}</x-ui.th>
+                        <x-ui.th>{{ __('operations.reorder.inbound_pipeline') }}</x-ui.th>
+                        <x-ui.th>{{ __('operations.reorder.projected_stock') }}</x-ui.th>
                         <x-ui.th>{{ __('operations.reorder.reorder_point') }}</x-ui.th>
                         <x-ui.th>{{ __('operations.reorder.target_stock') }}</x-ui.th>
                         <x-ui.th>{{ __('operations.reorder.suggested_quantity') }}</x-ui.th>
@@ -102,14 +117,23 @@
 
                 @forelse($rows as $row)
                     @php($rule = $row['rule'])
-                    @php($tone = match($row['status']) { 'out_of_stock' => 'danger', 'low' => 'warning', 'ok' => 'success', default => 'neutral' })
+                    @php($tone = match($row['status']) { 'out_of_stock' => 'danger', 'low' => 'warning', 'replenishing' => 'brand', 'ok' => 'success', default => 'neutral' })
                     <tr>
+                        @can('purchasing.manage')
+                            <x-ui.td>
+                                @if((float) $row['suggested_quantity'] > 0)
+                                    <input form="replenishment-pr-form" type="checkbox" name="rule_ids[]" value="{{ $rule->id }}" class="rounded border-slate-300">
+                                @endif
+                            </x-ui.td>
+                        @endcan
                         <x-ui.td>{{ $rule->warehouse?->name }}</x-ui.td>
                         <x-ui.td>
                             {{ $rule->product?->name }}
                             @if($rule->variant)<span class="text-slate-500">— {{ $rule->variant->name }}</span>@endif
                         </x-ui.td>
                         <x-ui.td>{{ $row['current_quantity'] }}</x-ui.td>
+                        <x-ui.td>{{ $row['pipeline_quantity'] }}</x-ui.td>
+                        <x-ui.td>{{ $row['projected_quantity'] }}</x-ui.td>
                         <x-ui.td>{{ $rule->reorder_point }}</x-ui.td>
                         <x-ui.td>{{ $rule->target_stock }}</x-ui.td>
                         <x-ui.td class="font-medium">{{ $row['suggested_quantity'] }}</x-ui.td>
@@ -137,7 +161,7 @@
                         @endcan
                     </tr>
                 @empty
-                    <tr><x-ui.td colspan="10">{{ __('operations.reorder.empty') }}</x-ui.td></tr>
+                    <tr><x-ui.td colspan="13">{{ __('operations.reorder.empty') }}</x-ui.td></tr>
                 @endforelse
             </x-ui.table>
         </div>

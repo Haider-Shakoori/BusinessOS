@@ -381,6 +381,9 @@ Route::middleware(['auth', 'auth.session', 'business-selected', 'module:inventor
     Route::post('/inventory/reorder', [InventoryReorderController::class, 'store'])
         ->name('inventory.reorder.store')
         ->middleware('permission:inventory.manage');
+    Route::post('/inventory/reorder/requisition', [InventoryReorderController::class, 'createRequisition'])
+        ->name('inventory.reorder.requisition')
+        ->middleware(['permission:inventory.manage', 'module:purchasing', 'permission:purchasing.manage']);
     Route::patch('/inventory/reorder/{inventoryReorderRule}/active', [InventoryReorderController::class, 'setActive'])
         ->name('inventory.reorder.active')
         ->middleware('permission:inventory.manage');

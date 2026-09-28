@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class PurchaseRequisitionItem extends Model
 {
     protected $fillable = [
+        'inventory_reorder_rule_id',
         'product_id',
         'product_variant_id',
         'description',
@@ -28,6 +29,11 @@ class PurchaseRequisitionItem extends Model
     public function requisition(): BelongsTo
     {
         return $this->belongsTo(PurchaseRequisition::class, 'purchase_requisition_id');
+    }
+
+    public function reorderRule(): BelongsTo
+    {
+        return $this->belongsTo(InventoryReorderRule::class, 'inventory_reorder_rule_id');
     }
 
     public function product(): BelongsTo

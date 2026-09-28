@@ -6,6 +6,9 @@ use App\Enums\ProductType;
 use App\Models\InventoryReorderRule;
 use App\Models\Product;
 use App\Models\ProductVariant;
+use App\Models\PurchaseOrderItem;
+use App\Models\PurchaseRequisition;
+use App\Models\PurchaseRequisitionItem;
 use App\Models\StockMovement;
 use App\Models\Warehouse;
 use App\Support\Decimal;
@@ -15,8 +18,10 @@ use RuntimeException;
 
 class InventoryReorderService
 {
-    public function __construct(private readonly InventoryValuationService $valuation)
-    {
+    public function __construct(
+        private readonly InventoryValuationService $valuation,
+        private readonly PurchaseRequisitionService $requisitions,
+    ) {
         //
     }
 
@@ -117,7 +122,7 @@ class InventoryReorderService
 
         $rows = $query->get()->map(fn (InventoryReorderRule $rule): array => $this->row($rule));
 
-        if ($status !== null && in_array($status, ['ok', 'low', 'out_of_stock', 'inactive'], true)) {
+        if ($status !== null && in_array($status, ['ok', 'low', 'out_of_stock', 'replenishing', 'inactive'], true)) {
             $rows = $rows->filter(fn (array $row): bool => $row['status'] === $status);
         }
 
@@ -145,9 +150,21 @@ class InventoryReorderService
 
         $current = $snapshot['quantity'];
         $planningCost = $this->planningCost($rule, $snapshot['average_unit_cost']);
+        $pipeline = $this->pipelineQuantity($rule);
+        $projected = Decimal::add($current, $pipeline);
+        $suggested = '0.0000';
+
+        if ($rule->is_active && Decimal::lte($current, (string) $rule->reorder_point)) {
+            $difference = Decimal::sub((string) $rule->target_stock, $projected);
+            $suggested = Decimal::gt($difference, '0') ? $difference : '0.0000';
+        }
 
         if (! $rule->is_active) {
             $status = 'inactive';
+        } elseif (Decimal::lte($current, (string) $rule->reorder_point)
+            && Decimal::gt($pipeline, '0')
+            && Decimal::isZero($suggested)) {
+            $status = 'replenishing';
         } elseif (Decimal::lte($current, '0')) {
             $status = 'out_of_stock';
         } elseif (Decimal::lte($current, (string) $rule->reorder_point)) {
@@ -156,22 +173,122 @@ class InventoryReorderService
             $status = 'ok';
         }
 
-        $suggested = '0.0000';
-
-        if (in_array($status, ['low', 'out_of_stock'], true)) {
-            $difference = Decimal::sub((string) $rule->target_stock, $current);
-            $suggested = Decimal::gt($difference, '0') ? $difference : '0.0000';
-        }
-
         return [
             'rule' => $rule,
             'current_quantity' => $current,
+            'pipeline_quantity' => $pipeline,
+            'projected_quantity' => $projected,
             'average_unit_cost' => $snapshot['average_unit_cost'],
             'planning_unit_cost' => $planningCost,
             'status' => $status,
             'suggested_quantity' => $suggested,
             'suggested_value' => Decimal::round(Decimal::mul($suggested, $planningCost)),
         ];
+    }
+
+    public function createRequisition(
+        array $ruleIds,
+        int $userId,
+        ?string $neededBy = null,
+    ): PurchaseRequisition {
+        $ids = collect($ruleIds)->map(fn ($id): int => (int) $id)->unique()->values();
+
+        return DB::transaction(function () use ($ids, $userId, $neededBy): PurchaseRequisition {
+            $rules = InventoryReorderRule::query()
+                ->with(['warehouse', 'product', 'variant'])
+                ->whereIn('id', $ids)
+                ->lockForUpdate()
+                ->get();
+
+            if ($rules->count() !== $ids->count()) {
+                throw new RuntimeException(__('operations.reorder.errors.invalid_selection'));
+            }
+
+            if ($rules->pluck('warehouse_id')->unique()->count() !== 1) {
+                throw new RuntimeException(__('operations.reorder.errors.same_warehouse'));
+            }
+
+            $items = [];
+
+            foreach ($rules as $rule) {
+                $row = $this->row($rule);
+
+                if (! $rule->is_active || ! Decimal::gt($row['suggested_quantity'], '0')) {
+                    continue;
+                }
+
+                $items[] = [
+                    'inventory_reorder_rule_id' => $rule->id,
+                    'product_id' => $rule->product_id,
+                    'product_variant_id' => $rule->product_variant_id,
+                    'description' => __('operations.reorder.requisition_line_description', [
+                        'warehouse' => $rule->warehouse?->name ?? '',
+                    ]),
+                    'quantity' => $row['suggested_quantity'],
+                    'estimated_unit_cost' => $row['planning_unit_cost'],
+                ];
+            }
+
+            if ($items === []) {
+                throw new RuntimeException(__('operations.reorder.errors.no_replenishment'));
+            }
+
+            $warehouse = $rules->first()->warehouse;
+
+            return $this->requisitions->create([
+                'warehouse_id' => $warehouse?->id,
+                'request_date' => now()->toDateString(),
+                'needed_by' => $neededBy,
+                'purpose' => __('operations.reorder.requisition_purpose', [
+                    'warehouse' => $warehouse?->name ?? '',
+                ]),
+                'items' => $items,
+            ], $userId);
+        });
+    }
+
+    public function pipelineQuantity(InventoryReorderRule $rule): string
+    {
+        $prQuantity = PurchaseRequisitionItem::query()
+            ->where('inventory_reorder_rule_id', $rule->id)
+            ->whereHas('requisition', function ($query) use ($rule): void {
+                $query->where('warehouse_id', $rule->warehouse_id)
+                    ->whereIn('status', ['draft', 'submitted', 'approved'])
+                    ->whereDoesntHave('purchaseOrders');
+            })
+            ->sum('quantity');
+
+        $poItems = PurchaseOrderItem::query()
+            ->withSum('goodsReceiptItems as received_quantity', 'quantity')
+            ->where('product_id', $rule->product_id)
+            ->when(
+                $rule->product_variant_id === null,
+                fn ($query) => $query->whereNull('product_variant_id'),
+                fn ($query) => $query->where('product_variant_id', $rule->product_variant_id),
+            )
+            ->whereHas('purchaseOrder', function ($query) use ($rule): void {
+                $query->whereIn('status', ['ordered', 'partially_received'])
+                    ->whereHas('requisition', function ($requisition) use ($rule): void {
+                        $requisition->where('warehouse_id', $rule->warehouse_id)
+                            ->whereHas('items', fn ($items) => $items->where('inventory_reorder_rule_id', $rule->id));
+                    });
+            })
+            ->get();
+
+        $poQuantity = '0.0000';
+
+        foreach ($poItems as $item) {
+            $remaining = Decimal::sub(
+                (string) $item->quantity,
+                (string) ($item->received_quantity ?? '0'),
+            );
+
+            if (Decimal::gt($remaining, '0')) {
+                $poQuantity = Decimal::add($poQuantity, $remaining);
+            }
+        }
+
+        return Decimal::add((string) $prQuantity, $poQuantity);
     }
 
     private function planningCost(InventoryReorderRule $rule, string $averageUnitCost): string

@@ -7,7 +7,10 @@ use App\Models\BusinessModule;
 use App\Models\InventoryReorderRule;
 use App\Models\Product;
 use App\Models\ProductVariant;
+use App\Models\PurchaseOrder;
+use App\Models\PurchaseRequisition;
 use App\Models\StockMovement;
+use App\Models\Supplier;
 use App\Models\User;
 use App\Models\Warehouse;
 use App\Services\InventoryReorderService;
@@ -44,7 +47,7 @@ class InventoryReorderPlanningTest extends TestCase
         $membership = $user->memberships()->create(['business_id' => $business->id]);
         $membership->assignRole($roles['owner']);
 
-        foreach (['dashboard', 'settings', 'products', 'inventory'] as $module) {
+        foreach (['dashboard', 'settings', 'products', 'inventory', 'purchasing'] as $module) {
             BusinessModule::updateOrCreate(
                 ['business_id' => $business->id, 'module_key' => $module],
                 ['enabled' => true],
@@ -77,6 +80,8 @@ class InventoryReorderPlanningTest extends TestCase
     public function test_reorder_schema_and_workspace_are_available(): void
     {
         $this->assertTrue(Schema::hasTable('inventory_reorder_rules'));
+        $this->assertTrue(Schema::hasColumn('purchase_requisitions', 'warehouse_id'));
+        $this->assertTrue(Schema::hasColumn('purchase_requisition_items', 'inventory_reorder_rule_id'));
 
         $this->owner();
 
@@ -258,6 +263,159 @@ class InventoryReorderPlanningTest extends TestCase
         ])->assertSessionHasErrors('target_stock');
 
         $this->assertDatabaseCount('inventory_reorder_rules', 0);
+    }
+
+    public function test_shortage_creates_warehouse_requisition_and_prevents_duplicate_replenishment(): void
+    {
+        $this->owner();
+        $warehouse = Warehouse::create(['code' => 'PR', 'name' => 'PR Warehouse', 'is_active' => true]);
+        $product = $this->product('PR Product', 'PR-1');
+
+        StockMovement::create([
+            'warehouse_id' => $warehouse->id,
+            'product_id' => $product->id,
+            'type' => 'opening',
+            'quantity' => '2.0000',
+            'unit_cost' => '10.0000',
+            'occurred_at' => now(),
+        ]);
+
+        $rule = app(InventoryReorderService::class)->saveRule(
+            $warehouse,
+            $product,
+            null,
+            '5.0000',
+            '10.0000',
+        );
+
+        $this->post(route('inventory.reorder.requisition'), [
+            'rule_ids' => [$rule->id],
+            'needed_by' => '2026-10-02',
+        ])->assertRedirect(route('purchasing.requisitions.index'))
+            ->assertSessionHasNoErrors();
+
+        $requisition = PurchaseRequisition::with('items')->firstOrFail();
+        $this->assertSame($warehouse->id, $requisition->warehouse_id);
+        $this->assertSame('8.0000', $requisition->items->first()->quantity);
+        $this->assertSame('10.0000', $requisition->items->first()->estimated_unit_cost);
+        $this->assertSame($rule->id, $requisition->items->first()->inventory_reorder_rule_id);
+
+        $row = app(InventoryReorderService::class)->row($rule->fresh());
+        $this->assertSame('8.0000', $row['pipeline_quantity']);
+        $this->assertSame('10.0000', $row['projected_quantity']);
+        $this->assertSame('0.0000', $row['suggested_quantity']);
+        $this->assertSame('replenishing', $row['status']);
+
+        $this->post(route('inventory.reorder.requisition'), [
+            'rule_ids' => [$rule->id],
+        ])->assertSessionHasErrors('reorder');
+
+        $this->assertSame(1, PurchaseRequisition::count());
+    }
+
+    public function test_partial_and_final_po_receipts_update_replenishment_pipeline(): void
+    {
+        $this->owner();
+        $warehouse = Warehouse::create(['code' => 'PIPE', 'name' => 'Pipeline Warehouse', 'is_active' => true]);
+        $product = $this->product('Pipeline Product', 'PIPE-1');
+
+        StockMovement::create([
+            'warehouse_id' => $warehouse->id,
+            'product_id' => $product->id,
+            'type' => 'opening',
+            'quantity' => '2.0000',
+            'unit_cost' => '10.0000',
+            'occurred_at' => now(),
+        ]);
+
+        $rule = app(InventoryReorderService::class)->saveRule(
+            $warehouse,
+            $product,
+            null,
+            '5.0000',
+            '10.0000',
+        );
+
+        $this->post(route('inventory.reorder.requisition'), [
+            'rule_ids' => [$rule->id],
+        ])->assertRedirect()->assertSessionHasNoErrors();
+
+        $requisition = PurchaseRequisition::firstOrFail();
+        $supplier = Supplier::create([
+            'code' => 'SUP-PIPE',
+            'name' => 'Pipeline Supplier',
+            'is_active' => true,
+        ]);
+
+        $order = PurchaseOrder::create([
+            'supplier_id' => $supplier->id,
+            'purchase_requisition_id' => $requisition->id,
+            'number' => 'PO-PIPE-1',
+            'status' => 'ordered',
+            'ap_recognition' => 'invoice',
+            'order_date' => '2026-09-28',
+            'expected_date' => '2026-10-02',
+            'subtotal' => '80.0000',
+            'total' => '80.0000',
+        ]);
+
+        $item = $order->items()->create([
+            'product_id' => $product->id,
+            'quantity' => '8.0000',
+            'unit_cost' => '10.0000',
+            'line_total' => '80.0000',
+        ]);
+
+        $beforeReceipt = app(InventoryReorderService::class)->row($rule->fresh());
+        $this->assertSame('8.0000', $beforeReceipt['pipeline_quantity']);
+        $this->assertSame('replenishing', $beforeReceipt['status']);
+
+        $wrongWarehouse = Warehouse::create([
+            'code' => 'WRONG',
+            'name' => 'Wrong Warehouse',
+            'is_active' => true,
+        ]);
+
+        $this->post(route('purchasing.orders.receive', $order), [
+            'warehouse_id' => $wrongWarehouse->id,
+            'receipt_date' => '2026-09-29',
+            'items' => [
+                ['purchase_order_item_id' => $item->id, 'quantity' => '3.0000'],
+            ],
+        ])->assertSessionHasErrors('warehouse_id');
+
+        $this->assertSame('ordered', $order->fresh()->status);
+        $this->assertSame(2.0, (float) StockMovement::where('product_id', $product->id)->sum('quantity'));
+
+        $this->post(route('purchasing.orders.receive', $order), [
+            'warehouse_id' => $warehouse->id,
+            'receipt_date' => '2026-09-29',
+            'items' => [
+                ['purchase_order_item_id' => $item->id, 'quantity' => '3.0000'],
+            ],
+        ])->assertRedirect()->assertSessionHasNoErrors();
+
+        $afterPartial = app(InventoryReorderService::class)->row($rule->fresh());
+        $this->assertSame('5.0000', $afterPartial['current_quantity']);
+        $this->assertSame('5.0000', $afterPartial['pipeline_quantity']);
+        $this->assertSame('10.0000', $afterPartial['projected_quantity']);
+        $this->assertSame('0.0000', $afterPartial['suggested_quantity']);
+        $this->assertSame('replenishing', $afterPartial['status']);
+
+        $this->post(route('purchasing.orders.receive', $order->fresh()), [
+            'warehouse_id' => $warehouse->id,
+            'receipt_date' => '2026-09-30',
+            'items' => [
+                ['purchase_order_item_id' => $item->id, 'quantity' => '5.0000'],
+            ],
+        ])->assertRedirect()->assertSessionHasNoErrors();
+
+        $afterComplete = app(InventoryReorderService::class)->row($rule->fresh());
+        $this->assertSame('10.0000', $afterComplete['current_quantity']);
+        $this->assertSame('0.0000', $afterComplete['pipeline_quantity']);
+        $this->assertSame('10.0000', $afterComplete['projected_quantity']);
+        $this->assertSame('0.0000', $afterComplete['suggested_quantity']);
+        $this->assertSame('ok', $afterComplete['status']);
     }
 
     public function test_cross_business_rule_is_not_accessible(): void

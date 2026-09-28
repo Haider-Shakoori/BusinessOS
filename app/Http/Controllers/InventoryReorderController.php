@@ -26,7 +26,7 @@ class InventoryReorderController extends Controller
         $search = $request->filled('q') ? (string) $request->input('q') : null;
 
         $baseRows = $service->overview($warehouseId, null, $search);
-        $rows = $status !== null && in_array($status, ['ok', 'low', 'out_of_stock', 'inactive'], true)
+        $rows = $status !== null && in_array($status, ['ok', 'low', 'out_of_stock', 'replenishing', 'inactive'], true)
             ? $baseRows->where('status', $status)->values()
             : $baseRows;
 
@@ -41,6 +41,7 @@ class InventoryReorderController extends Controller
             'summary' => [
                 'out_of_stock' => $baseRows->where('status', 'out_of_stock')->count(),
                 'low' => $baseRows->where('status', 'low')->count(),
+                'replenishing' => $baseRows->where('status', 'replenishing')->count(),
                 'ok' => $baseRows->where('status', 'ok')->count(),
                 'inactive' => $baseRows->where('status', 'inactive')->count(),
             ],
@@ -98,6 +99,39 @@ class InventoryReorderController extends Controller
         }
 
         return back()->with('status', __('operations.reorder.messages.saved'));
+    }
+
+    public function createRequisition(
+        Request $request,
+        BusinessContext $context,
+        InventoryReorderService $service,
+    ): RedirectResponse {
+        $data = $request->validate([
+            'rule_ids' => ['required', 'array', 'min:1', 'max:100'],
+            'rule_ids.*' => [
+                'required',
+                'integer',
+                'distinct',
+                Rule::exists('inventory_reorder_rules', 'id')->where('business_id', $context->currentId()),
+            ],
+            'needed_by' => ['nullable', 'date', 'after_or_equal:today'],
+        ]);
+
+        try {
+            $requisition = $service->createRequisition(
+                $data['rule_ids'],
+                (int) $request->user()->id,
+                $data['needed_by'] ?? null,
+            );
+        } catch (RuntimeException $exception) {
+            return back()->withErrors(['reorder' => $exception->getMessage()])->withInput();
+        }
+
+        return redirect()
+            ->route('purchasing.requisitions.index')
+            ->with('status', __('operations.reorder.messages.requisition_created', [
+                'number' => $requisition->number,
+            ]));
     }
 
     public function setActive(

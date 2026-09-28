@@ -12,6 +12,7 @@ class PurchaseRequisition extends Model
     use BelongsToBusiness;
 
     protected $fillable = [
+        'warehouse_id',
         'number',
         'status',
         'request_date',
@@ -39,9 +40,19 @@ class PurchaseRequisition extends Model
         ];
     }
 
+    public function warehouse(): BelongsTo
+    {
+        return $this->belongsTo(Warehouse::class);
+    }
+
     public function items(): HasMany
     {
         return $this->hasMany(PurchaseRequisitionItem::class);
+    }
+
+    public function purchaseOrders(): HasMany
+    {
+        return $this->hasMany(PurchaseOrder::class);
     }
 
     public function rfqs(): HasMany

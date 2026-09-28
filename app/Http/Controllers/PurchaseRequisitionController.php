@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use App\Models\PurchaseRequisition;
+use App\Models\Warehouse;
 use App\Services\BusinessContext;
 use App\Services\PurchaseRequisitionService;
 use Illuminate\Http\RedirectResponse;
@@ -16,12 +17,13 @@ class PurchaseRequisitionController extends Controller
     public function index(): View
     {
         return view('purchasing.requisitions', [
+            'warehouses' => Warehouse::query()->where('is_active', true)->orderBy('name')->get(),
             'products' => Product::query()
                 ->with(['variants' => fn ($query) => $query->where('is_active', true)->orderBy('name')])
                 ->orderBy('name')
                 ->get(),
             'requisitions' => PurchaseRequisition::query()
-                ->with(['requester', 'approver', 'rejector', 'items.product', 'items.variant'])
+                ->with(['warehouse', 'requester', 'approver', 'rejector', 'items.product', 'items.variant', 'items.reorderRule'])
                 ->latest('request_date')
                 ->latest('id')
                 ->limit(100)
@@ -32,6 +34,10 @@ class PurchaseRequisitionController extends Controller
     public function store(Request $request, BusinessContext $context, PurchaseRequisitionService $service): RedirectResponse
     {
         $data = $request->validate([
+            'warehouse_id' => [
+                'nullable',
+                Rule::exists('warehouses', 'id')->where('business_id', $context->currentId()),
+            ],
             'request_date' => ['required', 'date'],
             'needed_by' => ['nullable', 'date', 'after_or_equal:request_date'],
             'purpose' => ['nullable', 'string', 'max:2000'],
