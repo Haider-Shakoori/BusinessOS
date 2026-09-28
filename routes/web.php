@@ -22,6 +22,7 @@ use App\Http\Controllers\HrPayrollController;
 use App\Http\Controllers\ImportController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\InventoryCountController;
+use App\Http\Controllers\InventoryReorderController;
 use App\Http\Controllers\InventoryReturnController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\LandedCostController;
@@ -373,6 +374,18 @@ Route::middleware(['auth', 'auth.session', 'business-selected', 'module:inventor
         ->middleware('permission:inventory.manage');
     Route::post('/inventory/counts/{inventoryCount}/post', [InventoryCountController::class, 'post'])
         ->name('inventory.counts.post')
+        ->middleware('permission:inventory.manage');
+    Route::get('/inventory/reorder', [InventoryReorderController::class, 'index'])
+        ->name('inventory.reorder.index')
+        ->middleware('permission:inventory.view');
+    Route::post('/inventory/reorder', [InventoryReorderController::class, 'store'])
+        ->name('inventory.reorder.store')
+        ->middleware('permission:inventory.manage');
+    Route::patch('/inventory/reorder/{inventoryReorderRule}/active', [InventoryReorderController::class, 'setActive'])
+        ->name('inventory.reorder.active')
+        ->middleware('permission:inventory.manage');
+    Route::delete('/inventory/reorder/{inventoryReorderRule}', [InventoryReorderController::class, 'destroy'])
+        ->name('inventory.reorder.destroy')
         ->middleware('permission:inventory.manage');
     Route::get('/inventory/transfers', [WarehouseTransferController::class, 'index'])
         ->name('inventory.transfers.index')
