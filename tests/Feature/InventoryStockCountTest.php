@@ -50,11 +50,17 @@ class InventoryStockCountTest extends TestCase
             );
         }
 
+        $this->actIn($user, $business);
+
+        return [$user, $business];
+    }
+
+    private function actIn(User $user, Business $business): void
+    {
+        $this->flushSession();
         $this->actingAs($user);
         session([config('business.context.session_key') => $business->id]);
         $this->app->forgetScopedInstances();
-
-        return [$user, $business];
     }
 
     private function product(string $name, string $sku): Product
@@ -256,15 +262,11 @@ class InventoryStockCountTest extends TestCase
         $count = InventoryCount::firstOrFail();
 
         [$ownerB, $businessB] = $this->owner('Business B');
-        $this->actingAs($ownerB);
-        session([config('business.context.session_key') => $businessB->id]);
-        $this->app->forgetScopedInstances();
+        $this->actIn($ownerB, $businessB);
 
         $this->get("/inventory/counts/{$count->id}")->assertNotFound();
 
-        $this->actingAs($ownerA);
-        session([config('business.context.session_key') => $businessA->id]);
-        $this->app->forgetScopedInstances();
+        $this->actIn($ownerA, $businessA);
 
         $this->get("/inventory/counts/{$count->id}")->assertOk();
     }
