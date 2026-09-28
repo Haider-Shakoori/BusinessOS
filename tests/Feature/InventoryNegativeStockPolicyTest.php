@@ -15,6 +15,7 @@ use App\Models\StockMovement;
 use App\Models\Supplier;
 use App\Models\User;
 use App\Models\Warehouse;
+use App\Models\WarehouseTransfer;
 use App\Services\BusinessSettings;
 use Database\Seeders\PermissionSeeder;
 use Illuminate\Support\Facades\DB;
@@ -227,7 +228,7 @@ class InventoryNegativeStockPolicyTest extends TestCase
             'quantity' => '2.0000',
         ])->assertRedirect();
 
-        $transfer = \App\Models\WarehouseTransfer::with('items')->firstOrFail();
+        $transfer = WarehouseTransfer::with('items')->firstOrFail();
 
         $this->post(route('inventory.transfers.dispatch', $transfer))
             ->assertSessionHasErrors('transfer');
