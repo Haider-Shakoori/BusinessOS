@@ -21,6 +21,7 @@ use App\Http\Controllers\GlobalSearchController;
 use App\Http\Controllers\HrPayrollController;
 use App\Http\Controllers\ImportController;
 use App\Http\Controllers\InventoryController;
+use App\Http\Controllers\InventoryCountController;
 use App\Http\Controllers\InventoryReturnController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\LandedCostController;
@@ -351,6 +352,27 @@ Route::middleware(['auth', 'auth.session', 'business-selected', 'module:inventor
         ->middleware('permission:inventory.manage');
     Route::post('/inventory/movements', [InventoryController::class, 'storeMovement'])
         ->name('inventory.movements.store')
+        ->middleware('permission:inventory.manage');
+    Route::get('/inventory/counts', [InventoryCountController::class, 'index'])
+        ->name('inventory.counts.index')
+        ->middleware('permission:inventory.view');
+    Route::post('/inventory/counts', [InventoryCountController::class, 'store'])
+        ->name('inventory.counts.store')
+        ->middleware('permission:inventory.manage');
+    Route::get('/inventory/counts/{inventoryCount}', [InventoryCountController::class, 'show'])
+        ->name('inventory.counts.show')
+        ->middleware('permission:inventory.view');
+    Route::post('/inventory/counts/{inventoryCount}/items', [InventoryCountController::class, 'addItem'])
+        ->name('inventory.counts.items.store')
+        ->middleware('permission:inventory.manage');
+    Route::patch('/inventory/counts/{inventoryCount}/items/{inventoryCountItem}', [InventoryCountController::class, 'updateItem'])
+        ->name('inventory.counts.items.update')
+        ->middleware('permission:inventory.manage');
+    Route::post('/inventory/counts/{inventoryCount}/submit', [InventoryCountController::class, 'submit'])
+        ->name('inventory.counts.submit')
+        ->middleware('permission:inventory.manage');
+    Route::post('/inventory/counts/{inventoryCount}/post', [InventoryCountController::class, 'post'])
+        ->name('inventory.counts.post')
         ->middleware('permission:inventory.manage');
     Route::get('/inventory/transfers', [WarehouseTransferController::class, 'index'])
         ->name('inventory.transfers.index')

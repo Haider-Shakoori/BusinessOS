@@ -32,6 +32,7 @@ return [
         'payroll_run' => 'PRL',
         'warehouse_transfer' => 'TRF',
         'inventory_return' => 'RET',
+        'inventory_count' => 'STK',
         'goods_receipt' => 'GRN',
         'landed_cost' => 'LCT',
         'supplier_invoice' => 'SINV',
