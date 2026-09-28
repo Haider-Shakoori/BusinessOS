@@ -160,6 +160,54 @@ class CoreOperationalModulesTest extends TestCase
         $this->assertSame(1, GoodsReceipt::query()->where('purchase_order_id', $order->id)->count());
     }
 
+    public function test_manual_stock_issue_uses_average_cost_and_cannot_create_negative_stock(): void
+    {
+        $user = $this->user();
+        $business = $this->business($user);
+        $this->actIn($user, $business);
+
+        $warehouse = Warehouse::create(['code' => 'COST', 'name' => 'Cost Warehouse', 'is_active' => true]);
+        $product = $this->product('Costed Product', 'COST-001');
+
+        StockMovement::create([
+            'warehouse_id' => $warehouse->id,
+            'product_id' => $product->id,
+            'type' => 'opening',
+            'quantity' => '2.0000',
+            'unit_cost' => '10.0000',
+            'occurred_at' => now()->subMinute(),
+        ]);
+        StockMovement::create([
+            'warehouse_id' => $warehouse->id,
+            'product_id' => $product->id,
+            'type' => 'purchase',
+            'quantity' => '2.0000',
+            'unit_cost' => '20.0000',
+            'occurred_at' => now(),
+        ]);
+
+        $this->post('/inventory/movements', [
+            'warehouse_id' => $warehouse->id,
+            'product_id' => $product->id,
+            'type' => 'adjustment',
+            'quantity' => '-1.0000',
+        ])->assertRedirect()->assertSessionHasNoErrors();
+
+        $issue = StockMovement::query()->where('quantity', '<', 0)->firstOrFail();
+        $this->assertSame('15.0000', $issue->unit_cost);
+        $this->assertSame(3.0, (float) StockMovement::query()->sum('quantity'));
+
+        $this->post('/inventory/movements', [
+            'warehouse_id' => $warehouse->id,
+            'product_id' => $product->id,
+            'type' => 'adjustment',
+            'quantity' => '-4.0000',
+        ])->assertSessionHasErrors('quantity');
+
+        $this->assertSame(3.0, (float) StockMovement::query()->sum('quantity'));
+        $this->assertSame(1, StockMovement::query()->where('quantity', '<', 0)->count());
+    }
+
     public function test_accounting_posts_balanced_double_entry(): void
     {
         $user = $this->user();

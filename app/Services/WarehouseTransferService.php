@@ -14,8 +14,10 @@ use RuntimeException;
 
 class WarehouseTransferService
 {
-    public function __construct(private readonly DocumentNumberService $numbers)
-    {
+    public function __construct(
+        private readonly DocumentNumberService $numbers,
+        private readonly InventoryValuationService $valuation,
+    ) {
         //
     }
 
@@ -72,15 +74,12 @@ class WarehouseTransferService
             }
 
             foreach ($locked->items as $item) {
-                $stockQuery = StockMovement::query()
-                    ->where('warehouse_id', $locked->source_warehouse_id)
-                    ->where('product_id', $item->product_id);
-
-                $item->product_variant_id === null
-                    ? $stockQuery->whereNull('product_variant_id')
-                    : $stockQuery->where('product_variant_id', $item->product_variant_id);
-
-                $available = (float) $stockQuery->sum('quantity');
+                $valuation = $this->valuation->snapshot(
+                    $locked->source_warehouse_id,
+                    $item->product_id,
+                    $item->product_variant_id,
+                );
+                $available = (float) $valuation['quantity'];
 
                 if ($available + 0.00001 < (float) $item->quantity) {
                     throw new RuntimeException(__('operations.transfers.errors.insufficient_stock', [
@@ -89,20 +88,7 @@ class WarehouseTransferService
                     ]));
                 }
 
-                $costQuery = StockMovement::query()
-                    ->where('warehouse_id', $locked->source_warehouse_id)
-                    ->where('product_id', $item->product_id);
-
-                $item->product_variant_id === null
-                    ? $costQuery->whereNull('product_variant_id')
-                    : $costQuery->where('product_variant_id', $item->product_variant_id);
-
-                $unitCost = $costQuery
-                    ->whereNotNull('unit_cost')
-                    ->where('unit_cost', '>', 0)
-                    ->latest('occurred_at')
-                    ->latest('id')
-                    ->value('unit_cost');
+                $unitCost = $valuation['average_unit_cost'];
 
                 $item->update(['unit_cost' => $unitCost]);
 

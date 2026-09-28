@@ -131,6 +131,56 @@ class InventoryTransfersReturnsTest extends TestCase
         $this->assertSame(1, StockMovement::where('type', 'transfer_in')->count());
     }
 
+    public function test_transfer_uses_weighted_average_cost_for_dispatch_and_receipt(): void
+    {
+        $this->owner();
+
+        $source = Warehouse::create(['code' => 'AVG-SRC', 'name' => 'Average Source', 'is_active' => true]);
+        $destination = Warehouse::create(['code' => 'AVG-DST', 'name' => 'Average Destination', 'is_active' => true]);
+        $product = $this->product('Average Cost Product', 'AVG-COST');
+
+        StockMovement::create([
+            'warehouse_id' => $source->id,
+            'product_id' => $product->id,
+            'type' => 'opening',
+            'quantity' => '10.0000',
+            'unit_cost' => '10.0000',
+            'occurred_at' => now()->subMinute(),
+        ]);
+        StockMovement::create([
+            'warehouse_id' => $source->id,
+            'product_id' => $product->id,
+            'type' => 'purchase',
+            'quantity' => '10.0000',
+            'unit_cost' => '20.0000',
+            'occurred_at' => now(),
+        ]);
+
+        $this->post('/inventory/transfers', [
+            'source_warehouse_id' => $source->id,
+            'destination_warehouse_id' => $destination->id,
+            'product_id' => $product->id,
+            'quantity' => '4.0000',
+        ])->assertRedirect();
+
+        $transfer = WarehouseTransfer::with('items')->firstOrFail();
+        $this->post('/inventory/transfers/'.$transfer->id.'/dispatch')->assertRedirect();
+
+        $transfer->refresh()->load('items');
+        $this->assertSame('15.0000', $transfer->items->first()->unit_cost);
+        $this->assertSame(
+            '15.0000',
+            StockMovement::query()->where('type', 'transfer_out')->latest('id')->value('unit_cost'),
+        );
+
+        $this->post('/inventory/transfers/'.$transfer->id.'/receive')->assertRedirect();
+
+        $this->assertSame(
+            '15.0000',
+            StockMovement::query()->where('type', 'transfer_in')->latest('id')->value('unit_cost'),
+        );
+    }
+
     public function test_transfer_dispatch_refuses_insufficient_stock_atomically(): void
     {
         $this->owner();
