@@ -16,6 +16,7 @@ class WarehouseTransferService
 {
     public function __construct(
         private readonly DocumentNumberService $numbers,
+        private readonly BusinessSettings $settings,
         private readonly InventoryValuationService $valuation,
     ) {
         //
@@ -81,14 +82,19 @@ class WarehouseTransferService
                 );
                 $available = (float) $valuation['quantity'];
 
-                if ($available + 0.00001 < (float) $item->quantity) {
+                if (! (bool) $this->settings->get('inventory.allow_negative_stock', false)
+                    && $available + 0.00001 < (float) $item->quantity) {
                     throw new RuntimeException(__('operations.transfers.errors.insufficient_stock', [
                         'product' => $item->product?->name ?? (string) $item->product_id,
                         'available' => number_format($available, 4, '.', ''),
                     ]));
                 }
 
-                $unitCost = $valuation['average_unit_cost'];
+                $unitCost = $this->valuation->issueUnitCost(
+                    $locked->source_warehouse_id,
+                    $item->product_id,
+                    $item->product_variant_id,
+                );
 
                 $item->update(['unit_cost' => $unitCost]);
 

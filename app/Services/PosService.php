@@ -221,14 +221,19 @@ class PosService
                     );
                     $available = (float) $valuation['quantity'];
 
-                    if ($available + 0.00001 < $quantity) {
+                    if (! (bool) $this->settings->get('inventory.allow_negative_stock', false)
+                        && $available + 0.00001 < $quantity) {
                         throw new RuntimeException(__('pos.errors.insufficient_stock', [
                             'product' => $variant ? $product->name.' — '.$variant->name : $product->name,
                             'available' => number_format($available, 4, '.', ''),
                         ]));
                     }
 
-                    $unitCost = round((float) $valuation['average_unit_cost'], 4);
+                    $unitCost = round((float) $this->valuation->issueUnitCost(
+                        $lockedShift->register->warehouse_id,
+                        $product->id,
+                        $variant?->id,
+                    ), 4);
                 }
 
                 $lineCost = round($unitCost * $quantity, 4);

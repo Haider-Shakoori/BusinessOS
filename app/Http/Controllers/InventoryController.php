@@ -6,6 +6,7 @@ use App\Models\Product;
 use App\Models\StockMovement;
 use App\Models\Warehouse;
 use App\Services\BusinessContext;
+use App\Services\BusinessSettings;
 use App\Services\InventoryValuationService;
 use App\Services\ProductVariantService;
 use App\Support\Decimal;
@@ -62,6 +63,7 @@ class InventoryController extends Controller
     public function storeMovement(
         Request $request,
         BusinessContext $context,
+        BusinessSettings $settings,
         ProductVariantService $variants,
         InventoryValuationService $valuation,
     ): RedirectResponse {
@@ -94,7 +96,8 @@ class InventoryController extends Controller
             );
             $requested = Decimal::sub('0', Decimal::normalize((string) $data['quantity']));
 
-            if (Decimal::lt($snapshot['quantity'], $requested)) {
+            if (! (bool) $settings->get('inventory.allow_negative_stock', false)
+                && Decimal::lt($snapshot['quantity'], $requested)) {
                 return back()->withErrors([
                     'quantity' => __('operations.inventory.insufficient_stock', [
                         'available' => $snapshot['quantity'],
@@ -103,7 +106,12 @@ class InventoryController extends Controller
             }
 
             if (! array_key_exists('unit_cost', $data) || $data['unit_cost'] === null || $data['unit_cost'] === '') {
-                $data['unit_cost'] = $snapshot['average_unit_cost'];
+                $issueCost = $valuation->issueUnitCost(
+                    (int) $data['warehouse_id'],
+                    (int) $data['product_id'],
+                    $variant?->id,
+                );
+                $data['unit_cost'] = Decimal::gt($issueCost, '0') ? $issueCost : null;
             }
         }
 

@@ -23,6 +23,7 @@ class InventoryReturnService
     public function __construct(
         private readonly DocumentNumberService $numbers,
         private readonly AccountingPostingService $accounting,
+        private readonly BusinessSettings $settings,
         private readonly SupplierInvoiceService $supplierInvoices,
     ) {
         //
@@ -159,7 +160,8 @@ class InventoryReturnService
 
             $available = (float) $stockQuery->sum('quantity');
 
-            if ($available + 0.00001 < $quantity) {
+            if (! (bool) $this->settings->get('inventory.allow_negative_stock', false)
+                && $available + 0.00001 < $quantity) {
                 throw new RuntimeException(__('operations.returns.errors.insufficient_stock', [
                     'available' => number_format($available, 4, '.', ''),
                 ]));

@@ -16,9 +16,9 @@ return [
     | defaults. Reads resolve config default first, then a database override,
     | so a newly created business needs zero settings rows.
     |
-    | Scope: Batch 9 ships General (business profile) + Regional only. Tax,
-    | inventory, POS, accounting and SaaS settings arrive with their own
-    | modules — do not add keys for them here. The `numbering` group is
+    | Scope: settings are added here as their modules mature. The inventory
+    | group includes the per-business negative-stock policy, while numbering
+    | contains document prefix/padding overrides. The `numbering` group is
     | Batch 13: overrides for the document numbering prefixes and padding,
     | read by DocumentNumberService. The defaults live in config/numbering.php;
     | these definitions are sparse (default null) so a business that does not
@@ -58,6 +58,10 @@ return [
             'payroll_source' => ['default' => 'attendance', 'type' => 'string'],
             'auto_sync_minutes' => ['default' => 5, 'type' => 'integer'],
             'require_employee_mapping' => ['default' => true, 'type' => 'boolean'],
+        ],
+
+        'inventory' => [
+            'allow_negative_stock' => ['default' => false, 'type' => 'boolean'],
         ],
 
         'numbering' => [
