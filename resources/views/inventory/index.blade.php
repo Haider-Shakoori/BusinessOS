@@ -57,11 +57,23 @@
             <x-slot:header><h2 class="font-semibold text-slate-900 dark:text-white">{{ __('operations.inventory.balances') }}</h2></x-slot:header>
             <div class="overflow-x-auto">
                 <x-ui.table>
-                    <x-slot:head><tr><x-ui.th>{{ __('operations.inventory.product') }}</x-ui.th><x-ui.th>{{ __('products.variants.select') }}</x-ui.th><x-ui.th>{{ __('operations.inventory.warehouse') }}</x-ui.th><x-ui.th>{{ __('operations.inventory.quantity') }}</x-ui.th></tr></x-slot:head>
+                    <x-slot:head><tr><x-ui.th>{{ __('operations.inventory.product') }}</x-ui.th><x-ui.th>{{ __('products.variants.select') }}</x-ui.th><x-ui.th>{{ __('operations.inventory.warehouse') }}</x-ui.th><x-ui.th>{{ __('operations.inventory.quantity') }}</x-ui.th><x-ui.th>{{ __('operations.inventory.average_unit_cost') }}</x-ui.th><x-ui.th>{{ __('operations.inventory.stock_value') }}</x-ui.th></tr></x-slot:head>
                     @forelse($balances as $balance)
-                        <tr><x-ui.td>{{ $balance->product?->name }}</x-ui.td><x-ui.td>{{ $balance->variant?->name ?: '—' }}</x-ui.td><x-ui.td>{{ $balance->warehouse?->name }}</x-ui.td><x-ui.td>{{ $balance->quantity }}</x-ui.td></tr>
+                        <tr>
+                            <x-ui.td>{{ $balance->product?->name }}</x-ui.td>
+                            <x-ui.td>{{ $balance->variant?->name ?: '—' }}</x-ui.td>
+                            <x-ui.td>{{ $balance->warehouse?->name }}</x-ui.td>
+                            <x-ui.td>{{ $balance->quantity }}</x-ui.td>
+                            <x-ui.td>
+                                {{ $balance->average_unit_cost }}
+                                @unless($balance->valuation_complete)
+                                    <span class="ms-1 text-xs font-medium text-amber-600 dark:text-amber-400" title="{{ __('operations.inventory.cost_incomplete') }}">*</span>
+                                @endunless
+                            </x-ui.td>
+                            <x-ui.td>{{ $balance->stock_value }}</x-ui.td>
+                        </tr>
                     @empty
-                        <tr><x-ui.td colspan="5">{{ __('operations.inventory.no_data') }}</x-ui.td></tr>
+                        <tr><x-ui.td colspan="6">{{ __('operations.inventory.no_data') }}</x-ui.td></tr>
                     @endforelse
                 </x-ui.table>
             </div>
@@ -71,11 +83,11 @@
             <x-slot:header><h2 class="font-semibold text-slate-900 dark:text-white">{{ __('operations.inventory.movements') }}</h2></x-slot:header>
             <div class="overflow-x-auto">
                 <x-ui.table>
-                    <x-slot:head><tr><x-ui.th>{{ __('operations.inventory.product') }}</x-ui.th><x-ui.th>{{ __('products.variants.select') }}</x-ui.th><x-ui.th>{{ __('operations.inventory.type') }}</x-ui.th><x-ui.th>{{ __('operations.inventory.quantity') }}</x-ui.th><x-ui.th>{{ __('operations.inventory.occurred_at') }}</x-ui.th></tr></x-slot:head>
+                    <x-slot:head><tr><x-ui.th>{{ __('operations.inventory.product') }}</x-ui.th><x-ui.th>{{ __('products.variants.select') }}</x-ui.th><x-ui.th>{{ __('operations.inventory.type') }}</x-ui.th><x-ui.th>{{ __('operations.inventory.quantity') }}</x-ui.th><x-ui.th>{{ __('operations.inventory.unit_cost') }}</x-ui.th><x-ui.th>{{ __('operations.inventory.occurred_at') }}</x-ui.th></tr></x-slot:head>
                     @forelse($movements as $movement)
-                        <tr><x-ui.td>{{ $movement->product?->name }}</x-ui.td><x-ui.td>{{ $movement->variant?->name ?: '—' }}</x-ui.td><x-ui.td>{{ __('operations.inventory.'.$movement->type) }}</x-ui.td><x-ui.td>{{ $movement->quantity }}</x-ui.td><x-ui.td>{{ $movement->occurred_at?->format('Y-m-d H:i') }}</x-ui.td></tr>
+                        <tr><x-ui.td>{{ $movement->product?->name }}</x-ui.td><x-ui.td>{{ $movement->variant?->name ?: '—' }}</x-ui.td><x-ui.td>{{ __('operations.inventory.'.$movement->type) }}</x-ui.td><x-ui.td>{{ $movement->quantity }}</x-ui.td><x-ui.td>{{ $movement->unit_cost ?? '—' }}</x-ui.td><x-ui.td>{{ $movement->occurred_at?->format('Y-m-d H:i') }}</x-ui.td></tr>
                     @empty
-                        <tr><x-ui.td colspan="4">{{ __('operations.inventory.no_data') }}</x-ui.td></tr>
+                        <tr><x-ui.td colspan="6">{{ __('operations.inventory.no_data') }}</x-ui.td></tr>
                     @endforelse
                 </x-ui.table>
             </div>

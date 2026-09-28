@@ -22,6 +22,7 @@ class PosService
         private readonly DocumentNumberService $numbers,
         private readonly BusinessSettings $settings,
         private readonly ProductVariantService $variants,
+        private readonly InventoryValuationService $valuation,
     ) {
         //
     }
@@ -213,15 +214,12 @@ class PosService
                 $unitCost = 0.0;
 
                 if ($product->type === ProductType::Product) {
-                    $stockQuery = StockMovement::query()
-                        ->where('warehouse_id', $lockedShift->register->warehouse_id)
-                        ->where('product_id', $product->id);
-
-                    $variant === null
-                        ? $stockQuery->whereNull('product_variant_id')
-                        : $stockQuery->where('product_variant_id', $variant->id);
-
-                    $available = (float) $stockQuery->sum('quantity');
+                    $valuation = $this->valuation->snapshot(
+                        $lockedShift->register->warehouse_id,
+                        $product->id,
+                        $variant?->id,
+                    );
+                    $available = (float) $valuation['quantity'];
 
                     if ($available + 0.00001 < $quantity) {
                         throw new RuntimeException(__('pos.errors.insufficient_stock', [
@@ -230,22 +228,7 @@ class PosService
                         ]));
                     }
 
-                    $costQuery = StockMovement::query()
-                        ->where('warehouse_id', $lockedShift->register->warehouse_id)
-                        ->where('product_id', $product->id);
-
-                    $variant === null
-                        ? $costQuery->whereNull('product_variant_id')
-                        : $costQuery->where('product_variant_id', $variant->id);
-
-                    $latestCost = $costQuery
-                        ->whereNotNull('unit_cost')
-                        ->where('unit_cost', '>', 0)
-                        ->latest('occurred_at')
-                        ->latest('id')
-                        ->value('unit_cost');
-
-                    $unitCost = round((float) ($latestCost ?? 0), 4);
+                    $unitCost = round((float) $valuation['average_unit_cost'], 4);
                 }
 
                 $lineCost = round($unitCost * $quantity, 4);

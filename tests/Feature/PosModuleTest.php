@@ -13,6 +13,7 @@ use App\Models\Product;
 use App\Models\StockMovement;
 use App\Models\User;
 use App\Models\Warehouse;
+use App\Services\InventoryValuationService;
 use Database\Seeders\PermissionSeeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -167,6 +168,59 @@ class PosModuleTest extends TestCase
             ->assertOk()
             ->assertSee($sale->sale_number)
             ->assertSee('190.00');
+    }
+
+    public function test_checkout_uses_moving_weighted_average_cost_and_preserves_inventory_value(): void
+    {
+        $user = $this->user();
+        $business = $this->business($user);
+        [$warehouse, $register] = $this->setupRegister($user, $business);
+        $product = $this->product();
+
+        StockMovement::create([
+            'warehouse_id' => $warehouse->id,
+            'product_id' => $product->id,
+            'type' => 'opening',
+            'quantity' => '10.0000',
+            'unit_cost' => '10.0000',
+            'occurred_at' => now()->subMinute(),
+        ]);
+        StockMovement::create([
+            'warehouse_id' => $warehouse->id,
+            'product_id' => $product->id,
+            'type' => 'purchase',
+            'quantity' => '10.0000',
+            'unit_cost' => '20.0000',
+            'occurred_at' => now(),
+        ]);
+
+        $before = app(InventoryValuationService::class)->snapshot($warehouse->id, $product->id);
+        $this->assertSame('20.0000', $before['quantity']);
+        $this->assertSame('300.0000', $before['stock_value']);
+        $this->assertSame('15.0000', $before['average_unit_cost']);
+        $this->assertTrue($before['complete']);
+
+        $this->post('/pos/registers/'.$register->id.'/open-shift', ['opening_cash' => 0]);
+        $shift = PosShift::firstOrFail();
+
+        $this->post('/pos/shifts/'.$shift->id.'/checkout', [
+            'items' => json_encode([['product_id' => $product->id, 'quantity' => 2]]),
+            'payment_method' => 'cash',
+            'amount_tendered' => '500.0000',
+        ])->assertRedirect();
+
+        $sale = PosSale::with('items')->firstOrFail();
+        $this->assertSame('15.0000', $sale->items->first()->unit_cost);
+        $this->assertSame('30.0000', $sale->items->first()->cost_total);
+
+        $issue = StockMovement::query()->where('type', 'sale')->latest('id')->firstOrFail();
+        $this->assertSame('15.0000', $issue->unit_cost);
+
+        $after = app(InventoryValuationService::class)->snapshot($warehouse->id, $product->id);
+        $this->assertSame('18.0000', $after['quantity']);
+        $this->assertSame('270.0000', $after['stock_value']);
+        $this->assertSame('15.0000', $after['average_unit_cost']);
+        $this->assertTrue($after['complete']);
     }
 
     public function test_checkout_refuses_insufficient_stock_without_partial_writes(): void
