@@ -23,6 +23,7 @@ class PurchaseRequisitionService
     {
         return DB::transaction(function () use ($data, $userId): PurchaseRequisition {
             $requisition = PurchaseRequisition::create([
+                'warehouse_id' => $data['warehouse_id'] ?? null,
                 'number' => $this->numbers->next(DocumentType::PurchaseRequisition),
                 'status' => 'draft',
                 'request_date' => $data['request_date'],
@@ -54,6 +55,7 @@ class PurchaseRequisitionService
                 ));
 
                 $requisition->items()->create([
+                    'inventory_reorder_rule_id' => $item['inventory_reorder_rule_id'] ?? null,
                     'product_id' => $product->id,
                     'product_variant_id' => $variant?->id,
                     'description' => $item['description'] ?? null,
@@ -67,7 +69,7 @@ class PurchaseRequisitionService
 
             $requisition->update(['estimated_total' => $total]);
 
-            return $requisition->load(['items.product', 'items.variant', 'requester']);
+            return $requisition->load(['warehouse', 'items.product', 'items.variant', 'items.reorderRule', 'requester']);
         });
     }
 

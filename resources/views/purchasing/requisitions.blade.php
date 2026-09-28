@@ -24,7 +24,13 @@
 
         <form method="POST" action="{{ route('purchasing.requisitions.store') }}" class="space-y-5" x-data="{ rows: [0], next: 1 }">
             @csrf
-            <div class="grid gap-4 md:grid-cols-3">
+            <div class="grid gap-4 md:grid-cols-4">
+                <x-ui.select name="warehouse_id" :label="__('operations.purchasing.requisition_warehouse')">
+                    <option value="">{{ __('operations.purchasing.no_warehouse') }}</option>
+                    @foreach($warehouses as $warehouse)
+                        <option value="{{ $warehouse->id }}">{{ $warehouse->code }} — {{ $warehouse->name }}</option>
+                    @endforeach
+                </x-ui.select>
                 <x-ui.input name="request_date" type="date" :label="__('operations.purchasing.request_date')" :value="now()->toDateString()" required />
                 <x-ui.input name="needed_by" type="date" :label="__('operations.purchasing.needed_by')" />
                 <x-ui.input name="purpose" :label="__('operations.purchasing.purpose')" />
@@ -92,6 +98,7 @@
                     <tr>
                         <x-ui.th>{{ __('operations.purchasing.number') }}</x-ui.th>
                         <x-ui.th>{{ __('operations.purchasing.request_date') }}</x-ui.th>
+                        <x-ui.th>{{ __('operations.purchasing.requisition_warehouse') }}</x-ui.th>
                         <x-ui.th>{{ __('operations.purchasing.requested_by') }}</x-ui.th>
                         <x-ui.th>{{ __('operations.purchasing.items') }}</x-ui.th>
                         <x-ui.th>{{ __('operations.purchasing.estimated_total') }}</x-ui.th>
@@ -107,6 +114,7 @@
                             @if($requisition->purpose)<div class="text-xs text-slate-500">{{ $requisition->purpose }}</div>@endif
                         </x-ui.td>
                         <x-ui.td>{{ $requisition->request_date?->format('Y-m-d') }}</x-ui.td>
+                        <x-ui.td>{{ $requisition->warehouse?->name ?? '—' }}</x-ui.td>
                         <x-ui.td>{{ $requisition->requester?->name ?? '—' }}</x-ui.td>
                         <x-ui.td>
                             <div class="space-y-1 text-xs">
@@ -149,7 +157,7 @@
                         </x-ui.td>
                     </tr>
                 @empty
-                    <tr><x-ui.td colspan="7">{{ __('operations.purchasing.no_requisitions') }}</x-ui.td></tr>
+                    <tr><x-ui.td colspan="8">{{ __('operations.purchasing.no_requisitions') }}</x-ui.td></tr>
                 @endforelse
             </x-ui.table>
         </div>

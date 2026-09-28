@@ -31,13 +31,22 @@ class GoodsReceiptService
     ): GoodsReceipt {
         return DB::transaction(function () use ($purchaseOrder, $warehouseId, $submittedItems, $userId, $receiptDate, $notes): GoodsReceipt {
             $order = PurchaseOrder::query()
-                ->with('items')
+                ->with(['items', 'requisition.warehouse'])
                 ->lockForUpdate()
                 ->findOrFail($purchaseOrder->id);
 
             if (! in_array($order->status, ['draft', 'ordered', 'partially_received'], true)) {
                 throw ValidationException::withMessages([
                     'status' => 'This purchase order is not open for receiving.',
+                ]);
+            }
+
+            if ($order->requisition?->warehouse_id !== null
+                && (int) $order->requisition->warehouse_id !== $warehouseId) {
+                throw ValidationException::withMessages([
+                    'warehouse_id' => __('operations.purchasing.requisition_warehouse_mismatch', [
+                        'warehouse' => $order->requisition->warehouse?->name ?? '',
+                    ]),
                 ]);
             }
 
