@@ -19,6 +19,7 @@ class WarehouseTransferService
         private readonly DocumentNumberService $numbers,
         private readonly BusinessSettings $settings,
         private readonly InventoryValuationService $valuation,
+        private readonly InventoryAvailabilityService $availability,
     ) {
         //
     }
@@ -84,13 +85,15 @@ class WarehouseTransferService
             }
 
             foreach ($locked->items as $item) {
-                $valuation = $this->valuation->snapshot(
+                Product::query()->lockForUpdate()->findOrFail($item->product_id);
+
+                $availability = $this->availability->snapshot(
                     $locked->source_warehouse_id,
                     $item->product_id,
                     $item->product_variant_id,
                     $item->source_location_id,
                 );
-                $available = (float) $valuation['quantity'];
+                $available = (float) $availability['available'];
 
                 if (! (bool) $this->settings->get('inventory.allow_negative_stock', false)
                     && $available + 0.00001 < (float) $item->quantity) {

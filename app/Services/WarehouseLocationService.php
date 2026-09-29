@@ -3,6 +3,8 @@
 namespace App\Services;
 
 use App\Models\InventoryCount;
+use App\Models\InventoryReservation;
+use App\Models\PosRegister;
 use App\Models\StockMovement;
 use App\Models\Warehouse;
 use App\Models\WarehouseLocation;
@@ -258,6 +260,8 @@ class WarehouseLocationService
     private function isUsed(WarehouseLocation $location): bool
     {
         return StockMovement::query()->where('location_id', $location->id)->exists()
+            || PosRegister::query()->where('location_id', $location->id)->exists()
+            || InventoryReservation::query()->where('location_id', $location->id)->exists()
             || InventoryCount::query()->where('location_id', $location->id)->exists()
             || WarehouseTransferItem::query()
                 ->where(function ($query) use ($location): void {

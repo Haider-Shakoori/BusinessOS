@@ -15,3 +15,7 @@ Schedule::command('attendance:devices:check')
 Schedule::command('inventory:reorder-alerts')
     ->dailyAt('08:00')
     ->withoutOverlapping();
+
+Schedule::command('inventory:reservations-expire')
+    ->everyFiveMinutes()
+    ->withoutOverlapping();

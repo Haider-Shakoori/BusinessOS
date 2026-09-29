@@ -24,6 +24,7 @@ use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\InventoryCountController;
 use App\Http\Controllers\InventoryIntelligenceController;
 use App\Http\Controllers\InventoryReorderController;
+use App\Http\Controllers\InventoryReservationController;
 use App\Http\Controllers\InventoryReturnController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\LandedCostController;
@@ -389,6 +390,15 @@ Route::middleware(['auth', 'auth.session', 'business-selected', 'module:inventor
         ->middleware('permission:inventory.manage');
     Route::post('/inventory/movements', [InventoryController::class, 'storeMovement'])
         ->name('inventory.movements.store')
+        ->middleware('permission:inventory.manage');
+    Route::get('/inventory/reservations', [InventoryReservationController::class, 'index'])
+        ->name('inventory.reservations.index')
+        ->middleware('permission:inventory.view');
+    Route::post('/inventory/reservations', [InventoryReservationController::class, 'store'])
+        ->name('inventory.reservations.store')
+        ->middleware('permission:inventory.manage');
+    Route::post('/inventory/reservations/{inventoryReservation}/release', [InventoryReservationController::class, 'release'])
+        ->name('inventory.reservations.release')
         ->middleware('permission:inventory.manage');
     Route::get('/inventory/intelligence', [InventoryIntelligenceController::class, 'index'])
         ->name('inventory.intelligence.index')

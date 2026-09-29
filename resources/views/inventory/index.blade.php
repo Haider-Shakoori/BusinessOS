@@ -7,6 +7,7 @@
             <x-ui.button href="{{ route('inventory.intelligence.index') }}" variant="secondary">{{ __('operations.inventory_intelligence.title') }}</x-ui.button>
             <x-ui.button href="{{ route('inventory.warehouses.index') }}" variant="secondary">{{ __('operations.warehouses.title') }}</x-ui.button>
             <x-ui.button href="{{ route('inventory.locations.index') }}" variant="secondary">{{ __('operations.locations.title') }}</x-ui.button>
+            <x-ui.button href="{{ route('inventory.reservations.index') }}" variant="secondary">{{ __('operations.reservations.title') }}</x-ui.button>
             <x-ui.button href="{{ route('inventory.counts.index') }}" variant="secondary">{{ __('operations.stock_counts.title') }}</x-ui.button>
             <x-ui.button href="{{ route('inventory.reorder.index') }}" variant="secondary">{{ __('operations.reorder.title') }}</x-ui.button>
             <x-ui.button href="{{ route('inventory.transfers.index') }}" variant="secondary">{{ __('operations.transfers.title') }}</x-ui.button>
@@ -68,13 +69,15 @@
             <x-slot:header><h2 class="font-semibold text-slate-900 dark:text-white">{{ __('operations.inventory.balances') }}</h2></x-slot:header>
             <div class="overflow-x-auto">
                 <x-ui.table>
-                    <x-slot:head><tr><x-ui.th>{{ __('operations.inventory.product') }}</x-ui.th><x-ui.th>{{ __('products.variants.select') }}</x-ui.th><x-ui.th>{{ __('operations.inventory.warehouse') }}</x-ui.th><x-ui.th>{{ __('operations.inventory.quantity') }}</x-ui.th><x-ui.th>{{ __('operations.inventory.average_unit_cost') }}</x-ui.th><x-ui.th>{{ __('operations.inventory.stock_value') }}</x-ui.th></tr></x-slot:head>
+                    <x-slot:head><tr><x-ui.th>{{ __('operations.inventory.product') }}</x-ui.th><x-ui.th>{{ __('products.variants.select') }}</x-ui.th><x-ui.th>{{ __('operations.inventory.warehouse') }}</x-ui.th><x-ui.th>{{ __('operations.inventory.quantity') }}</x-ui.th><x-ui.th>{{ __('operations.reservations.reserved') }}</x-ui.th><x-ui.th>{{ __('operations.reservations.available') }}</x-ui.th><x-ui.th>{{ __('operations.inventory.average_unit_cost') }}</x-ui.th><x-ui.th>{{ __('operations.inventory.stock_value') }}</x-ui.th></tr></x-slot:head>
                     @forelse($balances as $balance)
                         <tr>
                             <x-ui.td>{{ $balance->product?->name }}</x-ui.td>
                             <x-ui.td>{{ $balance->variant?->name ?: '—' }}</x-ui.td>
                             <x-ui.td>{{ $balance->warehouse?->name }}</x-ui.td>
                             <x-ui.td>{{ $balance->quantity }}</x-ui.td>
+                            <x-ui.td>{{ $balance->reserved_quantity }}</x-ui.td>
+                            <x-ui.td>{{ $balance->available_quantity }}</x-ui.td>
                             <x-ui.td>
                                 {{ $balance->average_unit_cost }}
                                 @unless($balance->valuation_complete)
@@ -84,7 +87,7 @@
                             <x-ui.td>{{ $balance->stock_value }}</x-ui.td>
                         </tr>
                     @empty
-                        <tr><x-ui.td colspan="6">{{ __('operations.inventory.no_data') }}</x-ui.td></tr>
+                        <tr><x-ui.td colspan="8">{{ __('operations.inventory.no_data') }}</x-ui.td></tr>
                     @endforelse
                 </x-ui.table>
             </div>

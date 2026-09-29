@@ -103,6 +103,8 @@
                         <x-ui.th>{{ __('operations.reorder.warehouse') }}</x-ui.th>
                         <x-ui.th>{{ __('operations.reorder.product') }}</x-ui.th>
                         <x-ui.th>{{ __('operations.reorder.current_stock') }}</x-ui.th>
+                        <x-ui.th>{{ __('operations.reorder.reserved_stock') }}</x-ui.th>
+                        <x-ui.th>{{ __('operations.reorder.available_stock') }}</x-ui.th>
                         <x-ui.th>{{ __('operations.reorder.inbound_pipeline') }}</x-ui.th>
                         <x-ui.th>{{ __('operations.reorder.projected_stock') }}</x-ui.th>
                         <x-ui.th>{{ __('operations.reorder.reorder_point') }}</x-ui.th>
@@ -132,6 +134,8 @@
                             @if($rule->variant)<span class="text-slate-500">— {{ $rule->variant->name }}</span>@endif
                         </x-ui.td>
                         <x-ui.td>{{ $row['current_quantity'] }}</x-ui.td>
+                        <x-ui.td>{{ $row['reserved_quantity'] }}</x-ui.td>
+                        <x-ui.td>{{ $row['available_quantity'] }}</x-ui.td>
                         <x-ui.td>{{ $row['pipeline_quantity'] }}</x-ui.td>
                         <x-ui.td>{{ $row['projected_quantity'] }}</x-ui.td>
                         <x-ui.td>{{ $rule->reorder_point }}</x-ui.td>
@@ -161,7 +165,7 @@
                         @endcan
                     </tr>
                 @empty
-                    <tr><x-ui.td colspan="13">{{ __('operations.reorder.empty') }}</x-ui.td></tr>
+                    <tr><x-ui.td colspan="15">{{ __('operations.reorder.empty') }}</x-ui.td></tr>
                 @endforelse
             </x-ui.table>
         </div>

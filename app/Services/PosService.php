@@ -23,6 +23,7 @@ class PosService
         private readonly BusinessSettings $settings,
         private readonly ProductVariantService $variants,
         private readonly InventoryValuationService $valuation,
+        private readonly InventoryAvailabilityService $availability,
     ) {
         //
     }
@@ -214,12 +215,13 @@ class PosService
                 $unitCost = 0.0;
 
                 if ($product->type === ProductType::Product) {
-                    $valuation = $this->valuation->snapshot(
+                    $availability = $this->availability->snapshot(
                         $lockedShift->register->warehouse_id,
                         $product->id,
                         $variant?->id,
+                        $lockedShift->register->location_id,
                     );
-                    $available = (float) $valuation['quantity'];
+                    $available = (float) $availability['available'];
 
                     if (! (bool) $this->settings->get('inventory.allow_negative_stock', false)
                         && $available + 0.00001 < $quantity) {
@@ -322,6 +324,7 @@ class PosService
                 if ($product->type === ProductType::Product) {
                     StockMovement::create([
                         'warehouse_id' => $lockedShift->register->warehouse_id,
+                        'location_id' => $lockedShift->register->location_id,
                         'product_id' => $product->id,
                         'product_variant_id' => $variant?->id,
                         'type' => 'sale',
@@ -337,7 +340,7 @@ class PosService
 
             $this->postAccounting($sale, $netSales, $taxTotal, $costTotal, false);
 
-            return $sale->load(['items', 'register.warehouse', 'customer', 'cashier']);
+            return $sale->load(['items', 'register.warehouse', 'register.location', 'customer', 'cashier']);
         });
     }
 
@@ -371,6 +374,7 @@ class PosService
                 if ($product !== null && $product->type === ProductType::Product) {
                     StockMovement::create([
                         'warehouse_id' => $locked->register->warehouse_id,
+                        'location_id' => $locked->register->location_id,
                         'product_id' => $item->product_id,
                         'product_variant_id' => $item->product_variant_id,
                         'type' => 'adjustment',

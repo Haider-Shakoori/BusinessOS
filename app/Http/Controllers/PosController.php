@@ -7,10 +7,12 @@ use App\Models\PosRegister;
 use App\Models\PosSale;
 use App\Models\PosShift;
 use App\Models\Product;
-use App\Models\StockMovement;
 use App\Models\Warehouse;
+use App\Models\WarehouseLocation;
 use App\Services\BusinessContext;
+use App\Services\InventoryAvailabilityService;
 use App\Services\PosService;
+use App\Services\WarehouseLocationService;
 use App\Services\WarehouseService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -21,10 +23,10 @@ use RuntimeException;
 
 class PosController extends Controller
 {
-    public function index(Request $request): View
+    public function index(Request $request, InventoryAvailabilityService $availability): View
     {
         $registers = PosRegister::query()
-            ->with('warehouse')
+            ->with(['warehouse', 'location'])
             ->where('is_active', true)
             ->orderBy('name')
             ->get();
@@ -33,7 +35,7 @@ class PosController extends Controller
 
         if ($request->filled('register')) {
             $selectedRegister = PosRegister::query()
-                ->with('warehouse')
+                ->with(['warehouse', 'location'])
                 ->where('is_active', true)
                 ->find($request->integer('register'));
         }
@@ -61,14 +63,10 @@ class PosController extends Controller
                 ->orderBy('name')
                 ->get();
 
-            $stock = StockMovement::query()
-                ->where('warehouse_id', $selectedRegister->warehouse_id)
-                ->selectRaw('product_id, product_variant_id, SUM(quantity) as quantity')
-                ->groupBy('product_id', 'product_variant_id')
-                ->get()
-                ->mapWithKeys(fn ($row) => [
-                    $row->product_id.':'.($row->product_variant_id ?? 0) => (float) $row->quantity,
-                ]);
+            $stock = $availability->mapForLocation(
+                $selectedRegister->warehouse_id,
+                $selectedRegister->location_id,
+            );
         }
 
         return view('pos.index', [
@@ -79,6 +77,13 @@ class PosController extends Controller
             'products' => $products,
             'stock' => $stock,
             'warehouses' => Warehouse::query()->where('is_active', true)->orderByDesc('is_default')->orderBy('name')->get(),
+            'locations' => WarehouseLocation::query()
+                ->where('is_active', true)
+                ->with('warehouse')
+                ->orderBy('warehouse_id')
+                ->orderByDesc('is_default')
+                ->orderBy('code')
+                ->get(),
             'customers' => Customer::query()->orderBy('name')->get(),
             'recentSales' => PosSale::query()
                 ->with(['cashier', 'register'])
@@ -88,10 +93,17 @@ class PosController extends Controller
         ]);
     }
 
-    public function storeRegister(Request $request, BusinessContext $context, WarehouseService $warehouses): RedirectResponse
+    public function storeRegister(Request $request, BusinessContext $context, WarehouseService $warehouses, WarehouseLocationService $locations): RedirectResponse
     {
         $data = $request->validate([
             'warehouse_id' => ['nullable', Rule::exists('warehouses', 'id')->where('business_id', $context->currentId())->where('is_active', true)],
+            'location_id' => [
+                'nullable',
+                'integer',
+                Rule::exists('warehouse_locations', 'id')
+                    ->where('business_id', $context->currentId())
+                    ->where('is_active', true),
+            ],
             'code' => [
                 'required',
                 'string',
@@ -107,8 +119,18 @@ class PosController extends Controller
             $warehouseId = $warehouses->defaultOrCreate()->id;
         }
 
+        try {
+            $location = $locations->forMovement(
+                $warehouseId,
+                isset($data['location_id']) ? (int) $data['location_id'] : null,
+            );
+        } catch (RuntimeException $exception) {
+            return back()->withErrors(['location_id' => $exception->getMessage()])->withInput();
+        }
+
         $register = PosRegister::create([
             'warehouse_id' => $warehouseId,
+            'location_id' => $location->id,
             'code' => $data['code'],
             'name' => $data['name'],
             'is_active' => true,
