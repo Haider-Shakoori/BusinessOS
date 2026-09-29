@@ -6,6 +6,7 @@ use App\Models\StockMovement;
 use App\Models\Warehouse;
 use App\Models\WarehouseLocation;
 use App\Services\BusinessContext;
+use App\Services\InventoryAvailabilityService;
 use App\Services\WarehouseLocationService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -15,7 +16,7 @@ use RuntimeException;
 
 class WarehouseLocationController extends Controller
 {
-    public function index(Request $request, BusinessContext $context): View
+    public function index(Request $request, BusinessContext $context, InventoryAvailabilityService $availability): View
     {
         $filters = $request->validate([
             'warehouse_id' => [
@@ -37,16 +38,28 @@ class WarehouseLocationController extends Controller
             ->get();
 
         $balances = StockMovement::query()
-            ->selectRaw('location_id, product_id, product_variant_id, SUM(quantity) as quantity')
+            ->selectRaw('warehouse_id, location_id, product_id, product_variant_id, SUM(quantity) as quantity')
             ->with(['location.warehouse', 'product', 'variant'])
             ->whereNotNull('location_id')
             ->when($warehouseId !== null, fn ($query) => $query->where('warehouse_id', $warehouseId))
-            ->groupBy('location_id', 'product_id', 'product_variant_id')
+            ->groupBy('warehouse_id', 'location_id', 'product_id', 'product_variant_id')
             ->havingRaw('SUM(quantity) <> 0')
             ->orderBy('location_id')
             ->orderBy('product_id')
             ->limit(500)
             ->get();
+
+        $balances->each(function (StockMovement $balance) use ($availability): void {
+            $snapshot = $availability->snapshot(
+                (int) $balance->warehouse_id,
+                (int) $balance->product_id,
+                $balance->product_variant_id !== null ? (int) $balance->product_variant_id : null,
+                (int) $balance->location_id,
+            );
+
+            $balance->setAttribute('reserved_quantity', $snapshot['reserved']);
+            $balance->setAttribute('available_quantity', $snapshot['available']);
+        });
 
         return view('inventory.locations.index', [
             'warehouses' => Warehouse::query()

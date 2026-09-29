@@ -112,6 +112,14 @@
                                             <option value="{{ $warehouse->id }}">{{ $warehouse->code }} — {{ $warehouse->name }}</option>
                                         @endforeach
                                     </x-ui.select>
+                                    <div class="mt-4">
+                                        <x-ui.select name="location_id" :label="__('operations.locations.location')">
+                                            <option value="">{{ __('operations.stock_counts.default_location') }}</option>
+                                            @foreach($locations as $location)
+                                                <option value="{{ $location->id }}">{{ $location->warehouse?->code }} · {{ $location->code }} — {{ $location->name }}</option>
+                                            @endforeach
+                                        </x-ui.select>
+                                    </div>
                                 @else
                                     <div class="rounded-lg bg-brand-50 p-3 text-sm text-brand-800 dark:bg-brand-500/10 dark:text-brand-200">{{ __('pos.warehouse_auto') }}</div>
                                 @endif
@@ -141,7 +149,7 @@
                                     <x-ui.icon name="building-storefront" class="size-7" />
                                 </div>
                                 <h2 class="mt-4 text-xl font-bold text-slate-950 dark:text-white">{{ __('pos.open_shift') }}</h2>
-                                <p class="mt-2 text-sm text-slate-500 dark:text-slate-400">{{ $register->name }} · {{ $register->warehouse?->name }}</p>
+                                <p class="mt-2 text-sm text-slate-500 dark:text-slate-400">{{ $register->name }} · {{ $register->warehouse?->name }} / {{ $register->location?->code }}</p>
                             </div>
                             @can('pos.sell')
                                 <form method="POST" action="{{ route('pos.shifts.open', $register) }}" class="mx-auto mt-6 max-w-sm">
@@ -168,6 +176,12 @@
                                     <x-ui.select name="warehouse_id" :label="__('pos.warehouse')" required>
                                         @foreach($warehouses as $warehouse)
                                             <option value="{{ $warehouse->id }}">{{ $warehouse->name }}</option>
+                                        @endforeach
+                                    </x-ui.select>
+                                    <x-ui.select name="location_id" :label="__('operations.locations.location')">
+                                        <option value="">{{ __('operations.stock_counts.default_location') }}</option>
+                                        @foreach($locations as $location)
+                                            <option value="{{ $location->id }}">{{ $location->warehouse?->code }} · {{ $location->code }} — {{ $location->name }}</option>
                                         @endforeach
                                     </x-ui.select>
                                 @else

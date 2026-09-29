@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\GoodsReceipt;
 use App\Models\InventoryCount;
 use App\Models\InventoryReorderRule;
+use App\Models\InventoryReservation;
 use App\Models\InventoryReturn;
 use App\Models\PosRegister;
 use App\Models\PurchaseRequisition;
@@ -155,6 +156,7 @@ class WarehouseService
             || PosRegister::query()->where('warehouse_id', $warehouse->id)->exists()
             || GoodsReceipt::query()->where('warehouse_id', $warehouse->id)->exists()
             || InventoryCount::query()->where('warehouse_id', $warehouse->id)->exists()
+            || InventoryReservation::query()->where('warehouse_id', $warehouse->id)->exists()
             || InventoryReturn::query()->where('warehouse_id', $warehouse->id)->exists()
             || InventoryReorderRule::query()->where('warehouse_id', $warehouse->id)->exists()
             || PurchaseRequisition::query()->where('warehouse_id', $warehouse->id)->exists()

@@ -20,6 +20,7 @@ class InventoryReorderService
 {
     public function __construct(
         private readonly InventoryValuationService $valuation,
+        private readonly InventoryAvailabilityService $availability,
         private readonly PurchaseRequisitionService $requisitions,
     ) {
         //
@@ -149,25 +150,31 @@ class InventoryReorderService
         );
 
         $current = $snapshot['quantity'];
+        $reserved = $this->availability->reservedQuantity(
+            $rule->warehouse_id,
+            $rule->product_id,
+            $rule->product_variant_id,
+        );
+        $available = Decimal::min(Decimal::sub($current, $reserved), '0');
         $planningCost = $this->planningCost($rule, $snapshot['average_unit_cost']);
         $pipeline = $this->pipelineQuantity($rule);
-        $projected = Decimal::add($current, $pipeline);
+        $projected = Decimal::add($available, $pipeline);
         $suggested = '0.0000';
 
-        if ($rule->is_active && Decimal::lte($current, (string) $rule->reorder_point)) {
+        if ($rule->is_active && Decimal::lte($available, (string) $rule->reorder_point)) {
             $difference = Decimal::sub((string) $rule->target_stock, $projected);
             $suggested = Decimal::gt($difference, '0') ? $difference : '0.0000';
         }
 
         if (! $rule->is_active) {
             $status = 'inactive';
-        } elseif (Decimal::lte($current, (string) $rule->reorder_point)
+        } elseif (Decimal::lte($available, (string) $rule->reorder_point)
             && Decimal::gt($pipeline, '0')
             && Decimal::isZero($suggested)) {
             $status = 'replenishing';
-        } elseif (Decimal::lte($current, '0')) {
+        } elseif (Decimal::lte($available, '0')) {
             $status = 'out_of_stock';
-        } elseif (Decimal::lte($current, (string) $rule->reorder_point)) {
+        } elseif (Decimal::lte($available, (string) $rule->reorder_point)) {
             $status = 'low';
         } else {
             $status = 'ok';
@@ -176,6 +183,8 @@ class InventoryReorderService
         return [
             'rule' => $rule,
             'current_quantity' => $current,
+            'reserved_quantity' => $reserved,
+            'available_quantity' => $available,
             'pipeline_quantity' => $pipeline,
             'projected_quantity' => $projected,
             'average_unit_cost' => $snapshot['average_unit_cost'],

@@ -10,6 +10,7 @@ use App\Models\InventoryReturnItem;
 use App\Models\JournalEntry;
 use App\Models\PosSale;
 use App\Models\PosSaleItem;
+use App\Models\Product;
 use App\Models\PurchaseOrder;
 use App\Models\PurchaseOrderItem;
 use App\Models\StockMovement;
@@ -25,6 +26,7 @@ class InventoryReturnService
         private readonly AccountingPostingService $accounting,
         private readonly BusinessSettings $settings,
         private readonly SupplierInvoiceService $supplierInvoices,
+        private readonly InventoryAvailabilityService $availability,
     ) {
         //
     }
@@ -95,6 +97,7 @@ class InventoryReturnService
             if ($lockedItem->product?->type === ProductType::Product) {
                 StockMovement::create([
                     'warehouse_id' => $return->warehouse_id,
+                    'location_id' => $lockedSale->register->location_id,
                     'product_id' => $lockedItem->product_id,
                     'product_variant_id' => $lockedItem->product_variant_id,
                     'type' => 'sales_return',
@@ -150,15 +153,14 @@ class InventoryReturnService
 
             $this->assertReturnableQuantity(PurchaseOrderItem::class, $lockedItem->id, (float) $lockedItem->quantity, $quantity);
 
-            $stockQuery = StockMovement::query()
-                ->where('warehouse_id', $warehouse->id)
-                ->where('product_id', $lockedItem->product_id);
+            Product::query()->lockForUpdate()->findOrFail($lockedItem->product_id);
 
-            $lockedItem->product_variant_id === null
-                ? $stockQuery->whereNull('product_variant_id')
-                : $stockQuery->where('product_variant_id', $lockedItem->product_variant_id);
-
-            $available = (float) $stockQuery->sum('quantity');
+            $snapshot = $this->availability->snapshot(
+                $warehouse->id,
+                $lockedItem->product_id,
+                $lockedItem->product_variant_id,
+            );
+            $available = (float) $snapshot['available'];
 
             if (! (bool) $this->settings->get('inventory.allow_negative_stock', false)
                 && $available + 0.00001 < $quantity) {

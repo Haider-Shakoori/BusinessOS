@@ -9,6 +9,7 @@ use App\Models\StockMovement;
 use App\Models\Warehouse;
 use App\Services\BusinessContext;
 use App\Services\BusinessSettings;
+use App\Services\InventoryAvailabilityService;
 use App\Services\InventoryValuationService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -66,6 +67,7 @@ class ManufacturingController extends Controller
         BusinessContext $context,
         BusinessSettings $settings,
         InventoryValuationService $valuation,
+        InventoryAvailabilityService $availability,
     ): RedirectResponse {
         $data = $request->validate([
             'warehouse_id' => [
@@ -78,7 +80,7 @@ class ManufacturingController extends Controller
         ]);
 
         try {
-            DB::transaction(function () use ($productionOrder, $data, $settings, $valuation): void {
+            DB::transaction(function () use ($productionOrder, $data, $settings, $valuation, $availability): void {
                 $order = ProductionOrder::query()
                     ->with('bom.items')
                     ->lockForUpdate()
@@ -97,15 +99,17 @@ class ManufacturingController extends Controller
                             (float) $item->quantity * (float) $data['actual_quantity'] * $factor,
                             4,
                         );
-                        $snapshot = $valuation->snapshot(
+                        Product::query()->lockForUpdate()->findOrFail($item->material_product_id);
+
+                        $snapshot = $availability->snapshot(
                             (int) $data['warehouse_id'],
                             (int) $item->material_product_id,
                         );
 
                         if (! $allowNegativeStock
-                            && (float) $snapshot['quantity'] + 0.00001 < $consumption) {
+                            && (float) $snapshot['available'] + 0.00001 < $consumption) {
                             throw new RuntimeException(__('operations.inventory.insufficient_stock', [
-                                'available' => $snapshot['quantity'],
+                                'available' => $snapshot['available'],
                             ]));
                         }
 

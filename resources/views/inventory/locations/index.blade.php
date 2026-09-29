@@ -178,6 +178,8 @@
                         <x-ui.th>{{ __('operations.locations.product') }}</x-ui.th>
                         <x-ui.th>{{ __('operations.locations.variant') }}</x-ui.th>
                         <x-ui.th>{{ __('operations.locations.quantity') }}</x-ui.th>
+                        <x-ui.th>{{ __('operations.reservations.reserved') }}</x-ui.th>
+                        <x-ui.th>{{ __('operations.reservations.available') }}</x-ui.th>
                     </tr>
                 </x-slot:head>
                 @forelse($balances as $balance)
@@ -187,9 +189,11 @@
                         <x-ui.td>{{ $balance->product?->name ?? '—' }}</x-ui.td>
                         <x-ui.td>{{ $balance->variant?->name ?? '—' }}</x-ui.td>
                         <x-ui.td>{{ $balance->quantity }}</x-ui.td>
+                        <x-ui.td>{{ $balance->reserved_quantity }}</x-ui.td>
+                        <x-ui.td>{{ $balance->available_quantity }}</x-ui.td>
                     </tr>
                 @empty
-                    <tr><x-ui.td colspan="5">{{ __('operations.locations.no_stock') }}</x-ui.td></tr>
+                    <tr><x-ui.td colspan="7">{{ __('operations.locations.no_stock') }}</x-ui.td></tr>
                 @endforelse
             </x-ui.table>
         </div>
