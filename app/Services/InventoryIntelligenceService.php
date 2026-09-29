@@ -48,10 +48,10 @@ class InventoryIntelligenceService
         $cutoff = CarbonImmutable::now()->subDays($slowDays);
 
         $valuationRows = $groups->map(function (StockMovement $group) use (
-            & $totalQuantity,
-            & $totalValue,
-            & $incompleteValuations,
-            & $slowMoving,
+            &$totalQuantity,
+            &$totalValue,
+            &$incompleteValuations,
+            &$slowMoving,
             $cutoff,
         ): array {
             $variantId = $group->product_variant_id !== null
