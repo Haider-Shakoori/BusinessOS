@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Models\StockMovement;
 use App\Models\Warehouse;
+use App\Models\WarehouseLocation;
 use App\Services\BusinessContext;
 use App\Services\BusinessSettings;
 use App\Services\InventoryValuationService;
+use App\Services\WarehouseLocationService;
 use App\Services\ProductVariantService;
 use App\Support\Decimal;
 use Illuminate\Http\RedirectResponse;
@@ -21,8 +23,15 @@ class InventoryController extends Controller
     {
         $warehouses = Warehouse::query()->where('is_active', true)->orderByDesc('is_default')->orderBy('name')->get();
         $products = Product::query()->with(['variants' => fn ($query) => $query->where('is_active', true)->orderBy('name')])->orderBy('name')->get();
+        $locations = WarehouseLocation::query()
+            ->where('is_active', true)
+            ->with('warehouse')
+            ->orderBy('warehouse_id')
+            ->orderByDesc('is_default')
+            ->orderBy('code')
+            ->get();
         $movements = StockMovement::query()
-            ->with(['warehouse', 'product', 'variant'])
+            ->with(['warehouse', 'location', 'product', 'variant'])
             ->latest('occurred_at')
             ->limit(50)
             ->get();
@@ -45,7 +54,7 @@ class InventoryController extends Controller
             $balance->setAttribute('valuation_complete', $snapshot['complete']);
         });
 
-        return view('inventory.index', compact('warehouses', 'products', 'movements', 'balances'));
+        return view('inventory.index', compact('warehouses', 'locations', 'products', 'movements', 'balances'));
     }
 
     public function storeWarehouse(Request $request, BusinessContext $context): RedirectResponse
@@ -66,9 +75,18 @@ class InventoryController extends Controller
         BusinessSettings $settings,
         ProductVariantService $variants,
         InventoryValuationService $valuation,
+        WarehouseLocationService $locations,
     ): RedirectResponse {
         $data = $request->validate([
             'warehouse_id' => ['required', Rule::exists('warehouses', 'id')->where('business_id', $context->currentId())->where('is_active', true)],
+            'location_id' => [
+                'nullable',
+                'integer',
+                Rule::exists('warehouse_locations', 'id')
+                    ->where('business_id', $context->currentId())
+                    ->where('warehouse_id', $request->integer('warehouse_id'))
+                    ->where('is_active', true),
+            ],
             'product_id' => ['required', Rule::exists('products', 'id')->where('business_id', $context->currentId())],
             'product_variant_id' => ['nullable', 'integer', Rule::exists('product_variants', 'id')->where('business_id', $context->currentId())],
             'type' => ['required', Rule::in(['opening', 'purchase', 'sale', 'adjustment', 'production_in', 'production_out'])],
@@ -78,6 +96,15 @@ class InventoryController extends Controller
         ]);
 
         $product = Product::findOrFail($data['product_id']);
+
+        try {
+            $location = $locations->forMovement(
+                (int) $data['warehouse_id'],
+                isset($data['location_id']) ? (int) $data['location_id'] : null,
+            );
+        } catch (\RuntimeException $exception) {
+            return back()->withErrors(['location_id' => $exception->getMessage()])->withInput();
+        }
 
         try {
             $variant = $variants->resolve(
@@ -93,6 +120,7 @@ class InventoryController extends Controller
                 (int) $data['warehouse_id'],
                 (int) $data['product_id'],
                 $variant?->id,
+                $location->id,
             );
             $requested = Decimal::sub('0', Decimal::normalize((string) $data['quantity']));
 
@@ -110,6 +138,7 @@ class InventoryController extends Controller
                     (int) $data['warehouse_id'],
                     (int) $data['product_id'],
                     $variant?->id,
+                    $location->id,
                 );
                 $data['unit_cost'] = Decimal::gt($issueCost, '0') ? $issueCost : null;
             }
@@ -117,6 +146,7 @@ class InventoryController extends Controller
 
         StockMovement::create([
             ...$data,
+            'location_id' => $location->id,
             'product_variant_id' => $variant?->id,
             'occurred_at' => now(),
         ]);

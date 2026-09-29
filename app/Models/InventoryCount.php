@@ -13,6 +13,7 @@ class InventoryCount extends Model
 
     protected $fillable = [
         'warehouse_id',
+        'location_id',
         'number',
         'status',
         'count_date',
@@ -40,6 +41,11 @@ class InventoryCount extends Model
     public function warehouse(): BelongsTo
     {
         return $this->belongsTo(Warehouse::class);
+    }
+
+    public function location(): BelongsTo
+    {
+        return $this->belongsTo(WarehouseLocation::class, 'location_id');
     }
 
     public function items(): HasMany

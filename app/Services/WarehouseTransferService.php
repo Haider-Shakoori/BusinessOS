@@ -8,6 +8,7 @@ use App\Models\Product;
 use App\Models\ProductVariant;
 use App\Models\StockMovement;
 use App\Models\Warehouse;
+use App\Models\WarehouseLocation;
 use App\Models\WarehouseTransfer;
 use Illuminate\Support\Facades\DB;
 use RuntimeException;
@@ -29,9 +30,15 @@ class WarehouseTransferService
         ?ProductVariant $variant,
         float $quantity,
         ?string $note = null,
+        ?WarehouseLocation $sourceLocation = null,
+        ?WarehouseLocation $destinationLocation = null,
     ): WarehouseTransfer {
-        if ($source->is($destination)) {
-            throw new RuntimeException(__('operations.transfers.errors.same_warehouse'));
+        $locations = app(WarehouseLocationService::class);
+        $sourceLocation = $locations->forMovement($source->id, $sourceLocation?->id);
+        $destinationLocation = $locations->forMovement($destination->id, $destinationLocation?->id);
+
+        if ($source->is($destination) && $sourceLocation->is($destinationLocation)) {
+            throw new RuntimeException(__('operations.transfers.errors.same_location'));
         }
 
         if ($product->type !== ProductType::Product) {
@@ -42,7 +49,7 @@ class WarehouseTransferService
             throw new RuntimeException(__('operations.transfers.errors.invalid_quantity'));
         }
 
-        return DB::transaction(function () use ($source, $destination, $product, $variant, $quantity, $note): WarehouseTransfer {
+        return DB::transaction(function () use ($source, $destination, $sourceLocation, $destinationLocation, $product, $variant, $quantity, $note): WarehouseTransfer {
             $transfer = WarehouseTransfer::create([
                 'source_warehouse_id' => $source->id,
                 'destination_warehouse_id' => $destination->id,
@@ -55,10 +62,12 @@ class WarehouseTransferService
             $transfer->items()->create([
                 'product_id' => $product->id,
                 'product_variant_id' => $variant?->id,
+                'source_location_id' => $sourceLocation->id,
+                'destination_location_id' => $destinationLocation->id,
                 'quantity' => round($quantity, 4),
             ]);
 
-            return $transfer->load(['sourceWarehouse', 'destinationWarehouse', 'items.product']);
+            return $transfer->load(['sourceWarehouse', 'destinationWarehouse', 'items.product', 'items.sourceLocation', 'items.destinationLocation']);
         });
     }
 
@@ -79,6 +88,7 @@ class WarehouseTransferService
                     $locked->source_warehouse_id,
                     $item->product_id,
                     $item->product_variant_id,
+                    $item->source_location_id,
                 );
                 $available = (float) $valuation['quantity'];
 
@@ -94,12 +104,14 @@ class WarehouseTransferService
                     $locked->source_warehouse_id,
                     $item->product_id,
                     $item->product_variant_id,
+                    $item->source_location_id,
                 );
 
                 $item->update(['unit_cost' => $unitCost]);
 
                 StockMovement::create([
                     'warehouse_id' => $locked->source_warehouse_id,
+                    'location_id' => $item->source_location_id,
                     'product_id' => $item->product_id,
                     'product_variant_id' => $item->product_variant_id,
                     'type' => 'transfer_out',
@@ -136,6 +148,7 @@ class WarehouseTransferService
             foreach ($locked->items as $item) {
                 StockMovement::create([
                     'warehouse_id' => $locked->destination_warehouse_id,
+                    'location_id' => $item->destination_location_id,
                     'product_id' => $item->product_id,
                     'product_variant_id' => $item->product_variant_id,
                     'type' => 'transfer_in',

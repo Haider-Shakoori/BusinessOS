@@ -16,8 +16,9 @@
         <div class="mb-5"><x-ui.alert type="danger">{{ $errors->first() }}</x-ui.alert></div>
     @endif
 
-    <div class="grid gap-4 md:grid-cols-4">
+    <div class="grid gap-4 md:grid-cols-5">
         <x-ui.card><div class="text-sm text-slate-500">{{ __('operations.stock_counts.warehouse') }}</div><div class="mt-1 font-semibold">{{ $count->warehouse?->name }}</div></x-ui.card>
+        <x-ui.card><div class="text-sm text-slate-500">{{ __('operations.stock_counts.location') }}</div><div class="mt-1 font-semibold">{{ $count->location?->code }} — {{ $count->location?->name }}</div></x-ui.card>
         <x-ui.card><div class="text-sm text-slate-500">{{ __('operations.stock_counts.date') }}</div><div class="mt-1 font-semibold">{{ $count->count_date?->format('Y-m-d') }}</div></x-ui.card>
         <x-ui.card><div class="text-sm text-slate-500">{{ __('operations.stock_counts.positive_variance') }}</div><div class="mt-1 font-semibold">{{ $count->total_positive_variance_value }}</div></x-ui.card>
         <x-ui.card><div class="text-sm text-slate-500">{{ __('operations.stock_counts.negative_variance') }}</div><div class="mt-1 font-semibold">{{ $count->total_negative_variance_value }}</div></x-ui.card>

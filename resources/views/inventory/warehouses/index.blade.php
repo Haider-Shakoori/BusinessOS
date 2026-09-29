@@ -3,7 +3,10 @@
 @section('content')
 <x-app.page icon="building-office-2" :title="__('operations.warehouses.title')" :subtitle="__('operations.warehouses.subtitle')">
     <x-slot:actions>
-        <x-ui.button href="{{ route('inventory.index') }}" variant="secondary">{{ __('operations.inventory.title') }}</x-ui.button>
+        <div class="flex flex-wrap gap-2">
+            <x-ui.button href="{{ route('inventory.locations.index') }}" variant="secondary">{{ __('operations.locations.title') }}</x-ui.button>
+            <x-ui.button href="{{ route('inventory.index') }}" variant="secondary">{{ __('operations.inventory.title') }}</x-ui.button>
+        </div>
     </x-slot:actions>
 
     @if (session('status'))

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class WarehouseTransferItem extends Model
 {
-    protected $fillable = ['product_id', 'product_variant_id', 'quantity', 'unit_cost'];
+    protected $fillable = ['product_id', 'product_variant_id', 'source_location_id', 'destination_location_id', 'quantity', 'unit_cost'];
 
     protected function casts(): array
     {
@@ -20,6 +20,16 @@ class WarehouseTransferItem extends Model
     public function transfer(): BelongsTo
     {
         return $this->belongsTo(WarehouseTransfer::class, 'warehouse_transfer_id');
+    }
+
+    public function sourceLocation(): BelongsTo
+    {
+        return $this->belongsTo(WarehouseLocation::class, 'source_location_id');
+    }
+
+    public function destinationLocation(): BelongsTo
+    {
+        return $this->belongsTo(WarehouseLocation::class, 'destination_location_id');
     }
 
     public function product(): BelongsTo

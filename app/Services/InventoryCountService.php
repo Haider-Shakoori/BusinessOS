@@ -9,6 +9,7 @@ use App\Models\Product;
 use App\Models\ProductVariant;
 use App\Models\StockMovement;
 use App\Models\Warehouse;
+use App\Models\WarehouseLocation;
 use App\Support\Decimal;
 use Illuminate\Support\Facades\DB;
 use RuntimeException;
@@ -28,10 +29,14 @@ class InventoryCountService
         string $countDate,
         ?string $notes,
         int $userId,
+        ?WarehouseLocation $location = null,
     ): InventoryCount {
-        return DB::transaction(function () use ($warehouse, $countDate, $notes, $userId): InventoryCount {
+        $location = app(WarehouseLocationService::class)->forMovement($warehouse->id, $location?->id);
+
+        return DB::transaction(function () use ($warehouse, $location, $countDate, $notes, $userId): InventoryCount {
             $count = InventoryCount::create([
                 'warehouse_id' => $warehouse->id,
+                'location_id' => $location->id,
                 'number' => $this->numbers->next(DocumentType::InventoryCount),
                 'status' => 'draft',
                 'count_date' => $countDate,
@@ -41,6 +46,7 @@ class InventoryCountService
 
             $groups = StockMovement::query()
                 ->where('warehouse_id', $warehouse->id)
+                ->where('location_id', $location->id)
                 ->selectRaw('product_id, product_variant_id, SUM(quantity) as quantity')
                 ->groupBy('product_id', 'product_variant_id')
                 ->havingRaw('SUM(quantity) <> 0')
@@ -48,7 +54,7 @@ class InventoryCountService
 
             foreach ($groups as $group) {
                 $variantId = $group->product_variant_id !== null ? (int) $group->product_variant_id : null;
-                $snapshot = $this->valuation->snapshot($warehouse->id, (int) $group->product_id, $variantId);
+                $snapshot = $this->valuation->snapshot($warehouse->id, (int) $group->product_id, $variantId, $location->id);
                 $count->items()->create([
                     'product_id' => $group->product_id,
                     'product_variant_id' => $variantId,
@@ -57,7 +63,7 @@ class InventoryCountService
                 ]);
             }
 
-            return $count->load(['warehouse', 'items.product', 'items.variant']);
+            return $count->load(['warehouse', 'location', 'items.product', 'items.variant']);
         });
     }
 
@@ -87,7 +93,7 @@ class InventoryCountService
                 throw new RuntimeException(__('operations.stock_counts.errors.duplicate_item'));
             }
 
-            $snapshot = $this->valuation->snapshot($locked->warehouse_id, $product->id, $variant?->id);
+            $snapshot = $this->valuation->snapshot($locked->warehouse_id, $product->id, $variant?->id, $locked->location_id);
 
             if (! Decimal::isZero($snapshot['quantity'])) {
                 throw new RuntimeException(__('operations.stock_counts.errors.stock_changed'));
@@ -185,7 +191,7 @@ class InventoryCountService
                 'submitted_at' => now(),
             ]);
 
-            return $locked->refresh()->load(['warehouse', 'items.product', 'items.variant']);
+            return $locked->refresh()->load(['warehouse', 'location', 'items.product', 'items.variant']);
         });
     }
 
@@ -206,6 +212,7 @@ class InventoryCountService
                     $locked->warehouse_id,
                     $item->product_id,
                     $item->product_variant_id,
+                    $locked->location_id,
                 );
 
                 if (! Decimal::eq($snapshot['quantity'], (string) $item->expected_quantity)) {
@@ -234,6 +241,7 @@ class InventoryCountService
 
                 StockMovement::create([
                     'warehouse_id' => $locked->warehouse_id,
+                    'location_id' => $locked->location_id,
                     'product_id' => $item->product_id,
                     'product_variant_id' => $item->product_variant_id,
                     'type' => 'stock_count_adjustment',
@@ -256,7 +264,7 @@ class InventoryCountService
 
             $this->accounting->postInventoryCount($locked->refresh()->load('items'));
 
-            return $locked->refresh()->load(['warehouse', 'items.product', 'items.variant', 'approver']);
+            return $locked->refresh()->load(['warehouse', 'location', 'items.product', 'items.variant', 'approver']);
         });
     }
 

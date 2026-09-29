@@ -11,7 +11,7 @@ class StockMovement extends Model
     use BelongsToBusiness;
 
     protected $fillable = [
-        'warehouse_id', 'product_id', 'product_variant_id', 'type', 'quantity', 'unit_cost',
+        'warehouse_id', 'location_id', 'product_id', 'product_variant_id', 'type', 'quantity', 'unit_cost',
         'reference_type', 'reference_id', 'note', 'occurred_at',
     ];
 
@@ -24,9 +24,30 @@ class StockMovement extends Model
         ];
     }
 
+    protected static function booted(): void
+    {
+        static::creating(function (self $movement): void {
+            if ($movement->warehouse_id === null) {
+                return;
+            }
+
+            $location = app(\App\Services\WarehouseLocationService::class)->forMovement(
+                (int) $movement->warehouse_id,
+                $movement->location_id !== null ? (int) $movement->location_id : null,
+            );
+
+            $movement->location_id = $location->id;
+        });
+    }
+
     public function warehouse(): BelongsTo
     {
         return $this->belongsTo(Warehouse::class);
+    }
+
+    public function location(): BelongsTo
+    {
+        return $this->belongsTo(WarehouseLocation::class, 'location_id');
     }
 
     public function product(): BelongsTo
