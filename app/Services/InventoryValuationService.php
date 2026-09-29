@@ -10,7 +10,7 @@ class InventoryValuationService
     /**
      * @return array{quantity:string, stock_value:string, average_unit_cost:string, complete:bool}
      */
-    public function snapshot(int $warehouseId, int $productId, ?int $variantId = null): array
+    public function snapshot(int $warehouseId, int $productId, ?int $variantId = null, ?int $locationId = null): array
     {
         $query = StockMovement::query()
             ->where('warehouse_id', $warehouseId)
@@ -19,6 +19,10 @@ class InventoryValuationService
         $variantId === null
             ? $query->whereNull('product_variant_id')
             : $query->where('product_variant_id', $variantId);
+
+        if ($locationId !== null) {
+            $query->where('location_id', $locationId);
+        }
 
         $movements = $query
             ->orderBy('occurred_at')
@@ -80,14 +84,14 @@ class InventoryValuationService
         ];
     }
 
-    public function averageUnitCost(int $warehouseId, int $productId, ?int $variantId = null): string
+    public function averageUnitCost(int $warehouseId, int $productId, ?int $variantId = null, ?int $locationId = null): string
     {
-        return $this->snapshot($warehouseId, $productId, $variantId)['average_unit_cost'];
+        return $this->snapshot($warehouseId, $productId, $variantId, $locationId)['average_unit_cost'];
     }
 
-    public function issueUnitCost(int $warehouseId, int $productId, ?int $variantId = null): string
+    public function issueUnitCost(int $warehouseId, int $productId, ?int $variantId = null, ?int $locationId = null): string
     {
-        $snapshot = $this->snapshot($warehouseId, $productId, $variantId);
+        $snapshot = $this->snapshot($warehouseId, $productId, $variantId, $locationId);
 
         if (Decimal::gt($snapshot['average_unit_cost'], '0')) {
             return $snapshot['average_unit_cost'];
@@ -102,6 +106,10 @@ class InventoryValuationService
         $variantId === null
             ? $query->whereNull('product_variant_id')
             : $query->where('product_variant_id', $variantId);
+
+        if ($locationId !== null) {
+            $query->where('location_id', $locationId);
+        }
 
         $cost = $query
             ->latest('occurred_at')

@@ -19,18 +19,24 @@
                 <h2 class="font-semibold text-slate-900 dark:text-white">{{ __('operations.stock_counts.new') }}</h2>
             </x-slot:header>
 
-            <form method="POST" action="{{ route('inventory.counts.store') }}" class="grid gap-4 lg:grid-cols-4">
+            <form method="POST" action="{{ route('inventory.counts.store') }}" class="grid gap-4 lg:grid-cols-5">
                 @csrf
                 <x-ui.select name="warehouse_id" :label="__('operations.stock_counts.warehouse')" required>
                     @foreach($warehouses as $warehouse)
                         <option value="{{ $warehouse->id }}">{{ $warehouse->code }} — {{ $warehouse->name }}</option>
                     @endforeach
                 </x-ui.select>
+                <x-ui.select name="location_id" :label="__('operations.stock_counts.location')">
+                    <option value="">{{ __('operations.stock_counts.default_location') }}</option>
+                    @foreach($locations as $location)
+                        <option value="{{ $location->id }}">{{ $location->warehouse?->code }} · {{ $location->code }} — {{ $location->name }}</option>
+                    @endforeach
+                </x-ui.select>
                 <x-ui.input name="count_date" type="date" :value="old('count_date', now()->toDateString())" :label="__('operations.stock_counts.date')" required />
                 <div class="lg:col-span-2">
                     <x-ui.input name="notes" :label="__('operations.stock_counts.notes')" />
                 </div>
-                <div class="lg:col-span-4 flex justify-end">
+                <div class="lg:col-span-5 flex justify-end">
                     <x-ui.button type="submit" icon="plus">{{ __('operations.stock_counts.start') }}</x-ui.button>
                 </div>
             </form>
@@ -48,6 +54,7 @@
                     <tr>
                         <x-ui.th>{{ __('operations.stock_counts.number') }}</x-ui.th>
                         <x-ui.th>{{ __('operations.stock_counts.warehouse') }}</x-ui.th>
+                        <x-ui.th>{{ __('operations.stock_counts.location') }}</x-ui.th>
                         <x-ui.th>{{ __('operations.stock_counts.date') }}</x-ui.th>
                         <x-ui.th>{{ __('operations.stock_counts.items') }}</x-ui.th>
                         <x-ui.th>{{ __('operations.stock_counts.status') }}</x-ui.th>
@@ -58,6 +65,7 @@
                     <tr>
                         <x-ui.td>{{ $count->number }}</x-ui.td>
                         <x-ui.td>{{ $count->warehouse?->name }}</x-ui.td>
+                        <x-ui.td>{{ $count->location?->code }} — {{ $count->location?->name }}</x-ui.td>
                         <x-ui.td>{{ $count->count_date?->format('Y-m-d') }}</x-ui.td>
                         <x-ui.td>{{ $count->items_count }}</x-ui.td>
                         <x-ui.td>
@@ -72,7 +80,7 @@
                         </x-ui.td>
                     </tr>
                 @empty
-                    <tr><x-ui.td colspan="6">{{ __('operations.stock_counts.empty_history') }}</x-ui.td></tr>
+                    <tr><x-ui.td colspan="7">{{ __('operations.stock_counts.empty_history') }}</x-ui.td></tr>
                 @endforelse
             </x-ui.table>
         </div>

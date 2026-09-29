@@ -48,6 +48,7 @@ use App\Http\Controllers\TaxController;
 use App\Http\Controllers\UnitController;
 use App\Http\Controllers\UserRoleController;
 use App\Http\Controllers\WarehouseController;
+use App\Http\Controllers\WarehouseLocationController;
 use App\Http\Controllers\WarehouseTransferController;
 use App\Http\Controllers\WorkspaceController;
 use App\Support\SafeRedirect;
@@ -367,6 +368,24 @@ Route::middleware(['auth', 'auth.session', 'business-selected', 'module:inventor
         ->middleware('permission:inventory.manage');
     Route::delete('/inventory/warehouses/{warehouse}', [WarehouseController::class, 'destroy'])
         ->name('inventory.warehouses.destroy')
+        ->middleware('permission:inventory.manage');
+    Route::get('/inventory/locations', [WarehouseLocationController::class, 'index'])
+        ->name('inventory.locations.index')
+        ->middleware('permission:inventory.view');
+    Route::post('/inventory/locations', [WarehouseLocationController::class, 'store'])
+        ->name('inventory.locations.store')
+        ->middleware('permission:inventory.manage');
+    Route::put('/inventory/locations/{warehouseLocation}', [WarehouseLocationController::class, 'update'])
+        ->name('inventory.locations.update')
+        ->middleware('permission:inventory.manage');
+    Route::post('/inventory/locations/{warehouseLocation}/default', [WarehouseLocationController::class, 'setDefault'])
+        ->name('inventory.locations.default')
+        ->middleware('permission:inventory.manage');
+    Route::patch('/inventory/locations/{warehouseLocation}/active', [WarehouseLocationController::class, 'setActive'])
+        ->name('inventory.locations.active')
+        ->middleware('permission:inventory.manage');
+    Route::delete('/inventory/locations/{warehouseLocation}', [WarehouseLocationController::class, 'destroy'])
+        ->name('inventory.locations.destroy')
         ->middleware('permission:inventory.manage');
     Route::post('/inventory/movements', [InventoryController::class, 'storeMovement'])
         ->name('inventory.movements.store')

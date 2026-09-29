@@ -22,7 +22,7 @@
             <h2 class="font-semibold text-slate-900 dark:text-white">{{ __('operations.transfers.new') }}</h2>
         </x-slot:header>
 
-        <form method="POST" action="{{ route('inventory.transfers.store') }}" class="grid gap-4 lg:grid-cols-6">
+        <form method="POST" action="{{ route('inventory.transfers.store') }}" class="grid gap-4 lg:grid-cols-8">
             @csrf
             <x-ui.select name="source_warehouse_id" :label="__('operations.transfers.source')" required>
                 @foreach($warehouses as $warehouse)
@@ -32,6 +32,18 @@
             <x-ui.select name="destination_warehouse_id" :label="__('operations.transfers.destination')" required>
                 @foreach($warehouses as $warehouse)
                     <option value="{{ $warehouse->id }}">{{ $warehouse->code }} — {{ $warehouse->name }}</option>
+                @endforeach
+            </x-ui.select>
+            <x-ui.select name="source_location_id" :label="__('operations.transfers.source_location')">
+                <option value="">{{ __('operations.transfers.default_location') }}</option>
+                @foreach($locations as $location)
+                    <option value="{{ $location->id }}">{{ $location->warehouse?->code }} · {{ $location->code }} — {{ $location->name }}</option>
+                @endforeach
+            </x-ui.select>
+            <x-ui.select name="destination_location_id" :label="__('operations.transfers.destination_location')">
+                <option value="">{{ __('operations.transfers.default_location') }}</option>
+                @foreach($locations as $location)
+                    <option value="{{ $location->id }}">{{ $location->warehouse?->code }} · {{ $location->code }} — {{ $location->name }}</option>
                 @endforeach
             </x-ui.select>
             <x-ui.select name="product_id" :label="__('operations.transfers.product')" required>
@@ -49,7 +61,7 @@
             </x-ui.select>
             <x-ui.input name="quantity" type="number" step="0.0001" min="0.0001" :label="__('operations.transfers.quantity')" required />
             <x-ui.input name="note" :label="__('operations.transfers.note')" />
-            <div class="lg:col-span-6 flex justify-end">
+            <div class="lg:col-span-8 flex justify-end">
                 <x-ui.button type="submit" icon="plus">{{ __('operations.transfers.create') }}</x-ui.button>
             </div>
         </form>
@@ -77,7 +89,7 @@
                     @php($item = $transfer->items->first())
                     <tr>
                         <x-ui.td>{{ $transfer->number }}</x-ui.td>
-                        <x-ui.td>{{ $transfer->sourceWarehouse?->name }} → {{ $transfer->destinationWarehouse?->name }}</x-ui.td>
+                        <x-ui.td>{{ $transfer->sourceWarehouse?->name }} / {{ $item?->sourceLocation?->code }} → {{ $transfer->destinationWarehouse?->name }} / {{ $item?->destinationLocation?->code }}</x-ui.td>
                         <x-ui.td>{{ $item?->product?->name }} @if($item?->variant)<span class="text-slate-500">— {{ $item->variant->name }}</span>@endif</x-ui.td>
                         <x-ui.td>{{ $item?->quantity }}</x-ui.td>
                         <x-ui.td><x-ui.badge tone="{{ $transfer->status === 'received' ? 'success' : ($transfer->status === 'in_transit' ? 'brand' : 'neutral') }}">{{ __('operations.transfers.'.$transfer->status) }}</x-ui.badge></x-ui.td>

@@ -25,12 +25,16 @@ class WarehouseService
                 $this->clearDefault();
             }
 
-            return Warehouse::create([
+            $warehouse = Warehouse::create([
                 'code' => $data['code'],
                 'name' => $data['name'],
                 'is_active' => true,
                 'is_default' => $makeDefault,
             ]);
+
+            app(WarehouseLocationService::class)->defaultForWarehouse($warehouse);
+
+            return $warehouse;
         });
     }
 
@@ -90,6 +94,7 @@ class WarehouseService
                 throw new RuntimeException(__('operations.warehouses.errors.used_delete'));
             }
 
+            $locked->locations()->delete();
             $locked->delete();
         });
     }
@@ -104,6 +109,8 @@ class WarehouseService
                 ->first();
 
             if ($default !== null) {
+                app(WarehouseLocationService::class)->defaultForWarehouse($default);
+
                 return $default;
             }
 
@@ -116,16 +123,21 @@ class WarehouseService
             if ($warehouse !== null) {
                 $this->clearDefault($warehouse->id);
                 $warehouse->update(['is_default' => true]);
+                $warehouse = $warehouse->refresh();
+                app(WarehouseLocationService::class)->defaultForWarehouse($warehouse);
 
-                return $warehouse->refresh();
+                return $warehouse;
             }
 
-            return Warehouse::create([
+            $warehouse = Warehouse::create([
                 'code' => $this->nextMainCode(),
                 'name' => 'Main Warehouse',
                 'is_active' => true,
                 'is_default' => true,
             ]);
+            app(WarehouseLocationService::class)->defaultForWarehouse($warehouse);
+
+            return $warehouse;
         });
     }
 

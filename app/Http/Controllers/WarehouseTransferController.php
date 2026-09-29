@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use App\Models\Warehouse;
+use App\Models\WarehouseLocation;
 use App\Models\WarehouseTransfer;
 use App\Services\BusinessContext;
 use App\Services\ProductVariantService;
@@ -20,9 +21,26 @@ class WarehouseTransferController extends Controller
     {
         return view('inventory.transfers', [
             'warehouses' => Warehouse::query()->where('is_active', true)->orderByDesc('is_default')->orderBy('name')->get(),
-            'products' => Product::query()->orderBy('name')->get(),
+            'locations' => WarehouseLocation::query()
+                ->where('is_active', true)
+                ->with('warehouse')
+                ->orderBy('warehouse_id')
+                ->orderByDesc('is_default')
+                ->orderBy('code')
+                ->get(),
+            'products' => Product::query()
+                ->with(['variants' => fn ($query) => $query->where('is_active', true)->orderBy('name')])
+                ->orderBy('name')
+                ->get(),
             'transfers' => WarehouseTransfer::query()
-                ->with(['sourceWarehouse', 'destinationWarehouse', 'items.product', 'items.variant'])
+                ->with([
+                    'sourceWarehouse',
+                    'destinationWarehouse',
+                    'items.product',
+                    'items.variant',
+                    'items.sourceLocation',
+                    'items.destinationLocation',
+                ])
                 ->latest('id')
                 ->limit(100)
                 ->get(),
@@ -38,13 +56,27 @@ class WarehouseTransferController extends Controller
         $data = $request->validate([
             'source_warehouse_id' => [
                 'required',
-                'different:destination_warehouse_id',
                 Rule::exists('warehouses', 'id')->where('business_id', $context->currentId()),
             ],
             'destination_warehouse_id' => [
                 'required',
-                'different:source_warehouse_id',
                 Rule::exists('warehouses', 'id')->where('business_id', $context->currentId()),
+            ],
+            'source_location_id' => [
+                'nullable',
+                'integer',
+                Rule::exists('warehouse_locations', 'id')
+                    ->where('business_id', $context->currentId())
+                    ->where('warehouse_id', $request->integer('source_warehouse_id'))
+                    ->where('is_active', true),
+            ],
+            'destination_location_id' => [
+                'nullable',
+                'integer',
+                Rule::exists('warehouse_locations', 'id')
+                    ->where('business_id', $context->currentId())
+                    ->where('warehouse_id', $request->integer('destination_warehouse_id'))
+                    ->where('is_active', true),
             ],
             'product_id' => [
                 'required',
@@ -70,6 +102,8 @@ class WarehouseTransferController extends Controller
                 $variant,
                 (float) $data['quantity'],
                 $data['note'] ?? null,
+                isset($data['source_location_id']) ? WarehouseLocation::findOrFail($data['source_location_id']) : null,
+                isset($data['destination_location_id']) ? WarehouseLocation::findOrFail($data['destination_location_id']) : null,
             );
         } catch (RuntimeException $exception) {
             return back()->withErrors(['transfer' => $exception->getMessage()])->withInput();

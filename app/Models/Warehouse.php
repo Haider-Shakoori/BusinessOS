@@ -19,6 +19,11 @@ class Warehouse extends Model
         return ['is_active' => 'boolean', 'is_default' => 'boolean'];
     }
 
+    public function locations(): HasMany
+    {
+        return $this->hasMany(WarehouseLocation::class);
+    }
+
     public function stockMovements(): HasMany
     {
         return $this->hasMany(StockMovement::class);

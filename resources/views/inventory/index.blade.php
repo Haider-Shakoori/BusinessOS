@@ -6,6 +6,7 @@
         <div class="flex flex-wrap gap-2">
             <x-ui.button href="{{ route('inventory.intelligence.index') }}" variant="secondary">{{ __('operations.inventory_intelligence.title') }}</x-ui.button>
             <x-ui.button href="{{ route('inventory.warehouses.index') }}" variant="secondary">{{ __('operations.warehouses.title') }}</x-ui.button>
+            <x-ui.button href="{{ route('inventory.locations.index') }}" variant="secondary">{{ __('operations.locations.title') }}</x-ui.button>
             <x-ui.button href="{{ route('inventory.counts.index') }}" variant="secondary">{{ __('operations.stock_counts.title') }}</x-ui.button>
             <x-ui.button href="{{ route('inventory.reorder.index') }}" variant="secondary">{{ __('operations.reorder.title') }}</x-ui.button>
             <x-ui.button href="{{ route('inventory.transfers.index') }}" variant="secondary">{{ __('operations.transfers.title') }}</x-ui.button>
@@ -31,6 +32,12 @@
                 @csrf
                 <x-ui.select name="warehouse_id" :label="__('operations.inventory.warehouse')" required>
                     @foreach($warehouses as $warehouse)<option value="{{ $warehouse->id }}">{{ $warehouse->code }} — {{ $warehouse->name }}</option>@endforeach
+                </x-ui.select>
+                <x-ui.select name="location_id" :label="__('operations.locations.location')">
+                    <option value="">{{ __('operations.stock_counts.default_location') }}</option>
+                    @foreach($locations as $location)
+                        <option value="{{ $location->id }}">{{ $location->warehouse?->code }} · {{ $location->code }} — {{ $location->name }}</option>
+                    @endforeach
                 </x-ui.select>
                 <x-ui.select name="product_id" :label="__('operations.inventory.product')" required>
                     @foreach($products as $product)<option value="{{ $product->id }}">{{ $product->name }}</option>@endforeach
@@ -87,11 +94,11 @@
             <x-slot:header><h2 class="font-semibold text-slate-900 dark:text-white">{{ __('operations.inventory.movements') }}</h2></x-slot:header>
             <div class="overflow-x-auto">
                 <x-ui.table>
-                    <x-slot:head><tr><x-ui.th>{{ __('operations.inventory.product') }}</x-ui.th><x-ui.th>{{ __('products.variants.select') }}</x-ui.th><x-ui.th>{{ __('operations.inventory.type') }}</x-ui.th><x-ui.th>{{ __('operations.inventory.quantity') }}</x-ui.th><x-ui.th>{{ __('operations.inventory.unit_cost') }}</x-ui.th><x-ui.th>{{ __('operations.inventory.occurred_at') }}</x-ui.th></tr></x-slot:head>
+                    <x-slot:head><tr><x-ui.th>{{ __('operations.inventory.product') }}</x-ui.th><x-ui.th>{{ __('products.variants.select') }}</x-ui.th><x-ui.th>{{ __('operations.locations.location') }}</x-ui.th><x-ui.th>{{ __('operations.inventory.type') }}</x-ui.th><x-ui.th>{{ __('operations.inventory.quantity') }}</x-ui.th><x-ui.th>{{ __('operations.inventory.unit_cost') }}</x-ui.th><x-ui.th>{{ __('operations.inventory.occurred_at') }}</x-ui.th></tr></x-slot:head>
                     @forelse($movements as $movement)
-                        <tr><x-ui.td>{{ $movement->product?->name }}</x-ui.td><x-ui.td>{{ $movement->variant?->name ?: '—' }}</x-ui.td><x-ui.td>{{ __('operations.inventory.'.$movement->type) }}</x-ui.td><x-ui.td>{{ $movement->quantity }}</x-ui.td><x-ui.td>{{ $movement->unit_cost ?? '—' }}</x-ui.td><x-ui.td>{{ $movement->occurred_at?->format('Y-m-d H:i') }}</x-ui.td></tr>
+                        <tr><x-ui.td>{{ $movement->product?->name }}</x-ui.td><x-ui.td>{{ $movement->variant?->name ?: '—' }}</x-ui.td><x-ui.td>{{ $movement->location?->code ?? '—' }}</x-ui.td><x-ui.td>{{ __('operations.inventory.'.$movement->type) }}</x-ui.td><x-ui.td>{{ $movement->quantity }}</x-ui.td><x-ui.td>{{ $movement->unit_cost ?? '—' }}</x-ui.td><x-ui.td>{{ $movement->occurred_at?->format('Y-m-d H:i') }}</x-ui.td></tr>
                     @empty
-                        <tr><x-ui.td colspan="6">{{ __('operations.inventory.no_data') }}</x-ui.td></tr>
+                        <tr><x-ui.td colspan="7">{{ __('operations.inventory.no_data') }}</x-ui.td></tr>
                     @endforelse
                 </x-ui.table>
             </div>

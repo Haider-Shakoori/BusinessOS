@@ -6,6 +6,7 @@ use App\Models\InventoryCount;
 use App\Models\InventoryCountItem;
 use App\Models\Product;
 use App\Models\Warehouse;
+use App\Models\WarehouseLocation;
 use App\Services\BusinessContext;
 use App\Services\InventoryCountService;
 use App\Services\ProductVariantService;
@@ -21,8 +22,15 @@ class InventoryCountController extends Controller
     {
         return view('inventory.counts.index', [
             'warehouses' => Warehouse::query()->where('is_active', true)->orderByDesc('is_default')->orderBy('name')->get(),
+            'locations' => WarehouseLocation::query()
+                ->where('is_active', true)
+                ->with('warehouse')
+                ->orderBy('warehouse_id')
+                ->orderByDesc('is_default')
+                ->orderBy('code')
+                ->get(),
             'counts' => InventoryCount::query()
-                ->with(['warehouse', 'creator'])
+                ->with(['warehouse', 'location', 'creator'])
                 ->withCount('items')
                 ->latest('count_date')
                 ->latest('id')
@@ -41,6 +49,14 @@ class InventoryCountController extends Controller
                 'required',
                 Rule::exists('warehouses', 'id')->where('business_id', $context->currentId()),
             ],
+            'location_id' => [
+                'nullable',
+                'integer',
+                Rule::exists('warehouse_locations', 'id')
+                    ->where('business_id', $context->currentId())
+                    ->where('warehouse_id', $request->integer('warehouse_id'))
+                    ->where('is_active', true),
+            ],
             'count_date' => ['required', 'date'],
             'notes' => ['nullable', 'string', 'max:2000'],
         ]);
@@ -50,6 +66,7 @@ class InventoryCountController extends Controller
             $data['count_date'],
             $data['notes'] ?? null,
             (int) $request->user()->id,
+            isset($data['location_id']) ? WarehouseLocation::findOrFail($data['location_id']) : null,
         );
 
         return redirect()
@@ -61,6 +78,7 @@ class InventoryCountController extends Controller
     {
         $inventoryCount->load([
             'warehouse',
+            'location',
             'creator',
             'submitter',
             'approver',
