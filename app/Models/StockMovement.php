@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\WarehouseLocationService;
 use App\Traits\BelongsToBusiness;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -31,7 +32,7 @@ class StockMovement extends Model
                 return;
             }
 
-            $location = app(\App\Services\WarehouseLocationService::class)->forMovement(
+            $location = app(WarehouseLocationService::class)->forMovement(
                 (int) $movement->warehouse_id,
                 $movement->location_id !== null ? (int) $movement->location_id : null,
             );
