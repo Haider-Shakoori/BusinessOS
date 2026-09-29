@@ -22,6 +22,7 @@ use App\Http\Controllers\HrPayrollController;
 use App\Http\Controllers\ImportController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\InventoryCountController;
+use App\Http\Controllers\InventoryIntelligenceController;
 use App\Http\Controllers\InventoryReorderController;
 use App\Http\Controllers\InventoryReturnController;
 use App\Http\Controllers\InvoiceController;
@@ -369,6 +370,12 @@ Route::middleware(['auth', 'auth.session', 'business-selected', 'module:inventor
         ->middleware('permission:inventory.manage');
     Route::post('/inventory/movements', [InventoryController::class, 'storeMovement'])
         ->name('inventory.movements.store')
+        ->middleware('permission:inventory.manage');
+    Route::get('/inventory/intelligence', [InventoryIntelligenceController::class, 'index'])
+        ->name('inventory.intelligence.index')
+        ->middleware('permission:inventory.view');
+    Route::post('/inventory/intelligence/alerts/refresh', [InventoryIntelligenceController::class, 'refreshAlerts'])
+        ->name('inventory.intelligence.alerts.refresh')
         ->middleware('permission:inventory.manage');
     Route::get('/inventory/counts', [InventoryCountController::class, 'index'])
         ->name('inventory.counts.index')

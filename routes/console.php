@@ -11,3 +11,7 @@ Artisan::command('inspire', function () {
 Schedule::command('attendance:devices:check')
     ->everyMinute()
     ->withoutOverlapping();
+
+Schedule::command('inventory:reorder-alerts')
+    ->dailyAt('08:00')
+    ->withoutOverlapping();
